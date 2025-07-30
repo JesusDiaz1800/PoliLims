@@ -2,6 +2,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { ControlRutinarioForm } from "@/components/ensayos/control-rutinario-form";
 import type { Metadata } from 'next';
 import { matrizProductos } from "@/lib/matriz-datos";
+import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 
 export const metadata: Metadata = {
   title: 'Control Rutinario de Tuberías',
@@ -57,20 +58,23 @@ export default function ControlRutinarioPage() {
   ];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Control Rutinario de Tuberías</CardTitle>
-        <CardDescription>Registro diario de control de calidad realizado por los inspectores en la línea de producción.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ControlRutinarioForm
-          inspectores={inspectores}
-          maquinistas={maquinistas}
-          maquinas={maquinas}
-          productos={productos}
-          marcas={marcas}
-        />
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <ControlRutinarioTable />
+      <Card>
+        <CardHeader>
+          <CardTitle>Formulario de Control Rutinario de Tuberías</CardTitle>
+          <CardDescription>Registro diario de control de calidad realizado por los inspectores en la línea de producción.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ControlRutinarioForm
+            inspectores={inspectores}
+            maquinistas={maquinistas}
+            maquinas={maquinas}
+            productos={productos}
+            marcas={marcas}
+          />
+        </CardContent>
+      </Card>
+    </div>
   );
 }
