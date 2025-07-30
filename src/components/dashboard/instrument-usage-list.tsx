@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 const instruments = [
     { name: "GC-MS 01", status: "Activo", calibrationDue: 90, assignedTo: "Jesus Diaz" },
@@ -11,16 +12,12 @@ const instruments = [
     { name: "Viscosímetro 04", status: "Inactivo", calibrationDue: 45, assignedTo: "-" },
 ];
 
-function getStatusVariant(status: string): "default" | "destructive" | "secondary" {
+function getStatusClass(status: string) {
     switch (status) {
-        case "Activo":
-            return "default";
-        case "Mantenimiento":
-            return "destructive";
-        case "Inactivo":
-            return "secondary";
-        default:
-            return "default";
+        case "Activo": return "bg-green-500/20 text-green-300 border-green-500/30";
+        case "Mantenimiento": return "bg-red-500/20 text-red-300 border-red-500/30";
+        case "Inactivo": return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+        default: return "bg-secondary";
     }
 }
 
@@ -53,12 +50,7 @@ export function InstrumentUsageList() {
                             <TableRow key={instrument.name}>
                                 <TableCell className="font-medium">{instrument.name}</TableCell>
                                 <TableCell className="text-center">
-                                    <Badge variant={getStatusVariant(instrument.status)} 
-                                           className={
-                                            instrument.status === 'Activo' ? 'bg-green-500/20 text-green-300 border-green-500/30' : 
-                                            instrument.status === 'Mantenimiento' ? 'bg-red-500/20 text-red-300 border-red-500/30' :
-                                            'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
-                                           }>
+                                    <Badge className={cn("border-transparent", getStatusClass(instrument.status))}>
                                         {instrument.status}
                                     </Badge>
                                 </TableCell>
