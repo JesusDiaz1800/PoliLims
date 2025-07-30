@@ -46,9 +46,15 @@ interface TuberiasPpFormProps {
 
 export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   const { toast } = useToast();
-  const { control, getValues, register } = useForm({
+  const { control, getValues, register, watch } = useForm({
     defaultValues: {
       meltIndexMediciones: [{ value: '' }],
+      fv_total_m1: "",
+      fv_total_m2: "",
+      fv_total_m3: "",
+      fv_intermedia_m1: "",
+      fv_intermedia_m2: "",
+      fv_intermedia_m3: "",
     }
   });
 
@@ -60,6 +66,15 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
   const [meltIndexCalculado, setMeltIndexCalculado] = React.useState(0);
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
+
+  // States for Fibra de Vidrio calculations
+  const [fvTotalMasaMuestra, setFvTotalMasaMuestra] = React.useState(0);
+  const [fvTotalMasaCeniza, setFvTotalMasaCeniza] = React.useState(0);
+  const [fvTotalPorcentaje, setFvTotalPorcentaje] = React.useState(0);
+  const [fvIntermediaMasaMuestra, setFvIntermediaMasaMuestra] = React.useState(0);
+  const [fvIntermediaMasaCeniza, setFvIntermediaMasaCeniza] = React.useState(0);
+  const [fvIntermediaPorcentaje, setFvIntermediaPorcentaje] = React.useState(0);
+
 
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
@@ -98,6 +113,60 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
       setDensidadCalculada(0);
     }
   }, [getValues]);
+  
+  const calculateFV = React.useCallback(() => {
+    // Total
+    const fv_total_m1 = parseFloat(getValues("fv_total_m1"));
+    const fv_total_m2 = parseFloat(getValues("fv_total_m2"));
+    const fv_total_m3 = parseFloat(getValues("fv_total_m3"));
+
+    if (!isNaN(fv_total_m1) && !isNaN(fv_total_m2) && !isNaN(fv_total_m3)) {
+      const masaMuestra = fv_total_m2 - fv_total_m1;
+      const masaCeniza = fv_total_m3 - fv_total_m1;
+      setFvTotalMasaMuestra(masaMuestra);
+      setFvTotalMasaCeniza(masaCeniza);
+      if (masaMuestra !== 0) {
+        setFvTotalPorcentaje((masaCeniza / masaMuestra) * 100);
+      } else {
+        setFvTotalPorcentaje(0);
+      }
+    } else {
+      setFvTotalMasaMuestra(0);
+      setFvTotalMasaCeniza(0);
+      setFvTotalPorcentaje(0);
+    }
+
+    // Intermedia
+    const fv_intermedia_m1 = parseFloat(getValues("fv_intermedia_m1"));
+    const fv_intermedia_m2 = parseFloat(getValues("fv_intermedia_m2"));
+    const fv_intermedia_m3 = parseFloat(getValues("fv_intermedia_m3"));
+    
+    if (!isNaN(fv_intermedia_m1) && !isNaN(fv_intermedia_m2) && !isNaN(fv_intermedia_m3)) {
+      const masaMuestra = fv_intermedia_m2 - fv_intermedia_m1;
+      const masaCeniza = fv_intermedia_m3 - fv_intermedia_m1;
+      setFvIntermediaMasaMuestra(masaMuestra);
+      setFvIntermediaMasaCeniza(masaCeniza);
+      if (masaMuestra !== 0) {
+        setFvIntermediaPorcentaje((masaCeniza / masaMuestra) * 100);
+      } else {
+        setFvIntermediaPorcentaje(0);
+      }
+    } else {
+      setFvIntermediaMasaMuestra(0);
+      setFvIntermediaMasaCeniza(0);
+      setFvIntermediaPorcentaje(0);
+    }
+  }, [getValues]);
+  
+  // Watch for changes in FV fields and recalculate
+  const watchedFvFields = watch([
+    "fv_total_m1", "fv_total_m2", "fv_total_m3",
+    "fv_intermedia_m1", "fv_intermedia_m2", "fv_intermedia_m3"
+  ]);
+
+  React.useEffect(() => {
+    calculateFV();
+  }, [watchedFvFields, calculateFV]);
   
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -302,22 +371,82 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
               
               {/* Pestaña Fibra de Vidrio */}
               <TabsContent value="fibra_vidrio" className="mt-4">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Ensayo: Porcentaje de Fibra de Vidrio (%FV)</CardTitle>
-                        <CardDescription>Resultados del contenido de fibra de vidrio. La lógica de búsqueda se aplicará en una futura versión.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="porcentaje_fv_total">%FV Total</Label>
-                            <Input id="porcentaje_fv_total" type="number" step="any" placeholder="Ingrese el % total" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="porcentaje_fv_capa_intermedia">%FV Capa Intermedia</Label>
-                            <Input id="porcentaje_fv_capa_intermedia" type="number" step="any" placeholder="Ingrese el % de la capa intermedia" />
-                        </div>
-                    </CardContent>
-                 </Card>
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Fibra de vidrio Total</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_total_m1">M1 [g]</Label>
+                                <Input id="fv_total_m1" type="number" step="any" placeholder="Masa de crisol" {...register("fv_total_m1")} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_total_m2">M2 [g]</Label>
+                                <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_total_m3">M3 [g]</Label>
+                                <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Masa Muestra [g]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvTotalMasaMuestra.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Masa Ceniza [g]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvTotalMasaCeniza.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Porcentaje FV Total [%]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvTotalPorcentaje.toFixed(2)}%
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Fibra de vidrio Capa Intermedia</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_intermedia_m1">M1 [g]</Label>
+                                <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa de crisol" {...register("fv_intermedia_m1")} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_intermedia_m2">M2 [g]</Label>
+                                <Input id="fv_intermedia_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_intermedia_m2")} />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fv_intermedia_m3">M3 [g]</Label>
+                                <Input id="fv_intermedia_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_intermedia_m3")} />
+                            </div>
+                             <div className="space-y-2">
+                                <Label>Masa Muestra [g]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaMasaMuestra.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Masa Ceniza [g]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaMasaCeniza.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Porcentaje FV Capa Intermedia [%]</Label>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaPorcentaje.toFixed(2)}%
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
               </TabsContent>
            </Tabs>
         </CardContent>
