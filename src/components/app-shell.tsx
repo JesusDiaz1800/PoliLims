@@ -199,8 +199,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex min-h-screen w-full bg-background/50">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center gap-2.5 px-2">
-                       <Logo className="w-auto h-12" />
+                    <div className="flex items-center gap-2.5 px-2 h-14">
+                       <Logo className="w-32 h-auto" />
                     </div>
                 </SidebarHeader>
                 <SidebarContent>
