@@ -5,12 +5,13 @@ export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("relative", className)}>
        <Image
-        src="/logo-color.png"
+        src="https://placehold.co/224x48.png"
         alt="Polifusion Logo"
         fill
         sizes="(max-width: 768px) 100vw, 12rem"
         className="object-contain"
         priority
+        data-ai-hint="logo polifusion"
       />
     </div>
   );
