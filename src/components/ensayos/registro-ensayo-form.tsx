@@ -50,11 +50,22 @@ export function RegistroEnsayoForm({ analistas = [], ensayos = [] }: RegistroEns
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="identificacion_muestra">Identificación de Muestra</Label>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         <div className="space-y-2">
+          <Label htmlFor="identificacion_muestra">ID Muestra</Label>
           <Input id="identificacion_muestra" placeholder="Ej: HDPE-0821-A" />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="lote">Lote</Label>
+          <Input id="lote" placeholder="N° de Lote" />
+        </div>
+         <div className="space-y-2">
+          <Label htmlFor="producto">Producto</Label>
+          <Input id="producto" placeholder="Nombre del producto" />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
           <Label htmlFor="tipo_ensayo">Tipo de Ensayo</Label>
           <Select>
@@ -68,9 +79,6 @@ export function RegistroEnsayoForm({ analistas = [], ensayos = [] }: RegistroEns
             </SelectContent>
           </Select>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
             <Label htmlFor="analista_asignado">Analista Asignado</Label>
             <Select>
@@ -111,19 +119,26 @@ export function RegistroEnsayoForm({ analistas = [], ensayos = [] }: RegistroEns
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="prioridad">Prioridad</Label>
-        <Select defaultValue="normal">
-          <SelectTrigger id="prioridad">
-            <SelectValue placeholder="Seleccione la prioridad" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="normal">Normal</SelectItem>
-            <SelectItem value="alta">Alta</SelectItem>
-            <SelectItem value="urgente">Urgente</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="proveedor">Proveedor</Label>
+          <Input id="proveedor" placeholder="Nombre del proveedor" />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="prioridad">Prioridad</Label>
+          <Select defaultValue="normal">
+            <SelectTrigger id="prioridad">
+              <SelectValue placeholder="Seleccione la prioridad" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="normal">Normal</SelectItem>
+              <SelectItem value="alta">Alta</SelectItem>
+              <SelectItem value="urgente">Urgente</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
+
 
       <div className="space-y-2">
         <Label htmlFor="observaciones">Observaciones Adicionales</Label>
