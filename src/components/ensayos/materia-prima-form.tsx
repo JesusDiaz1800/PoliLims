@@ -3,8 +3,8 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Percent } from "lucide-react"
-import { useForm, Controller } from "react-hook-form";
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle } from "lucide-react"
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -46,27 +46,49 @@ interface MateriaPrimaFormProps {
 
 export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
   const { toast } = useToast();
-  const { watch, control, setValue, getValues } = useForm();
+  const { watch, control, setValue, getValues, register } = useForm({
+    defaultValues: {
+      meltIndexMediciones: [{ value: '' }],
+    }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "meltIndexMediciones",
+  });
   
   const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
+  const [meltIndexCalculado, setMeltIndexCalculado] = React.useState(0);
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
   const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
   const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
 
+  const calculateMeltIndex = React.useCallback(() => {
+    const mediciones = getValues("meltIndexMediciones");
+    const valoresNumericos = mediciones
+      .map(m => parseFloat(m.value))
+      .filter(v => !isNaN(v) && v !== 0);
 
-  const calculateMeltIndexVariation = () => {
-    const reportado = parseFloat(getValues("melt_index_reportado"));
-    const ensayado = parseFloat(getValues("melt_index_ensayado"));
-
-    if (!isNaN(reportado) && !isNaN(ensayado) && reportado !== 0) {
-      const variacion = Math.abs(ensayado - reportado) / reportado;
-      setMeltIndexVariacion(variacion * 100);
-    } else {
-      setMeltIndexVariacion(0);
+    let promedio = 0;
+    if (valoresNumericos.length > 0) {
+      const sum = valoresNumericos.reduce((a, b) => a + b, 0);
+      promedio = sum / valoresNumericos.length;
     }
-  };
+    
+    const resultado = promedio * 2;
+    setMeltIndexCalculado(resultado);
 
-  const calculateDensidad = () => {
+    const reportado = parseFloat(getValues("melt_index_reportado"));
+    if (!isNaN(reportado) && reportado !== 0) {
+        const variacion = Math.abs(resultado - reportado) / reportado;
+        setMeltIndexVariacion(variacion * 100);
+    } else {
+        setMeltIndexVariacion(0);
+    }
+  }, [getValues]);
+
+
+  const calculateDensidad = React.useCallback(() => {
     const densidadLiquido = parseFloat(getValues("densidad_liquido"));
     const masaAire = parseFloat(getValues("masa_aire"));
     const masaAgua = parseFloat(getValues("masa_agua"));
@@ -77,7 +99,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
     } else {
       setDensidadCalculada(0);
     }
-  };
+  }, [getValues]);
   
   const calculateNegroHumoYCenizas = React.useCallback(() => {
     const m1 = parseFloat(getValues("nh_m1"));
@@ -225,17 +247,59 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
+                    <CardDescription>
+                      Fórmula: PROMEDIO(mediciones) * 2
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-6">
+                    <div className="space-y-4 p-4 border rounded-md">
+                      <Label>Mediciones de extrusionado [g]</Label>
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex items-center gap-2">
+                          <Input
+                            {...register(`meltIndexMediciones.${index}.value` as const)}
+                            type="number"
+                            step="any"
+                            placeholder={`Medición #${index + 1}`}
+                            onChange={calculateMeltIndex}
+                            className="flex-1"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => {
+                                remove(index);
+                                // We need to trigger recalculation after removing
+                                setTimeout(calculateMeltIndex, 0);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ value: '' })}
+                      >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Añadir Medición
+                      </Button>
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</Label>
-                        <Controller name="melt_index_reportado" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Valor del proveedor" onChange={e => { field.onChange(e); calculateMeltIndexVariation(); }} />} />
+                        <Controller name="melt_index_reportado" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Valor del proveedor" onChange={e => { field.onChange(e); calculateMeltIndex(); }} />} />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="melt_index_ensayado">Índice de fluidez ensayado [g/10min]</Label>
-                        <Controller name="melt_index_ensayado" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Valor del laboratorio" onChange={e => { field.onChange(e); calculateMeltIndexVariation(); }} />} />
-                      </div>
+                       <div className="space-y-2">
+                         <Label>Índice de fluidez ensayado [g/10min]</Label>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {meltIndexCalculado.toFixed(4)}
+                         </div>
+                       </div>
                        <div className="space-y-2">
                          <Label>Variación</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
@@ -252,20 +316,23 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Densidad</CardTitle>
+                    <CardDescription>
+                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
-                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Ej: 0.786" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Ej: 0.786" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
-                        <Controller name="masa_aire" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Masa en aire" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Controller name="masa_aire" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Masa en aire" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
-                        <Controller name="masa_agua" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Masa en agua" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Controller name="masa_agua" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Masa en agua" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
                       </div>
                        <div className="space-y-2">
                          <Label>Densidad de la muestra [g/cm³]</Label>
@@ -290,19 +357,19 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                   <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
-                        <Controller name="nh_m1" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m1" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                        <Controller name="nh_m1" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m1" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
-                        <Controller name="nh_m2" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m2" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                        <Controller name="nh_m2" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m2" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</Label>
-                        <Controller name="nh_m3" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m3" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                        <Controller name="nh_m3" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m3" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
-                        <Controller name="nh_m4" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m4" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                        <Controller name="nh_m4" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m4" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
                       </div>
                        <div className="space-y-2">
                          <Label>% Negro de Humo</Label>
