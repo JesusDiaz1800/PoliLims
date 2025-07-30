@@ -1,3 +1,7 @@
+
+"use client";
+
+import * as React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -9,16 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { MoreHorizontal, PlusCircle, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Seguimiento de Ensayos',
-};
-
-const ensayos = [
+const initialEnsayos = [
   {
     id: "MP-001",
     tipo: "Materia Prima",
@@ -47,7 +46,7 @@ const ensayos = [
     fecha: "2024-07-20",
     estado: "Pendiente de Revisión"
   },
-    {
+  {
     id: "ACC-012",
     tipo: "Control de Accesorios",
     analista: "Bryan Vásquez",
@@ -66,13 +65,40 @@ function getStatusVariant(status: string) {
     }
 }
 
-
 export default function SeguimientoEnsayosPage() {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [ensayos, setEnsayos] = React.useState(initialEnsayos);
+
+  const filteredEnsayos = ensayos.filter(ensayo => 
+    ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ensayo.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Seguimiento de Ensayos</CardTitle>
-        <CardDescription>Visualice el estado y progreso de todos los ensayos registrados en el sistema.</CardDescription>
+        <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1.5">
+                <CardTitle>Seguimiento de Ensayos</CardTitle>
+                <CardDescription>Visualice y filtre todos los ensayos registrados en el sistema.</CardDescription>
+            </div>
+            <div className="flex items-center gap-4">
+                 <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                        placeholder="Buscar por ID, tipo o analista..."
+                        className="pl-9 w-64"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                 <Button>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Registrar Nuevo Ensayo
+                </Button>
+            </div>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -89,7 +115,7 @@ export default function SeguimientoEnsayosPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ensayos.map((ensayo) => (
+            {filteredEnsayos.map((ensayo) => (
               <TableRow key={ensayo.id}>
                 <TableCell className="font-mono">{ensayo.id}</TableCell>
                 <TableCell className="font-medium">{ensayo.tipo}</TableCell>
@@ -120,6 +146,13 @@ export default function SeguimientoEnsayosPage() {
             ))}
           </TableBody>
         </Table>
+         {filteredEnsayos.length === 0 && (
+            <div className="text-center py-16 text-muted-foreground">
+                <Search className="mx-auto h-12 w-12 mb-4" />
+                <h3 className="text-xl font-semibold">No se encontraron resultados</h3>
+                <p>Intente ajustar su búsqueda.</p>
+            </div>
+        )}
       </CardContent>
     </Card>
   );
