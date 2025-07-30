@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, TestTube } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
+import { EnsayosMecanicosDialog, type EnsayoMecanicoInfo } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
 
 
@@ -71,6 +71,7 @@ const initialEnsayos = [
   },
 ];
 
+// This could be a more generic `Registro` type in the future
 export type Ensayo = typeof initialEnsayos[0] & { productoInfo?: TipoProducto };
 
 function getStatusVariant(status: string) {
@@ -87,7 +88,7 @@ export default function SeguimientoEnsayosPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [ensayos, setEnsayos] = React.useState(initialEnsayos);
   const [filterType, setFilterType] = React.useState("Todos");
-  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<EnsayoMecanicoInfo | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const ensayoTypes = ["Todos", ...new Set(initialEnsayos.map(e => e.tipo))];
@@ -102,7 +103,7 @@ export default function SeguimientoEnsayosPage() {
   
   const handleOpenDialog = (ensayo: Ensayo) => {
     const productoInfo = matrizProductos.find(p => p.producto === ensayo.producto);
-    setSelectedEnsayo({ ...ensayo, productoInfo });
+    setSelectedEnsayo({ id: ensayo.id, producto: ensayo.producto, productoInfo });
     setIsDialogOpen(true);
   }
 

@@ -1,14 +1,29 @@
+
+"use client";
+
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { ControlRutinarioForm } from "@/components/ensayos/control-rutinario-form";
 import type { Metadata } from 'next';
 import { matrizProductos } from "@/lib/matriz-datos";
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
+import * as React from 'react';
+import { Button } from "@/components/ui/button";
+import { FilePlus } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: 'Control Rutinario de Tuberías',
-};
+
+// Fake metadata for client component
+// export const metadata: Metadata = {
+//   title: 'Control Rutinario de Tuberías',
+// };
 
 export default function ControlRutinarioPage() {
+    const formRef = React.useRef<HTMLDivElement>(null);
+
+    const handleScrollToForm = () => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+
   const inspectores = [
     { value: "elias.ibanez", label: "Elias Ibañez" },
     { value: "cristian.montellano", label: "Cristian Montellano" },
@@ -59,22 +74,24 @@ export default function ControlRutinarioPage() {
 
   return (
     <div className="space-y-6">
-      <ControlRutinarioTable />
-      <Card>
-        <CardHeader>
-          <CardTitle>Formulario de Control Rutinario de Tuberías</CardTitle>
-          <CardDescription>Registro diario de control de calidad realizado por los inspectores en la línea de producción.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ControlRutinarioForm
-            inspectores={inspectores}
-            maquinistas={maquinistas}
-            maquinas={maquinas}
-            productos={productos}
-            marcas={marcas}
-          />
-        </CardContent>
-      </Card>
+      <ControlRutinarioTable onAddRecordClick={handleScrollToForm} />
+      <div ref={formRef} className="scroll-mt-4">
+        <Card>
+            <CardHeader>
+            <CardTitle>Formulario de Control Rutinario de Tuberías</CardTitle>
+            <CardDescription>Registro diario de control de calidad realizado por los inspectores en la línea de producción.</CardDescription>
+            </CardHeader>
+            <CardContent>
+            <ControlRutinarioForm
+                inspectores={inspectores}
+                maquinistas={maquinistas}
+                maquinas={maquinas}
+                productos={productos}
+                marcas={marcas}
+            />
+            </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

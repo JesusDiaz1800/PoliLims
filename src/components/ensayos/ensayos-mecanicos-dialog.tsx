@@ -21,13 +21,23 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import { FilePlus2 } from "lucide-react"
 import { Separator } from "../ui/separator"
-import { type Ensayo } from "@/app/(app)/ensayos/seguimiento/page"
+// Ensayo type from seguimiento page might be slightly different.
+// We should probably create a shared type for this.
+// For now, let's create a specific type for this dialog's needs.
+import { type TipoProducto } from "@/lib/matriz-datos";
 import { AlertaValidacion } from "./alerta-validacion"
+
+export interface EnsayoMecanicoInfo {
+  id: string;
+  producto: string;
+  productoInfo?: TipoProducto;
+}
+
 
 interface EnsayosMecanicosDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  ensayo: Ensayo;
+  ensayo: EnsayoMecanicoInfo;
 }
 
 const formSchema = z.object({
@@ -109,7 +119,7 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
                     <DialogHeader>
                         <DialogTitle>Registrar Ensayos Mecánicos</DialogTitle>
                         <DialogDescription>
-                           Añada los resultados para la muestra <span className="font-bold font-mono text-foreground">{ensayo.id} ({ensayo.producto})</span>.
+                           Añada los resultados para el registro <span className="font-bold font-mono text-foreground">{ensayo.id} ({ensayo.producto})</span>.
                         </DialogDescription>
                     </DialogHeader>
 
