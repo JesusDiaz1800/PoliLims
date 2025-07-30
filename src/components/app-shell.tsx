@@ -61,6 +61,7 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
     { type: 'separator' },
+    { href: '/ensayos/generales', label: 'Ensayos Generales', icon: FilePlus2 },
     { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
 ];
 
@@ -179,6 +180,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
         if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario de Tuberías';
         if (pathname.startsWith('/ensayos/seguimiento')) return 'Seguimiento de Ensayos';
+        if (pathname.startsWith('/ensayos/generales')) return 'Registro de Ensayos Generales';
         if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';

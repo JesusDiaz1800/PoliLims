@@ -74,7 +74,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     },
   })
 
-  const { watch } = form
+  const { watch, setValue } = form
 
   const producto = watch("producto")
   const diametro = watch("diametro")
