@@ -336,9 +336,32 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
               </TabsContent>
                <TabsContent value="dsc" className="mt-4">
                  <Card>
-                  <CardHeader><CardTitle>Ensayo: DSC</CardTitle></CardHeader>
-                  <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
-                </Card>
+                    <CardHeader>
+                        <CardTitle>Ensayo: Calorimetría Diferencial de Barrido (DSC)</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</Label>
+                            <Input id="dsc_temp_max" type="number" placeholder="Temp. máxima" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</Label>
+                            <Input id="dsc_temp_inicio" type="number" placeholder="Temp. inicio" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</Label>
+                            <Input id="dsc_temp_final" type="number" placeholder="Temp. final" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="dsc_punto_fusion">Punto de fusión [°C]</Label>
+                            <Input id="dsc_punto_fusion" type="number" placeholder="Punto de fusión" />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</Label>
+                            <Input id="dsc_punto_fusion_opcional" type="number" placeholder="Punto de fusión opcional" />
+                        </div>
+                    </CardContent>
+                 </Card>
               </TabsContent>
               <TabsContent value="tio" className="mt-4">
                  <Card>
