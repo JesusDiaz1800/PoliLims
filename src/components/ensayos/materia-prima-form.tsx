@@ -432,8 +432,31 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
               </TabsContent>
               <TabsContent value="tio" className="mt-4">
                  <Card>
-                  <CardHeader><CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle></CardHeader>
-                  <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="tio_gas">Gas utilizado</Label>
+                            <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tio_flujo">Flujo de gas [L/min]</Label>
+                            <Input id="tio_flujo" type="number" placeholder="Ej: 50" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tio_temperatura">Temperatura de ensayo [°C]</Label>
+                            <Input id="tio_temperatura" type="number" placeholder="Ej: 200" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tio_metodo">Método utilizado</Label>
+                            <Input id="tio_metodo" placeholder="Ej: Tangente" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</Label>
+                            <Input id="tio_tiempo" type="number" placeholder="Ej: 45" />
+                        </div>
+                    </CardContent>
                 </Card>
               </TabsContent>
                <TabsContent value="humedad" className="mt-4">
