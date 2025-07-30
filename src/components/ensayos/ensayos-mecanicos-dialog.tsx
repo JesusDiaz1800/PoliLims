@@ -21,11 +21,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import { FilePlus2 } from "lucide-react"
 import { Separator } from "../ui/separator"
+import { type Ensayo } from "@/app/(app)/ensayos/seguimiento/page"
+import { AlertaValidacion } from "./alerta-validacion"
 
 interface EnsayosMecanicosDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  ensayoId: string;
+  ensayo: Ensayo;
 }
 
 const formSchema = z.object({
@@ -37,27 +39,68 @@ const formSchema = z.object({
   phiSinFallas: z.boolean().optional(),
 });
 
-export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMecanicosDialogProps) {
+type FormSchemaType = z.infer<typeof formSchema>;
+
+export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecanicosDialogProps) {
     const { toast } = useToast()
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormSchemaType>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             tipoEnsayo: "contraccion",
             impactoTotal: 4,
+            phiSinFallas: false,
         }
     });
 
-    const tipoEnsayo = form.watch("tipoEnsayo");
+    const { watch, register, control } = form;
+    const watchedValues = watch();
+    const [alertaEnsayo, setAlertaEnsayo] = React.useState<string | null>(null);
 
-    const onSubmit = (data: z.infer<typeof formSchema>) => {
-        console.log({ ensayoId, ...data });
+    React.useEffect(() => {
+        const { tipoEnsayo, contraccion1, contraccion2, impactoFallas, phiSinFallas } = watchedValues;
+        const material = ensayo.productoInfo?.material;
+        let alerta = null;
+
+        if (tipoEnsayo === 'contraccion' && contraccion1 !== undefined && contraccion2 !== undefined) {
+            const promedio = (contraccion1 + contraccion2) / 2;
+            if (material === "PE100" && promedio > 3) {
+                alerta = "Fallo: Contracción superior al 3%";
+            } else if (material === "PP-RCT/FV" && promedio > 1) {
+                alerta = "Fallo: Contracción superior al 1%";
+            } else if (material !== "PE100" && material !== "PP-RCT/FV" && promedio > 2) {
+                alerta = "Fallo: Contracción superior al 2%";
+            }
+        } else if (tipoEnsayo === 'impacto' && impactoFallas !== undefined) {
+             if (impactoFallas > 0) {
+                alerta = "Fallo: Tubería se fisura tras ensayo";
+             }
+        } else if (tipoEnsayo === 'phi' && phiSinFallas === false) {
+             alerta = `Fallo: Con fallas a ${ensayo.productoInfo?.presion_phi || 'N/A'} [bar]`;
+        }
+        
+        setAlertaEnsayo(alerta);
+
+    }, [watchedValues, ensayo.productoInfo]);
+
+
+    const onSubmit = (data: FormSchemaType) => {
+        console.log({ ensayoId: ensayo.id, ...data });
         toast({
             title: "Ensayos Guardados",
-            description: `Los resultados para la muestra ${ensayoId} han sido guardados.`,
+            description: `Los resultados para la muestra ${ensayo.id} han sido guardados.`,
         });
+        if (alertaEnsayo) {
+            toast({
+                variant: "destructive",
+                title: "Alerta de Calidad",
+                description: alertaEnsayo,
+            });
+        }
         onClose();
         form.reset();
     }
+    
+    const tipoEnsayo = watch("tipoEnsayo");
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -66,13 +109,13 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMec
                     <DialogHeader>
                         <DialogTitle>Registrar Ensayos Mecánicos</DialogTitle>
                         <DialogDescription>
-                           Añada los resultados de los ensayos para la muestra <span className="font-bold font-mono text-foreground">{ensayoId}</span>.
+                           Añada los resultados para la muestra <span className="font-bold font-mono text-foreground">{ensayo.id} ({ensayo.producto})</span>.
                         </DialogDescription>
                     </DialogHeader>
 
                     <div className="py-6 space-y-6">
                          <Controller
-                            control={form.control}
+                            control={control}
                             name="tipoEnsayo"
                             render={({ field }) => (
                                 <RadioGroup
@@ -102,11 +145,11 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMec
                             <div className="grid grid-cols-2 gap-6 animate-in fade-in">
                                 <div className="space-y-2">
                                     <Label htmlFor="contraccion1">Medición 1 [%]</Label>
-                                    <Input id="contraccion1" type="number" step="any" {...form.register("contraccion1", { valueAsNumber: true })} />
+                                    <Input id="contraccion1" type="number" step="any" {...register("contraccion1", { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="contraccion2">Medición 2 [%]</Label>
-                                    <Input id="contraccion2" type="number" step="any" {...form.register("contraccion2", { valueAsNumber: true })} />
+                                    <Input id="contraccion2" type="number" step="any" {...register("contraccion2", { valueAsNumber: true })} />
                                 </div>
                             </div>
                         )}
@@ -115,20 +158,40 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMec
                             <div className="grid grid-cols-2 gap-6 animate-in fade-in">
                                 <div className="space-y-2">
                                     <Label htmlFor="impactoFallas">N° de Fallas</Label>
-                                    <Input id="impactoFallas" type="number" {...form.register("impactoFallas", { valueAsNumber: true })} />
+                                    <Input id="impactoFallas" type="number" {...register("impactoFallas", { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="impactoTotal">N° Total de Muestras</Label>
-                                    <Input id="impactoTotal" type="number" {...form.register("impactoTotal", { valueAsNumber: true })} />
+                                    <Input id="impactoTotal" type="number" {...register("impactoTotal", { valueAsNumber: true })} />
                                 </div>
                             </div>
                         )}
 
                         {tipoEnsayo === 'phi' && (
-                            <div className="animate-in fade-in">
-                                <div className="flex items-center space-x-2">
+                            <div className="animate-in fade-in space-y-4">
+                                <div className="grid grid-cols-3 gap-4">
+                                     <div className="space-y-2">
+                                        <Label>Presión de Ensayo</Label>
+                                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                            {ensayo.productoInfo?.presion_phi || 'N/A'} [bar]
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Temperatura</Label>
+                                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                             {ensayo.productoInfo?.temperatura_phi || 'N/A'} [°C]
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Tiempo</Label>
+                                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                             {ensayo.productoInfo?.tiempo_phi || 'N/A'} [h]
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-2 pt-2">
                                     <Controller
-                                        control={form.control}
+                                        control={control}
                                         name="phiSinFallas"
                                         render={({ field }) => (
                                             <Checkbox
@@ -138,12 +201,13 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMec
                                             />
                                         )}
                                     />
-                                    <Label htmlFor="phiSinFallas" className="font-normal">
+                                    <Label htmlFor="phiSinFallas" className="font-normal leading-tight">
                                         Sin fallas a la presión y tiempo establecidos por norma
                                     </Label>
                                 </div>
                             </div>
                         )}
+                        <AlertaValidacion mensaje={alertaEnsayo || undefined} />
                     </div>
 
                     <DialogFooter>
@@ -158,4 +222,3 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayoId }: EnsayosMec
         </Dialog>
     );
 }
-
