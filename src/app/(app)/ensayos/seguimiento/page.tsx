@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Select,
@@ -21,8 +22,9 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, TestTube } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 
 const initialEnsayos = [
   {
@@ -62,6 +64,8 @@ const initialEnsayos = [
   },
 ];
 
+type Ensayo = typeof initialEnsayos[0];
+
 function getStatusVariant(status: string) {
     switch (status) {
         case "Aprobado": return "bg-green-500/20 text-green-300 border-green-500/30";
@@ -76,6 +80,8 @@ export default function SeguimientoEnsayosPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [ensayos, setEnsayos] = React.useState(initialEnsayos);
   const [filterType, setFilterType] = React.useState("Todos");
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   const ensayoTypes = ["Todos", ...new Set(initialEnsayos.map(e => e.tipo))];
 
@@ -86,8 +92,19 @@ export default function SeguimientoEnsayosPage() {
       ensayo.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())
     );
+  
+  const handleOpenDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsDialogOpen(true);
+  }
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setSelectedEnsayo(null);
+  }
 
   return (
+    <>
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
@@ -162,6 +179,11 @@ export default function SeguimientoEnsayosPage() {
                       <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
                       <DropdownMenuItem>Editar</DropdownMenuItem>
                       <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                       <DropdownMenuItem onClick={() => handleOpenDialog(ensayo)}>
+                        <TestTube className="mr-2 h-4 w-4" />
+                        Registrar Ensayos Mecánicos
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -178,5 +200,14 @@ export default function SeguimientoEnsayosPage() {
         )}
       </CardContent>
     </Card>
+    {selectedEnsayo && (
+        <EnsayosMecanicosDialog 
+            isOpen={isDialogOpen}
+            onClose={handleDialogClose}
+            ensayoId={selectedEnsayo.id}
+        />
+    )}
+    </>
   );
 }
+
