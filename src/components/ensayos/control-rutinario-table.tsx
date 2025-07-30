@@ -179,7 +179,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                         <DropdownMenuItem>Editar</DropdownMenuItem>
                         <DropdownMenuItem>Imprimir Registro</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)}>
+                        <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)} disabled={!registro.enviado_lab}>
                           <TestTube className="mr-2 h-4 w-4" />
                           Ingresar Ensayos Mecánicos
                         </DropdownMenuItem>

@@ -21,9 +21,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
 import { FilePlus2 } from "lucide-react"
 import { Separator } from "../ui/separator"
-// Ensayo type from seguimiento page might be slightly different.
-// We should probably create a shared type for this.
-// For now, let's create a specific type for this dialog's needs.
 import { type TipoProducto } from "@/lib/matriz-datos";
 import { AlertaValidacion } from "./alerta-validacion"
 
