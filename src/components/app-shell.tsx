@@ -141,7 +141,7 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
                              <SidebarMenu className="pl-5 border-l-2 border-dashed border-sidebar-border/30">
                                  {subItem.subItems.map((childItem: any) => (
                                      <SidebarMenuItem key={childItem.href}>
-                                         <SidebarMenuButton asChild size="sm" variant="ghost" isActive={pathname === childItem.href} className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
+                                         <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
                                              <Link href={childItem.href}>
                                                  <ChevronsRight className="size-3 mr-2 text-primary/80" />
                                                  {childItem.label}
