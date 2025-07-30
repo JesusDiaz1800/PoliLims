@@ -17,7 +17,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
             <div className="flex justify-center items-center mb-4">
-                <Logo className="h-12 w-12 text-primary" />
+                <Logo className="h-16 w-16 text-primary" />
             </div>
           <CardTitle className="text-3xl font-headline">Bienvenido a PoliLIMS</CardTitle>
           <CardDescription>Ingrese sus credenciales para acceder al sistema</CardDescription>
