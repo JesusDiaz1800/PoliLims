@@ -72,7 +72,7 @@ interface ControlRutinarioTableProps {
 export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTableProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
 
   const filteredRegistros = initialRegistros
     .filter(registro => 
@@ -81,14 +81,14 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
       registro.producto.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-  const handleOpenDialog = (registro: Registro) => {
+  const handleOpenMecanicosDialog = (registro: Registro) => {
     const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
     setSelectedRegistro({ ...registro, productoInfo });
-    setIsDialogOpen(true);
+    setIsMecanicosDialogOpen(true);
   }
 
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
+  const handleMecanicosDialogClose = () => {
+    setIsMecanicosDialogOpen(false);
     setSelectedRegistro(null);
   }
 
@@ -114,7 +114,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                   </div>
                   <Button onClick={onAddRecordClick}>
                     <FilePlus className="mr-2 h-4 w-4" />
-                    Añadir Nuevo Control
+                    Ingresar Producto
                   </Button>
               </div>
           </div>
@@ -179,7 +179,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                         <DropdownMenuItem>Editar</DropdownMenuItem>
                         <DropdownMenuItem>Imprimir Registro</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleOpenDialog(registro)}>
+                        <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)}>
                           <TestTube className="mr-2 h-4 w-4" />
                           Ingresar Ensayos Mecánicos
                         </DropdownMenuItem>
@@ -201,19 +201,13 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
       </Card>
       {selectedRegistro && (
           <EnsayosMecanicosDialog
-              // Cast selectedRegistro to the type expected by the dialog
-              // This is a temporary solution until the data models are unified
               ensayo={{
                 id: selectedRegistro.id,
-                tipo: 'Control Rutinario',
-                analista: selectedRegistro.inspector,
-                fecha: selectedRegistro.fecha,
-                estado: selectedRegistro.resultado,
                 producto: selectedRegistro.producto,
                 productoInfo: selectedRegistro.productoInfo,
               }}
-              isOpen={isDialogOpen}
-              onClose={handleDialogClose}
+              isOpen={isMecanicosDialogOpen}
+              onClose={handleMecanicosDialogClose}
           />
       )}
     </>

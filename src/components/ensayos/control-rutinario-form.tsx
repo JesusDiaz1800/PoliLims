@@ -33,6 +33,7 @@ interface ControlRutinarioFormProps {
   maquinas: Option[]
   productos: Option[]
   marcas: Option[]
+  onFormSubmit: () => void;
 }
 
 const formSchema = z.object({
@@ -64,7 +65,7 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas }: ControlRutinarioFormProps) {
+export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
 
@@ -124,7 +125,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   React.useEffect(() => {
     if (peso_muestra !== undefined && largo !== undefined && largo > 0) {
         const pesoCalculado = (peso_muestra / largo) / 10;
-        setValue("peso_kg_m", pesoCalculado);
+        setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)));
     }
   }, [largo, peso_muestra, setValue]);
 
@@ -143,204 +144,207 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         })
     }
     form.reset();
+    onFormSubmit();
   }
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      <Card>
-        <CardHeader>
-            <CardTitle>Información de Producción</CardTitle>
-            <CardDescription>Datos de trazabilidad de la línea de producción.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-             <div className="space-y-2">
-              <Label htmlFor="fecha_ingreso">Fecha</Label>
-              <Controller
-                control={form.control}
-                name="fecha_ingreso"
-                render={({ field }) => (
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "PPP") : <span>Seleccione una fecha</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                    </PopoverContent>
-                  </Popover>
-                )}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="hora">Hora</Label>
-              <Input id="hora" type="time" {...form.register("hora")} />
-            </div>
-             <div className="space-y-2">
-                <Label htmlFor="inspector">Inspector</Label>
-                <Controller
-                    control={form.control}
-                    name="inspector"
-                    render={({ field }) => (
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="inspector"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.label}>{i.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="maquinista">Maquinista</Label>
-                 <Controller
-                    control={form.control}
-                    name="maquinista"
-                    render={({ field }) => (
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="maquinista"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="maquina">Máquina</Label>
-                 <Controller
-                    control={form.control}
-                    name="maquina"
-                    render={({ field }) => (
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="maquina"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{maquinas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="producto">Producto</Label>
-                 <Controller
-                    control={form.control}
-                    name="producto"
-                    render={({ field }) => (
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="producto"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{productos.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-             <div className="space-y-2">
-                <Label htmlFor="marca">Marca</Label>
-                 <Controller
-                    control={form.control}
-                    name="marca"
-                    render={({ field }) => (
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <SelectTrigger id="marca"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-        </CardContent>
-      </Card>
-      
-        <Card>
-            <CardHeader><CardTitle>Mediciones Dimensionales y Visuales</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="space-y-6 p-1">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Información de Producción</CardTitle>
+                    <CardDescription>Datos de trazabilidad de la línea de producción.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div className="space-y-2">
-                        <Label htmlFor="diametro">Diámetro Ext. [mm]</Label>
-                        <Input id="diametro" type="number" step="any" placeholder="Ingrese el diámetro" {...form.register("diametro", { valueAsNumber: true })}/>
-                        <AlertaValidacion mensaje={alerts.diametro} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="espesor_min">Espesor Mín. [mm]</Label>
-                        <Input id="espesor_min" type="number" step="any" placeholder="Valor mínimo" {...form.register("espesor_min", { valueAsNumber: true })}/>
-                        <AlertaValidacion mensaje={alerts.espesor_min} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="espesor_max">Espesor Máx. [mm]</Label>
-                        <Input id="espesor_max" type="number" step="any" placeholder="Valor máximo" {...form.register("espesor_max", { valueAsNumber: true })}/>
-                        <AlertaValidacion mensaje={alerts.espesor_max} />
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="largo">Largo Muestra [mm]</Label>
-                        <Input id="largo" type="number" step="any" placeholder="Largo de la muestra" {...form.register("largo", { valueAsNumber: true })}/>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="peso_muestra">Peso muestra [g]</Label>
-                        <Input id="peso_muestra" type="number" step="any" placeholder="Peso en gramos" {...form.register("peso_muestra", { valueAsNumber: true })}/>
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
-                        <Input id="peso_kg_m" type="number" step="any" placeholder="Calculado..." {...form.register("peso_kg_m", { valueAsNumber: true })} readOnly className="bg-muted"/>
-                        <AlertaValidacion mensaje={alerts.peso_kg_m} />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="ovalidad">Ovalidad [mm]</Label>
-                        <Input id="ovalidad" type="number" step="any" placeholder="Medida de ovalidad" {...form.register("ovalidad", { valueAsNumber: true })}/>
-                        <AlertaValidacion mensaje={alerts.ovalidad} />
-                    </div>
-                </div>
-                 <Separator />
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                     <div className="space-y-2">
-                        <Label htmlFor="color_tuberia">Color de Tubería</Label>
-                        <Input id="color_tuberia" placeholder="Autocompletado..." {...form.register("color_tuberia")} readOnly className="bg-muted" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="color_linea">Color de Línea de Identificación</Label>
-                        <Input id="color_linea" placeholder="Autocompletado..." {...form.register("color_linea")} readOnly className="bg-muted"/>
-                    </div>
-                     <div className="space-y-2 md:col-span-3">
-                        <Label htmlFor="observaciones_visuales">Observaciones de Calidad Visual</Label>
-                        <Textarea id="observaciones_visuales" placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...form.register("observaciones_visuales")}/>
-                    </div>
-                 </div>
-            </CardContent>
-        </Card>
-        
-        <Card>
-            <CardHeader>
-                <CardTitle>Acción Final</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="items-top flex space-x-2">
+                    <Label htmlFor="fecha_ingreso">Fecha</Label>
                     <Controller
                         control={form.control}
-                        name="entregado_laboratorio"
+                        name="fecha_ingreso"
                         render={({ field }) => (
-                           <Checkbox
+                        <Popover>
+                            <PopoverTrigger asChild>
+                            <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value ? format(field.value, "PPP") : <span>Seleccione una fecha</span>}
+                            </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                        </Popover>
+                        )}
+                    />
+                    </div>
+                    <div className="space-y-2">
+                    <Label htmlFor="hora">Hora</Label>
+                    <Input id="hora" type="time" {...form.register("hora")} />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="inspector">Inspector</Label>
+                        <Controller
+                            control={form.control}
+                            name="inspector"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger id="inspector"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.label}>{i.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="maquinista">Maquinista</Label>
+                        <Controller
+                            control={form.control}
+                            name="maquinista"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger id="maquinista"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="maquina">Máquina</Label>
+                        <Controller
+                            control={form.control}
+                            name="maquina"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger id="maquina"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <SelectContent>{maquinas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="producto">Producto</Label>
+                        <Controller
+                            control={form.control}
+                            name="producto"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger id="producto"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <SelectContent>{productos.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="marca">Marca</Label>
+                        <Controller
+                            control={form.control}
+                            name="marca"
+                            render={({ field }) => (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <SelectTrigger id="marca"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+            
+            <Card>
+                <CardHeader><CardTitle>Mediciones Dimensionales y Visuales</CardTitle></CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="diametro">Diámetro Ext. [mm]</Label>
+                            <Input id="diametro" type="number" step="any" placeholder="Ingrese el diámetro" {...form.register("diametro", { valueAsNumber: true })}/>
+                            <AlertaValidacion mensaje={alerts.diametro} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="espesor_min">Espesor Mín. [mm]</Label>
+                            <Input id="espesor_min" type="number" step="any" placeholder="Valor mínimo" {...form.register("espesor_min", { valueAsNumber: true })}/>
+                            <AlertaValidacion mensaje={alerts.espesor_min} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="espesor_max">Espesor Máx. [mm]</Label>
+                            <Input id="espesor_max" type="number" step="any" placeholder="Valor máximo" {...form.register("espesor_max", { valueAsNumber: true })}/>
+                            <AlertaValidacion mensaje={alerts.espesor_max} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="largo">Largo Muestra [mm]</Label>
+                            <Input id="largo" type="number" step="any" placeholder="Largo de la muestra" {...form.register("largo", { valueAsNumber: true })}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="peso_muestra">Peso muestra [g]</Label>
+                            <Input id="peso_muestra" type="number" step="any" placeholder="Peso en gramos" {...form.register("peso_muestra", { valueAsNumber: true })}/>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
+                            <Input id="peso_kg_m" type="number" step="any" placeholder="Calculado..." {...form.register("peso_kg_m", { valueAsNumber: true })} readOnly className="bg-muted"/>
+                            <AlertaValidacion mensaje={alerts.peso_kg_m} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="ovalidad">Ovalidad [mm]</Label>
+                            <Input id="ovalidad" type="number" step="any" placeholder="Medida de ovalidad" {...form.register("ovalidad", { valueAsNumber: true })}/>
+                            <AlertaValidacion mensaje={alerts.ovalidad} />
+                        </div>
+                    </div>
+                    <Separator />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="color_tuberia">Color de Tubería</Label>
+                            <Input id="color_tuberia" placeholder="Autocompletado..." {...form.register("color_tuberia")} readOnly className="bg-muted" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="color_linea">Color de Línea de Identificación</Label>
+                            <Input id="color_linea" placeholder="Autocompletado..." {...form.register("color_linea")} readOnly className="bg-muted"/>
+                        </div>
+                        <div className="space-y-2 md:col-span-3">
+                            <Label htmlFor="observaciones_visuales">Observaciones de Calidad Visual</Label>
+                            <Textarea id="observaciones_visuales" placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...form.register("observaciones_visuales")}/>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle>Acción Final</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="items-top flex space-x-2">
+                        <Controller
+                            control={form.control}
+                            name="entregado_laboratorio"
+                            render={({ field }) => (
+                            <Checkbox
                                 id="entregado_laboratorio"
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                                 className="mt-0.5"
                             />
-                        )}
-                    />
-                    <div className="grid gap-1.5 leading-none">
-                        <Label htmlFor="entregado_laboratorio" className="text-base font-medium">
-                            Muestra Entregada a Laboratorio
-                        </Label>
-                        <p className="text-sm text-muted-foreground">
-                            Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
-                        </p>
+                            )}
+                        />
+                        <div className="grid gap-1.5 leading-none">
+                            <Label htmlFor="entregado_laboratorio" className="text-base font-medium">
+                                Muestra Entregada a Laboratorio
+                            </Label>
+                            <p className="text-sm text-muted-foreground">
+                                Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        </div>
 
-      <div className="flex justify-end pt-4 gap-4">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Limpiar Formulario
-        </Button>
-        <Button type="submit">
-          <FilePlus2 className="mr-2 h-4 w-4" />
-          Registrar Control
-        </Button>
-      </div>
+        <div className="flex justify-end pt-4 gap-4 sticky bottom-0 bg-background/80 backdrop-blur-sm p-4 -m-6 mt-6">
+            <Button type="button" variant="outline" onClick={() => form.reset()}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Limpiar Formulario
+            </Button>
+            <Button type="submit">
+            <FilePlus2 className="mr-2 h-4 w-4" />
+            Registrar Control
+            </Button>
+        </div>
     </form>
   )
 }
