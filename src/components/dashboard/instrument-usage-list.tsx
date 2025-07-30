@@ -11,6 +11,26 @@ const instruments = [
     { name: "Viscosímetro 04", status: "Inactivo", calibrationDue: 45, assignedTo: "-" },
 ];
 
+function getStatusVariant(status: string): "default" | "destructive" | "secondary" {
+    switch (status) {
+        case "Activo":
+            return "default";
+        case "Mantenimiento":
+            return "destructive";
+        case "Inactivo":
+            return "secondary";
+        default:
+            return "default";
+    }
+}
+
+function getProgressColor(value: number) {
+    if (value > 75) return "bg-green-500";
+    if (value > 25) return "bg-yellow-500";
+    return "bg-red-500";
+}
+
+
 export function InstrumentUsageList() {
     return (
         <Card>
@@ -23,8 +43,8 @@ export function InstrumentUsageList() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Equipo</TableHead>
-                            <TableHead>Estado</TableHead>
-                            <TableHead>Calibración</TableHead>
+                            <TableHead className="text-center">Estado</TableHead>
+                            <TableHead>Próxima Calibración</TableHead>
                             <TableHead>Asignado a</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -32,20 +52,22 @@ export function InstrumentUsageList() {
                         {instruments.map((instrument) => (
                             <TableRow key={instrument.name}>
                                 <TableCell className="font-medium">{instrument.name}</TableCell>
-                                <TableCell>
-                                    <Badge variant={instrument.status === 'Activo' ? 'default' : instrument.status === 'Mantenimiento' ? 'destructive' : 'secondary'} 
+                                <TableCell className="text-center">
+                                    <Badge variant={getStatusVariant(instrument.status)} 
                                            className={
-                                            instrument.status === 'Activo' ? 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30' : 
-                                            instrument.status === 'Mantenimiento' ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' :
-                                            'bg-yellow-500/20 text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/30'
+                                            instrument.status === 'Activo' ? 'bg-green-500/20 text-green-300 border-green-500/30' : 
+                                            instrument.status === 'Mantenimiento' ? 'bg-red-500/20 text-red-300 border-red-500/30' :
+                                            'bg-yellow-500/20 text-yellow-300 border-yellow-500/30'
                                            }>
                                         {instrument.status}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="flex items-center gap-2">
-                                        <Progress value={instrument.calibrationDue} className="w-24 h-2" />
-                                        <span className="text-xs text-muted-foreground">{instrument.calibrationDue}%</span>
+                                    <div className="flex items-center gap-3">
+                                        <Progress value={instrument.calibrationDue} 
+                                                  className="w-32 h-2.5" 
+                                                  indicatorClassName={getProgressColor(instrument.calibrationDue)} />
+                                        <span className="text-sm font-mono text-muted-foreground">{instrument.calibrationDue}%</span>
                                     </div>
                                 </TableCell>
                                 <TableCell>{instrument.assignedTo}</TableCell>

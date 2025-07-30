@@ -14,10 +14,7 @@ import {
     SidebarInset,
     SidebarTrigger,
     useSidebar,
-    SidebarSeparator,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem
+    SidebarSeparator
 } from '@/components/ui/sidebar';
 import {
     LayoutDashboard,
@@ -39,6 +36,10 @@ import {
     Droplets,
     ClipboardCheck,
     ChevronDown,
+    ChevronUp,
+    ChevronsRight,
+    SlidersHorizontal,
+    Construction
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -47,7 +48,8 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: Thermometer,
+      icon: Construction, // Using a more generic icon for the parent
+      href: '/ensayos/tuberias',
       subItems: [
         { href: '/ensayos/tuberias/hdpe', label: 'HDPE' },
         { href: '/ensayos/tuberias/pp', label: 'PP' },
@@ -58,6 +60,9 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
     { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
+    { type: 'separator' },
+    { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
+    { href: '/ensayos/registro', label: 'Registrar Nuevo Ensayo', icon: FilePlus2 },
 ];
 
 const administracionSubMenu = [
@@ -73,7 +78,7 @@ const menuItems = [
     { type: 'separator' },
     {
         label: 'Ensayos',
-        icon: FilePlus2,
+        icon: SlidersHorizontal,
         subMenu: ensayosSubMenu,
         href: '/ensayos'
     },
@@ -100,54 +105,64 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
       <CollapsibleTrigger asChild>
           <SidebarMenuButton
             variant="default"
-            className="w-full justify-between"
+            className="w-full justify-between group/button"
             isActive={pathname.startsWith(item.href)}
           >
-            <div className='flex items-center gap-2'>
-              <item.icon />
+            <div className='flex items-center gap-3'>
+              <item.icon className="size-5" />
               <span>{item.label}</span>
             </div>
-            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
           </SidebarMenuButton>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <SidebarMenuSub>
-          {item.subMenu.map((subItem: any) => (
-            subItem.subItems ? (
-                 <Collapsible key={subItem.label} defaultOpen={pathname.startsWith(subItem.href || '#')} className="w-full">
-                     <CollapsibleTrigger asChild>
-                         <SidebarMenuSubButton asChild size="sm" className="w-full justify-between pr-2">
-                             <div className='flex items-center gap-2'>
-                                <subItem.icon/>
-                                {subItem.label}
-                                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                             </div>
-                         </SidebarMenuSubButton>
+        <SidebarMenu className="pl-4">
+          {item.subMenu.map((subItem: any, index: number) => {
+            if (subItem.type === 'separator') {
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
+            }
+            return (
+                 <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full">
+                     <CollapsibleTrigger asChild className="w-full">
+                        {subItem.subItems ? (
+                             <SidebarMenuButton size="sm" variant="ghost" className="w-full justify-between group/sub-button pr-3">
+                                <div className="flex items-center gap-3">
+                                    {subItem.icon && <subItem.icon className="size-4" />}
+                                    <span>{subItem.label}</span>
+                                </div>
+                                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/sub-button:rotate-180" />
+                            </SidebarMenuButton>
+                        ) : (
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" isActive={pathname === subItem.href}>
+                                    <Link href={subItem.href}>
+                                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
+                                       <span>{subItem.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )}
                      </CollapsibleTrigger>
-                     <CollapsibleContent>
-                         <SidebarMenuSub className="border-l-0 pl-4">
-                             {subItem.subItems.map((childItem: any) => (
-                                 <SidebarMenuSubItem key={childItem.href}>
-                                     <SidebarMenuSubButton asChild size="sm" isActive={pathname === childItem.href}>
-                                         <Link href={childItem.href}>{childItem.label}</Link>
-                                     </SidebarMenuSubButton>
-                                 </SidebarMenuSubItem>
-                             ))}
-                         </SidebarMenuSub>
-                     </CollapsibleContent>
+                     {subItem.subItems && (
+                         <CollapsibleContent>
+                             <SidebarMenu className="pl-5 border-l-2 border-dashed border-sidebar-border/30">
+                                 {subItem.subItems.map((childItem: any) => (
+                                     <SidebarMenuItem key={childItem.href}>
+                                         <SidebarMenuButton asChild size="sm" variant="ghost" isActive={pathname === childItem.href} className="w-full justify-start">
+                                             <Link href={childItem.href}>
+                                                 <ChevronsRight className="size-3 mr-2 text-primary/80" />
+                                                 {childItem.label}
+                                             </Link>
+                                         </SidebarMenuButton>
+                                     </SidebarMenuItem>
+                                 ))}
+                             </SidebarMenu>
+                         </CollapsibleContent>
+                     )}
                  </Collapsible>
-            ) : (
-                <SidebarMenuSubItem key={subItem.href}>
-                    <SidebarMenuSubButton asChild size="sm" isActive={pathname === subItem.href}>
-                        <Link href={subItem.href}>
-                           <subItem.icon className="mr-2" />
-                           {subItem.label}
-                        </Link>
-                    </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
             )
-          ))}
-        </SidebarMenuSub>
+})}
+        </SidebarMenu>
       </CollapsibleContent>
     </Collapsible>
 );
@@ -158,46 +173,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const { state, isMobile } = useSidebar();
 
     const getPageTitle = () => {
-        for (const item of menuItems) {
-             if (item.href && pathname === item.href) return item.label;
-             if (item.subMenu) {
-                for(const subItem of item.subMenu) {
-                    if (subItem.href && pathname === subItem.href) return subItem.label;
-                    if(subItem.subItems) {
-                        const child = subItem.subItems.find(child => pathname === child.href);
-                        if(child) return child.label;
-                    }
-                }
-            }
-        }
+        // A flattened map for faster lookup could be better for performance
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
         if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
         if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
         if (pathname.startsWith('/ensayos/reprocesado')) return 'Ensayos de Reprocesado';
         if (pathname.startsWith('/ensayos/control-accesorios')) return 'Control de Accesorios';
         if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
-        if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario';
+        if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario de Tuberías';
+        if (pathname.startsWith('/ensayos/seguimiento')) return 'Seguimiento de Ensayos';
+        if (pathname.startsWith('/ensayos/registro')) return 'Registrar Nuevo Ensayo';
         if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         if (pathname === '/dashboard') return 'Dashboard';
+        
+        for (const item of menuItems) {
+             if (item.href && pathname === item.href) return item.label;
+        }
+
         return 'PoliLIMS';
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-background/50 dark:bg-sidebar-background/50">
+        <div className="flex min-h-screen w-full bg-background/50">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center gap-2.5">
-                       <Logo className="w-12 h-12" />
-                       <span className="font-headline text-xl font-semibold text-primary">PoliLIMS</span>
+                    <div className="flex items-center gap-2.5 px-2">
+                       <Logo className="w-auto h-12" />
                     </div>
                 </SidebarHeader>
-                <SidebarContent className="p-2">
+                <SidebarContent>
                     <SidebarMenu>
                         {menuItems.map((item, index) => {
                             if (item.type === 'separator') {
-                                return <SidebarSeparator key={`sep-${index}`} className="my-1" />;
+                                return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
                             }
                             if (item.subMenu) {
                                 return <NavCollapsible key={item.label} item={item} pathname={pathname} />;
@@ -207,10 +217,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                     <SidebarMenuButton
                                         asChild
                                         isActive={pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href))}
-                                        tooltip={state === 'collapsed' && !isMobile ? item.label : undefined}
+                                        tooltip={{content: item.label, side:"right", align:"center"}}
                                     >
                                         <Link href={item.href || '#'}>
-                                            <item.icon />
+                                            <item.icon className="size-5" />
                                             <span>{item.label}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -220,20 +230,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </SidebarMenu>
                 </SidebarContent>
                 <SidebarFooter>
+                     <SidebarSeparator className="mb-2" />
                     <div className="flex items-center gap-3 p-2">
-                        <Avatar className="h-9 w-9">
+                        <Avatar className="h-10 w-10 border-2 border-primary/50">
                             <AvatarImage src="https://placehold.co/40x40.png" alt="Victor Lutz" data-ai-hint="man portrait"/>
                             <AvatarFallback>VL</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-sm overflow-hidden">
-                            <span className="font-medium truncate">Victor Lutz</span>
+                            <span className="font-semibold truncate">Victor Lutz</span>
                             <span className="text-muted-foreground text-xs truncate">Jefe de Calidad</span>
                         </div>
                     </div>
                 </SidebarFooter>
             </Sidebar>
             <SidebarInset>
-                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 px-4 backdrop-blur-sm sm:px-6">
+                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/80 px-4 backdrop-blur-sm sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger className="md:hidden"/>
                          <h1 className="text-xl font-semibold font-headline text-foreground">
