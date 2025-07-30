@@ -9,17 +9,10 @@ export const metadata: Metadata = {
 
 export default function ControlRutinarioPage() {
   const inspectores = [
-    { value: "daniel.palma", label: "Daniel Palma" },
     { value: "elias.ibanez", label: "Elias Ibañez" },
     { value: "cristian.montellano", label: "Cristian Montellano" },
+    { value: "daniel.palma", label: "Daniel Palma" },
     { value: "luis.parada", label: "Luis Parada" },
-    { value: "bryan.vasquez", label: "Bryan Vásquez" },
-    { value: "cesar.munizaga", label: "Cesar Munizaga" },
-    { value: "remilson.cruz", label: "Remilson Cruz" },
-    { value: "robinson.cordova", label: "Robinson Córdova" },
-    { value: "victor.lutz", label: "Victor Lutz" },
-    { value: "yasser.uarac", label: "Yasser Uarac" },
-    { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
   ];
 
   const maquinistas = [
