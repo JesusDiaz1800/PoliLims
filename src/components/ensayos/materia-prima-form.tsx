@@ -50,6 +50,9 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
   
   const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
+  const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
+  const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
+
 
   const calculateMeltIndexVariation = () => {
     const reportado = parseFloat(getValues("melt_index_reportado"));
@@ -75,6 +78,29 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
       setDensidadCalculada(0);
     }
   };
+  
+  const calculateNegroHumoYCenizas = React.useCallback(() => {
+    const m1 = parseFloat(getValues("nh_m1"));
+    const m2 = parseFloat(getValues("nh_m2"));
+    const m3 = parseFloat(getValues("nh_m3"));
+    const m4 = parseFloat(getValues("nh_m4"));
+
+    let nh = 0;
+    if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && !isNaN(m4) && (m2 - m1) !== 0) {
+      nh = ((m3 - m4) / (m2 - m1)) * 100;
+      setNegroHumoCalculado(nh);
+    } else {
+      setNegroHumoCalculado(0);
+    }
+
+    if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && (m2 - m1) !== 0) {
+        const cenizas = (((m3 - m1) / (m2 - m1)) - (nh / 100)) * 100;
+        setCenizasCalculado(cenizas);
+    } else {
+        setCenizasCalculado(0);
+    }
+  }, [getValues]);
+
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -88,9 +114,9 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
     { value: "melt_index", label: "Melt Index" },
     { value: "densidad", label: "Densidad" },
     { value: "porcentaje_negro_humo", label: "Porcentaje de Negro de Humo" },
+    { value: "cenizas", label: "Porcentaje de Cenizas" },
     { value: "dsc", label: "DSC" },
     { value: "tio", label: "Tiempo de Inducción a la Oxidación (TIO)" },
-    { value: "cenizas", label: "Porcentaje de Cenizas" },
     { value: "humedad", label: "Porcentaje de Humedad" },
   ];
 
@@ -252,14 +278,63 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                 </Card>
               </TabsContent>
 
-              {/* Otras Pestañas */}
+              {/* Pestaña Negro de Humo */}
               <TabsContent value="porcentaje_negro_humo" className="mt-4">
                  <Card>
-                  <CardHeader><CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle></CardHeader>
-                  <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
+                    <CardDescription>
+                      Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                      <div className="space-y-2">
+                        <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
+                        <Controller name="nh_m1" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m1" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
+                        <Controller name="nh_m2" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m2" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</Label>
+                        <Controller name="nh_m3" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m3" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
+                        <Controller name="nh_m4" control={control} render={({ field }) => <Input {...field} type="number" placeholder="m4" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                         <Label>% Negro de Humo</Label>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {negroHumoCalculado.toFixed(2)}%
+                         </div>
+                       </div>
+                  </CardContent>
                 </Card>
               </TabsContent>
-              <TabsContent value="dsc" className="mt-4">
+              <TabsContent value="cenizas" className="mt-4">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle>
+                    <CardDescription>
+                      Fórmula: %Cenizas = (((m3 - m1) / (m2 - m1)) - (%NH / 100)) * 100
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 max-w-xs">
+                        <Label>% Cenizas</Label>
+                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                          {cenizasCalculado.toFixed(2)}%
+                        </div>
+                        <p className="text-xs text-muted-foreground pt-2">
+                          El cálculo de cenizas se realiza automáticamente utilizando los valores m1, m2, m3 y el resultado del % de Negro de Humo.
+                        </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+               <TabsContent value="dsc" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: DSC</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
@@ -268,12 +343,6 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
               <TabsContent value="tio" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle></CardHeader>
-                  <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
-                </Card>
-              </TabsContent>
-               <TabsContent value="cenizas" className="mt-4">
-                 <Card>
-                  <CardHeader><CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
                 </Card>
               </TabsContent>
