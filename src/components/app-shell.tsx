@@ -244,7 +244,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                 <SidebarMenuItem key={item.href || index}>
                                     <SidebarMenuButton
                                         asChild
-                                        variant="ghost"
+                                        variant="default"
                                         isActive={isActive}
                                         tooltip={{content: item.label, side:"right", align:"center"}}
                                         disabled={isDisabled}
