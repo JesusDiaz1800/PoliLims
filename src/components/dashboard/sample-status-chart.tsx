@@ -25,7 +25,7 @@ export function SampleStatusChart() {
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                     <Tooltip
-                        cursor={{fill: 'hsl(var(--accent))'}}
+                        cursor={{fill: 'hsla(var(--accent), 0.3)'}}
                         contentStyle={{
                           backgroundColor: 'hsl(var(--background))',
                           borderColor: 'hsl(var(--border))',

@@ -26,7 +26,7 @@ export function RecentActivityList() {
                             </Avatar>
                             <div className="flex-1">
                                 <p className="text-sm">
-                                    <span className="font-medium">{activity.user}</span> {activity.action}
+                                    <span className="font-semibold text-foreground">{activity.user}</span> {activity.action}
                                 </p>
                                 <p className="text-xs text-muted-foreground">{activity.time}</p>
                             </div>

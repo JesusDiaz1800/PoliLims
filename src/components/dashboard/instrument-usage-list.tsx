@@ -14,9 +14,9 @@ const instruments = [
 
 function getStatusClass(status: string) {
     switch (status) {
-        case "Activo": return "bg-green-500/20 text-green-300 border-green-500/30";
-        case "Mantenimiento": return "bg-red-500/20 text-red-300 border-red-500/30";
-        case "Inactivo": return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
+        case "Activo": return "bg-green-100 text-green-800";
+        case "Mantenimiento": return "bg-red-100 text-red-800";
+        case "Inactivo": return "bg-yellow-100 text-yellow-800";
         default: return "bg-secondary";
     }
 }
@@ -50,14 +50,14 @@ export function InstrumentUsageList() {
                             <TableRow key={instrument.name}>
                                 <TableCell className="font-medium">{instrument.name}</TableCell>
                                 <TableCell className="text-center">
-                                    <Badge className={cn("border-transparent", getStatusClass(instrument.status))}>
+                                    <Badge variant="outline" className={cn("border-transparent font-normal", getStatusClass(instrument.status))}>
                                         {instrument.status}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
                                         <Progress value={instrument.calibrationDue} 
-                                                  className="w-32 h-2.5" 
+                                                  className="w-32 h-2" 
                                                   indicatorClassName={getProgressColor(instrument.calibrationDue)} />
                                         <span className="text-sm font-mono text-muted-foreground">{instrument.calibrationDue}%</span>
                                     </div>

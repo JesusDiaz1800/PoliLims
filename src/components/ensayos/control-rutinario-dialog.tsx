@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -69,7 +68,7 @@ export function ControlRutinarioDialog({ isOpen, onClose }: ControlRutinarioDial
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90svh] overflow-y-auto">
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>Formulario de Control Rutinario de Tuberías</DialogTitle>
           <DialogDescription>

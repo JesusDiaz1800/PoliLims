@@ -12,10 +12,7 @@ export const metadata: Metadata = {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div 
-            className="bg-gray-900 bg-cover bg-center" 
-            style={{backgroundImage: "url('/background.jpg')"}}
-        >
+        <div className="bg-background">
             <SidebarProvider>
                 <AppShell>
                     {children}

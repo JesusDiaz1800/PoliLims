@@ -39,7 +39,8 @@ import {
     SlidersHorizontal,
     Construction,
     Unplug,
-    Info
+    Info,
+    LogOut
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -106,7 +107,7 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
     >
       <CollapsibleTrigger asChild disabled={disabled}>
           <SidebarMenuButton
-            variant="default"
+            variant="ghost"
             className="w-full justify-between group/button"
             isActive={pathname.startsWith(item.href)}
             disabled={disabled}
@@ -207,11 +208,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-transparent">
-            <Sidebar>
+        <div className="flex min-h-screen w-full">
+            <Sidebar variant="sidebar" collapsible="icon">
                 <SidebarHeader>
-                    <div className="flex items-center gap-2.5 px-2 h-14">
-                       <Logo className="w-32 h-auto" />
+                    <div className="flex items-center gap-2.5 px-2 h-16 justify-center group-data-[collapsible=icon]:px-0">
+                       <Logo className="w-32 h-auto group-data-[collapsible=icon]:w-10" />
                     </div>
                 </SidebarHeader>
                 <SidebarContent>
@@ -240,6 +241,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                 <SidebarMenuItem key={item.href || index}>
                                     <SidebarMenuButton
                                         asChild
+                                        variant="ghost"
                                         isActive={isActive}
                                         tooltip={{content: item.label, side:"right", align:"center"}}
                                         disabled={isDisabled}
@@ -256,13 +258,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </SidebarMenu>
                 </SidebarContent>
                 <SidebarFooter>
-                     <SidebarSeparator className="mb-2" />
-                    <div className="flex items-center gap-3 p-2">
-                        <Avatar className="h-10 w-10 border-2 border-primary/50">
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                           <SidebarMenuButton asChild variant="ghost" tooltip={{content: "Cerrar Sesión", side: "right", align: "center"}}>
+                                <Link href="/login">
+                                    <LogOut className="size-5" />
+                                    <span>Cerrar Sesión</span>
+                                </Link>
+                           </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                    <SidebarSeparator className="my-2" />
+                    <div className="flex items-center gap-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:py-2">
+                        <Avatar className="h-10 w-10 border-2 border-sidebar-primary/50">
                             <AvatarImage src="https://placehold.co/40x40.png" alt="Victor Lutz" data-ai-hint="man portrait"/>
                             <AvatarFallback>VL</AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col text-sm overflow-hidden">
+                        <div className="flex flex-col text-sm overflow-hidden group-data-[collapsible=icon]:hidden">
                             <span className="font-semibold truncate">Victor Lutz</span>
                             <span className="text-muted-foreground text-xs truncate">Jefe de Calidad</span>
                         </div>
@@ -270,7 +282,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </SidebarFooter>
             </Sidebar>
             <SidebarInset>
-                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-black/30 backdrop-blur-md px-4 sm:px-6">
+                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger className="md:hidden"/>
                          <h1 className="text-xl font-semibold font-headline text-foreground">

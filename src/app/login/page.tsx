@@ -1,4 +1,3 @@
-
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,34 +12,31 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-gray-900 text-white">
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-900 animate-gradient-xy" />
-      <Card className="w-full max-w-md z-10 bg-black/30 backdrop-blur-lg border-primary/20 shadow-2xl shadow-primary/10">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
-            <div className="mx-auto h-20 w-48">
+            <div className="mx-auto h-24 w-56">
                 <Logo className="w-full h-full" />
             </div>
-          <CardTitle className="text-3xl font-headline text-white">Bienvenido a PoliLIMS</CardTitle>
-          <CardDescription className="text-gray-300">Ingrese sus credenciales para acceder al sistema de gestión del laboratorio.</CardDescription>
+          <CardTitle className="text-3xl font-headline text-foreground">Bienvenido a PoliLIMS</CardTitle>
+          <CardDescription>Ingrese sus credenciales para acceder al sistema de gestión del laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-300">Correo Electrónico</Label>
-              <Input id="email" type="email" placeholder="nombre@polifusion.cl" required 
-                     className="bg-black/20 border-primary/30 focus:ring-primary/80"/>
+              <Label htmlFor="email">Correo Electrónico</Label>
+              <Input id="email" type="email" placeholder="nombre@polifusion.cl" required />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-gray-300">Contraseña</Label>
-                <Link href="#" className="text-sm text-primary/80 hover:text-primary hover:underline">
+                <Label htmlFor="password">Contraseña</Label>
+                <Link href="#" className="text-sm text-primary hover:underline">
                   ¿Olvidó su contraseña?
                 </Link>
               </div>
-              <Input id="password" type="password" required 
-                     className="bg-black/20 border-primary/30 focus:ring-primary/80"/>
+              <Input id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full !mt-8 h-11 text-base font-semibold bg-gradient-to-r from-primary to-blue-400 hover:from-primary/90 hover:to-blue-400/90 text-white shadow-lg shadow-primary/30 transition-all duration-300 transform hover:scale-105" asChild>
+            <Button type="submit" className="w-full !mt-8 h-11 text-base font-semibold" asChild>
                 <Link href="/dashboard">Ingresar al Sistema</Link>
             </Button>
           </form>

@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react";
@@ -148,7 +147,8 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                   <TableCell className="font-medium">{registro.producto}</TableCell>
                   <TableCell>
                     <Badge variant={registro.resultado === 'Conforme' ? 'default' : 'destructive'} className={cn(
-                      registro.resultado === 'Conforme' ? 'bg-green-500/20 text-green-300 border-green-500/30' : 'bg-red-500/20 text-red-300 border-red-500/30', "border-transparent"
+                      "font-normal",
+                      registro.resultado === 'Conforme' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     )}>
                       {registro.resultado === 'Conforme' ? <CheckCircle className="mr-1.5 h-3.5 w-3.5"/> : <AlertCircle className="mr-1.5 h-3.5 w-3.5"/>}
                       {registro.resultado}
@@ -156,11 +156,11 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                   </TableCell>
                   <TableCell className="text-center">
                     {registro.enviado_lab ? (
-                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 border-transparent">
+                      <Badge className="bg-blue-100 text-primary border-primary/20 font-normal">
                         Sí
                       </Badge>
                     ) : (
-                      <Badge variant="outline" className="border-dashed">
+                      <Badge variant="outline" className="border-dashed font-normal">
                         No
                       </Badge>
                     )}

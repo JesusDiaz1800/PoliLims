@@ -5,10 +5,10 @@ export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("relative", className)}>
        <Image
-        src="/logo-dark.png"
+        src="/logo-color.png"
         alt="Polifusion Logo"
         fill
-        sizes="12rem"
+        sizes="(max-width: 768px) 100vw, 12rem"
         className="object-contain"
         priority
       />
