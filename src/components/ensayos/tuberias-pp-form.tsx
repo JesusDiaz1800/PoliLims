@@ -378,15 +378,15 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m1">M1 [g]</Label>
-                                <Input id="fv_total_m1" type="number" step="any" placeholder="Masa de crisol" {...register("fv_total_m1")} />
+                                <Label htmlFor="fv_total_m1">M1: Masa de Crisol [g]</Label>
+                                <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m2">M2 [g]</Label>
+                                <Label htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</Label>
                                 <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m3">M3 [g]</Label>
+                                <Label htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</Label>
                                 <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
                             </div>
                             <div className="space-y-2">
@@ -415,15 +415,15 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m1">M1 [g]</Label>
-                                <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa de crisol" {...register("fv_intermedia_m1")} />
+                                <Label htmlFor="fv_intermedia_m1">M1: Masa de Crisol [g]</Label>
+                                <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_intermedia_m1")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m2">M2 [g]</Label>
+                                <Label htmlFor="fv_intermedia_m2">M2: Masa de Crisol + Muestra [g]</Label>
                                 <Input id="fv_intermedia_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_intermedia_m2")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m3">M3 [g]</Label>
+                                <Label htmlFor="fv_intermedia_m3">M3: Masa de Crisol + Ceniza [g]</Label>
                                 <Input id="fv_intermedia_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_intermedia_m3")} />
                             </div>
                              <div className="space-y-2">
