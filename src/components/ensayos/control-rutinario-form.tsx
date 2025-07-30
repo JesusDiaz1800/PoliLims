@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -141,6 +142,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             variant: "default",
         })
     }
+    form.reset();
   }
 
   return (
@@ -183,7 +185,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     render={({ field }) => (
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <SelectTrigger id="inspector"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}</SelectContent>
+                            <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.label}>{i.label}</SelectItem>)}</SelectContent>
                         </Select>
                     )}
                 />
@@ -196,7 +198,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     render={({ field }) => (
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <SelectTrigger id="maquinista"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                            <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={i.label}>{m.label}</SelectItem>)}</SelectContent>
+                            <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}</SelectContent>
                         </Select>
                     )}
                 />
