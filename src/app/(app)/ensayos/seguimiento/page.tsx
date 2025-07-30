@@ -12,9 +12,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const initialEnsayos = [
@@ -68,12 +75,17 @@ function getStatusVariant(status: string) {
 export default function SeguimientoEnsayosPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [ensayos, setEnsayos] = React.useState(initialEnsayos);
+  const [filterType, setFilterType] = React.useState("Todos");
 
-  const filteredEnsayos = ensayos.filter(ensayo => 
-    ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const ensayoTypes = ["Todos", ...new Set(initialEnsayos.map(e => e.tipo))];
+
+  const filteredEnsayos = ensayos
+    .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
+    .filter(ensayo => 
+      ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ensayo.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <Card>
@@ -83,7 +95,7 @@ export default function SeguimientoEnsayosPage() {
                 <CardTitle>Seguimiento de Ensayos</CardTitle>
                 <CardDescription>Visualice y filtre todos los ensayos registrados en el sistema.</CardDescription>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
                  <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input 
@@ -93,6 +105,17 @@ export default function SeguimientoEnsayosPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
+                <Select value={filterType} onValueChange={setFilterType}>
+                  <SelectTrigger className="w-[200px]">
+                      <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectValue placeholder="Filtrar por tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {ensayoTypes.map(type => (
+                         <SelectItem key={type} value={type}>{type === "Todos" ? "Todos los tipos" : type}</SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
                  <Button>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Registrar Nuevo Ensayo
@@ -150,7 +173,7 @@ export default function SeguimientoEnsayosPage() {
             <div className="text-center py-16 text-muted-foreground">
                 <Search className="mx-auto h-12 w-12 mb-4" />
                 <h3 className="text-xl font-semibold">No se encontraron resultados</h3>
-                <p>Intente ajustar su búsqueda.</p>
+                <p>Intente ajustar su búsqueda o filtros.</p>
             </div>
         )}
       </CardContent>
