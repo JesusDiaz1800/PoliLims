@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +23,9 @@ function getStatusClass(status: string) {
 }
 
 function getProgressColor(value: number) {
-    if (value > 75) return "bg-green-500";
-    if (value > 25) return "bg-yellow-500";
-    return "bg-red-500";
+    if (value > 75) return "bg-chart-2";
+    if (value > 25) return "bg-chart-3";
+    return "bg-destructive";
 }
 
 
@@ -33,7 +34,7 @@ export function InstrumentUsageList() {
         <Card>
             <CardHeader>
                 <CardTitle>Estado de Equipos</CardTitle>
-                <CardDescription>Seguimiento en tiempo real del uso y calibración de los equipos del laboratorio.</CardDescription>
+                <CardDescription>Seguimiento del uso y calibración de los equipos del laboratorio.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Table>
@@ -57,7 +58,7 @@ export function InstrumentUsageList() {
                                 <TableCell>
                                     <div className="flex items-center gap-3">
                                         <Progress value={instrument.calibrationDue} 
-                                                  className="w-32 h-2" 
+                                                  className="w-24 h-2" 
                                                   indicatorClassName={getProgressColor(instrument.calibrationDue)} />
                                         <span className="text-sm font-mono text-muted-foreground">{instrument.calibrationDue}%</span>
                                     </div>
