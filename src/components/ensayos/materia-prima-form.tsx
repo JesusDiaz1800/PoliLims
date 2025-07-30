@@ -49,6 +49,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
   const { watch, control, setValue, getValues } = useForm();
   
   const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
+  const [densidadCalculada, setDensidadCalculada] = React.useState(0);
 
   const calculateMeltIndexVariation = () => {
     const reportado = parseFloat(getValues("melt_index_reportado"));
@@ -59,6 +60,19 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
       setMeltIndexVariacion(variacion * 100);
     } else {
       setMeltIndexVariacion(0);
+    }
+  };
+
+  const calculateDensidad = () => {
+    const densidadLiquido = parseFloat(getValues("densidad_liquido"));
+    const masaAire = parseFloat(getValues("masa_aire"));
+    const masaAgua = parseFloat(getValues("masa_agua"));
+
+    if (!isNaN(densidadLiquido) && !isNaN(masaAire) && !isNaN(masaAgua) && (masaAire - masaAgua) !== 0) {
+      const resultado = densidadLiquido * (masaAire / (masaAire - masaAgua));
+      setDensidadCalculada(resultado);
+    } else {
+      setDensidadCalculada(0);
     }
   };
 
@@ -213,8 +227,27 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                   <CardHeader>
                     <CardTitle>Ensayo: Densidad</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4 text-center">
-                     <p className="text-muted-foreground p-8">Formulario para Densidad próximamente.</p>
+                  <CardContent className="space-y-4">
+                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                      <div className="space-y-2">
+                        <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
+                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Ej: 0.9982" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
+                        <Controller name="masa_aire" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Masa en aire" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
+                        <Controller name="masa_agua" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Masa en agua" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                         <Label>Densidad de la muestra [g/cm³]</Label>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {densidadCalculada.toFixed(4)}
+                         </div>
+                       </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
