@@ -62,6 +62,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
   const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
   const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
+  const [cenizasCorregido, setCenizasCorregido] = React.useState(0);
 
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
@@ -107,19 +108,20 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
     const m3 = parseFloat(getValues("nh_m3"));
     const m4 = parseFloat(getValues("nh_m4"));
 
-    let nh = 0;
     if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && !isNaN(m4) && (m2 - m1) !== 0) {
-      nh = ((m3 - m4) / (m2 - m1)) * 100;
+      const nh = ((m3 - m4) / (m2 - m1)) * 100;
       setNegroHumoCalculado(nh);
     } else {
       setNegroHumoCalculado(0);
     }
 
     if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && (m2 - m1) !== 0) {
-        const cenizas = (((m3 - m1) / (m2 - m1)) - (nh / 100)) * 100;
+        const cenizas = ((m3 - m1) / (m2 - m1)) * 100;
         setCenizasCalculado(cenizas);
+        setCenizasCorregido(cenizas - 0.86);
     } else {
         setCenizasCalculado(0);
+        setCenizasCorregido(0);
     }
   }, [getValues]);
 
@@ -367,19 +369,34 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
                   <CardHeader>
                     <CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle>
                     <CardDescription>
-                      Fórmula: %Cenizas = (((m3 - m1) / (m2 - m1)) - (%NH / 100)) * 100
+                      Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 max-w-xs">
-                        <Label>% Cenizas</Label>
-                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                          {cenizasCalculado.toFixed(2)}%
-                        </div>
-                        <p className="text-xs text-muted-foreground pt-2">
-                          El cálculo de cenizas se realiza automáticamente utilizando los valores m1, m2, m3 y el resultado del % de Negro de Humo.
-                        </p>
-                    </div>
+                   <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                      <div className="space-y-2">
+                        <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
+                        <Controller name="nh_m1" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m1" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
+                        <Controller name="nh_m2" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m2" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                        <Label htmlFor="nh_m3">m3: Cápsula procesada [g]</Label>
+                        <Controller name="nh_m3" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m3" onChange={e => { field.onChange(e); calculateNegroHumoYCenizas(); }} />} />
+                      </div>
+                       <div className="space-y-2">
+                         <Label>% Cenizas</Label>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {cenizasCalculado.toFixed(2)}%
+                         </div>
+                       </div>
+                       <div className="space-y-2">
+                         <Label>% Cenizas Corregido</Label>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {cenizasCorregido.toFixed(2)}%
+                         </div>
+                       </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -437,3 +454,5 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
     </form>
   );
 }
+
+    
