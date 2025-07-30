@@ -10,7 +10,7 @@ export default function TuberiasPpPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Registro de Ensayo: Tuberías PP</CardTitle>
+        <CardTitle>Registro de Ensayo: Producto Terminado (PP)</CardTitle>
         <CardDescription>Complete el formulario para registrar un ensayo de tuberías PP.</CardDescription>
       </CardHeader>
       <CardContent>
