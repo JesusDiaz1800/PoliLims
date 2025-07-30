@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useToast } from "@/hooks/use-toast"
 import { matrizProductos } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
@@ -53,6 +54,12 @@ const formSchema = z.object({
   color_tuberia: z.string().optional(),
   color_linea: z.string().optional(),
   entregado_laboratorio: z.boolean().default(false),
+  tipoEnsayoGeneral: z.enum(["contraccion", "impacto", "phi"]).optional(),
+  contraccion1: z.number().optional(),
+  contraccion2: z.number().optional(),
+  impactoFallas: z.number().optional(),
+  impactoTotal: z.number().optional(),
+  phiSinFallas: z.boolean().optional(),
 })
 
 type ValidationAlerts = {
@@ -71,10 +78,11 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     resolver: zodResolver(formSchema),
     defaultValues: {
       entregado_laboratorio: false,
+      impactoTotal: 4,
     },
   })
 
-  const { watch, setValue } = form
+  const { watch } = form
 
   const producto = watch("producto")
   const diametro = watch("diametro")
@@ -82,6 +90,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const espesor_max = watch("espesor_max")
   const ovalidad = watch("ovalidad")
   const peso_kg_m = watch("peso_kg_m")
+  const tipoEnsayoGeneral = watch("tipoEnsayoGeneral")
 
   React.useEffect(() => {
     const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
@@ -126,7 +135,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             description: `La muestra para ${data.producto} ha sido enviada para análisis y aparece en Seguimiento.`,
             variant: "default",
         })
-        // TODO: Here we would trigger the logic to add the sample to the tracking table.
     }
   }
 
@@ -288,11 +296,83 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         
         <Card>
             <CardHeader>
-                <CardTitle>Ensayos de Laboratorio</CardTitle>
-                <CardDescription>Esta sección será completada por el analista de laboratorio.</CardDescription>
+                <CardTitle>Ensayos Generales</CardTitle>
+                <CardDescription>Seleccione y registre el resultado de un ensayo mecánico o de presión.</CardDescription>
             </CardHeader>
-            <CardContent className="text-center text-muted-foreground p-8">
-                <p>Los ensayos (Mecánicos, HDPE, PP, etc.) se registrarán sobre esta muestra una vez que sea entregada al laboratorio.</p>
+            <CardContent className="space-y-6">
+                 <Controller
+                    control={form.control}
+                    name="tipoEnsayoGeneral"
+                    render={({ field }) => (
+                         <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-8"
+                        >
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="contraccion" id="contraccion" />
+                                <Label htmlFor="contraccion" className="text-base font-normal">Contracción Longitudinal</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="impacto" id="impacto" />
+                                <Label htmlFor="impacto" className="text-base font-normal">Resistencia al Impacto</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="phi" id="phi" />
+                                <Label htmlFor="phi" className="text-base font-normal">Resistencia a Presión Hidrostática (PHI)</Label>
+                            </div>
+                        </RadioGroup>
+                    )}
+                />
+
+                {tipoEnsayoGeneral && <Separator />}
+
+                {tipoEnsayoGeneral === 'contraccion' && (
+                    <div className="grid grid-cols-2 gap-6 animate-in fade-in">
+                        <div className="space-y-2">
+                            <Label htmlFor="contraccion1">Medición 1 [%]</Label>
+                            <Input id="contraccion1" type="number" step="any" {...form.register("contraccion1", { valueAsNumber: true })} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="contraccion2">Medición 2 [%]</Label>
+                            <Input id="contraccion2" type="number" step="any" {...form.register("contraccion2", { valueAsNumber: true })} />
+                        </div>
+                    </div>
+                )}
+
+                {tipoEnsayoGeneral === 'impacto' && (
+                     <div className="grid grid-cols-2 gap-6 animate-in fade-in">
+                        <div className="space-y-2">
+                            <Label htmlFor="impactoFallas">N° de Fallas</Label>
+                            <Input id="impactoFallas" type="number" {...form.register("impactoFallas", { valueAsNumber: true })} />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="impactoTotal">N° Total de Muestras</Label>
+                            <Input id="impactoTotal" type="number" {...form.register("impactoTotal", { valueAsNumber: true })} />
+                        </div>
+                    </div>
+                )}
+
+                 {tipoEnsayoGeneral === 'phi' && (
+                    <div className="animate-in fade-in">
+                        <div className="flex items-center space-x-2">
+                            <Controller
+                                control={form.control}
+                                name="phiSinFallas"
+                                render={({ field }) => (
+                                    <Checkbox
+                                        id="phiSinFallas"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                )}
+                            />
+                            <Label htmlFor="phiSinFallas" className="text-base font-normal">
+                                Sin fallas a la presión y tiempo establecidos por norma
+                            </Label>
+                        </div>
+                    </div>
+                )}
             </CardContent>
         </Card>
 
@@ -316,10 +396,10 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     />
                     <div className="grid gap-1.5 leading-none">
                         <Label htmlFor="entregado_laboratorio" className="text-base font-medium">
-                            Entregado a Laboratorio
+                            Muestra Entregada a Laboratorio
                         </Label>
                         <p className="text-sm text-muted-foreground">
-                            Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda.
+                            Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
                         </p>
                     </div>
                 </div>

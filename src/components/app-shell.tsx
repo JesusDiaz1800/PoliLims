@@ -38,11 +38,13 @@ import {
     ChevronsRight,
     SlidersHorizontal,
     Construction,
-    Unplug
+    Unplug,
+    Info
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 const ensayosSubMenu = [
     { 
@@ -61,7 +63,6 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
     { type: 'separator' },
-    { href: '/ensayos/generales', label: 'Ensayos Generales', icon: FilePlus2 },
     { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
 ];
 
@@ -96,17 +97,20 @@ const menuItems = [
     },
 ];
 
-const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => (
+const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathname: string, disabled?: boolean }) => (
     <Collapsible
       key={item.label}
       defaultOpen={pathname.startsWith(item.href)}
       className="w-full"
+      disabled={disabled}
     >
-      <CollapsibleTrigger asChild>
+      <CollapsibleTrigger asChild disabled={disabled}>
           <SidebarMenuButton
             variant="default"
             className="w-full justify-between group/button"
             isActive={pathname.startsWith(item.href)}
+            disabled={disabled}
+            aria-disabled={disabled}
           >
             <div className='flex items-center gap-3'>
               <item.icon className="size-5" />
@@ -123,9 +127,9 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
             }
             if (subItem.subItems) {
                 return (
-                    <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full">
-                         <CollapsibleTrigger asChild>
-                             <SidebarMenuButton size="sm" variant="ghost" className="w-full justify-between group/sub-button pr-3">
+                    <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full" disabled={disabled}>
+                         <CollapsibleTrigger asChild disabled={disabled}>
+                             <SidebarMenuButton size="sm" variant="ghost" className="w-full justify-between group/sub-button pr-3" disabled={disabled} aria-disabled={disabled}>
                                 <div className="flex items-center gap-3">
                                     {subItem.icon && <subItem.icon className="size-4" />}
                                     <span>{subItem.label}</span>
@@ -137,7 +141,7 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
                              <SidebarMenu className="pl-5 border-l-2 border-dashed border-sidebar-border/30">
                                  {subItem.subItems.map((childItem: any) => (
                                      <SidebarMenuItem key={childItem.href}>
-                                         <SidebarMenuButton asChild size="sm" variant="ghost" isActive={pathname === childItem.href} className="w-full justify-start">
+                                         <SidebarMenuButton asChild size="sm" variant="ghost" isActive={pathname === childItem.href} className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
                                              <Link href={childItem.href}>
                                                  <ChevronsRight className="size-3 mr-2 text-primary/80" />
                                                  {childItem.label}
@@ -150,9 +154,20 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
                     </Collapsible>
                 );
             }
+            const isSubItemActive = pathname === subItem.href;
+            const isSubItemDisabled = subItem.href !== '/ensayos/control-rutinario';
+            
             return (
                 <SidebarMenuItem key={subItem.href}>
-                    <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" isActive={pathname === subItem.href}>
+                    <SidebarMenuButton 
+                        asChild 
+                        size="sm" 
+                        variant="ghost" 
+                        className="w-full justify-start" 
+                        isActive={isSubItemActive} 
+                        disabled={isSubItemDisabled}
+                        aria-disabled={isSubItemDisabled}
+                        >
                         <Link href={subItem.href}>
                            {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                            <span>{subItem.label}</span>
@@ -170,6 +185,7 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
 export function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { state, isMobile } = useSidebar();
+    const isInspectorView = true; // En una app real, esto vendría de la sesión del usuario.
 
     const getPageTitle = () => {
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
@@ -180,12 +196,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
         if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario de Tuberías';
         if (pathname.startsWith('/ensayos/seguimiento')) return 'Seguimiento de Ensayos';
-        if (pathname.startsWith('/ensayos/generales')) return 'Registro de Ensayos Generales';
         if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         
-        // Find title for top-level menu items
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;
         }
@@ -202,20 +216,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </div>
                 </SidebarHeader>
                 <SidebarContent>
+                    {isInspectorView && (
+                        <Alert className="m-2 border-primary/30 bg-primary/10">
+                            <Info className="h-4 w-4 text-primary" />
+                            <AlertTitle className="text-primary/90">Modo Inspector</AlertTitle>
+                            <AlertDescription className="text-primary/70">
+                                La vista está limitada a las funciones de inspector de calidad.
+                            </AlertDescription>
+                        </Alert>
+                    )}
                     <SidebarMenu>
                         {menuItems.map((item, index) => {
+                            const isDisabled = isInspectorView && item.href !== '/ensayos';
+
                             if (item.type === 'separator') {
                                 return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
                             }
                             if (item.subMenu) {
-                                return <NavCollapsible key={item.label} item={item} pathname={pathname} />;
+                                return <NavCollapsible key={item.label} item={item} pathname={pathname} disabled={isDisabled} />;
                             }
+                             const isActive = pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href));
+
                             return (
                                 <SidebarMenuItem key={item.href || index}>
                                     <SidebarMenuButton
                                         asChild
-                                        isActive={pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href))}
+                                        isActive={isActive}
                                         tooltip={{content: item.label, side:"right", align:"center"}}
+                                        disabled={isDisabled}
+                                        aria-disabled={isDisabled}
                                     >
                                         <Link href={item.href || '#'}>
                                             <item.icon className="size-5" />
