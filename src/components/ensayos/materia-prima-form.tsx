@@ -82,7 +82,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
       title: "Ensayo Registrado",
       description: "El ensayo de materia prima ha sido registrado exitosamente.",
     })
-  }
+  };
   
   const ensayos = [
     { value: "melt_index", label: "Melt Index" },
@@ -231,7 +231,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
-                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Ej: 0.9982" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Ej: 0.786" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
@@ -281,7 +281,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Porcentaje de Humedad</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
-                </Card>
+                </card>
               </TabsContent>
 
            </Tabs>
