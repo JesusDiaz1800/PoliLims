@@ -14,9 +14,9 @@ const instruments = [
 
 function getStatusClass(status: string) {
     switch (status) {
-        case "Activo": return "bg-green-100 text-green-800";
-        case "Mantenimiento": return "bg-red-100 text-red-800";
-        case "Inactivo": return "bg-yellow-100 text-yellow-800";
+        case "Activo": return "bg-green-500/20 text-green-300 border-green-500/30";
+        case "Mantenimiento": return "bg-red-500/20 text-red-300 border-red-500/30";
+        case "Inactivo": return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
         default: return "bg-secondary";
     }
 }
