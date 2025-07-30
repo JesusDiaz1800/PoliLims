@@ -78,8 +78,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Sidebar>
                 <SidebarHeader>
                     <div className="flex items-center gap-2.5">
-                       <Logo className="w-10 h-10" />
-                       <span className="font-headline text-lg font-semibold text-primary">PoliLIMS</span>
+                       <Logo className="w-12 h-12" />
+                       <span className="font-headline text-xl font-semibold text-primary">PoliLIMS</span>
                     </div>
                 </SidebarHeader>
                 <SidebarContent className="p-2">
