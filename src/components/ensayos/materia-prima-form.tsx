@@ -380,28 +380,15 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
         </CardContent>
       </Card>
       
-      {/* SECCIÓN DE APROBACIÓN Y OBSERVACIONES */}
+      {/* SECCIÓN DE OBSERVACIONES */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                  <Label>Aprobación</Label>
-                  <Select>
-                      <SelectTrigger>
-                          <SelectValue placeholder="Seleccione el estado de la muestra" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="aprobado">Aprobado</SelectItem>
-                          <SelectItem value="rechazado">Rechazado</SelectItem>
-                          <SelectItem value="pendiente">Pendiente</SelectItem>
-                      </SelectContent>
-                  </Select>
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="observaciones">Observaciones</Label>
-                  <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." />
-              </div>
-          </div>
+        <CardHeader>
+            <CardTitle>Observaciones</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="space-y-2">
+                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." />
+            </div>
         </CardContent>
       </Card>
 
