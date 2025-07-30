@@ -68,7 +68,6 @@ type ValidationAlerts = {
 
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas }: ControlRutinarioFormProps) {
   const { toast } = useToast()
-  const [productoSeleccionado, setProductoSeleccionado] = React.useState<TipoProducto | null>(null)
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,53 +78,51 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     },
   })
 
-  const { watch, getValues, setValue } = form
+  const { watch } = form
 
-  const watchedFields = watch(["producto", "diametro", "espesor_min", "espesor_max", "ovalidad", "peso_kg_m"])
+  const producto = watch("producto")
+  const diametro = watch("diametro")
+  const espesor_min = watch("espesor_min")
+  const espesor_max = watch("espesor_max")
+  const ovalidad = watch("ovalidad")
+  const peso_kg_m = watch("peso_kg_m")
 
   React.useEffect(() => {
-    const selectedProdData = matrizProductos.find(p => p.producto === watchedFields[0])
-    setProductoSeleccionado(selectedProdData || null)
-  }, [watchedFields[0]])
+    const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
 
-  const validateFields = React.useCallback(() => {
     if (!productoSeleccionado) {
       setAlerts({});
       return;
     }
+    
     const newAlerts: ValidationAlerts = {}
-    const values = getValues()
 
     // Diámetro
-    if (values.diametro) {
-      if (values.diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
-      if (values.diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
+    if (diametro !== undefined) {
+      if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
+      else if (diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
     }
     // Espesor Mínimo
-    if (values.espesor_min) {
-      if (values.espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-      if (values.espesor_min > productoSeleccionado.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre norma"
+    if (espesor_min !== undefined) {
+      if (espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
+      else if (espesor_min > productoSeleccionado.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre norma"
     }
     // Espesor Máximo
-    if (values.espesor_max) {
-      if (values.espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
-      if (values.espesor_max < productoSeleccionado.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo norma"
+    if (espesor_max !== undefined) {
+      if (espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
+      else if (espesor_max < productoSeleccionado.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo norma"
     }
     // Ovalidad
-    if (values.ovalidad && productoSeleccionado.ovalidad_norma) {
-      if (values.ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
+    if (ovalidad !== undefined && productoSeleccionado.ovalidad_norma) {
+      if (ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
     }
      // Peso
-    if (values.peso_kg_m) {
-        if (values.peso_kg_m < productoSeleccionado.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
-        if (values.peso_kg_m > productoSeleccionado.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
+    if (peso_kg_m !== undefined) {
+        if (peso_kg_m < productoSeleccionado.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
+        else if (peso_kg_m > productoSeleccionado.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
     }
     setAlerts(newAlerts)
-  }, [productoSeleccionado, getValues])
-
-  React.useEffect(() => {
-    validateFields()
-  }, [watchedFields, validateFields])
+  }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m])
 
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
