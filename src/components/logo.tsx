@@ -5,7 +5,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("relative", className)}>
        <Image
-        src="/logo.png"
+        src="/logo-dark.png"
         alt="Polifusion Logo"
         fill
         sizes="12rem"

@@ -207,7 +207,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-background/50">
+        <div className="flex min-h-screen w-full bg-transparent">
             <Sidebar>
                 <SidebarHeader>
                     <div className="flex items-center gap-2.5 px-2 h-14">
@@ -270,7 +270,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </SidebarFooter>
             </Sidebar>
             <SidebarInset>
-                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/80 px-4 backdrop-blur-sm sm:px-6">
+                <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-black/30 backdrop-blur-md px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger className="md:hidden"/>
                          <h1 className="text-xl font-semibold font-headline text-foreground">
@@ -278,7 +278,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-background">
+                <main className="flex-1 overflow-y-auto p-4 sm:p-6">
                     {children}
                 </main>
             </SidebarInset>
