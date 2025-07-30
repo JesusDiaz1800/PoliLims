@@ -6,7 +6,7 @@ const activities = [
     { user: "Antonia Figueroa", action: "Registró nuevo lote de accesorios PP-R Fusión Socket.", time: "Hace 24 min", avatar: { src: "https://placehold.co/40x40.png", fallback: "AF", hint: "woman portrait" } },
     { user: "Sistema", action: "Calibración de equipo GC-MS 01 vence en 10 días.", time: "Hace 1 hora", avatar: { src: "", fallback: "SYS", hint: "" } },
     { user: "Victor Lutz", action: "Aprobó informe para Lote #M-PRIM-5532.", time: "Hace 3 horas", avatar: { src: "https://placehold.co/40x40.png", fallback: "VL", hint: "man portrait" } },
-    { user: "Maximiliano M.", action: "Inició flujo de trabajo para Materia Prima - TIO.", time: "Hace 8 horas", avatar: { src: "https://placehold.co/40x40.png", fallback: "MM", hint: "man glasses" } },
+    { user: "Maximiliano Miranda", action: "Inició flujo de trabajo para Materia Prima - TIO.", time: "Hace 8 horas", avatar: { src: "https://placehold.co/40x40.png", fallback: "MM", hint: "man glasses" } },
 ];
 
 export function RecentActivityList() {

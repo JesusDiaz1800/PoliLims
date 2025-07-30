@@ -15,6 +15,9 @@ import {
     SidebarTrigger,
     useSidebar,
     SidebarSeparator,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem
 } from '@/components/ui/sidebar';
 import {
     LayoutDashboard,
@@ -29,31 +32,126 @@ import {
     Settings,
     FilePlus2,
     ClipboardList,
+    Thermometer,
+    TestTube,
+    Recycle,
+    Wrench,
+    Droplets,
+    ClipboardCheck,
+    ChevronDown,
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+
+const ensayosSubMenu = [
+    { 
+      label: 'Tuberías', 
+      icon: Thermometer,
+      subItems: [
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE' },
+        { href: '/ensayos/tuberias/pp', label: 'PP' },
+      ]
+    },
+    { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
+    { href: '/ensayos/reprocesado', label: 'Reprocesado', icon: Recycle },
+    { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
+    { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
+    { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
+];
+
+const administracionSubMenu = [
+    { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+    { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
+    { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+];
 
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { href: '/reports', label: 'Informes', icon: FileText },
     { type: 'separator' },
-    { href: '/ensayos/registro', label: 'Registrar Ensayo', icon: FilePlus2 },
-    { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
+    {
+        label: 'Ensayos',
+        icon: FilePlus2,
+        subMenu: ensayosSubMenu,
+        href: '/ensayos'
+    },
     { type: 'separator' },
     { href: '/muestras', label: 'Muestras', icon: FlaskConical },
     { href: '/equipos', label: 'Equipos', icon: Beaker },
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
     { type: 'separator' },
     { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
-    { href: '/administracion', label: 'Administración', icon: Settings, 
-      subItems: [
-        { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-        { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
-        { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
-      ]
+    {
+        label: 'Administración',
+        icon: Settings,
+        subMenu: administracionSubMenu,
+        href: '/administracion'
     },
 ];
+
+const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => (
+    <Collapsible
+      key={item.label}
+      defaultOpen={pathname.startsWith(item.href)}
+      className="w-full"
+    >
+      <CollapsibleTrigger asChild>
+          <SidebarMenuButton
+            variant="default"
+            className="w-full justify-between"
+            isActive={pathname.startsWith(item.href)}
+          >
+            <div className='flex items-center gap-2'>
+              <item.icon />
+              <span>{item.label}</span>
+            </div>
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+          </SidebarMenuButton>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <SidebarMenuSub>
+          {item.subMenu.map((subItem: any) => (
+            subItem.subItems ? (
+                 <Collapsible key={subItem.label} defaultOpen={pathname.startsWith(subItem.href || '#')} className="w-full">
+                     <CollapsibleTrigger asChild>
+                         <SidebarMenuSubButton asChild size="sm" className="w-full justify-between pr-2">
+                             <div className='flex items-center gap-2'>
+                                <subItem.icon/>
+                                {subItem.label}
+                                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                             </div>
+                         </SidebarMenuSubButton>
+                     </CollapsibleTrigger>
+                     <CollapsibleContent>
+                         <SidebarMenuSub className="border-l-0 pl-4">
+                             {subItem.subItems.map((childItem: any) => (
+                                 <SidebarMenuSubItem key={childItem.href}>
+                                     <SidebarMenuSubButton asChild size="sm" isActive={pathname === childItem.href}>
+                                         <Link href={childItem.href}>{childItem.label}</Link>
+                                     </SidebarMenuSubButton>
+                                 </SidebarMenuSubItem>
+                             ))}
+                         </SidebarMenuSub>
+                     </CollapsibleContent>
+                 </Collapsible>
+            ) : (
+                <SidebarMenuSubItem key={subItem.href}>
+                    <SidebarMenuSubButton asChild size="sm" isActive={pathname === subItem.href}>
+                        <Link href={subItem.href}>
+                           <subItem.icon className="mr-2" />
+                           {subItem.label}
+                        </Link>
+                    </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+            )
+          ))}
+        </SidebarMenuSub>
+      </CollapsibleContent>
+    </Collapsible>
+);
+
 
 export function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -61,15 +159,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     const getPageTitle = () => {
         for (const item of menuItems) {
-            if (item.href && pathname.startsWith(item.href)) {
-                return item.label;
-            }
-            if (item.subItems) {
-                const subItem = item.subItems.find(sub => pathname.startsWith(sub.href));
-                if (subItem) return subItem.label;
+             if (item.href && pathname === item.href) return item.label;
+             if (item.subMenu) {
+                for(const subItem of item.subMenu) {
+                    if (subItem.href && pathname === subItem.href) return subItem.label;
+                    if(subItem.subItems) {
+                        const child = subItem.subItems.find(child => pathname === child.href);
+                        if(child) return child.label;
+                    }
+                }
             }
         }
-        if (pathname === '/') return 'Dashboard';
+        if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
+        if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
+        if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
+        if (pathname.startsWith('/ensayos/reprocesado')) return 'Ensayos de Reprocesado';
+        if (pathname.startsWith('/ensayos/control-accesorios')) return 'Control de Accesorios';
+        if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
+        if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario';
+        if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
+        if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
+        if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
+        if (pathname === '/dashboard') return 'Dashboard';
         return 'PoliLIMS';
     }
 
@@ -84,21 +195,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </SidebarHeader>
                 <SidebarContent className="p-2">
                     <SidebarMenu>
-                        {menuItems.map((item, index) => (
-                           item.type === 'separator' ? <SidebarSeparator key={`sep-${index}`} className="my-1" /> :
-                            <SidebarMenuItem key={item.href || index}>
-                                <SidebarMenuButton
-                                    asChild
-                                    isActive={pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href))}
-                                    tooltip={state === 'collapsed' && !isMobile ? item.label : undefined}
-                                >
-                                    <Link href={item.href || '#'}>
-                                        <item.icon />
-                                        <span>{item.label}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
+                        {menuItems.map((item, index) => {
+                            if (item.type === 'separator') {
+                                return <SidebarSeparator key={`sep-${index}`} className="my-1" />;
+                            }
+                            if (item.subMenu) {
+                                return <NavCollapsible key={item.label} item={item} pathname={pathname} />;
+                            }
+                            return (
+                                <SidebarMenuItem key={item.href || index}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href))}
+                                        tooltip={state === 'collapsed' && !isMobile ? item.label : undefined}
+                                    >
+                                        <Link href={item.href || '#'}>
+                                            <item.icon />
+                                            <span>{item.label}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            );
+                        })}
                     </SidebarMenu>
                 </SidebarContent>
                 <SidebarFooter>

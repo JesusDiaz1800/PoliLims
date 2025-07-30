@@ -24,7 +24,17 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 
-export function RegistroEnsayoForm() {
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface RegistroEnsayoFormProps {
+  analistas: Option[];
+  ensayos: Option[];
+}
+
+export function RegistroEnsayoForm({ analistas, ensayos }: RegistroEnsayoFormProps) {
   const { toast } = useToast()
   const [date, setDate] = React.useState<Date>()
 
@@ -52,12 +62,9 @@ export function RegistroEnsayoForm() {
               <SelectValue placeholder="Seleccione un tipo de ensayo" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="traccion">Ensayo de Tracción</SelectItem>
-              <SelectItem value="impacto">Ensayo de Impacto (Izod/Charpy)</SelectItem>
-              <SelectItem value="dureza">Medición de Dureza (Shore A/D)</SelectItem>
-              <SelectItem value="mfi">Índice de Fluidez (MFI)</SelectItem>
-              <SelectItem value="dsc">Calorimetría Diferencial de Barrido (DSC)</SelectItem>
-              <SelectItem value="ftir">Espectroscopía Infrarroja (FTIR)</SelectItem>
+              {ensayos.map(ensayo => (
+                <SelectItem key={ensayo.value} value={ensayo.value}>{ensayo.label}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -71,10 +78,9 @@ export function RegistroEnsayoForm() {
                     <SelectValue placeholder="Seleccione un analista" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="jdiaz">Jesus Diaz</SelectItem>
-                    <SelectItem value="mmaximiliano">Maximiliano M.</SelectItem>
-                    <SelectItem value="afigueroa">Antonia Figueroa</SelectItem>
-                    <SelectItem value="vlutz">Victor Lutz</SelectItem>
+                    {analistas.map(analista => (
+                      <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
+                    ))}
                 </SelectContent>
             </Select>
         </div>
