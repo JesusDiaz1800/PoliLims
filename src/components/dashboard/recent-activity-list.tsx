@@ -2,19 +2,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 const activities = [
-    { user: "Jesus Diaz", action: "Completed analysis for Sample #HDPE-0821.", time: "5 min ago", avatar: { src: "https://placehold.co/40x40.png", fallback: "JD", hint: "man portrait" } },
-    { user: "Antonia Figueroa", action: "Logged new batch of PP-R Fusión Socket accessories.", time: "24 min ago", avatar: { src: "https://placehold.co/40x40.png", fallback: "AF", hint: "woman portrait" } },
-    { user: "System", action: "Instrument GC-MS 01 calibration is due in 10 days.", time: "1 hour ago", avatar: { src: "", fallback: "SYS", hint: "" } },
-    { user: "Victor Lutz", action: "Approved report for Lote #M-PRIM-5532.", time: "3 hours ago", avatar: { src: "https://placehold.co/40x40.png", fallback: "VL", hint: "man portrait" } },
-    { user: "Maximiliano M.", action: "Started workflow for Materia Prima - TIO.", time: "8 hours ago", avatar: { src: "https://placehold.co/40x40.png", fallback: "MM", hint: "man glasses" } },
+    { user: "Jesus Diaz", action: "Completó análisis para Muestra #HDPE-0821.", time: "Hace 5 min", avatar: { src: "https://placehold.co/40x40.png", fallback: "JD", hint: "man portrait" } },
+    { user: "Antonia Figueroa", action: "Registró nuevo lote de accesorios PP-R Fusión Socket.", time: "Hace 24 min", avatar: { src: "https://placehold.co/40x40.png", fallback: "AF", hint: "woman portrait" } },
+    { user: "Sistema", action: "Calibración de equipo GC-MS 01 vence en 10 días.", time: "Hace 1 hora", avatar: { src: "", fallback: "SYS", hint: "" } },
+    { user: "Victor Lutz", action: "Aprobó informe para Lote #M-PRIM-5532.", time: "Hace 3 horas", avatar: { src: "https://placehold.co/40x40.png", fallback: "VL", hint: "man portrait" } },
+    { user: "Maximiliano M.", action: "Inició flujo de trabajo para Materia Prima - TIO.", time: "Hace 8 horas", avatar: { src: "https://placehold.co/40x40.png", fallback: "MM", hint: "man glasses" } },
 ];
 
 export function RecentActivityList() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>A log of the most recent actions in the laboratory.</CardDescription>
+                <CardTitle>Actividad Reciente</CardTitle>
+                <CardDescription>Un registro de las acciones más recientes en el laboratorio.</CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="space-y-6">

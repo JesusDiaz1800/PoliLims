@@ -14,6 +14,7 @@ import {
     SidebarInset,
     SidebarTrigger,
     useSidebar,
+    SidebarSeparator,
 } from '@/components/ui/sidebar';
 import {
     LayoutDashboard,
@@ -21,16 +22,37 @@ import {
     Users,
     FileText,
     Bot,
+    FlaskConical,
+    Beaker,
+    Database,
+    ShieldCheck,
+    Settings,
+    FilePlus2,
+    ClipboardList,
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/workflows', label: 'Workflows', icon: GitBranch },
-    { href: '/portal', label: 'Client Portal', icon: Users },
-    { href: '/reports', label: 'Reports', icon: FileText },
-    { href: '/troubleshooting', label: 'AI Troubleshooting', icon: Bot },
+    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
+    { href: '/reports', label: 'Informes', icon: FileText },
+    { type: 'separator' },
+    { href: '/ensayos/registro', label: 'Registrar Ensayo', icon: FilePlus2 },
+    { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
+    { type: 'separator' },
+    { href: '/muestras', label: 'Muestras', icon: FlaskConical },
+    { href: '/equipos', label: 'Equipos', icon: Beaker },
+    { href: '/portal', label: 'Portal de Clientes', icon: Users },
+    { type: 'separator' },
+    { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
+    { href: '/administracion', label: 'Administración', icon: Settings, 
+      subItems: [
+        { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+        { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
+        { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+      ]
+    },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -38,8 +60,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const { state, isMobile } = useSidebar();
 
     const getPageTitle = () => {
-        const currentItem = menuItems.find(item => pathname.startsWith(item.href));
-        if (currentItem) return currentItem.label;
+        for (const item of menuItems) {
+            if (item.href && pathname.startsWith(item.href)) {
+                return item.label;
+            }
+            if (item.subItems) {
+                const subItem = item.subItems.find(sub => pathname.startsWith(sub.href));
+                if (subItem) return subItem.label;
+            }
+        }
         if (pathname === '/') return 'Dashboard';
         return 'PoliLIMS';
     }
@@ -55,14 +84,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </SidebarHeader>
                 <SidebarContent className="p-2">
                     <SidebarMenu>
-                        {menuItems.map((item) => (
-                            <SidebarMenuItem key={item.href}>
+                        {menuItems.map((item, index) => (
+                           item.type === 'separator' ? <SidebarSeparator key={`sep-${index}`} className="my-1" /> :
+                            <SidebarMenuItem key={item.href || index}>
                                 <SidebarMenuButton
                                     asChild
-                                    isActive={pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))}
+                                    isActive={pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href))}
                                     tooltip={state === 'collapsed' && !isMobile ? item.label : undefined}
                                 >
-                                    <Link href={item.href}>
+                                    <Link href={item.href || '#'}>
                                         <item.icon />
                                         <span>{item.label}</span>
                                     </Link>

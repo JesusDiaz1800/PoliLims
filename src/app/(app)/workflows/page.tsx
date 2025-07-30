@@ -3,20 +3,20 @@ import { GitBranch } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Workflows',
+  title: 'Flujos de Trabajo',
 };
 
 export default function WorkflowsPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Workflows</CardTitle>
-        <CardDescription>Interactive workflow visualization to track samples and processes.</CardDescription>
+        <CardTitle>Flujos de Trabajo</CardTitle>
+        <CardDescription>Visualización interactiva de flujos de trabajo para seguir muestras y procesos.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <GitBranch className="w-16 h-16 text-muted-foreground/50 mb-4" />
-        <h3 className="text-xl font-semibold font-headline">Workflow Visualization Coming Soon</h3>
-        <p className="text-muted-foreground mt-2">This section will provide a graphical representation of your lab processes.</p>
+        <h3 className="text-xl font-semibold font-headline">Visualización de Flujos de Trabajo Próximamente</h3>
+        <p className="text-muted-foreground mt-2">Esta sección proporcionará una representación gráfica de sus procesos de laboratorio.</p>
       </CardContent>
     </Card>
   );

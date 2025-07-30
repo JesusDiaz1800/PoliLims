@@ -4,28 +4,28 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
 const instruments = [
-    { name: "GC-MS 01", status: "Active", calibrationDue: 90, assignedTo: "Jesus Diaz" },
-    { name: "HPLC 03", status: "Active", calibrationDue: 75, assignedTo: "Maximiliano M." },
-    { name: "FTIR Spectrometer", status: "Maintenance", calibrationDue: 0, assignedTo: "-" },
-    { name: "pH Meter A2", status: "Active", calibrationDue: 12, assignedTo: "Antonia Figueroa" },
-    { name: "Viscometer 04", status: "Inactive", calibrationDue: 45, assignedTo: "-" },
+    { name: "GC-MS 01", status: "Activo", calibrationDue: 90, assignedTo: "Jesus Diaz" },
+    { name: "HPLC 03", status: "Activo", calibrationDue: 75, assignedTo: "Maximiliano M." },
+    { name: "Espectrómetro FTIR", status: "Mantenimiento", calibrationDue: 0, assignedTo: "-" },
+    { name: "pH Metro A2", status: "Activo", calibrationDue: 12, assignedTo: "Antonia Figueroa" },
+    { name: "Viscosímetro 04", status: "Inactivo", calibrationDue: 45, assignedTo: "-" },
 ];
 
 export function InstrumentUsageList() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Instrument Status</CardTitle>
-                <CardDescription>Real-time usage and calibration tracking of lab instruments.</CardDescription>
+                <CardTitle>Estado de Equipos</CardTitle>
+                <CardDescription>Seguimiento en tiempo real del uso y calibración de los equipos del laboratorio.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Instrument</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Calibration</TableHead>
-                            <TableHead>Assigned To</TableHead>
+                            <TableHead>Equipo</TableHead>
+                            <TableHead>Estado</TableHead>
+                            <TableHead>Calibración</TableHead>
+                            <TableHead>Asignado a</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -33,7 +33,12 @@ export function InstrumentUsageList() {
                             <TableRow key={instrument.name}>
                                 <TableCell className="font-medium">{instrument.name}</TableCell>
                                 <TableCell>
-                                    <Badge variant={instrument.status === 'Active' ? 'default' : instrument.status === 'Maintenance' ? 'destructive' : 'secondary'} className={instrument.status === 'Active' ? 'bg-green-500/20 text-green-700 border-green-500/30' : ''}>
+                                    <Badge variant={instrument.status === 'Activo' ? 'default' : instrument.status === 'Mantenimiento' ? 'destructive' : 'secondary'} 
+                                           className={
+                                            instrument.status === 'Activo' ? 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30' : 
+                                            instrument.status === 'Mantenimiento' ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' :
+                                            'bg-yellow-500/20 text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/30'
+                                           }>
                                         {instrument.status}
                                     </Badge>
                                 </TableCell>

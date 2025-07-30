@@ -7,8 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, AlertCircle, Sparkles, Wand2 } from 'lucide-react';
+import { Loader2, Sparkles, Wand2 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const initialState = { message: '', data: null, error: null, fieldErrors: null };
@@ -20,12 +19,12 @@ function SubmitButton() {
             {pending ? (
                 <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing...
+                    Analizando...
                 </>
             ) : (
                 <>
                     <Wand2 className="mr-2 h-4 w-4" />
-                    Get Suggestion
+                    Obtener Sugerencia
                 </>
             )}
         </Button>
@@ -40,8 +39,8 @@ export function TroubleshootingForm() {
         if (state.message === "Failed to get suggestion from AI.") {
             toast({
                 variant: "destructive",
-                title: "AI Error",
-                description: state.error || "An unknown error occurred.",
+                title: "Error de IA",
+                description: state.error || "Ocurrió un error desconocido.",
             });
         }
     }, [state, toast]);
@@ -51,17 +50,17 @@ export function TroubleshootingForm() {
         <div className="mt-8">
             <Card>
                 <CardHeader>
-                    <CardTitle>Describe the Issue</CardTitle>
-                    <CardDescription>Provide the error message and describe what you were doing when the error occurred. Our AI will analyze the problem.</CardDescription>
+                    <CardTitle>Describa el Problema</CardTitle>
+                    <CardDescription>Proporcione el mensaje de error y describa qué estaba haciendo cuando ocurrió. Nuestra IA analizará el problema.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form action={formAction} className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="errorMessage">Error Message</Label>
+                            <Label htmlFor="errorMessage">Mensaje de Error</Label>
                             <Textarea
                                 id="errorMessage"
                                 name="errorMessage"
-                                placeholder="Paste the full error message here..."
+                                placeholder="Pegue el mensaje de error completo aquí..."
                                 rows={4}
                                 required
                                 className="bg-background"
@@ -71,11 +70,11 @@ export function TroubleshootingForm() {
                             )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="usagePatterns">Usage Patterns</Label>
+                            <Label htmlFor="usagePatterns">Patrones de Uso</Label>
                             <Textarea
                                 id="usagePatterns"
                                 name="usagePatterns"
-                                placeholder="Describe the steps you took, the instrument used, and any unusual observations..."
+                                placeholder="Describa los pasos que siguió, el equipo utilizado y cualquier observación inusual..."
                                 rows={6}
                                 required
                                 className="bg-background"
@@ -94,21 +93,21 @@ export function TroubleshootingForm() {
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <Sparkles className="h-6 w-6 text-primary" />
-                            <CardTitle>AI Analysis & Suggestions</CardTitle>
+                            <CardTitle>Análisis y Sugerencias de la IA</CardTitle>
                         </div>
-                        <CardDescription>Here is the analysis from our AI assistant.</CardDescription>
+                        <CardDescription>Este es el análisis de nuestro asistente de IA.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div>
-                            <h3 className="font-semibold font-headline mb-2">Problem Identification</h3>
+                            <h3 className="font-semibold font-headline mb-2">Identificación del Problema</h3>
                             <p className="text-sm text-muted-foreground bg-secondary p-4 rounded-md">{state.data.problemIdentification}</p>
                         </div>
                          <div>
-                            <h3 className="font-semibold font-headline mb-2">Suggested Solutions</h3>
+                            <h3 className="font-semibold font-headline mb-2">Soluciones Sugeridas</h3>
                             <p className="text-sm text-muted-foreground bg-secondary p-4 rounded-md whitespace-pre-wrap">{state.data.suggestedSolutions}</p>
                         </div>
                          <div>
-                            <h3 className="font-semibold font-headline mb-2">Relevant Documentation</h3>
+                            <h3 className="font-semibold font-headline mb-2">Documentación Relevante</h3>
                             <p className="text-sm text-muted-foreground bg-secondary p-4 rounded-md">{state.data.relevantDocumentation}</p>
                         </div>
                     </CardContent>
