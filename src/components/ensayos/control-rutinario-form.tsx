@@ -49,11 +49,6 @@ const formSchema = z.object({
   peso_muestra: z.number().optional(),
   peso_kg_m: z.number().optional(),
   ovalidad: z.number().optional(),
-  resistencia_traccion: z.number().optional(),
-  limite_fluencia: z.number().optional(),
-  elongacion_rotura: z.number().optional(),
-  resistencia_impacto: z.string().optional(),
-  phi_20: z.string().optional(),
   observaciones: z.string().optional(),
   entregado_laboratorio: z.boolean().default(false),
 })
@@ -78,7 +73,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     },
   })
 
-  const { watch } = form
+  const { watch, control } = form
 
   const producto = watch("producto")
   const diametro = watch("diametro")
@@ -250,78 +245,49 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         </CardContent>
       </Card>
       
-       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader><CardTitle className="text-xl">Mediciones Dimensionales</CardTitle></CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <Label htmlFor="diametro">Diámetro [mm]</Label>
-                    <Input id="diametro" type="number" step="any" placeholder="Ingrese el diámetro" {...form.register("diametro", { valueAsNumber: true })}/>
-                    <AlertaValidacion mensaje={alerts.diametro} />
-                </div>
-               <div className="space-y-2">
-                  <Label htmlFor="espesor_min">Espesor Mín. [mm]</Label>
-                  <Input id="espesor_min" type="number" step="any" placeholder="Valor mínimo" {...form.register("espesor_min", { valueAsNumber: true })}/>
-                  <AlertaValidacion mensaje={alerts.espesor_min} />
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="espesor_max">Espesor Máx. [mm]</Label>
-                  <Input id="espesor_max" type="number" step="any" placeholder="Valor máximo" {...form.register("espesor_max", { valueAsNumber: true })}/>
-                   <AlertaValidacion mensaje={alerts.espesor_max} />
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="largo">Largo [mm]</Label>
-                  <Input id="largo" type="number" step="any" placeholder="Largo de la muestra" {...form.register("largo", { valueAsNumber: true })}/>
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="peso_muestra">Peso muestra [g]</Label>
-                  <Input id="peso_muestra" type="number" step="any" placeholder="Peso en gramos" {...form.register("peso_muestra", { valueAsNumber: true })}/>
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
-                  <Input id="peso_kg_m" type="number" step="any" placeholder="Peso en kg/metro" {...form.register("peso_kg_m", { valueAsNumber: true })}/>
-                  <AlertaValidacion mensaje={alerts.peso_kg_m} />
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="ovalidad">Ovalidad [mm]</Label>
-                  <Input id="ovalidad" type="number" step="any" placeholder="Medida de ovalidad" {...form.register("ovalidad", { valueAsNumber: true })}/>
-                  <AlertaValidacion mensaje={alerts.ovalidad} />
-              </div>
-            </CardContent>
-          </Card>
-          
-           <Card>
-            <CardHeader><CardTitle className="text-xl">Ensayos Mecánicos y Visuales</CardTitle></CardHeader>
-            <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="space-y-2">
-                      <Label htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</Label>
-                      <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...form.register("resistencia_traccion", { valueAsNumber: true })}/>
-                  </div>
-                  <div className="space-y-2">
-                      <Label htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</Label>
-                      <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...form.register("limite_fluencia", { valueAsNumber: true })}/>
-                  </div>
-                  <div className="space-y-2">
-                      <Label htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</Label>
-                      <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...form.register("elongacion_rotura", { valueAsNumber: true })}/>
-                  </div>
-                   <div className="space-y-2">
-                      <Label htmlFor="resistencia_impacto">Resistencia al Impacto</Label>
-                      <Input id="resistencia_impacto" placeholder="Resultado del ensayo" {...form.register("resistencia_impacto")}/>
-                  </div>
-                   <div className="space-y-2">
-                      <Label htmlFor="phi_20">PHI a 20[°C]</Label>
-                      <Input id="phi_20" placeholder="Resultado del ensayo" {...form.register("phi_20")}/>
-                  </div>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="observaciones">Observaciones de Calidad Visual</Label>
-                    <Textarea id="observaciones" placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...form.register("observaciones")}/>
-                 </div>
-            </CardContent>
-           </Card>
-       </div>
+       
+        <Card>
+        <CardHeader><CardTitle className="text-xl">Mediciones Dimensionales</CardTitle></CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+                <Label htmlFor="diametro">Diámetro [mm]</Label>
+                <Input id="diametro" type="number" step="any" placeholder="Ingrese el diámetro" {...form.register("diametro", { valueAsNumber: true })}/>
+                <AlertaValidacion mensaje={alerts.diametro} />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="espesor_min">Espesor Mín. [mm]</Label>
+                <Input id="espesor_min" type="number" step="any" placeholder="Valor mínimo" {...form.register("espesor_min", { valueAsNumber: true })}/>
+                <AlertaValidacion mensaje={alerts.espesor_min} />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="espesor_max">Espesor Máx. [mm]</Label>
+                <Input id="espesor_max" type="number" step="any" placeholder="Valor máximo" {...form.register("espesor_max", { valueAsNumber: true })}/>
+                <AlertaValidacion mensaje={alerts.espesor_max} />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="largo">Largo [mm]</Label>
+                <Input id="largo" type="number" step="any" placeholder="Largo de la muestra" {...form.register("largo", { valueAsNumber: true })}/>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="peso_muestra">Peso muestra [g]</Label>
+                <Input id="peso_muestra" type="number" step="any" placeholder="Peso en gramos" {...form.register("peso_muestra", { valueAsNumber: true })}/>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
+                <Input id="peso_kg_m" type="number" step="any" placeholder="Peso en kg/metro" {...form.register("peso_kg_m", { valueAsNumber: true })}/>
+                <AlertaValidacion mensaje={alerts.peso_kg_m} />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="ovalidad">Ovalidad [mm]</Label>
+                <Input id="ovalidad" type="number" step="any" placeholder="Medida de ovalidad" {...form.register("ovalidad", { valueAsNumber: true })}/>
+                <AlertaValidacion mensaje={alerts.ovalidad} />
+            </div>
+             <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="observaciones">Observaciones de Calidad Visual</Label>
+                <Textarea id="observaciones" placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...form.register("observaciones")}/>
+            </div>
+        </CardContent>
+        </Card>
       
         <Card>
             <CardHeader>
