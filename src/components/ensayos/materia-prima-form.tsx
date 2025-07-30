@@ -281,7 +281,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Porcentaje de Humedad</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
-                </card>
+                </Card>
               </TabsContent>
 
            </Tabs>
@@ -320,5 +320,5 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
         </Button>
       </div>
     </form>
-  )
+  );
 }
