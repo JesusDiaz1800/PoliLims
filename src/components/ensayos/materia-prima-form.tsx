@@ -33,6 +33,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface Option {
   value: string;
@@ -170,14 +171,17 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
         </CardHeader>
         <CardContent>
            <Tabs defaultValue="melt_index" className="w-full">
-              <TabsList className="grid w-full grid-cols-7">
+            <ScrollArea>
+              <TabsList className="flex w-max">
                  {ensayos.map(ensayo => (
                     <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
                  ))}
               </TabsList>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
 
               {/* Pestaña Melt Index */}
-              <TabsContent value="melt_index">
+              <TabsContent value="melt_index" className="mt-4">
                 <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
@@ -204,7 +208,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
               </TabsContent>
               
               {/* Pestaña Densidad */}
-              <TabsContent value="densidad">
+              <TabsContent value="densidad" className="mt-4">
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Densidad</CardTitle>
@@ -216,31 +220,31 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
               </TabsContent>
 
               {/* Otras Pestañas */}
-              <TabsContent value="porcentaje_negro_humo">
+              <TabsContent value="porcentaje_negro_humo" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
                 </Card>
               </TabsContent>
-              <TabsContent value="dsc">
+              <TabsContent value="dsc" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: DSC</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
                 </Card>
               </TabsContent>
-              <TabsContent value="tio">
+              <TabsContent value="tio" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
                 </Card>
               </TabsContent>
-               <TabsContent value="cenizas">
+               <TabsContent value="cenizas" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
                 </Card>
               </TabsContent>
-               <TabsContent value="humedad">
+               <TabsContent value="humedad" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Porcentaje de Humedad</CardTitle></CardHeader>
                   <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
