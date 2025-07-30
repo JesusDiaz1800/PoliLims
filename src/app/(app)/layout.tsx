@@ -1,6 +1,8 @@
+
 import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
+import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
     title: {
@@ -12,12 +14,19 @@ export const metadata: Metadata = {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="bg-background">
-            <SidebarProvider>
-                <AppShell>
-                    {children}
-                </AppShell>
-            </SidebarProvider>
-        </div>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <div className="bg-background">
+                <SidebarProvider>
+                    <AppShell>
+                        {children}
+                    </AppShell>
+                </SidebarProvider>
+            </div>
+        </ThemeProvider>
     );
 }

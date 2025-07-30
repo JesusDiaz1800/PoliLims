@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -71,6 +72,7 @@ const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
 ];
 
 const menuItems = [
@@ -199,6 +201,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
+        if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
         
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;
