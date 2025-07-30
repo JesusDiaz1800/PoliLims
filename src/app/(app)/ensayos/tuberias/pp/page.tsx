@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { RegistroEnsayoForm } from "@/components/ensayos/registro-ensayo-form";
+import { TuberiasPpForm } from "@/components/ensayos/tuberias-pp-form";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,18 +14,13 @@ export default function TuberiasPpPage() {
         <CardDescription>Complete el formulario para registrar un ensayo de tuberías PP.</CardDescription>
       </CardHeader>
       <CardContent>
-        <RegistroEnsayoForm 
+        <TuberiasPpForm 
             analistas={[
                 { value: "jesus.diaz", label: "Jesus Diaz" },
                 { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
                 { value: "antonia.figueroa", label: "Antonia Figueroa" },
                 { value: "robinson.cordova", label: "Robinson Córdova" },
                 { value: "bryan.vasquez", label: "Bryan Vásquez" },
-            ]}
-            ensayos={[
-                { value: "melt_index", label: "Melt Index" },
-                { value: "densidad", label: "Densidad" },
-                { value: "fibra_vidrio", label: "Fibra de Vidrio" },
             ]}
         />
       </CardContent>
