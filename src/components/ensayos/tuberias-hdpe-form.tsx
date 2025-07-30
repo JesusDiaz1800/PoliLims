@@ -384,8 +384,8 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
                   <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                        <Label htmlFor="dispersion_nh">Resultado de Dispersión</Label>
-                        <Input id="dispersion_nh" placeholder="Ingrese el resultado observado" />
+                        <Label htmlFor="dispersion_nh">Grado de Dispersión</Label>
+                        <Input id="dispersion_nh" placeholder="Ej: Grado A1" />
                     </div>
                   </CardContent>
                 </Card>
