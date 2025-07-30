@@ -77,9 +77,9 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
     const resultado = promedio * 2;
     setMeltIndexCalculado(resultado);
 
-    const reportado = parseFloat(getValues("melt_index_reportado"));
-    if (!isNaN(reportado) && reportado !== 0) {
-        const variacion = Math.abs(resultado - reportado) / reportado;
+    const materiaPrimaMI = parseFloat(getValues("melt_index_materia_prima"));
+    if (!isNaN(materiaPrimaMI) && materiaPrimaMI !== 0) {
+        const variacion = Math.abs(resultado - materiaPrimaMI) / materiaPrimaMI;
         setMeltIndexVariacion(variacion * 100);
     } else {
         setMeltIndexVariacion(0);
@@ -223,7 +223,7 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
                   <CardHeader>
                     <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
                     <CardDescription>
-                      Fórmula: PROMEDIO(mediciones) * 2
+                      Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
@@ -265,17 +265,17 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="melt_index_reportado">Índice de fluidez de referencia [g/10min]</Label>
-                        <Controller name="melt_index_reportado" control={control} render={({ field }) => <Input {...field} type="number" placeholder="Valor de referencia" onChange={e => { field.onChange(e); calculateMeltIndex(); }} />} />
+                        <Label htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</Label>
+                        <Controller name="melt_index_materia_prima" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Valor del lote de MP" onChange={e => { field.onChange(e); calculateMeltIndex(); }} />} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Índice de fluidez ensayado [g/10min]</Label>
+                         <Label>Índice de fluidez Producto Terminado [g/10min]</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexCalculado.toFixed(4)}
                          </div>
                        </div>
                        <div className="space-y-2">
-                         <Label>Variación</Label>
+                         <Label>Porcentaje de variación [%]</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexVariacion.toFixed(2)}%
                          </div>
