@@ -29,14 +29,12 @@ import {
     Settings,
     FilePlus2,
     ClipboardList,
-    Thermometer,
     TestTube,
     Recycle,
     Wrench,
     Droplets,
     ClipboardCheck,
     ChevronDown,
-    ChevronUp,
     ChevronsRight,
     SlidersHorizontal,
     Construction
@@ -48,7 +46,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: Construction, // Using a more generic icon for the parent
+      icon: Construction,
       href: '/ensayos/tuberias',
       subItems: [
         { href: '/ensayos/tuberias/hdpe', label: 'HDPE' },
@@ -62,7 +60,6 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
     { type: 'separator' },
     { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
-    { href: '/ensayos/registro', label: 'Registrar Nuevo Ensayo', icon: FilePlus2 },
 ];
 
 const administracionSubMenu = [
@@ -121,10 +118,10 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
             if (subItem.type === 'separator') {
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
             }
-            return (
-                 <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full">
-                     <CollapsibleTrigger asChild className="w-full">
-                        {subItem.subItems ? (
+            if (subItem.subItems) {
+                return (
+                    <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full">
+                         <CollapsibleTrigger asChild>
                              <SidebarMenuButton size="sm" variant="ghost" className="w-full justify-between group/sub-button pr-3">
                                 <div className="flex items-center gap-3">
                                     {subItem.icon && <subItem.icon className="size-4" />}
@@ -132,18 +129,7 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
                                 </div>
                                 <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/sub-button:rotate-180" />
                             </SidebarMenuButton>
-                        ) : (
-                            <SidebarMenuItem>
-                                <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" isActive={pathname === subItem.href}>
-                                    <Link href={subItem.href}>
-                                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                                       <span>{subItem.label}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        )}
-                     </CollapsibleTrigger>
-                     {subItem.subItems && (
+                         </CollapsibleTrigger>
                          <CollapsibleContent>
                              <SidebarMenu className="pl-5 border-l-2 border-dashed border-sidebar-border/30">
                                  {subItem.subItems.map((childItem: any) => (
@@ -158,8 +144,18 @@ const NavCollapsible = ({ item, pathname }: { item: any, pathname: string }) => 
                                  ))}
                              </SidebarMenu>
                          </CollapsibleContent>
-                     )}
-                 </Collapsible>
+                    </Collapsible>
+                );
+            }
+            return (
+                <SidebarMenuItem key={subItem.href}>
+                    <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" isActive={pathname === subItem.href}>
+                        <Link href={subItem.href}>
+                           {subItem.icon && <subItem.icon className="mr-2 size-4" />}
+                           <span>{subItem.label}</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
             )
 })}
         </SidebarMenu>
@@ -173,7 +169,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const { state, isMobile } = useSidebar();
 
     const getPageTitle = () => {
-        // A flattened map for faster lookup could be better for performance
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
         if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
         if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
@@ -182,12 +177,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
         if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario de Tuberías';
         if (pathname.startsWith('/ensayos/seguimiento')) return 'Seguimiento de Ensayos';
-        if (pathname.startsWith('/ensayos/registro')) return 'Registrar Nuevo Ensayo';
         if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
-        if (pathname === '/dashboard') return 'Dashboard';
         
+        // Find title for top-level menu items
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;
         }

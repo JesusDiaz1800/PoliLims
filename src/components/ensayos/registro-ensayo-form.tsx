@@ -30,11 +30,11 @@ interface Option {
 }
 
 interface RegistroEnsayoFormProps {
-  analistas: Option[];
-  ensayos: Option[];
+  analistas?: Option[];
+  ensayos?: Option[];
 }
 
-export function RegistroEnsayoForm({ analistas, ensayos }: RegistroEnsayoFormProps) {
+export function RegistroEnsayoForm({ analistas = [], ensayos = [] }: RegistroEnsayoFormProps) {
   const { toast } = useToast()
   const [date, setDate] = React.useState<Date>()
 
