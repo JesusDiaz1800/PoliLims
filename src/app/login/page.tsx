@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-gradient-to-br from-background via-blue-900/20 to-background">
+      <Card className="w-full max-w-md bg-card/80 backdrop-blur-lg border-primary/20 shadow-glow">
         <CardHeader className="text-center space-y-4">
             <div className="mx-auto h-24 w-56">
                 <Logo className="w-full h-full" />
