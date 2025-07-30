@@ -155,7 +155,6 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
                 );
             }
             const isSubItemActive = pathname === subItem.href;
-            const isSubItemDisabled = subItem.href !== '/ensayos/control-rutinario';
             
             return (
                 <SidebarMenuItem key={subItem.href}>
@@ -165,8 +164,8 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
                         variant="ghost" 
                         className="w-full justify-start" 
                         isActive={isSubItemActive} 
-                        disabled={isSubItemDisabled}
-                        aria-disabled={isSubItemDisabled}
+                        disabled={disabled}
+                        aria-disabled={disabled}
                         >
                         <Link href={subItem.href}>
                            {subItem.icon && <subItem.icon className="mr-2 size-4" />}
@@ -185,7 +184,7 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
 export function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { state, isMobile } = useSidebar();
-    const isInspectorView = true; // En una app real, esto vendría de la sesión del usuario.
+    const isInspectorView = false; // En una app real, esto vendría de la sesión del usuario.
 
     const getPageTitle = () => {
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
@@ -204,7 +203,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
              if (item.href && pathname === item.href) return item.label;
         }
 
-        return 'PoliLIMS';
+        return 'Dashboard';
     }
 
     return (
@@ -227,7 +226,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     )}
                     <SidebarMenu>
                         {menuItems.map((item, index) => {
-                            const isDisabled = isInspectorView && item.href !== '/ensayos';
+                            const isDisabled = isInspectorView && item.href !== '/ensayos/control-rutinario' && item.href !== '/dashboard';
 
                             if (item.type === 'separator') {
                                 return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
