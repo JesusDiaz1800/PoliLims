@@ -325,17 +325,17 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
                     <CardHeader>
                         <CardTitle>Ensayo: Tracción y Elongación</CardTitle>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="resistencia_traccion">Resistencia a la tracción [MPa]</Label>
+                            <Label htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</Label>
                             <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="limite_fluencia">Límite de fluencia [MPa]</Label>
+                            <Label htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</Label>
                             <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="elongacion_rotura">Elongación a la rotura [%]</Label>
+                            <Label htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</Label>
                             <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" />
                         </div>
                     </CardContent>
