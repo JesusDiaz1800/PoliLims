@@ -361,11 +361,11 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
                         <Controller name="nh_m2" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m2" onChange={e => { field.onChange(e); calculateNegroHumo(); }} />} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</Label>
+                        <Label htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</Label>
                         <Controller name="nh_m3" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m3" onChange={e => { field.onChange(e); calculateNegroHumo(); }} />} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
+                        <Label htmlFor="nh_m4">m4: Cápsula con ceniza [g]</Label>
                         <Controller name="nh_m4" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="m4" onChange={e => { field.onChange(e); calculateNegroHumo(); }} />} />
                       </div>
                        <div className="space-y-2">
