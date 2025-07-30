@@ -82,7 +82,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     },
   })
 
-  const { watch } = form
+  const { watch, setValue } = form
 
   const producto = watch("producto")
   const diametro = watch("diametro")
@@ -91,35 +91,50 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const ovalidad = watch("ovalidad")
   const peso_kg_m = watch("peso_kg_m")
   const tipoEnsayoGeneral = watch("tipoEnsayoGeneral")
+  const largo = watch("largo");
+  const peso_muestra = watch("peso_muestra");
+
 
   React.useEffect(() => {
     const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
-    const newAlerts: ValidationAlerts = {}
-
     if (productoSeleccionado) {
-      if (diametro !== undefined) {
-        if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
-        else if (diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
-      }
-      if (espesor_min !== undefined) {
-        if (espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-        else if (espesor_min > productoSeleccionado.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
-      }
-      if (espesor_max !== undefined) {
-        if (espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
-        else if (espesor_max < productoSeleccionado.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
-      }
-      if (ovalidad !== undefined && productoSeleccionado.ovalidad_norma !== null) {
-        if (ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
-      }
-      if (peso_kg_m !== undefined) {
-        if (peso_kg_m < productoSeleccionado.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
-        else if (peso_kg_m > productoSeleccionado.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
-      }
+        // Autocompletar campos
+        setValue("color_tuberia", productoSeleccionado.color_tuberia || "");
+        setValue("color_linea", productoSeleccionado.color_linea || "");
+        
+        // Lógica de validación
+        const newAlerts: ValidationAlerts = {}
+        if (diametro !== undefined) {
+            if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
+            else if (diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
+        }
+        if (espesor_min !== undefined) {
+            if (espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
+            else if (espesor_min > productoSeleccionado.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
+        }
+        if (espesor_max !== undefined) {
+            if (espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
+            else if (espesor_max < productoSeleccionado.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
+        }
+        if (ovalidad !== undefined && productoSeleccionado.ovalidad_norma !== null) {
+            if (ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
+        }
+        if (peso_kg_m !== undefined) {
+            if (peso_kg_m < productoSeleccionado.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
+            else if (peso_kg_m > productoSeleccionado.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
+        }
+        setAlerts(newAlerts)
+    } else {
+        setAlerts({})
     }
-    
-    setAlerts(newAlerts)
-  }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m])
+  }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m, setValue])
+
+  React.useEffect(() => {
+    if (peso_muestra !== undefined && largo !== undefined && largo > 0) {
+        const pesoCalculado = (peso_muestra / largo) / 10;
+        setValue("peso_kg_m", pesoCalculado);
+    }
+  }, [largo, peso_muestra, setValue]);
 
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -266,7 +281,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
-                        <Input id="peso_kg_m" type="number" step="any" placeholder="Peso en kg/metro" {...form.register("peso_kg_m", { valueAsNumber: true })}/>
+                        <Input id="peso_kg_m" type="number" step="any" placeholder="Calculado..." {...form.register("peso_kg_m", { valueAsNumber: true })} readOnly className="bg-muted"/>
                         <AlertaValidacion mensaje={alerts.peso_kg_m} />
                     </div>
                     <div className="space-y-2">
@@ -279,11 +294,11 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                      <div className="space-y-2">
                         <Label htmlFor="color_tuberia">Color de Tubería</Label>
-                        <Input id="color_tuberia" placeholder="Ej: Negro" {...form.register("color_tuberia")} />
+                        <Input id="color_tuberia" placeholder="Autocompletado..." {...form.register("color_tuberia")} readOnly className="bg-muted" />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="color_linea">Color de Línea de Identificación</Label>
-                        <Input id="color_linea" placeholder="Ej: Azul" {...form.register("color_linea")} />
+                        <Input id="color_linea" placeholder="Autocompletado..." {...form.register("color_linea")} readOnly className="bg-muted"/>
                     </div>
                      <div className="space-y-2 md:col-span-3">
                         <Label htmlFor="observaciones_visuales">Observaciones de Calidad Visual</Label>

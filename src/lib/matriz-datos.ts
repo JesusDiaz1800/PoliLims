@@ -14,6 +14,8 @@ export interface TipoProducto {
   presion_phi: number | null;
   temperatura_phi: number | null;
   tiempo_phi: number | null;
+  color_tuberia?: string;
+  color_linea?: string;
 }
 
 export const matrizProductos: TipoProducto[] = [
@@ -32,7 +34,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.129,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 25 mm PN10",
@@ -49,7 +53,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.163,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 32 mm PN10",
@@ -66,7 +72,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.212,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 40 mm PN10",
@@ -83,7 +91,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.334,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 50 mm PN10",
@@ -100,7 +110,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.526,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 63 mm PN10",
@@ -117,7 +129,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.834,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 75 mm PN10",
@@ -134,7 +148,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 1.178,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 90 mm PN10",
@@ -151,7 +167,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 1.691,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PEAD 110 mm PN10",
@@ -168,7 +186,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 2.535,
     presion_phi: 35,
     temperatura_phi: 80,
-    tiempo_phi: 165
+    tiempo_phi: 165,
+    color_tuberia: "Negro",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia PP-R 20 mm PN20",
@@ -185,7 +205,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.218,
     presion_phi: 51,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "N/A"
   },
   {
     producto: "Tuberia PP-R 25 mm PN20",
@@ -202,7 +224,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.337,
     presion_phi: 51,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "N/A"
   },
   {
     producto: "Tuberia PP-R 32 mm PN20",
@@ -219,7 +243,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.545,
     presion_phi: 51,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "N/A"
   },
   {
     producto: "Tuberia FASER BETA-FIBRA 20 mm PN20",
@@ -236,7 +262,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.180,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Blanco",
+    color_linea: "Roja"
   },
   {
     producto: "Tuberia FASER AQUA-FIBRA 20 mm PN20",
@@ -253,7 +281,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.180,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia FASER BETA-FIBRA 25 mm PN20",
@@ -270,7 +300,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.276,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Blanco",
+    color_linea: "Roja"
   },
   {
     producto: "Tuberia FASER AQUA-FIBRA 25 mm PN20",
@@ -287,7 +319,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.276,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "Azul"
   },
   {
     producto: "Tuberia FASER BETA-FIBRA 32 mm PN20",
@@ -304,7 +338,9 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.439,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Blanco",
+    color_linea: "Roja"
   },
   {
     producto: "Tuberia FASER AQUA-FIBRA 32 mm PN20",
@@ -321,6 +357,8 @@ export const matrizProductos: TipoProducto[] = [
     peso_max_teorico: 0.439,
     presion_phi: 53,
     temperatura_phi: 95,
-    tiempo_phi: 22
+    tiempo_phi: 22,
+    color_tuberia: "Verde",
+    color_linea: "Azul"
   }
 ];
