@@ -94,31 +94,30 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   React.useEffect(() => {
     const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
-
-    if (!productoSeleccionado) {
-      setAlerts({});
-      return;
-    }
-    
     const newAlerts: ValidationAlerts = {}
 
-    if (diametro !== undefined) {
-      if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
-      else if (diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
-    }
-    if (espesor_min !== undefined) {
-      if (espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-    }
-    if (espesor_max !== undefined) {
-      if (espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
-    }
-    if (ovalidad !== undefined && productoSeleccionado.ovalidad_norma) {
-      if (ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
-    }
-    if (peso_kg_m !== undefined) {
+    if (productoSeleccionado) {
+      if (diametro !== undefined) {
+        if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
+        else if (diametro < productoSeleccionado.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
+      }
+      if (espesor_min !== undefined) {
+        if (espesor_min < productoSeleccionado.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
+        else if (espesor_min > productoSeleccionado.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
+      }
+      if (espesor_max !== undefined) {
+        if (espesor_max > productoSeleccionado.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
+        else if (espesor_max < productoSeleccionado.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
+      }
+      if (ovalidad !== undefined && productoSeleccionado.ovalidad_norma !== null) {
+        if (ovalidad > productoSeleccionado.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
+      }
+      if (peso_kg_m !== undefined) {
         if (peso_kg_m < productoSeleccionado.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
         else if (peso_kg_m > productoSeleccionado.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
+      }
     }
+    
     setAlerts(newAlerts)
   }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m])
 
