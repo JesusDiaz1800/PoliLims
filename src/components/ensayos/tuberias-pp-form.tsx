@@ -247,7 +247,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
     router.push('/ensayos/seguimiento');
   };
   
-  const ensayos = [
+  const ensayoTabs = [
     { value: "melt_index", label: "Melt Index" },
     { value: "densidad", label: "Densidad" },
     { value: "fibra_vidrio", label: "Fibra de Vidrio" },
@@ -337,7 +337,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
            <Tabs defaultValue="melt_index" className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
-                 {ensayos.map(ensayo => (
+                 {ensayoTabs.map(ensayo => (
                     <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
                  ))}
               </TabsList>
