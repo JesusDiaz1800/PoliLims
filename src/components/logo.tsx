@@ -9,7 +9,7 @@ export function Logo({ className }: { className?: string }) {
         alt="Polifusion Logo"
         fill
         sizes="(max-width: 768px) 100vw, 12rem"
-        className="object-contain dark:invert"
+        className="object-contain"
         priority
         data-ai-hint="logo polifusion"
       />
