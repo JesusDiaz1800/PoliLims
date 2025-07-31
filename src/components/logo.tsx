@@ -5,7 +5,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <div className={cn("relative", className)}>
        <Image
-        src="https://placehold.co/224x48.png"
+        src="https://storage.googleapis.com/studioprompt/polifusion_logo.png"
         alt="Polifusion Logo"
         fill
         sizes="(max-width: 768px) 100vw, 12rem"

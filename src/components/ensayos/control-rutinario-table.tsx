@@ -109,9 +109,10 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                   <TableCell className="font-medium">{registro.producto}</TableCell>
                   <TableCell>
                     <Badge variant={registro.resultado === 'Conforme' ? 'default' : 'destructive'} className={cn(
-                      "font-normal",
-                      "border-transparent",
-                      registro.resultado === 'Conforme' ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
+                      "font-normal border-transparent",
+                       registro.resultado === 'Conforme' 
+                        ? 'bg-green-500/20 text-green-700 dark:text-green-300' 
+                        : 'bg-orange-500/20 text-orange-700 dark:text-orange-300'
                     )}>
                       {registro.resultado === 'Conforme' ? <CheckCircle className="mr-1.5 h-3.5 w-3.5"/> : <AlertCircle className="mr-1.5 h-3.5 w-3.5"/>}
                       {registro.resultado}
@@ -119,7 +120,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                   </TableCell>
                   <TableCell className="text-center">
                     {registro.enviado_lab ? (
-                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 border-transparent font-normal">
+                      <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30 border-transparent font-normal">
                         Sí
                       </Badge>
                     ) : (
