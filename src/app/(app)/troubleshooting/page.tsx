@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function TroubleshootingPage() {
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <div className="space-y-2 text-center mb-8">
+      <div className="space-y-2 text-center mb-10">
         <h1 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">
           Soporte Asistido por IA
         </h1>
