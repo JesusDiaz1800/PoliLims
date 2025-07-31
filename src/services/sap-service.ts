@@ -12,7 +12,6 @@ const mockSapProducts: SapProduct[] = [
     { "code": "200BETAPN20S3.2", "name": "200mm x 6m BETA PN-20 S-3,2" },
     { "code": "90R3PN10S5", "name": "90mm R3 PN-10 S-5" },
     { "code": "90R3PN16S3.2-B", "name": "90mm R3 PN-16 S-3,2" },
-    { "code": "90R3PN16S3.2", "name": "90mm R3 PN-16 S-3,2" },
     { "code": "90R3PN20S2.5", "name": "90mm R3 PN-20 S-2,5" },
     { "code": "90BETAFIBRAPN10S5-B", "name": "90mm x 6m BETA/FIBRA PN-10 S-5" },
     { "code": "90BETAFIBRAPN10S5S2", "name": "90mm x 6m BETA/FIBRA PN-10 S-5 S,2" },
