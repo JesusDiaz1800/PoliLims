@@ -10,6 +10,8 @@ import { RecentActivityList } from "@/components/dashboard/recent-activity-list"
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { EquipmentStatusChart } from "@/components/dashboard/equipment-status-chart";
+import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
+import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -129,6 +131,11 @@ export default function DashboardPage() {
           <SampleStatusChart filters={filters} />
         </div>
         <RecentActivityList filters={filters} />
+      </div>
+
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <AssaysByMonthChart filters={filters} />
+        <AssaysByTypeChart filters={filters} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
