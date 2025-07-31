@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 
@@ -18,6 +18,13 @@ const initialData = [
 interface SampleStatusChartProps {
     filters: DashboardFilters;
 }
+
+// Custom cursor component
+const CustomCursor = (props: any) => {
+  const { x, y, width, height } = props;
+  return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
+};
+
 
 export function SampleStatusChart({ filters }: SampleStatusChartProps) {
   const [data, setData] = React.useState(initialData);
@@ -43,7 +50,7 @@ export function SampleStatusChart({ filters }: SampleStatusChartProps) {
                     <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                     <Tooltip
-                        cursor={{fill: 'hsla(var(--accent), 0.3)'}}
+                        cursor={<CustomCursor />}
                         contentStyle={{
                           backgroundColor: 'hsl(var(--background))',
                           borderColor: 'hsl(var(--border))',
