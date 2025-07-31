@@ -205,7 +205,7 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
     router.push('/ensayos/seguimiento');
   };
   
-  const ensayos = [
+  const ensayoTabs = [
     { value: "melt_index", label: "Melt Index" },
     { value: "densidad", label: "Densidad" },
     { value: "traccion", label: "Tracción y Elongación" },
@@ -298,7 +298,7 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
            <Tabs defaultValue="melt_index" className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
-                 {ensayos.map(ensayo => (
+                 {ensayoTabs.map(ensayo => (
                     <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
                  ))}
               </TabsList>
