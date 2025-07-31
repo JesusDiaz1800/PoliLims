@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
@@ -8,6 +7,7 @@ import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-d
 import { getProductsFromSap } from "@/services/sap-service";
 import type { SapProduct } from "@/services/sap-service";
 import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos";
+import Loading from "../../loading";
 
 
 export default function ControlRutinarioPage() {
@@ -44,17 +44,19 @@ export default function ControlRutinarioPage() {
     setIsDialogOpen(false);
   };
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div className="space-y-6">
-      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} />
-      { !loading && (
-          <ControlRutinarioDialog 
-            isOpen={isDialogOpen} 
-            onClose={handleDialogClose} 
-            productos={productos.map(p => ({ value: p.code, label: p.name }))}
-            matrizProductos={matriz}
-            />
-      )}
+      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} matrizProductos={matriz} />
+      <ControlRutinarioDialog 
+        isOpen={isDialogOpen} 
+        onClose={handleDialogClose} 
+        productos={productos.map(p => ({ value: p.code, label: p.name }))}
+        matrizProductos={matriz}
+      />
     </div>
   );
 }
