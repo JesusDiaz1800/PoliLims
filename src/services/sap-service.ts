@@ -1,3 +1,4 @@
+
 "use server"
 
 import { getMatrizProductos } from "@/lib/matriz-datos";
@@ -11,27 +12,25 @@ export interface SapProduct {
 
 // Cache for the products
 let products: SapProduct[] = [];
-let productsLoaded = false;
 
 /**
  * Simula una llamada a la API de SAP para obtener la lista de productos.
  * En esta versión, lee los datos desde el servicio de matriz de datos.
  * @returns Una promesa que resuelve a una lista de productos.
  */
-export async function getProductsFromSap(): Promise<SapProduct[]> {
-  if (productsLoaded) {
+export function getProductsFromSap(): SapProduct[] {
+  if (products.length > 0) {
     return products;
   }
   
   try {
-    const matriz = await getMatrizProductos();
+    const matriz = getMatrizProductos();
     products = matriz.map(p => ({
         code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
         name: p.producto,
         value: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
         label: p.producto,
     }));
-    productsLoaded = true;
     return products;
   } catch (error) {
     console.error("Failed to get products from matrix for SAP service:", error);
@@ -44,10 +43,13 @@ export async function getProductsFromSap(): Promise<SapProduct[]> {
  * @param code - El código del producto a buscar.
  * @returns Una promesa que resuelve al producto encontrado o null si no existe.
  */
-export async function findProductByCode(code: string): Promise<SapProduct | null> {
-    if (!productsLoaded) {
-      await getProductsFromSap();
+export function findProductByCode(code: string): SapProduct | null {
+    if (products.length === 0) {
+      getProductsFromSap();
     }
     const product = products.find(p => p.code === code) || null;
     return product;
 }
+
+// Initial load
+getProductsFromSap();

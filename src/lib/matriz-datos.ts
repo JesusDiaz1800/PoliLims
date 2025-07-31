@@ -1,3 +1,4 @@
+
 "use server"
 
 import fs from 'fs';
@@ -26,7 +27,6 @@ export interface TipoProducto {
 }
 
 let matrizProductos: TipoProducto[] = [];
-let matrizLoaded = false;
 
 const toNumberOrNull = (value: string): number | null => {
     const num = parseFloat(value);
@@ -37,67 +37,60 @@ const toNullableString = (value: string): string | undefined => {
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
-export async function loadMatrizProductos(): Promise<TipoProducto[]> {
-    return new Promise((resolve, reject) => {
-        if (matrizLoaded) {
-            return resolve(matrizProductos);
-        }
+function loadMatrizProductos() {
+    if (matrizProductos.length > 0) {
+        return;
+    }
 
+    try {
         const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-        
-        try {
-            const csvFile = fs.readFileSync(csvFilePath, 'utf8');
-            Papa.parse<any>(csvFile, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results) => {
-                    if (results.errors.length) {
-                        console.error("Errors parsing CSV:", results.errors);
-                        return reject(new Error("Failed to parse product CSV."));
-                    }
+        const csvFile = fs.readFileSync(csvFilePath, 'utf8');
+        const results = Papa.parse<any>(csvFile, {
+            header: true,
+            skipEmptyLines: true,
+        });
 
-                    matrizProductos = results.data.map((row: any) => ({
-                        producto: row.producto,
-                        material: row.material,
-                        diametro_nominal: parseFloat(row.diametro_nominal),
-                        presion_nominal: row.presion_nominal,
-                        sdr: row.sdr,
-                        diametro_min: parseFloat(row.diametro_min),
-                        diametro_max: parseFloat(row.diametro_max),
-                        espesor_min_norma: parseFloat(row.espesor_min_norma),
-                        espesor_max_norma: toNumberOrNull(row.espesor_max_norma),
-                        ovalidad_norma: toNumberOrNull(row.ovalidad_norma),
-                        peso_min_teorico: parseFloat(row.peso_min_teorico),
-                        peso_max_teorico: parseFloat(row.peso_max_teorico),
-                        presion_phi: toNumberOrNull(row.presion_phi),
-                        temperatura_phi: toNumberOrNull(row.temperatura_phi),
-                        tiempo_phi: toNumberOrNull(row.tiempo_phi),
-                        color_tuberia: toNullableString(row.color_tuberia),
-                        color_linea: toNullableString(row.color_linea),
-                        code: row.producto.replace(/\s+/g, '-').toUpperCase(),
-                    }));
-                    matrizLoaded = true;
-                    resolve(matrizProductos);
-                },
-                error: (error: any) => {
-                    console.error("CSV parsing error:", error);
-                    reject(error);
-                }
-            });
-        } catch (error) {
-            console.error("Error reading product CSV file:", error);
-            reject(error);
+        if (results.errors.length) {
+            console.error("Errors parsing CSV:", results.errors);
+            throw new Error("Failed to parse product CSV.");
         }
-    });
-};
+
+        matrizProductos = results.data.map((row: any) => ({
+            producto: row.producto,
+            material: row.material,
+            diametro_nominal: parseFloat(row.diametro_nominal),
+            presion_nominal: row.presion_nominal,
+            sdr: row.sdr,
+            diametro_min: parseFloat(row.diametro_min),
+            diametro_max: parseFloat(row.diametro_max),
+            espesor_min_norma: parseFloat(row.espesor_min_norma),
+            espesor_max_norma: toNumberOrNull(row.espesor_max_norma),
+            ovalidad_norma: toNumberOrNull(row.ovalidad_norma),
+            peso_min_teorico: parseFloat(row.peso_min_teorico),
+            peso_max_teorico: parseFloat(row.peso_max_teorico),
+            presion_phi: toNumberOrNull(row.presion_phi),
+            temperatura_phi: toNumberOrNull(row.temperatura_phi),
+            tiempo_phi: toNumberOrNull(row.tiempo_phi),
+            color_tuberia: toNullableString(row.color_tuberia),
+            color_linea: toNullableString(row.color_linea),
+            code: row.producto.replace(/\s+/g, '-').toUpperCase(),
+        }));
+    } catch (error) {
+        console.error("Error reading product CSV file:", error);
+        matrizProductos = []; // Ensure it's empty on error
+    }
+}
 
 /**
  * Gets the loaded product matrix.
  * Note: This assumes `loadMatrizProductos` has completed.
  */
-export async function getMatrizProductos(): Promise<TipoProducto[]> {
-    if (!matrizLoaded) {
-        await loadMatrizProductos();
+export function getMatrizProductos(): TipoProducto[] {
+    if (matrizProductos.length === 0) {
+        loadMatrizProductos();
     }
     return matrizProductos;
 };
+
+// Initial load
+loadMatrizProductos();
