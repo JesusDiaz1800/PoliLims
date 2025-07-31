@@ -12,7 +12,7 @@ import { EquipmentStatusChart } from "@/components/dashboard/equipment-status-ch
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
-import { getEnsayos, getRecentActivity, getAnalystOptions } from "@/context/data-context";
+import { getEnsayos, getRecentActivity, getAnalystOptions } from "@/services/data-service";
 
 export type DashboardFilterParams = {
   month?: string;
