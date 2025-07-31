@@ -25,6 +25,7 @@ import { useDataContext } from "@/context/data-context"
 import { useRouter } from "next/navigation"
 import { Combobox } from "../ui/combobox"
 import type { SapProduct } from "@/services/sap-service"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 
 interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
@@ -37,7 +38,10 @@ interface ControlRutinarioFormProps {
 }
 
 const formSchema = z.object({
-  fecha_ingreso: z.date({ required_error: "La fecha es requerida." }),
+  fecha_ingreso: z.date({ 
+    required_error: "La fecha es requerida.",
+    invalid_type_error: "Formato de fecha inválido." 
+  }),
   hora: z.string().nonempty("La hora es requerida."),
   inspector: z.string().nonempty("El inspector es requerido."),
   maquinista: z.string().nonempty("El maquinista es requerido."),
@@ -197,104 +201,132 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }
 
   return (
+    <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <ScrollArea className="h-[65vh] pr-6">
             <div className="space-y-6">
                 <div className="space-y-4">
                     <Label className="text-base font-medium">Información de Producción</Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="fecha_ingreso">Fecha</Label>
-                            <Controller
-                                control={form.control}
-                                name="fecha_ingreso"
-                                render={({ field }) => (
+                        <FormField
+                            control={form.control}
+                            name="fecha_ingreso"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                <FormLabel>Fecha</FormLabel>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                    <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                                        <CalendarIcon className="mr-2 h-4 w-4" />
-                                        {field.value ? format(field.value, "PPP") : <span>Seleccione una fecha</span>}
-                                    </Button>
+                                        <FormControl>
+                                            <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                {field.value ? format(field.value, "PPP") : <span>Seleccione una fecha</span>}
+                                            </Button>
+                                        </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0">
                                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
                                     </PopoverContent>
                                 </Popover>
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="hora">Hora</Label>
-                            <Input id="hora" type="time" {...form.register("hora")} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="inspector">Inspector</Label>
-                            <Controller
-                                control={form.control}
-                                name="inspector"
-                                render={({ field }) => (
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="hora"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                <FormLabel>Hora</FormLabel>
+                                <FormControl>
+                                    <Input type="time" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="inspector"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                    <FormLabel>Inspector</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger id="inspector"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        </FormControl>
                                         <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.label}>{i.label}</SelectItem>)}</SelectContent>
                                     </Select>
-                                )}
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                             />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="maquinista">Maquinista</Label>
-                            <Controller
-                                control={form.control}
-                                name="maquinista"
-                                render={({ field }) => (
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger id="maquinista"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                        <FormField
+                            control={form.control}
+                            name="maquinista"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                    <FormLabel>Maquinista</FormLabel>
+                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        </FormControl>
                                         <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}</SelectContent>
                                     </Select>
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="maquina">Máquina</Label>
-                            <Controller
-                                control={form.control}
-                                name="maquina"
-                                render={({ field }) => (
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="maquina"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                    <FormLabel>Máquina</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger id="maquina"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        </FormControl>
                                         <SelectContent>{maquinas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
                                     </Select>
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="producto">Producto (SAP)</Label>
-                             <Controller
-                                control={form.control}
-                                name="producto"
-                                render={({ field }) => (
-                                    <Combobox
-                                        options={productos}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        placeholder="Buscar producto..."
-                                        notFoundText="No se encontró el producto."
-                                    />
-                                )}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="marca">Marca</Label>
-                            <Controller
-                                control={form.control}
-                                name="marca"
-                                render={({ field }) => (
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger id="marca"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="producto"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                    <FormLabel>Producto (SAP)</FormLabel>
+                                    <FormControl>
+                                        <Combobox
+                                            options={productos}
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            placeholder="Buscar producto..."
+                                            notFoundText="No se encontró el producto."
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="marca"
+                            render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                    <FormLabel>Marca</FormLabel>
+                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                        </FormControl>
                                         <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
                                     </Select>
-                                )}
-                            />
-                        </div>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
                 </div>
 
@@ -355,31 +387,35 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
                 <Separator />
                 
-                <div className="space-y-4">
-                    <Label className="text-base font-medium">Acción Final</Label>
-                    <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
-                        <Controller
-                            control={form.control}
-                            name="entregado_laboratorio"
-                            render={({ field }) => (
-                            <Checkbox
-                                id="entregado_laboratorio"
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                className="mt-0.5"
-                            />
-                            )}
-                        />
-                        <div className="grid gap-1.5 leading-none">
-                            <Label htmlFor="entregado_laboratorio" className="font-semibold cursor-pointer">
-                                Muestra Entregada a Laboratorio
-                            </Label>
-                            <p className="text-sm text-muted-foreground">
-                                Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                 <FormField
+                    control={form.control}
+                    name="entregado_laboratorio"
+                    render={({ field }) => (
+                        <FormItem className="space-y-4">
+                            <FormLabel className="text-base font-medium">Acción Final</FormLabel>
+                            <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
+                                <FormControl>
+                                    <Checkbox
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                        className="mt-0.5"
+                                    />
+                                </FormControl>
+                                <div className="grid gap-1.5 leading-none">
+                                    <label
+                                        htmlFor="entregado_laboratorio"
+                                        className="font-semibold cursor-pointer"
+                                    >
+                                        Muestra Entregada a Laboratorio
+                                    </label>
+                                    <p className="text-sm text-muted-foreground">
+                                        Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
+                                    </p>
+                                </div>
+                            </div>
+                        </FormItem>
+                    )}
+                    />
             </div>
         </ScrollArea>
 
@@ -394,5 +430,8 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             </Button>
         </div>
     </form>
+    </Form>
   )
 }
+
+    
