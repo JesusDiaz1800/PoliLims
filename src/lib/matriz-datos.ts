@@ -27,7 +27,6 @@ export interface TipoProducto {
 
 let matrizProductos: TipoProducto[] = [];
 
-// Helper function to convert string to number or null
 const toNumberOrNull = (value: string): number | null => {
     const num = parseFloat(value);
     return isNaN(num) ? null : num;
@@ -52,7 +51,8 @@ export async function loadMatrizProductos(): Promise<TipoProducto[]> {
             complete: (results) => {
                 if (results.errors.length) {
                     console.error("Errors parsing CSV:", results.errors);
-                    return reject(new Error("Failed to parse product CSV."));
+                    reject(new Error("Failed to parse product CSV."));
+                    return;
                 }
 
                 matrizProductos = results.data.map((row: any) => ({

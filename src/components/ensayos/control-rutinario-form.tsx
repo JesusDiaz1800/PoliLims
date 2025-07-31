@@ -36,6 +36,7 @@ interface ControlRutinarioFormProps {
   maquinas: Option[]
   productos: Option[]
   marcas: Option[]
+  matrizProductos: TipoProducto[];
   onFormSubmit: () => void;
 }
 
@@ -70,12 +71,11 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, onFormSubmit }: ControlRutinarioFormProps) {
+export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const { addRegistro, addEnsayo, addRecentActivity } = useDataContext();
   const router = useRouter();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
-  const [matrizProductos, setMatrizProductos] = React.useState<TipoProducto[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -97,24 +97,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   React.useEffect(() => {
-    async function loadData() {
-        const data = await getMatrizProductos();
-        setMatrizProductos(data);
-    }
-    loadData();
-  }, []);
-
-  React.useEffect(() => {
     if (matrizProductos.length === 0) return;
 
-    // Primero, encontramos el producto seleccionado en la lista que viene de SAP (o la simulación)
     const productoSeleccionadoSap = productos.find(p => p.value === producto);
     if (!productoSeleccionadoSap) {
       setAlerts({});
       return;
     }
 
-    // Luego, usamos el nombre (label) de ese producto para buscar las reglas de validación en nuestra matriz local
     const productoParaValidacion = matrizProductos.find(p => p.producto === productoSeleccionadoSap.label);
 
     if (productoParaValidacion) {

@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ControlRutinarioForm } from "./control-rutinario-form";
-import { matrizProductos } from "@/lib/matriz-datos";
+import { TipoProducto } from "@/lib/matriz-datos";
 
 interface Option {
   value: string;
@@ -21,9 +21,10 @@ interface ControlRutinarioDialogProps {
   isOpen: boolean;
   onClose: () => void;
   productos: Option[];
+  matrizProductos: TipoProducto[];
 }
 
-export function ControlRutinarioDialog({ isOpen, onClose, productos }: ControlRutinarioDialogProps) {
+export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProductos }: ControlRutinarioDialogProps) {
 
   const inspectores = [
     { value: "elias.ibanez", label: "Elias Ibañez" },
@@ -86,6 +87,7 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos }: ControlRu
           maquinas={maquinas}
           productos={productos}
           marcas={marcas}
+          matrizProductos={matrizProductos}
           onFormSubmit={onClose}
         />
       </DialogContent>

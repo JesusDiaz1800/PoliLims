@@ -21,7 +21,7 @@ let products: SapProduct[] = [];
  */
 export async function getProductsFromSap(): Promise<SapProduct[]> {
   if (products.length > 0) {
-    return Promise.resolve(products);
+    return products;
   }
 
   return new Promise((resolve, reject) => {
@@ -36,10 +36,9 @@ export async function getProductsFromSap(): Promise<SapProduct[]> {
         complete: (results) => {
           if (results.errors.length) {
               console.error("Errors parsing product CSV for SAP service:", results.errors);
-              return reject(new Error("Failed to parse product CSV."));
+              reject(new Error("Failed to parse product CSV."));
+              return;
           }
-          // Assuming 'producto' is the name and a new 'code' field needs to be derived or exists
-          // For now, let's create a code from the name for uniqueness if no code column exists
           products = results.data.map((row: any) => ({
             code: row.code || row.producto.replace(/\s+/g, '-').toUpperCase(),
             name: row.producto
@@ -70,8 +69,3 @@ export async function findProductByCode(code: string): Promise<SapProduct | null
     const product = products.find(p => p.code === code) || null;
     return product;
 }
-
-// Pre-load products on server start
-getProductsFromSap().catch(err => {
-  console.error("Failed to pre-load SAP products on startup:", err);
-});
