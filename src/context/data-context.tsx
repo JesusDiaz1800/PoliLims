@@ -51,6 +51,8 @@ const initialRecentActivity: RecentActivity[] = [
     { id: "act-1", user: "Jesus Diaz", action: "completó análisis para Muestra #HDPE-0821.", timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString() },
     { id: "act-2", user: "Antonia Figueroa", action: "registró nuevo lote de accesorios PP-R Fusión Socket.", timestamp: new Date(Date.now() - 24 * 60 * 1000).toISOString() },
     { id: "act-3", user: "Sistema", action: "Calibración de equipo GC-MS 01 vence en 10 días.", timestamp: new Date(Date.now() - 60 * 60 * 1000).toISOString() },
+    { id: "act-4", user: "Maximiliano Miranda", action: "aprobó el informe de la muestra #MP-001.", timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
+    { id: "act-5", user: "Elias Ibañez", action: "registró un nuevo control para Tuberia FASER AQUA-FIBRA 32 mm PN20.", timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() },
 ];
 
 // Context shape

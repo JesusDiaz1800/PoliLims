@@ -135,11 +135,11 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   const onSubmit = (data: FormValues) => {
-    const id = `REG-${String(Date.now()).slice(-4)}`;
+    const registroId = `REG-${String(Date.now()).slice(-4)}`;
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
 
     const newRegistro = {
-        id,
+        id: registroId,
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
         inspector: data.inspector,
@@ -153,14 +153,21 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
     toast({
       title: "Registro Guardado",
-      description: `El control ${id} ha sido registrado como ${resultado}.`,
+      description: `El control ${registroId} ha sido registrado como ${resultado}.`,
     })
 
     if (data.entregado_laboratorio) {
-        const newEnsayoId = `HDPE-${String(Date.now()).slice(-4)}`;
+        const productoInfo = matrizProductos.find(p => p.producto === data.producto);
+        const materialPrefix = productoInfo?.material === 'PE100' ? 'PEAD' : (productoInfo?.material.startsWith('PP') ? 'PP' : 'MISC');
+        const newEnsayoId = `${materialPrefix}-${String(Date.now()).slice(-4)}`;
+        
+        const tipoEnsayo = productoInfo?.material === 'PE100' ? 'Tubería HDPE' :
+                           productoInfo?.material.startsWith('PP') ? 'Tubería PP' :
+                           'Producto Terminado';
+
         const newEnsayo = {
             id: newEnsayoId,
-            tipo: "Tubería HDPE", // This should be dynamic based on product
+            tipo: tipoEnsayo,
             analista: 'Jesus Diaz', // Default analyst, could be selectable
             fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
             estado: 'Pendiente de Revisión',
