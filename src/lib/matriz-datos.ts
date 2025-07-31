@@ -37,24 +37,22 @@ const toNullableString = (value: string): string | undefined => {
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
-export const loadMatrizProductos = (): Promise<TipoProducto[]> => {
+export async function loadMatrizProductos(): Promise<TipoProducto[]> {
+    if (matrizProductos.length > 0) {
+        return matrizProductos;
+    }
+
+    const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
+    const csvFile = fs.readFileSync(csvFilePath, 'utf8');
+
     return new Promise((resolve, reject) => {
-        if (matrizProductos.length > 0) {
-            resolve(matrizProductos);
-            return;
-        }
-
-        const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-        const csvFile = fs.readFileSync(csvFilePath, 'utf8');
-
         Papa.parse<any>(csvFile, {
             header: true,
             skipEmptyLines: true,
             complete: (results) => {
                 if (results.errors.length) {
                     console.error("Errors parsing CSV:", results.errors);
-                    reject(new Error("Failed to parse product CSV."));
-                    return;
+                    return reject(new Error("Failed to parse product CSV."));
                 }
 
                 matrizProductos = results.data.map((row: any) => ({
