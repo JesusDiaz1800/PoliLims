@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -34,6 +35,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useDataContext } from "@/context/data-context";
+import { useRouter } from "next/navigation";
+import { Ensayo } from "@/context/data-context";
 
 interface Option {
   value: string;
@@ -46,9 +50,17 @@ interface TuberiasHdpeFormProps {
 
 export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
-  const { control, getValues, register } = useForm({
+  const { addEnsayo, addRecentActivity } = useDataContext();
+  const router = useRouter();
+
+  const { control, getValues, register, handleSubmit, reset } = useForm({
     defaultValues: {
       meltIndexMediciones: [{ value: '' }],
+      fecha_ingreso: new Date(),
+      analista: "",
+      producto: "",
+      lote: "",
+      observaciones: "",
     }
   });
 
@@ -115,12 +127,33 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
   }, [getValues]);
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = (data: any) => {
+    const newEnsayoId = `HDPE-${String(Date.now()).slice(-4)}`;
+    const newEnsayo: Ensayo = {
+        id: newEnsayoId,
+        tipo: 'Tubería HDPE',
+        analista: data.analista,
+        fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
+        estado: 'Pendiente de Revisión',
+        producto: data.producto,
+    };
+    addEnsayo(newEnsayo);
+    addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería HDPE para ${data.producto}`});
+    
     toast({
       title: "Ensayo Registrado",
-      description: "El ensayo de Tubería HDPE ha sido registrado exitosamente.",
+      description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
     })
+    
+    reset({
+      meltIndexMediciones: [{ value: '' }],
+      fecha_ingreso: new Date(),
+      analista: "",
+      producto: "",
+      lote: "",
+      observaciones: "",
+    });
+    router.push('/ensayos/seguimiento');
   };
   
   const ensayos = [
@@ -133,7 +166,7 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -176,26 +209,32 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="analista">Analista</Label>
-            <Select>
-                <SelectTrigger id="analista">
-                    <SelectValue placeholder="Seleccione un analista" />
-                </SelectTrigger>
-                <SelectContent>
-                    {analistas.map(analista => (
-                      <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+            <Controller
+              name="analista"
+              control={control}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger id="analista">
+                        <SelectValue placeholder="Seleccione un analista" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {analistas.map(analista => (
+                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+              )}
+            />
           </div>
           
           <div className="space-y-2">
               <Label htmlFor="producto">Producto</Label>
-              <Input id="producto" placeholder="Nombre del producto"/>
+              <Input id="producto" placeholder="Nombre del producto" {...register("producto")}/>
           </div>
 
           <div className="space-y-2">
               <Label htmlFor="lote">Lote</Label>
-              <Input id="lote" placeholder="Número de lote"/>
+              <Input id="lote" placeholder="Número de lote" {...register("lote")}/>
           </div>
         </CardContent>
       </Card>
@@ -432,7 +471,7 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
         </CardHeader>
         <CardContent>
             <div className="space-y-2">
-                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." />
+                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
             </div>
         </CardContent>
       </Card>
@@ -446,3 +485,6 @@ export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
     </form>
   );
 }
+
+
+    

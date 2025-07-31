@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -34,6 +35,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useDataContext } from "@/context/data-context";
+import { useRouter } from "next/navigation";
+import { Ensayo } from "@/context/data-context";
 
 interface Option {
   value: string;
@@ -46,9 +50,17 @@ interface ReprocesadoFormProps {
 
 export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   const { toast } = useToast();
-  const { watch, control, setValue, getValues, register } = useForm({
+  const { addEnsayo, addRecentActivity } = useDataContext();
+  const router = useRouter();
+
+  const { watch, control, setValue, getValues, register, handleSubmit, reset } = useForm({
     defaultValues: {
       meltIndexMediciones: [{ value: '' }],
+      fecha_ingreso: new Date(),
+      analista: "",
+      id_muestra: "",
+      lote: "",
+      observaciones: "",
     }
   });
 
@@ -126,12 +138,33 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   }, [getValues]);
 
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = (data: any) => {
+    const newEnsayo: Ensayo = {
+        id: data.id_muestra || `REPRO-${String(Date.now()).slice(-4)}`,
+        tipo: 'Reprocesado',
+        analista: data.analista,
+        fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
+        estado: 'Pendiente de Revisión',
+        producto: `Reprocesado Lote ${data.lote}`,
+    };
+
+    addEnsayo(newEnsayo);
+    addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para ${newEnsayo.id}`});
+
     toast({
       title: "Ensayo Registrado",
-      description: "El ensayo de reprocesado ha sido registrado exitosamente.",
+      description: `El ensayo ${newEnsayo.id} ha sido añadido a seguimiento.`,
     })
+
+    reset({
+      meltIndexMediciones: [{ value: '' }],
+      fecha_ingreso: new Date(),
+      analista: "",
+      id_muestra: "",
+      lote: "",
+      observaciones: "",
+    });
+    router.push('/ensayos/seguimiento');
   };
   
   const ensayos = [
@@ -143,7 +176,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -186,26 +219,32 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="analista">Analista</Label>
-            <Select>
-                <SelectTrigger id="analista">
-                    <SelectValue placeholder="Seleccione un analista" />
-                </SelectTrigger>
-                <SelectContent>
-                    {analistas.map(analista => (
-                      <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+            <Controller
+                name="analista"
+                control={control}
+                render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger id="analista">
+                            <SelectValue placeholder="Seleccione un analista" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {analistas.map(analista => (
+                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                )}
+            />
           </div>
 
           <div className="space-y-2">
               <Label htmlFor="id_muestra">ID Muestra</Label>
-              <Input id="id_muestra" placeholder="Ej: REPRO-034"/>
+              <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")}/>
           </div>
 
           <div className="space-y-2">
               <Label htmlFor="lote">Lote</Label>
-              <Input id="lote" placeholder="Número de lote"/>
+              <Input id="lote" placeholder="Número de lote" {...register("lote")}/>
           </div>
         </CardContent>
       </Card>
@@ -440,7 +479,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
         </CardHeader>
         <CardContent>
             <div className="space-y-2">
-                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." />
+                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
             </div>
         </CardContent>
       </Card>
@@ -454,5 +493,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
     </form>
   );
 }
+
+    
 
     
