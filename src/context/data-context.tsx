@@ -3,15 +3,18 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Types for our data structures
-export interface Ensayo {
+// Extensible type for any kind of assay data
+type EnsayoData = {
   id: string;
   tipo: string;
   analista: string;
   fecha: string;
   estado: 'Aprobado' | 'En Progreso' | 'Rechazado' | 'Pendiente de Revisión';
   producto: string;
+  [key: string]: any; // Allows for any other properties
 }
+
+export type Ensayo = EnsayoData;
 
 export interface Registro {
   id: string;
@@ -61,6 +64,7 @@ interface DataContextType {
   registros: Registro[];
   recentActivity: RecentActivity[];
   addEnsayo: (ensayo: Ensayo) => void;
+  updateEnsayo: (ensayo: Ensayo) => void;
   addRegistro: (registro: Registro) => void;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => void;
 }
@@ -76,6 +80,10 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);
+  };
+
+  const updateEnsayo = (updatedEnsayo: Ensayo) => {
+    setEnsayos(prev => prev.map(ensayo => ensayo.id === updatedEnsayo.id ? updatedEnsayo : ensayo));
   };
 
   const addRegistro = (registro: Registro) => {
@@ -96,6 +104,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     registros,
     recentActivity,
     addEnsayo,
+    updateEnsayo,
     addRegistro,
     addRecentActivity
   };

@@ -2,10 +2,11 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,7 +37,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDataContext } from "@/context/data-context";
-import { useRouter } from "next/navigation";
 import { Ensayo } from "@/context/data-context";
 
 interface Option {
@@ -48,34 +48,58 @@ interface ReprocesadoFormProps {
   analistas: Option[];
 }
 
+const defaultFormValues = {
+  meltIndexMediciones: [{ value: '' }],
+  fecha_ingreso: new Date(),
+  analista: "",
+  id_muestra: "",
+  lote: "",
+  observaciones: "",
+  melt_index_reportado: "",
+  densidad_liquido: "",
+  masa_aire: "",
+  masa_agua: "",
+  nh_m1: "",
+  nh_m2: "",
+  nh_m3: "",
+  nh_m4: "",
+  tio_gas: "",
+  tio_flujo: "",
+  tio_temperatura: "",
+  tio_metodo: "",
+  tio_tiempo: "",
+};
+
 export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   const { toast } = useToast();
-  const { addEnsayo, addRecentActivity } = useDataContext();
+  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDataContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ensayoId = searchParams.get('id');
 
-  const { watch, control, setValue, getValues, register, handleSubmit, reset } = useForm({
-    defaultValues: {
-      meltIndexMediciones: [{ value: '' }],
-      fecha_ingreso: new Date(),
-      analista: "",
-      id_muestra: "",
-      lote: "",
-      observaciones: "",
-      melt_index_reportado: "",
-      densidad_liquido: "",
-      masa_aire: "",
-      masa_agua: "",
-      nh_m1: "",
-      nh_m2: "",
-      nh_m3: "",
-      nh_m4: "",
-      tio_gas: "",
-      tio_flujo: "",
-      tio_temperatura: "",
-      tio_metodo: "",
-      tio_tiempo: "",
-    }
+  const { watch, control, getValues, register, handleSubmit, reset } = useForm({
+    defaultValues: defaultFormValues
   });
+
+  const isEditing = Boolean(ensayoId);
+
+  React.useEffect(() => {
+    if (isEditing) {
+      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
+      if (ensayoToEdit) {
+        const formData = {
+          ...defaultFormValues,
+          ...ensayoToEdit,
+          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+          id_muestra: ensayoToEdit.id,
+        };
+        reset(formData);
+      }
+    } else {
+      reset(defaultFormValues);
+    }
+  }, [isEditing, ensayoId, ensayos, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -152,31 +176,42 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
 
 
   const onSubmit = (data: any) => {
-    const newEnsayo: Ensayo = {
-        id: data.id_muestra || `REPRO-${String(Date.now()).slice(-4)}`,
-        tipo: 'Reprocesado',
-        analista: data.analista,
+    const ensayoData = {
+        ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
-        estado: 'Pendiente de Revisión',
         producto: `Reprocesado Lote ${data.lote}`,
+        meltIndexCalculado,
+        meltIndexVariacion,
+        densidadCalculada,
+        negroHumoCalculado,
+        cenizasCalculado,
+        cenizasCorregido,
     };
 
-    addEnsayo(newEnsayo);
-    addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para ${newEnsayo.id}`});
+    if (isEditing) {
+        updateEnsayo({ ...ensayoData, id: ensayoId });
+        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
+        toast({
+            title: "Ensayo Actualizado",
+            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+        });
+    } else {
+        const newEnsayoId = `REPRO-${String(Date.now()).slice(-4)}`;
+        const newEnsayo: Ensayo = {
+            ...ensayoData,
+            id: data.id_muestra || newEnsayoId,
+            tipo: 'Reprocesado',
+            estado: 'Pendiente de Revisión',
+        };
+        addEnsayo(newEnsayo);
+        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para ${newEnsayo.id}`});
+        toast({
+            title: "Ensayo Registrado",
+            description: `El ensayo ${newEnsayo.id} ha sido añadido a seguimiento.`,
+        });
+    }
 
-    toast({
-      title: "Ensayo Registrado",
-      description: `El ensayo ${newEnsayo.id} ha sido añadido a seguimiento.`,
-    })
-
-    reset({
-      meltIndexMediciones: [{ value: '' }],
-      fecha_ingreso: new Date(),
-      analista: "",
-      id_muestra: "",
-      lote: "",
-      observaciones: "",
-    });
+    reset(defaultFormValues);
     router.push('/ensayos/seguimiento');
   };
   
@@ -252,7 +287,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
 
           <div className="space-y-2">
               <Label htmlFor="id_muestra">ID Muestra</Label>
-              <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")}/>
+              <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")} disabled={isEditing} />
           </div>
 
           <div className="space-y-2">
@@ -499,16 +534,10 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
 
       <div className="flex justify-end pt-4">
         <Button type="submit">
-          <FilePlus2 className="mr-2 h-4 w-4" />
-          Registrar Ensayo de Reprocesado
+          {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
+          {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Reprocesado'}
         </Button>
       </div>
     </form>
   );
 }
-
-    
-
-    
-
-    

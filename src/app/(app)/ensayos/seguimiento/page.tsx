@@ -11,7 +11,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import {
   Select,
@@ -22,7 +21,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
 import { useDataContext } from "@/context/data-context";
@@ -78,11 +77,12 @@ export default function SeguimientoEnsayosPage() {
         path = '/ensayos/reprocesado';
         break;
       default:
-        // Maybe redirect to a generic view page or show a toast
+        // Redirect to a generic view page or show a toast
         path = `/ensayos/seguimiento`; 
         break;
     }
-    router.push(path);
+    // Append assay ID as a query parameter
+    router.push(`${path}?id=${ensayo.id}`);
   };
 
 
@@ -160,7 +160,10 @@ export default function SeguimientoEnsayosPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
-                       <DropdownMenuItem onClick={() => handleEditClick(ensayo)}>Editar</DropdownMenuItem>
+                       <DropdownMenuItem onClick={() => handleEditClick(ensayo)}>
+                         <Pencil className="mr-2 h-4 w-4" />
+                         Editar
+                        </DropdownMenuItem>
                       <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

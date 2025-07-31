@@ -2,10 +2,11 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,7 +37,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDataContext } from "@/context/data-context";
-import { useRouter } from "next/navigation";
 import { Ensayo } from "@/context/data-context";
 
 interface Option {
@@ -48,42 +48,68 @@ interface MateriaPrimaFormProps {
   analistas: Option[];
 }
 
+// Define the shape of the form's default values
+const defaultFormValues = {
+  meltIndexMediciones: [{ value: '' }],
+  fecha_ingreso: new Date(),
+  analista: "",
+  producto: "",
+  lote: "",
+  observaciones: "",
+  melt_index_reportado: "",
+  densidad_liquido: "",
+  masa_aire: "",
+  masa_agua: "",
+  nh_m1: "",
+  nh_m2: "",
+  nh_m3: "",
+  nh_m4: "",
+  dsc_temp_max: "",
+  dsc_temp_inicio: "",
+  dsc_temp_final: "",
+  dsc_punto_fusion: "",
+  dsc_punto_fusion_opcional: "",
+  tio_gas: "",
+  tio_flujo: "",
+  tio_temperatura: "",
+  tio_metodo: "",
+  tio_tiempo: "",
+  tipo_material: "",
+  proveedor: "",
+  orden_compra: "",
+};
+
+
 export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
   const { toast } = useToast();
-  const { addEnsayo, addRecentActivity } = useDataContext();
+  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDataContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ensayoId = searchParams.get('id');
 
-  const { watch, control, setValue, getValues, register, handleSubmit, reset } = useForm({
-    defaultValues: {
-      meltIndexMediciones: [{ value: '' }],
-      fecha_ingreso: new Date(),
-      analista: "",
-      producto: "",
-      lote: "",
-      observaciones: "",
-      melt_index_reportado: "",
-      densidad_liquido: "",
-      masa_aire: "",
-      masa_agua: "",
-      nh_m1: "",
-      nh_m2: "",
-      nh_m3: "",
-      nh_m4: "",
-      dsc_temp_max: "",
-      dsc_temp_inicio: "",
-      dsc_temp_final: "",
-      dsc_punto_fusion: "",
-      dsc_punto_fusion_opcional: "",
-      tio_gas: "",
-      tio_flujo: "",
-      tio_temperatura: "",
-      tio_metodo: "",
-      tio_tiempo: "",
-      tipo_material: "",
-      proveedor: "",
-      orden_compra: "",
-    }
+  const { watch, control, getValues, register, handleSubmit, reset } = useForm({
+    defaultValues: defaultFormValues
   });
+  
+  const isEditing = Boolean(ensayoId);
+
+  React.useEffect(() => {
+    if (isEditing) {
+      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
+      if (ensayoToEdit) {
+        // Prepare data for the form, ensuring all fields are defined
+        const formData = {
+          ...defaultFormValues, // Start with default values to avoid undefined fields
+          ...ensayoToEdit,
+          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+        };
+        reset(formData);
+      }
+    } else {
+        reset(defaultFormValues);
+    }
+  }, [isEditing, ensayoId, ensayos, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -161,32 +187,41 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
 
 
   const onSubmit = (data: any) => {
-    const newEnsayoId = `MP-${String(Date.now()).slice(-4)}`;
-    const newEnsayo: Ensayo = {
-        id: newEnsayoId,
-        tipo: 'Materia Prima',
-        analista: data.analista,
+    const ensayoData = {
+        ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
-        estado: 'Pendiente de Revisión',
-        producto: data.producto,
+        meltIndexCalculado,
+        meltIndexVariacion,
+        densidadCalculada,
+        negroHumoCalculado,
+        cenizasCalculado,
+        cenizasCorregido,
     };
 
-    addEnsayo(newEnsayo);
-    addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
+    if (isEditing) {
+        updateEnsayo({ ...ensayoData, id: ensayoId });
+        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
+        toast({
+            title: "Ensayo Actualizado",
+            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+        });
+    } else {
+        const newEnsayoId = `MP-${String(Date.now()).slice(-4)}`;
+        const newEnsayo: Ensayo = {
+            ...ensayoData,
+            id: newEnsayoId,
+            tipo: 'Materia Prima',
+            estado: 'Pendiente de Revisión',
+        };
+        addEnsayo(newEnsayo);
+        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
+        toast({
+          title: "Ensayo Registrado",
+          description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
+        })
+    }
     
-    toast({
-      title: "Ensayo Registrado",
-      description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
-    })
-
-    reset({
-      meltIndexMediciones: [{ value: '' }],
-      fecha_ingreso: new Date(),
-      analista: "",
-      producto: "",
-      lote: "",
-      observaciones: "",
-    });
+    reset(defaultFormValues);
     router.push('/ensayos/seguimiento');
   };
   
@@ -334,7 +369,6 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                             size="icon"
                             onClick={() => {
                                 remove(index);
-                                // We need to trigger recalculation after removing
                                 setTimeout(calculateMeltIndex, 0);
                             }}
                           >
@@ -563,16 +597,10 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
 
       <div className="flex justify-end pt-4">
         <Button type="submit">
-          <FilePlus2 className="mr-2 h-4 w-4" />
-          Registrar Ensayo de Materia Prima
+            {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
+            {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Materia Prima'}
         </Button>
       </div>
     </form>
   );
 }
-
-    
-
-    
-
-    

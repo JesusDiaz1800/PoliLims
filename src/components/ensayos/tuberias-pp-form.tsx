@@ -2,10 +2,11 @@
 "use client"
 
 import * as React from "react"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,7 +37,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDataContext } from "@/context/data-context";
-import { useRouter } from "next/navigation";
 import { Ensayo } from "@/context/data-context";
 
 interface Option {
@@ -48,31 +48,56 @@ interface TuberiasPpFormProps {
   analistas: Option[];
 }
 
+const defaultFormValues = {
+  meltIndexMediciones: [{ value: '' }],
+  fv_total_m1: "",
+  fv_total_m2: "",
+  fv_total_m3: "",
+  fv_intermedia_m1: "",
+  fv_intermedia_m2: "",
+  fv_intermedia_m3: "",
+  fecha_ingreso: new Date(),
+  analista: "",
+  producto: "",
+  lote: "",
+  observaciones: "",
+  melt_index_materia_prima: "",
+  densidad_liquido: "",
+  masa_aire: "",
+  masa_agua: "",
+};
+
+
 export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   const { toast } = useToast();
-  const { addEnsayo, addRecentActivity } = useDataContext();
+  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDataContext();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const ensayoId = searchParams.get('id');
 
   const { control, getValues, register, watch, handleSubmit, reset } = useForm({
-    defaultValues: {
-      meltIndexMediciones: [{ value: '' }],
-      fv_total_m1: "",
-      fv_total_m2: "",
-      fv_total_m3: "",
-      fv_intermedia_m1: "",
-      fv_intermedia_m2: "",
-      fv_intermedia_m3: "",
-      fecha_ingreso: new Date(),
-      analista: "",
-      producto: "",
-      lote: "",
-      observaciones: "",
-      melt_index_materia_prima: "",
-      densidad_liquido: "",
-      masa_aire: "",
-      masa_agua: "",
-    }
+    defaultValues: defaultFormValues,
   });
+  
+  const isEditing = Boolean(ensayoId);
+
+  React.useEffect(() => {
+    if (isEditing) {
+      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
+      if (ensayoToEdit) {
+        const formData = {
+          ...defaultFormValues,
+          ...ensayoToEdit,
+          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+        };
+        reset(formData);
+      }
+    } else {
+      reset(defaultFormValues);
+    }
+  }, [isEditing, ensayoId, ensayos, reset]);
+
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -185,37 +210,40 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   }, [watchedFvFields, calculateFV]);
   
   const onSubmit = (data: any) => {
-    const newEnsayoId = `PP-${String(Date.now()).slice(-4)}`;
-    const newEnsayo: Ensayo = {
-        id: newEnsayoId,
-        tipo: 'Tubería PP',
-        analista: data.analista,
+     const ensayoData = {
+        ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
-        estado: 'Pendiente de Revisión',
-        producto: data.producto,
+        meltIndexCalculado,
+        meltIndexVariacion,
+        densidadCalculada,
+        fvTotalPorcentaje,
+        fvIntermediaPorcentaje,
     };
-    addEnsayo(newEnsayo);
-    addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería PP para ${data.producto}`});
 
-    toast({
-      title: "Ensayo Registrado",
-      description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
-    })
+    if (isEditing) {
+        updateEnsayo({ ...ensayoData, id: ensayoId });
+        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de tubería PP para ${data.producto}`});
+        toast({
+            title: "Ensayo Actualizado",
+            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+        });
+    } else {
+        const newEnsayoId = `PP-${String(Date.now()).slice(-4)}`;
+        const newEnsayo: Ensayo = {
+            ...ensayoData,
+            id: newEnsayoId,
+            tipo: 'Tubería PP',
+            estado: 'Pendiente de Revisión',
+        };
+        addEnsayo(newEnsayo);
+        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería PP para ${data.producto}`});
+        toast({
+          title: "Ensayo Registrado",
+          description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
+        })
+    }
 
-    reset({
-      meltIndexMediciones: [{ value: '' }],
-      fv_total_m1: "",
-      fv_total_m2: "",
-      fv_total_m3: "",
-      fv_intermedia_m1: "",
-      fv_intermedia_m2: "",
-      fv_intermedia_m3: "",
-      fecha_ingreso: new Date(),
-      analista: "",
-      producto: "",
-      lote: "",
-      observaciones: "",
-    });
+    reset(defaultFormValues);
     router.push('/ensayos/seguimiento');
   };
   
@@ -515,15 +543,10 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
 
       <div className="flex justify-end pt-4">
         <Button type="submit">
-          <FilePlus2 className="mr-2 h-4 w-4" />
-          Registrar Ensayo de Tubería PP
+          {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
+          {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Tubería PP'}
         </Button>
       </div>
     </form>
   );
 }
-
-
-    
-
-    
