@@ -23,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     return (
         <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
         >
