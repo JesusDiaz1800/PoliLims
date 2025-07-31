@@ -42,7 +42,9 @@ import {
     Construction,
     Unplug,
     Info,
-    LogOut
+    LogOut,
+    CircleDot,
+    Circle
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -57,8 +59,8 @@ const ensayosSubMenu = [
       icon: Construction,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Layers3 },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Layers2 },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: CircleDot },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Circle },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
