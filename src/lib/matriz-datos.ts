@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
@@ -31,7 +32,10 @@ const toNumberOrNull = (value: string | number): number | null => {
     return isNaN(num) ? null : num;
 };
 
-const toNullableString = (value: string): string | undefined => {
+const toNullableString = (value: unknown): string | undefined => {
+    if (typeof value !== 'string') {
+        return undefined;
+    }
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
