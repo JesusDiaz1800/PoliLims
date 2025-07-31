@@ -23,12 +23,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
-import { useDataContext } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context";
 import { useRouter } from "next/navigation";
 
 
-export type Ensayo = ReturnType<typeof useDataContext>["ensayos"][0] & { productoInfo?: TipoProducto };
+export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
 function getStatusVariant(status: string) {
     switch (status) {
@@ -42,7 +41,7 @@ function getStatusVariant(status: string) {
 
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
-  const { ensayos } = useDataContext();
+  const { ensayos } = useDynamicData();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
   
