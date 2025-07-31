@@ -5,7 +5,7 @@ import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDataContext } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import type { RecentActivity } from "@/context/data-context";
@@ -31,13 +31,19 @@ const getAvatarInfo = (name: string) => {
     }
 }
 
-export function RecentActivityList() {
-    const { recentActivity } = useDataContext();
+interface RecentActivityListProps {
+    initialActivity: RecentActivity[];
+}
+
+export function RecentActivityList({ initialActivity }: RecentActivityListProps) {
+    const { recentActivity: dynamicActivity } = useDynamicData();
     const [isClient, setIsClient] = React.useState(false);
 
     React.useEffect(() => {
         setIsClient(true);
     }, []);
+
+    const activityList = dynamicActivity.length > 0 ? dynamicActivity : initialActivity;
 
     return (
         <Card className="h-full">
@@ -48,7 +54,7 @@ export function RecentActivityList() {
             <CardContent>
                 <ScrollArea className="h-[300px] pr-4">
                     <div className="space-y-6">
-                        {recentActivity.length > 0 ? recentActivity.map((activity) => {
+                        {activityList.length > 0 ? activityList.map((activity) => {
                             const avatar = getAvatarInfo(activity.user);
                             return (
                                 <div key={activity.id} className="flex items-start gap-4">

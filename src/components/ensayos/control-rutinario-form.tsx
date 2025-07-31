@@ -21,7 +21,7 @@ import { TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "../ui/scroll-area"
-import { useDataContext } from "@/context/data-context"
+import { useDynamicData } from "@/context/data-context"
 import { useRouter } from "next/navigation"
 import { Combobox } from "../ui/combobox"
 import type { SapProduct } from "@/services/sap-service"
@@ -73,7 +73,7 @@ type ValidationAlerts = {
 
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
-  const { addRegistro, addEnsayo, addRecentActivity } = useDataContext();
+  const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
   const router = useRouter();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
 
@@ -396,6 +396,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
                                 <FormControl>
                                     <Checkbox
+                                        id="entregado_laboratorio"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                         className="mt-0.5"
@@ -433,5 +434,3 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     </Form>
   )
 }
-
-    

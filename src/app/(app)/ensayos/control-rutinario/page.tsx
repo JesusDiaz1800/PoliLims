@@ -2,27 +2,38 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { ControlRutinarioClient } from "@/components/ensayos/control-rutinario-client";
-import { useDataContext } from '@/context/data-context';
+import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
+import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
+import { useStaticData } from '@/context/data-context';
 import Loading from '../../loading';
 
 export default function ControlRutinarioPage() {
-  const { sapProducts, productMatrix } = useDataContext();
-  const [isClient, setIsClient] = useState(false);
+  const { sapProducts, productMatrix, isLoaded } = useStaticData();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const handleAddRecordClick = () => {
+    setIsDialogOpen(true);
+  };
 
-  if (!isClient || !sapProducts.length || !productMatrix.length) {
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
+
+  if (!isLoaded) {
     return <Loading />;
   }
 
   return (
     <div className="space-y-6">
-      <ControlRutinarioClient 
-        sapProducts={sapProducts}
-        productMatrix={productMatrix}
+      <ControlRutinarioTable 
+        onAddRecordClick={handleAddRecordClick} 
+        matrizProductos={productMatrix} 
+      />
+      <ControlRutinarioDialog 
+        isOpen={isDialogOpen} 
+        onClose={handleDialogClose} 
+        productos={sapProducts}
+        matrizProductos={productMatrix}
       />
     </div>
   );

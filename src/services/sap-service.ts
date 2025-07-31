@@ -1,3 +1,4 @@
+
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export interface SapProduct {
@@ -15,13 +16,13 @@ let products: SapProduct[] = [];
  * En esta versión, lee los datos desde el servicio de matriz de datos.
  * @returns Una promesa que resuelve a una lista de productos.
  */
-export function getProductsFromSap(): SapProduct[] {
+export async function getProductsFromSap(): Promise<SapProduct[]> {
   if (products.length > 0) {
     return products;
   }
   
   try {
-    const matriz = getMatrizProductos();
+    const matriz = await getMatrizProductos();
     products = matriz.map(p => ({
         code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
         name: p.producto,
@@ -40,13 +41,10 @@ export function getProductsFromSap(): SapProduct[] {
  * @param code - El código del producto a buscar.
  * @returns Una promesa que resuelve al producto encontrado o null si no existe.
  */
-export function findProductByCode(code: string): SapProduct | null {
+export async function findProductByCode(code: string): Promise<SapProduct | null> {
     if (products.length === 0) {
-      getProductsFromSap();
+      await getProductsFromSap();
     }
     const product = products.find(p => p.code === code) || null;
     return product;
 }
-
-// Initial load
-getProductsFromSap();

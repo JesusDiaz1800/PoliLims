@@ -1,22 +1,29 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 import type { TipoProducto } from "@/lib/matriz-datos";
 import type { SapProduct } from "@/services/sap-service";
 
-// Extensible type for any kind of assay data
-type EnsayoData = {
+// --- STATIC DATA (loaded once from server) ---
+interface StaticDataContextType {
+  productMatrix: TipoProducto[];
+  sapProducts: SapProduct[];
+  isLoaded: boolean;
+}
+
+const StaticDataContext = createContext<StaticDataContextType | undefined>(undefined);
+
+// --- DYNAMIC DATA (client-side state) ---
+export type Ensayo = {
   id: string;
   tipo: string;
   analista: string;
   fecha: string;
   estado: 'Aprobado' | 'En Progreso' | 'Rechazado' | 'Pendiente de Revisión';
   producto: string;
-  [key: string]: any; // Allows for any other properties
+  [key: string]: any; 
 }
-
-export type Ensayo = EnsayoData;
 
 export interface Registro {
   id: string;
@@ -36,7 +43,21 @@ export interface RecentActivity {
   timestamp: string;
 }
 
-// Initial data (can be empty or placeholders)
+interface DynamicDataContextType {
+  ensayos: Ensayo[];
+  registros: Registro[];
+  recentActivity: RecentActivity[];
+  addEnsayo: (ensayo: Ensayo) => void;
+  updateEnsayo: (ensayo: Ensayo) => void;
+  addRegistro: (registro: Registro) => void;
+  addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => void;
+}
+
+const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
+
+
+// --- MOCK DATA & SERVER-SIDE ACTIONS ---
+// This part simulates a database or server-side data source.
 const initialEnsayos: Ensayo[] = [
   { id: "MP-001", tipo: "Materia Prima", analista: "Jesus Diaz", fecha: "2024-07-22", estado: "Aprobado", producto: "Tuberia PEAD 20 mm PN10" },
   { id: "HDPE-0821-A", tipo: "Tubería HDPE", analista: "Maximiliano Miranda", fecha: "2024-07-21", estado: "En Progreso", producto: "Tuberia PEAD 90 mm PN10" },
@@ -60,31 +81,31 @@ const initialRecentActivity: RecentActivity[] = [
     { id: "act-5", user: "Elias Ibañez", action: "registró un nuevo control para Tuberia FASER AQUA-FIBRA 32 mm PN20.", timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() },
 ];
 
-
-// Context shape
-interface DataContextType {
-  ensayos: Ensayo[];
-  registros: Registro[];
-  recentActivity: RecentActivity[];
-  productMatrix: TipoProducto[];
-  sapProducts: SapProduct[];
-  addEnsayo: (ensayo: Ensayo) => void;
-  updateEnsayo: (ensayo: Ensayo) => void;
-  addRegistro: (registro: Registro) => void;
-  addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => void;
+// Server-side action to get data. In a real app, this would fetch from a database.
+export async function getEnsayos() {
+  return initialEnsayos;
 }
 
-// Create context
-const DataContext = createContext<DataContextType | undefined>(undefined);
+export async function getRecentActivity() {
+    return initialRecentActivity;
+}
 
+export async function getAnalystOptions() {
+    const analystSet = new Set(initialEnsayos.map(e => e.analista));
+    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+}
+
+
+// --- PROVIDER COMPONENT ---
 interface DataProviderProps {
   children: ReactNode;
-  productMatrix: TipoProducto[];
-  sapProducts: SapProduct[];
+  staticData: {
+    productMatrix: TipoProducto[];
+    sapProducts: SapProduct[];
+  };
 }
 
-// Provider component
-export const DataProvider = ({ children, productMatrix, sapProducts }: DataProviderProps) => {
+export const DataProvider = ({ children, staticData }: DataProviderProps) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
@@ -108,28 +129,45 @@ export const DataProvider = ({ children, productMatrix, sapProducts }: DataProvi
         timestamp: new Date().toISOString()
     };
     setRecentActivity(prev => [newActivity, ...prev].slice(0, 20)); // Keep last 20 activities
-  }
+  };
 
-  const value = {
+  const dynamicContextValue = useMemo(() => ({
     ensayos,
     registros,
     recentActivity,
-    productMatrix,
-    sapProducts,
     addEnsayo,
     updateEnsayo,
     addRegistro,
     addRecentActivity
-  };
+  }), [ensayos, registros, recentActivity]);
 
-  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
+  const staticContextValue = useMemo(() => ({
+    ...staticData,
+    isLoaded: true
+  }), [staticData]);
+
+  return (
+    <StaticDataContext.Provider value={staticContextValue}>
+      <DynamicDataContext.Provider value={dynamicContextValue}>
+        {children}
+      </DynamicDataContext.Provider>
+    </StaticDataContext.Provider>
+  );
 };
 
-// Custom hook to use the context
-export const useDataContext = () => {
-  const context = useContext(DataContext);
+// --- CUSTOM HOOKS ---
+export const useStaticData = () => {
+  const context = useContext(StaticDataContext);
   if (context === undefined) {
-    throw new Error('useDataContext must be used within a DataProvider');
+    throw new Error('useStaticData must be used within a DataProvider');
+  }
+  return context;
+};
+
+export const useDynamicData = () => {
+  const context = useContext(DynamicDataContext);
+  if (context === undefined) {
+    throw new Error('useDynamicData must be used within a DataProvider');
   }
   return context;
 };

@@ -36,7 +36,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useDataContext } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context";
 import { Ensayo } from "@/context/data-context";
 
 interface Option {
@@ -76,7 +76,7 @@ const defaultFormValues = {
 
 export function TuberiasHdpeForm({ analistas }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
-  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDataContext();
+  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
   const router = useRouter();
   const searchParams = useSearchParams();
   const ensayoId = searchParams.get('id');

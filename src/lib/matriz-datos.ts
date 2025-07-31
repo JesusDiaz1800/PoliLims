@@ -1,5 +1,5 @@
 
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 
@@ -39,14 +39,14 @@ const toNullableString = (value: unknown): string | undefined => {
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
-function loadMatrizProductos() {
+async function loadMatrizProductos(): Promise<TipoProducto[]> {
     if (matrizProductos.length > 0) {
-        return;
+        return matrizProductos;
     }
 
     try {
         const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-        const csvFile = fs.readFileSync(csvFilePath, 'utf8');
+        const csvFile = await fs.readFile(csvFilePath, 'utf8');
         
         const results = Papa.parse<any>(csvFile, {
             header: true,
@@ -62,7 +62,7 @@ function loadMatrizProductos() {
             }
         }
 
-        matrizProductos = results.data.map((row: any) => ({
+        const loadedProducts = results.data.map((row: any) => ({
             producto: row.producto,
             material: row.material,
             diametro_nominal: parseFloat(row.diametro_nominal),
@@ -81,10 +81,13 @@ function loadMatrizProductos() {
             color_tuberia: toNullableString(row.color_tuberia),
             color_linea: toNullableString(row.color_linea),
             code: row.code,
-        })).filter(p => p.producto); // Filter out any completely empty rows that might pass
+        })).filter(p => p.producto); // Filter out any completely empty rows
+        
+        matrizProductos = loadedProducts; // Cache the result
+        return matrizProductos;
     } catch (error) {
         console.error("Error reading product CSV file:", error);
-        matrizProductos = []; // Ensure it's empty on error
+        return []; // Return empty on error
     }
 }
 
@@ -92,12 +95,7 @@ function loadMatrizProductos() {
  * Gets the loaded product matrix.
  * Note: This assumes `loadMatrizProductos` has completed.
  */
-export function getMatrizProductos(): TipoProducto[] {
-    if (matrizProductos.length === 0) {
-        loadMatrizProductos();
-    }
-    return matrizProductos;
+export async function getMatrizProductos(): Promise<TipoProducto[]> {
+    // This will either return the cache or load it for the first time.
+    return loadMatrizProductos();
 };
-
-// Initial load
-loadMatrizProductos();

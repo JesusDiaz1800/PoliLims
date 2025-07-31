@@ -15,9 +15,10 @@ export const metadata: Metadata = {
     description: 'Laboratorio de Ensayos Polifusión S.A.',
 };
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
-    const productMatrix = getMatrizProductos();
-    const sapProducts = getProductsFromSap();
+export default async function AppLayout({ children }: { children: React.ReactNode }) {
+    // Load static data once on the server layout
+    const productMatrix = await getMatrizProductos();
+    const sapProducts = await getProductsFromSap();
 
     return (
         <ThemeProvider
@@ -26,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider productMatrix={productMatrix} sapProducts={sapProducts}>
+            <DataProvider staticData={{ productMatrix, sapProducts }}>
                 <div className="bg-background">
                     <SidebarProvider>
                         <AppShell>
