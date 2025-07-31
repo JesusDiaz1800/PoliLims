@@ -25,7 +25,7 @@ export default function ControlRutinarioPage() {
 
   return (
     <div className="space-y-6">
-      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} matrizProductos={productMatrix} />
+      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} />
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 
         onClose={handleDialogClose} 

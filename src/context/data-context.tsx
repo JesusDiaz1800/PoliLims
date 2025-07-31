@@ -82,26 +82,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
-  const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
-  const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
-  const [loading, setLoading] = useState(false); // Set to false initially
-
-  // Load static data on initial mount. This runs once.
-  useEffect(() => {
-    try {
-        setLoading(true);
-        // These functions are now synchronous and return the cached data
-        const sapData = getProductsFromSap();
-        const matrixData = getMatrizProductos();
-        setSapProducts(sapData);
-        setProductMatrix(matrixData);
-    } catch (error) {
-        console.error("Failed to load initial app data:", error);
-    } finally {
-        setLoading(false);
-    }
-  }, []);
-
+  
+  // These are now loaded synchronously from the server-side cache
+  const sapProducts = getProductsFromSap();
+  const productMatrix = getMatrizProductos();
+  const loading = false; // Data is pre-loaded, so no loading state is needed.
 
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);

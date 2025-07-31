@@ -73,7 +73,7 @@ function loadMatrizProductos() {
             tiempo_phi: toNumberOrNull(row.tiempo_phi),
             color_tuberia: toNullableString(row.color_tuberia),
             color_linea: toNullableString(row.color_linea),
-            code: row.producto.replace(/\s+/g, '-').toUpperCase(),
+            code: row.code,
         }));
     } catch (error) {
         console.error("Error reading product CSV file:", error);

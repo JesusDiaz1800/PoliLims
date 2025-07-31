@@ -25,11 +25,10 @@ export type Registro = ReturnType<typeof useDataContext>["registros"][0] & { pro
 
 interface ControlRutinarioTableProps {
   onAddRecordClick: () => void;
-  matrizProductos: TipoProducto[];
 }
 
-export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) {
-  const { registros } = useDataContext();
+export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTableProps) {
+  const { registros, productMatrix } = useDataContext();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
@@ -42,7 +41,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
     );
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
-    const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
+    const productoInfo = productMatrix.find(p => p.producto === registro.producto);
     setSelectedRegistro({ ...registro, productoInfo });
     setIsMecanicosDialogOpen(true);
   }
