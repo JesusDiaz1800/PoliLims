@@ -117,21 +117,19 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
+          <SampleStatusChart />
+        </div>
+        <RecentActivityList />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
           <ThroughputTrendChart />
         </div>
-        <div>
+        <div className="flex flex-col gap-6">
           <WorkloadDistributionChart />
+          <EquipmentStatusChart />
         </div>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <SampleStatusChart />
-          </div>
-          <div className="flex flex-col gap-6">
-              <EquipmentStatusChart />
-              <RecentActivityList />
-          </div>
       </div>
     </div>
   );
