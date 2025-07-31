@@ -24,7 +24,7 @@ export default async function AppLayout({ children, ...props }: { children: Reac
     // Get user from search params to pass to AppShell
     // This is a simplified way to handle user session for this example
     const searchParams = (props as any).searchParams || {};
-    const username = searchParams?.user || 'jefe.calidad';
+    const username = searchParams?.user || 'jesus.diaz';
     const user = await findUserByUsername(username);
 
 

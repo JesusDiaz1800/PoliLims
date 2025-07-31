@@ -36,7 +36,8 @@ import {
     Droplets,
     ClipboardCheck,
     ChevronDown,
-    ChevronsRight,
+    Layers2,
+    Layers3,
     SlidersHorizontal,
     Construction,
     Unplug,
@@ -56,8 +57,8 @@ const ensayosSubMenu = [
       icon: Construction,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE' },
-        { href: '/ensayos/tuberias/pp', label: 'PP' },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Layers3 },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Layers2 },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
@@ -148,7 +149,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
                                      <SidebarMenuItem key={childItem.href}>
                                          <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
                                              <Link href={`${childItem.href}?${userQuery}`}>
-                                                 <ChevronsRight className="size-3 mr-2 text-primary/80" />
+                                                 {childItem.icon ? <childItem.icon className="size-3 mr-2 text-primary/80" /> : <div className="w-3 mr-2" /> }
                                                  {childItem.label}
                                              </Link>
                                          </SidebarMenuButton>
