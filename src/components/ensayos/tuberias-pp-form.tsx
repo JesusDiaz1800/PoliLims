@@ -67,6 +67,10 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
       producto: "",
       lote: "",
       observaciones: "",
+      melt_index_materia_prima: "",
+      densidad_liquido: "",
+      masa_aire: "",
+      masa_agua: "",
     }
   });
 
@@ -361,7 +365,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</Label>
-                        <Controller name="melt_index_materia_prima" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Valor del lote de MP" onChange={e => { field.onChange(e); calculateMeltIndex(); }} />} />
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
                        <div className="space-y-2">
                          <Label>Índice de fluidez Producto Terminado [g/10min]</Label>
@@ -393,15 +397,15 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
-                        <Controller name="densidad_liquido" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Ej: 0.786" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
-                        <Controller name="masa_aire" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Masa en aire" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
-                        <Controller name="masa_agua" control={control} render={({ field }) => <Input {...field} type="number" step="any" placeholder="Masa en agua" onChange={e => { field.onChange(e); calculateDensidad(); }} />} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
                       </div>
                        <div className="space-y-2">
                          <Label>Densidad de la muestra [g/cm³]</Label>
@@ -519,5 +523,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   );
 }
 
+
+    
 
     
