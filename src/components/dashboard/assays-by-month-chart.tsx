@@ -44,7 +44,7 @@ export function AssaysByMonthChart({ filters, data: allData }: AssaysByMonthChar
         fill: `hsl(var(--chart-${(index % 5) + 1}))`
     }));
 
-  }, [allData, filters]);
+  }, [allData]);
 
   return (
     <Card>
