@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "../ui/scroll-area"
 import { useDataContext } from "@/context/data-context"
 import { useRouter } from "next/navigation"
+import { Combobox } from "../ui/combobox"
 
 interface Option {
   value: string
@@ -95,6 +96,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   React.useEffect(() => {
+    // Se busca por el 'value' que es el código SAP, no la etiqueta.
     const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
     if (productoSeleccionado) {
         setValue("color_tuberia", productoSeleccionado.color_tuberia || "");
@@ -138,18 +140,21 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     const registroId = `REG-${String(Date.now()).slice(-4)}`;
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
 
+    const selectedProductLabel = productos.find(p => p.value === data.producto)?.label || data.producto;
+
+
     const newRegistro = {
         id: registroId,
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
         inspector: data.inspector,
         maquina: data.maquina,
-        producto: data.producto,
+        producto: selectedProductLabel,
         resultado,
         enviado_lab: data.entregado_laboratorio,
     };
     addRegistro(newRegistro);
-    addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${data.producto}`});
+    addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProductLabel}`});
 
     toast({
       title: "Registro Guardado",
@@ -171,7 +176,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             analista: 'Jesus Diaz', // Default analyst, could be selectable
             fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
             estado: 'Pendiente de Revisión',
-            producto: data.producto,
+            producto: selectedProductLabel,
         };
         addEnsayo(newEnsayo);
         addRecentActivity({ user: data.inspector, action: `envió la muestra ${newEnsayoId} a laboratorio.`});
@@ -257,15 +262,18 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="producto">Producto</Label>
-                            <Controller
+                            <Label htmlFor="producto">Producto (SAP)</Label>
+                             <Controller
                                 control={form.control}
                                 name="producto"
                                 render={({ field }) => (
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger id="producto"><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                                        <SelectContent>{productos.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}</SelectContent>
-                                    </Select>
+                                    <Combobox
+                                        options={productos}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        placeholder="Buscar producto..."
+                                        notFoundText="No se encontró el producto."
+                                    />
                                 )}
                             />
                         </div>

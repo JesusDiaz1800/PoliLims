@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -11,12 +12,18 @@ import {
 import { ControlRutinarioForm } from "./control-rutinario-form";
 import { matrizProductos } from "@/lib/matriz-datos";
 
+interface Option {
+  value: string;
+  label: string;
+}
+
 interface ControlRutinarioDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  productos: Option[];
 }
 
-export function ControlRutinarioDialog({ isOpen, onClose }: ControlRutinarioDialogProps) {
+export function ControlRutinarioDialog({ isOpen, onClose, productos }: ControlRutinarioDialogProps) {
 
   const inspectores = [
     { value: "elias.ibanez", label: "Elias Ibañez" },
@@ -59,8 +66,6 @@ export function ControlRutinarioDialog({ isOpen, onClose }: ControlRutinarioDial
     { value: "PE4", label: "PE4" },
   ];
 
-  const productos = matrizProductos.map(p => ({ value: p.producto, label: p.producto }));
-  
   const marcas = [
     { value: "polifusion", label: "POLIFUSIÓN S.A." },
     { value: "smartpipes", label: "SMART PIPES SpA" },
