@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
     Sidebar,
     SidebarHeader,
@@ -47,6 +47,8 @@ import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import type { User } from '@/services/user-service';
+
 
 const ensayosSubMenu = [
     { 
@@ -100,7 +102,7 @@ const menuItems = [
     },
 ];
 
-const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathname: string, disabled?: boolean }) => (
+const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => (
     <Collapsible
       key={item.label}
       defaultOpen={pathname.startsWith(item.href)}
@@ -145,7 +147,7 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
                                  {subItem.subItems.map((childItem: any) => (
                                      <SidebarMenuItem key={childItem.href}>
                                          <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
-                                             <Link href={childItem.href}>
+                                             <Link href={`${childItem.href}?${userQuery}`}>
                                                  <ChevronsRight className="size-3 mr-2 text-primary/80" />
                                                  {childItem.label}
                                              </Link>
@@ -170,7 +172,7 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
                         disabled={disabled}
                         aria-disabled={disabled}
                         >
-                        <Link href={subItem.href}>
+                        <Link href={`${subItem.href}?${userQuery}`}>
                            {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                            <span>{subItem.label}</span>
                         </Link>
@@ -184,10 +186,13 @@ const NavCollapsible = ({ item, pathname, disabled = false }: { item: any, pathn
 );
 
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({ children, user }: { children: React.ReactNode, user: User }) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { state, isMobile } = useSidebar();
-    const isInspectorView = false; // En una app real, esto vendría de la sesión del usuario.
+    const isInspectorView = user?.role === 'Inspector de Calidad';
+
+    const userQuery = searchParams.toString();
 
     const getPageTitle = () => {
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
@@ -212,7 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="flex min-h-screen w-full">
-            <Sidebar variant="sidebar" collapsible="icon">
+            <Sidebar variant="sidebar" collapsible="icon" className="bg-primary text-primary-foreground">
                 <SidebarHeader>
                     <div className="flex items-center gap-2.5 px-2 h-16 justify-center group-data-[collapsible=icon]:px-0">
                        <Logo className="w-32 h-auto group-data-[collapsible=icon]:w-10" />
@@ -236,7 +241,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                 return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
                             }
                             if (item.subMenu) {
-                                return <NavCollapsible key={item.label} item={item} pathname={pathname} disabled={isDisabled} />;
+                                return <NavCollapsible key={item.label} item={item} pathname={pathname} disabled={isDisabled} userQuery={userQuery} />;
                             }
                              const isActive = pathname === item.href || (item.href && item.href !== '/dashboard' && pathname.startsWith(item.href));
 
@@ -244,13 +249,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                                 <SidebarMenuItem key={item.href || index}>
                                     <SidebarMenuButton
                                         asChild
-                                        variant="default"
+                                        variant="ghost"
                                         isActive={isActive}
                                         tooltip={{content: item.label, side:"right", align:"center"}}
                                         disabled={isDisabled}
                                         aria-disabled={isDisabled}
                                     >
-                                        <Link href={item.href || '#'}>
+                                        <Link href={`${item.href}?${userQuery}`}>
                                             <item.icon className="size-5" />
                                             <span>{item.label}</span>
                                         </Link>
@@ -273,13 +278,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
                     <div className="flex items-center gap-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:py-2">
-                        <Avatar className="h-10 w-10 border-2 border-sidebar-primary/50">
-                            <AvatarImage src="https://placehold.co/40x40.png" alt="Victor Lutz" data-ai-hint="man portrait"/>
-                            <AvatarFallback>VL</AvatarFallback>
+                        <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
+                            <AvatarImage src={user.avatarUrl} alt={user.fullName} data-ai-hint="man portrait"/>
+                            <AvatarFallback>{user.initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-sm overflow-hidden group-data-[collapsible=icon]:hidden">
-                            <span className="font-semibold truncate">Victor Lutz</span>
-                            <span className="text-muted-foreground text-xs truncate">Jefe de Calidad</span>
+                            <span className="font-semibold truncate">{user.fullName}</span>
+                            <span className="text-primary-foreground/70 text-xs truncate">{user.role}</span>
                         </div>
                     </div>
                 </SidebarFooter>

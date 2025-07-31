@@ -1,7 +1,6 @@
 
 import * as React from "react";
-import { Activity, Beaker, CheckCircle, ClipboardList, Filter, Calendar as CalendarIcon, User, Package } from "lucide-react";
-import { redirect } from 'next/navigation';
+import { Activity, Beaker, CheckCircle, ClipboardList } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -13,21 +12,25 @@ import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { getEnsayos, getRecentActivity, getAnalystOptions } from "@/services/data-service";
+import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import { findUserByUsername } from "@/services/user-service";
 
 export type DashboardFilterParams = {
   month?: string;
   analyst?: string;
   status?: string;
+  user?: string;
 }
 
 export default async function DashboardPage({ searchParams }: { searchParams: DashboardFilterParams }) {
 
-  const { month = 'last_30_days', analyst = 'all', status = 'all' } = searchParams;
+  const { month = 'last_30_days', analyst = 'all', status = 'all', user: username } = searchParams;
   
   // Fetch all data on the server
   const allEnsayos = await getEnsayos();
   const recentActivity = await getRecentActivity();
   const allAnalysts = await getAnalystOptions();
+  const user = await findUserByUsername(username || 'jefe.calidad');
   
   // Apply filters on the server
   const filteredEnsayos = allEnsayos.filter(ensayo => {
@@ -45,6 +48,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Da
 
   return (
     <div className="space-y-6">
+      <WelcomeBanner user={user} />
       <DashboardFilters 
         analysts={allAnalysts} 
         defaultValues={{ month, analyst, status }} 

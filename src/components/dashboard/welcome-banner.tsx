@@ -1,0 +1,30 @@
+
+"use client";
+
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Hand } from "lucide-react";
+import type { User } from "@/services/user-service";
+
+interface WelcomeBannerProps {
+  user: User | null;
+}
+
+export function WelcomeBanner({ user }: WelcomeBannerProps) {
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20">
+      <CardHeader>
+        <div className="flex items-center gap-4">
+            <Hand className="h-8 w-8 text-primary" />
+            <div>
+                <CardTitle className="text-2xl">Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</CardTitle>
+                <CardDescription className="text-base text-muted-foreground">Aquí tienes un resumen del estado actual del laboratorio.</CardDescription>
+            </div>
+        </div>
+      </CardHeader>
+    </Card>
+  );
+}
