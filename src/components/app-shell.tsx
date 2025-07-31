@@ -42,7 +42,9 @@ import {
     Construction,
     Unplug,
     Info,
-    LogOut
+    LogOut,
+    Cylinder,
+    Codepen
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -57,8 +59,8 @@ const ensayosSubMenu = [
       icon: Construction,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Layers3 },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Layers2 },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Cylinder },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Cylinder },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
@@ -309,4 +311,5 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
 
     
     
+
 
