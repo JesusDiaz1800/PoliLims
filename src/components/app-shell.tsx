@@ -43,7 +43,7 @@ import {
     Unplug,
     Info,
     LogOut,
-    Disc3D,
+    Disc3,
     Codepen
 } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -59,7 +59,7 @@ const ensayosSubMenu = [
       icon: Construction,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Disc3D },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Disc3 },
         { href: '/ensayos/tuberias/pp', label: 'PP', icon: Codepen },
       ]
     },
@@ -309,4 +309,5 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     );
 }
 
+    
     
