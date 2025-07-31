@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react";
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto } from "@/lib/matriz-datos";
 import { useDataContext } from "@/context/data-context";
+import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export type Registro = ReturnType<typeof useDataContext>["registros"][0] & { productoInfo?: TipoProducto };
 
@@ -28,10 +30,16 @@ interface ControlRutinarioTableProps {
 }
 
 export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTableProps) {
-  const { registros, productMatrix } = useDataContext();
+  const { registros } = useDataContext();
+  const [productMatrix, setProductMatrix] = React.useState<TipoProducto[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
+
+  React.useEffect(() => {
+      // Data is already cached on the server, so this is a quick sync call.
+      setProductMatrix(getMatrizProductos());
+  }, []);
 
   const filteredRegistros = registros
     .filter(registro => 

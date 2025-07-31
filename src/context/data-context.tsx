@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { getProductsFromSap, SapProduct } from '@/services/sap-service';
-import { getMatrizProductos, TipoProducto } from '@/lib/matriz-datos';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos";
+import { getProductsFromSap, SapProduct } from "@/services/sap-service";
 
 // Extensible type for any kind of assay data
 type EnsayoData = {
@@ -60,14 +60,14 @@ const initialRecentActivity: RecentActivity[] = [
     { id: "act-5", user: "Elias Ibañez", action: "registró un nuevo control para Tuberia FASER AQUA-FIBRA 32 mm PN20.", timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() },
 ];
 
+
 // Context shape
 interface DataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
-  sapProducts: SapProduct[];
   productMatrix: TipoProducto[];
-  loading: boolean;
+  sapProducts: SapProduct[];
   addEnsayo: (ensayo: Ensayo) => void;
   updateEnsayo: (ensayo: Ensayo) => void;
   addRegistro: (registro: Registro) => void;
@@ -82,12 +82,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
-  
-  // These are now loaded synchronously from the server-side cache
-  const sapProducts = getProductsFromSap();
-  const productMatrix = getMatrizProductos();
-  const loading = false; // Data is pre-loaded, so no loading state is needed.
 
+  // Data loaded from server-cached files, so it's a sync operation on component mount.
+  const productMatrix = getMatrizProductos();
+  const sapProducts = getProductsFromSap();
+  
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);
   };
@@ -113,9 +112,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     ensayos,
     registros,
     recentActivity,
-    sapProducts,
     productMatrix,
-    loading,
+    sapProducts,
     addEnsayo,
     updateEnsayo,
     addRegistro,
