@@ -1,6 +1,3 @@
-
-"use server"
-
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export interface SapProduct {
