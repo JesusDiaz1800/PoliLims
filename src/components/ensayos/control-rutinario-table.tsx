@@ -21,25 +21,19 @@ import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto } from "@/lib/matriz-datos";
 import { useDataContext } from "@/context/data-context";
-import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export type Registro = ReturnType<typeof useDataContext>["registros"][0] & { productoInfo?: TipoProducto };
 
 interface ControlRutinarioTableProps {
   onAddRecordClick: () => void;
+  matrizProductos: TipoProducto[];
 }
 
-export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTableProps) {
+export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) {
   const { registros } = useDataContext();
-  const [productMatrix, setProductMatrix] = React.useState<TipoProducto[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
-
-  React.useEffect(() => {
-      // Data is already cached on the server, so this is a quick sync call.
-      setProductMatrix(getMatrizProductos());
-  }, []);
 
   const filteredRegistros = registros
     .filter(registro => 
@@ -49,7 +43,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
     );
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
-    const productoInfo = productMatrix.find(p => p.producto === registro.producto);
+    const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
     setSelectedRegistro({ ...registro, productoInfo });
     setIsMecanicosDialogOpen(true);
   }
