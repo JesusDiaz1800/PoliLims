@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
+import { DataProvider } from '@/context/data-context';
 
 export const metadata: Metadata = {
     title: {
@@ -20,13 +21,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
         >
-            <div className="bg-background">
-                <SidebarProvider>
-                    <AppShell>
-                        {children}
-                    </AppShell>
-                </SidebarProvider>
-            </div>
+            <DataProvider>
+                <div className="bg-background">
+                    <SidebarProvider>
+                        <AppShell>
+                            {children}
+                        </AppShell>
+                    </SidebarProvider>
+                </div>
+            </DataProvider>
         </ThemeProvider>
     );
 }

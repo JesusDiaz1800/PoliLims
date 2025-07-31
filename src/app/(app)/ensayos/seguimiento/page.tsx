@@ -26,53 +26,11 @@ import { MoreHorizontal, PlusCircle, Search, Filter, TestTube } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog, type EnsayoMecanicoInfo } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
+import { useDataContext } from "@/context/data-context";
+import { useRouter } from "next/navigation";
 
 
-const initialEnsayos = [
-  {
-    id: "MP-001",
-    tipo: "Materia Prima",
-    analista: "Jesus Diaz",
-    fecha: "2024-07-22",
-    estado: "Aprobado",
-    producto: "Tuberia PEAD 20 mm PN10",
-  },
-  {
-    id: "HDPE-0821-A",
-    tipo: "Tubería HDPE",
-    analista: "Maximiliano Miranda",
-    fecha: "2024-07-21",
-    estado: "En Progreso",
-    producto: "Tuberia PEAD 90 mm PN10",
-  },
-  {
-    id: "PP-559",
-    tipo: "Tubería PP",
-    analista: "Antonia Figueroa",
-    fecha: "2024-07-21",
-    estado: "Rechazado",
-    producto: "Tuberia FASER BETA-FIBRA 25 mm PN20",
-  },
-  {
-    id: "REPRO-034",
-    tipo: "Reprocesado",
-    analista: "Robinson Córdova",
-    fecha: "2024-07-20",
-    estado: "Pendiente de Revisión",
-    producto: "Tuberia PP-R 20 mm PN20",
-  },
-  {
-    id: "ACC-012",
-    tipo: "Control de Accesorios",
-    analista: "Bryan Vásquez",
-    fecha: "2024-07-19",
-    estado: "Aprobado",
-    producto: "Tuberia PEAD 63 mm PN10",
-  },
-];
-
-// This could be a more generic `Registro` type in the future
-export type Ensayo = typeof initialEnsayos[0] & { productoInfo?: TipoProducto };
+export type Ensayo = ReturnType<typeof useDataContext>["ensayos"][0] & { productoInfo?: TipoProducto };
 
 function getStatusVariant(status: string) {
     switch (status) {
@@ -85,13 +43,14 @@ function getStatusVariant(status: string) {
 }
 
 export default function SeguimientoEnsayosPage() {
+  const router = useRouter();
+  const { ensayos, addEnsayo } = useDataContext();
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [ensayos, setEnsayos] = React.useState(initialEnsayos);
   const [filterType, setFilterType] = React.useState("Todos");
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<EnsayoMecanicoInfo | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-
-  const ensayoTypes = ["Todos", ...new Set(initialEnsayos.map(e => e.tipo))];
+  
+  const ensayoTypes = ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))];
 
   const filteredEnsayos = ensayos
     .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
@@ -110,6 +69,11 @@ export default function SeguimientoEnsayosPage() {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
     setSelectedEnsayo(null);
+  }
+  
+  const handleRedirectToRegister = () => {
+    // A simple redirect logic, could be a dropdown in a real app
+    router.push('/ensayos/control-rutinario');
   }
 
   return (
@@ -142,7 +106,7 @@ export default function SeguimientoEnsayosPage() {
                       ))}
                   </SelectContent>
                 </Select>
-                 <Button>
+                 <Button onClick={handleRedirectToRegister}>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Registrar Nuevo Ensayo
                 </Button>

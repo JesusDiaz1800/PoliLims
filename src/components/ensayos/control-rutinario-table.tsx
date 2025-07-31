@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react";
@@ -18,62 +19,21 @@ import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus } 
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
+import { useDataContext } from "@/context/data-context";
 
-const initialRegistros = [
-  {
-    id: "REG-001",
-    fecha: "2024-07-25",
-    hora: "10:30",
-    inspector: "Elias Ibañez",
-    maquina: "Máquina 5",
-    producto: "Tuberia PEAD 90 mm PN10",
-    resultado: "Conforme",
-    enviado_lab: true,
-  },
-  {
-    id: "REG-002",
-    fecha: "2024-07-25",
-    hora: "11:15",
-    inspector: "Cristian Montellano",
-    maquina: "Máquina 2",
-    producto: "Tuberia FASER BETA-FIBRA 25 mm PN20",
-    resultado: "No Conforme",
-    enviado_lab: true,
-  },
-  {
-    id: "REG-003",
-    fecha: "2024-07-24",
-    hora: "14:00",
-    inspector: "Daniel Palma",
-    maquina: "PE1",
-    producto: "Tuberia PEAD 20 mm PN10",
-    resultado: "Conforme",
-    enviado_lab: false,
-  },
-  {
-    id: "REG-004",
-    fecha: "2024-07-24",
-    hora: "16:45",
-    inspector: "Luis Parada",
-    maquina: "Máquina 9",
-    producto: "Tuberia PP-R 20 mm PN20",
-    resultado: "Conforme",
-    enviado_lab: true,
-  },
-];
-
-export type Registro = typeof initialRegistros[0] & { productoInfo?: TipoProducto };
+export type Registro = ReturnType<typeof useDataContext>["registros"][0] & { productoInfo?: TipoProducto };
 
 interface ControlRutinarioTableProps {
   onAddRecordClick: () => void;
 }
 
 export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTableProps) {
+  const { registros } = useDataContext();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
 
-  const filteredRegistros = initialRegistros
+  const filteredRegistros = registros
     .filter(registro => 
       registro.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.inspector.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -148,7 +108,8 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                   <TableCell>
                     <Badge variant={registro.resultado === 'Conforme' ? 'default' : 'destructive'} className={cn(
                       "font-normal",
-                      registro.resultado === 'Conforme' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      "border-transparent",
+                      registro.resultado === 'Conforme' ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
                     )}>
                       {registro.resultado === 'Conforme' ? <CheckCircle className="mr-1.5 h-3.5 w-3.5"/> : <AlertCircle className="mr-1.5 h-3.5 w-3.5"/>}
                       {registro.resultado}
@@ -156,7 +117,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
                   </TableCell>
                   <TableCell className="text-center">
                     {registro.enviado_lab ? (
-                      <Badge className="bg-blue-100 text-primary border-primary/20 font-normal">
+                      <Badge className="bg-blue-500/20 text-blue-300 border-blue-500/30 border-transparent font-normal">
                         Sí
                       </Badge>
                     ) : (

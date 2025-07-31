@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -20,6 +21,8 @@ import { matrizProductos } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "../ui/scroll-area"
+import { useDataContext } from "@/context/data-context"
+import { useRouter } from "next/navigation"
 
 interface Option {
   value: string
@@ -56,6 +59,8 @@ const formSchema = z.object({
   entregado_laboratorio: z.boolean().default(false),
 })
 
+type FormValues = z.infer<typeof formSchema>;
+
 type ValidationAlerts = {
   diametro?: string
   espesor_min?: string
@@ -66,9 +71,11 @@ type ValidationAlerts = {
 
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
+  const { addRegistro, addEnsayo, addRecentActivity } = useDataContext();
+  const router = useRouter();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       entregado_laboratorio: false,
@@ -90,11 +97,9 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   React.useEffect(() => {
     const productoSeleccionado = matrizProductos.find(p => p.producto === producto)
     if (productoSeleccionado) {
-        // Autocompletar campos
         setValue("color_tuberia", productoSeleccionado.color_tuberia || "");
         setValue("color_linea", productoSeleccionado.color_linea || "");
         
-        // Lógica de validación
         const newAlerts: ValidationAlerts = {}
         if (diametro !== undefined) {
             if (diametro > productoSeleccionado.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
@@ -129,19 +134,47 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }, [largo, peso_muestra, setValue]);
 
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data)
+  const onSubmit = (data: FormValues) => {
+    const id = `REG-${String(Date.now()).slice(-4)}`;
+    const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
+
+    const newRegistro = {
+        id,
+        fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
+        hora: data.hora,
+        inspector: data.inspector,
+        maquina: data.maquina,
+        producto: data.producto,
+        resultado,
+        enviado_lab: data.entregado_laboratorio,
+    };
+    addRegistro(newRegistro);
+    addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${data.producto}`});
+
     toast({
       title: "Registro Guardado",
-      description: "El control rutinario ha sido registrado exitosamente.",
+      description: `El control ${id} ha sido registrado como ${resultado}.`,
     })
+
     if (data.entregado_laboratorio) {
+        const newEnsayoId = `HDPE-${String(Date.now()).slice(-4)}`;
+        const newEnsayo = {
+            id: newEnsayoId,
+            tipo: "Tubería HDPE", // This should be dynamic based on product
+            analista: 'Jesus Diaz', // Default analyst, could be selectable
+            fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
+            estado: 'Pendiente de Revisión',
+            producto: data.producto,
+        };
+        addEnsayo(newEnsayo);
+        addRecentActivity({ user: data.inspector, action: `envió la muestra ${newEnsayoId} a laboratorio.`});
         toast({
             title: "Muestra Enviada a Laboratorio",
-            description: `La muestra para ${data.producto} ha sido enviada para análisis y aparece en Seguimiento.`,
+            description: `La muestra ${newEnsayoId} está ahora en Seguimiento.`,
             variant: "default",
         })
     }
+    
     form.reset();
     onFormSubmit();
   }

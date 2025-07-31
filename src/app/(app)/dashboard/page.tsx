@@ -27,6 +27,7 @@ import {
   CardTitle,
   CardDescription
 } from "@/components/ui/card";
+import { useDataContext } from "@/context/data-context";
 
 export type DashboardFilters = {
   month: string;
@@ -35,6 +36,7 @@ export type DashboardFilters = {
 }
 
 export default function DashboardPage() {
+  const { ensayos } = useDataContext();
   const [filters, setFilters] = React.useState<DashboardFilters>({
     month: "last_30_days",
     analyst: "all",
@@ -44,6 +46,26 @@ export default function DashboardPage() {
   const handleFilterChange = (filterName: keyof DashboardFilters) => (value: string) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
   };
+  
+  const filteredEnsayos = React.useMemo(() => {
+    return ensayos.filter(ensayo => {
+      const filterByAnalyst = filters.analyst === 'all' || ensayo.analista === filters.analyst;
+      const filterByStatus = filters.status === 'all' || ensayo.estado.toLowerCase().replace(' ', '_') === filters.status;
+      // Note: Month filter simulation is handled within each chart for now
+      return filterByAnalyst && filterByStatus;
+    });
+  }, [ensayos, filters]);
+
+  const activeSamples = filteredEnsayos.filter(e => e.estado === "En Progreso").length;
+  const pendingAssays = filteredEnsayos.filter(e => e.estado === "Pendiente de Revisión").length;
+  const approvedReports = filteredEnsayos.filter(e => e.estado === "Aprobado").length;
+
+
+  const allAnalysts = React.useMemo(() => {
+    const analystSet = new Set(ensayos.map(e => e.analista));
+    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+  }, [ensayos]);
+
 
   return (
     <div className="space-y-6">
@@ -73,10 +95,9 @@ export default function DashboardPage() {
                               <SelectValue placeholder="Filtrar por analista" />
                           </SelectTrigger>
                           <SelectContent>
-                              <SelectItem value="all">Todos los Analistas</SelectItem>
-                              <SelectItem value="jesus.diaz">Jesus Diaz</SelectItem>
-                              <SelectItem value="maximiliano.miranda">Maximiliano Miranda</SelectItem>
-                              <SelectItem value="antonia.figueroa">Antonia Figueroa</SelectItem>
+                              {allAnalysts.map(analyst => (
+                                <SelectItem key={analyst.value} value={analyst.value}>{analyst.label}</SelectItem>
+                              ))}
                           </SelectContent>
                       </Select>
                        <Select value={filters.status} onValueChange={handleFilterChange("status")}>
@@ -89,6 +110,7 @@ export default function DashboardPage() {
                               <SelectItem value="aprobado">Aprobado</SelectItem>
                               <SelectItem value="en_progreso">En Progreso</SelectItem>
                               <SelectItem value="rechazado">Rechazado</SelectItem>
+                               <SelectItem value="pendiente_de_revision">Pendiente de Revisión</SelectItem>
                           </SelectContent>
                       </Select>
                   </div>
@@ -99,24 +121,21 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Muestras Activas"
-          value="152"
+          value={activeSamples.toString()}
           description="Muestras actualmente en proceso"
           icon={Activity}
-          filters={filters}
         />
         <StatsCard
           title="Ensayos Pendientes"
-          value="32"
+          value={pendingAssays.toString()}
           description="Análisis esperando resultados"
           icon={ClipboardList}
-          filters={filters}
         />
         <StatsCard
           title="Informes Aprobados"
-          value="45"
+          value={approvedReports.toString()}
           description="Certificados emitidos este mes"
           icon={CheckCircle}
-          filters={filters}
         />
         <StatsCard
           title="Equipos Operativos"
@@ -126,24 +145,24 @@ export default function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <SampleStatusChart filters={filters} />
+          <SampleStatusChart data={filteredEnsayos} />
         </div>
-        <RecentActivityList filters={filters} />
+        <RecentActivityList />
       </div>
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AssaysByMonthChart filters={filters} />
-        <AssaysByTypeChart filters={filters} />
+        <AssaysByMonthChart data={filteredEnsayos} filters={filters}/>
+        <AssaysByTypeChart data={filteredEnsayos} filters={filters} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ThroughputTrendChart filters={filters} />
+          <ThroughputTrendChart data={filteredEnsayos} filters={filters}/>
         </div>
         <div className="flex flex-col gap-6">
-          <WorkloadDistributionChart filters={filters} />
+          <WorkloadDistributionChart data={filteredEnsayos} filters={filters}/>
           <EquipmentStatusChart />
         </div>
       </div>

@@ -5,37 +5,28 @@ import * as React from "react"
 import { Pie, PieChart, ResponsiveContainer, Cell, Tooltip } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { DashboardFilters } from "@/app/(app)/dashboard/page";
-
-const initialData = [
-  { name: "Jesus Diaz", value: 45, color: "hsl(var(--chart-1))", id: "jesus.diaz" },
-  { name: "Maximiliano Miranda", value: 32, color: "hsl(var(--chart-2))", id: "maximiliano.miranda" },
-  { name: "Antonia Figueroa", value: 28, color: "hsl(var(--chart-3))", id: "antonia.figueroa" },
-  { name: "Robinson Córdova", value: 22, color: "hsl(var(--chart-4))", id: "robinson.cordova" },
-  { name: "Bryan Vásquez", value: 18, color: "hsl(var(--chart-5))", id: "bryan.vasquez" },
-]
+import type { Ensayo } from "@/context/data-context";
 
 interface WorkloadDistributionChartProps {
     filters: DashboardFilters;
+    data: Ensayo[];
 }
 
+export function WorkloadDistributionChart({ filters, data: allData }: WorkloadDistributionChartProps) {
+  const chartData = React.useMemo(() => {
+    const analystCounts = allData.reduce((acc, ensayo) => {
+        acc[ensayo.analista] = (acc[ensayo.analista] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
 
-export function WorkloadDistributionChart({ filters }: WorkloadDistributionChartProps) {
-  const [data, setData] = React.useState(initialData);
-
-  React.useEffect(() => {
-    let filteredData = initialData;
-    if (filters.analyst !== 'all') {
-      filteredData = initialData.filter(item => item.id === filters.analyst);
-    }
-    
-    const newData = filteredData.map(item => ({
-      ...item,
-      value: Math.round(item.value * (Math.random() * 0.4 + 0.8))
-    }));
-    
-    setData(newData);
-
-  }, [filters]);
+    return Object.entries(analystCounts)
+        .map(([name, value], index) => ({
+            name,
+            value,
+            fill: `hsl(var(--chart-${(index % 5) + 1}))`
+        }))
+        .sort((a, b) => b.value - a.value);
+  }, [allData, filters]);
 
 
   return (
@@ -45,7 +36,7 @@ export function WorkloadDistributionChart({ filters }: WorkloadDistributionChart
         <CardDescription>Muestras asignadas por analista.</CardDescription>
       </CardHeader>
       <CardContent>
-        {data.length > 0 ? (
+        {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Tooltip
@@ -58,26 +49,30 @@ export function WorkloadDistributionChart({ filters }: WorkloadDistributionChart
                   }}
               />
               <Pie
-                data={data}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) => {
-                    const shortName = name.split(' ')[0] + (name.split(' ').length > 1 ? ` ${name.split(' ')[1][0]}.` : '');
+                    if (!name) return '';
+                    const shortNameParts = name.split(' ');
+                    const shortName = shortNameParts.length > 1 
+                        ? `${shortNameParts[0]} ${shortNameParts[1][0]}.` 
+                        : shortNameParts[0];
                     return `${shortName}: ${(percent * 100).toFixed(0)}%`;
                 }}
                 outerRadius={80}
                 dataKey="value"
               >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
         ) : (
            <div className="flex items-center justify-center h-[300px]">
-             <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para el analista seleccionado.</p>
+             <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar.</p>
            </div>
         )}
       </CardContent>

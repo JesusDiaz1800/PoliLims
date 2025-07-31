@@ -6,7 +6,6 @@ import * as React from 'react';
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
 
 
-// This page now only manages the table and the dialog for new entries.
 export default function ControlRutinarioPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 

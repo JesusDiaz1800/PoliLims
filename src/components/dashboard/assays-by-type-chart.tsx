@@ -5,18 +5,12 @@ import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { DashboardFilters } from "@/app/(app)/dashboard/page";
+import type { Ensayo } from "@/context/data-context";
 
-const initialData = [
-  { name: "Tubería HDPE", value: 112, fill: "hsl(var(--chart-1))" },
-  { name: "Tubería PP", value: 98, fill: "hsl(var(--chart-2))" },
-  { name: "Materia Prima", value: 75, fill: "hsl(var(--chart-3))" },
-  { name: "Reprocesado", value: 45, fill: "hsl(var(--chart-4))" },
-  { name: "Control Accesorios", value: 32, fill: "hsl(var(--chart-5))" },
-  { name: "Control Agua", value: 21, fill: "hsl(var(--muted))" },
-]
 
 interface AssaysByTypeChartProps {
     filters: DashboardFilters;
+    data: Ensayo[];
 }
 
 const CustomCursor = (props: any) => {
@@ -24,17 +18,21 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
-export function AssaysByTypeChart({ filters }: AssaysByTypeChartProps) {
-  const [data, setData] = React.useState(initialData);
+export function AssaysByTypeChart({ filters, data: allData }: AssaysByTypeChartProps) {
+    const chartData = React.useMemo(() => {
+        const typeCounts = allData.reduce((acc, ensayo) => {
+            acc[ensayo.tipo] = (acc[ensayo.tipo] || 0) + 1;
+            return acc;
+        }, {} as Record<string, number>);
 
-  React.useEffect(() => {
-    // Simulate filtering data
-    const newData = initialData.map(item => ({
-      ...item,
-      value: Math.round(item.value * (Math.random() * 0.4 + 0.8)) // Randomize between 80% and 120%
-    }));
-    setData(newData.sort((a,b) => b.value - a.value));
-  }, [filters]);
+        return Object.entries(typeCounts)
+            .map(([name, value], index) => ({
+                name,
+                value,
+                fill: `hsl(var(--chart-${(index % 5) + 1}))`
+            }))
+            .sort((a, b) => b.value - a.value);
+    }, [allData, filters]);
 
   return (
     <Card>
@@ -44,9 +42,9 @@ export function AssaysByTypeChart({ filters }: AssaysByTypeChartProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} hide />
-                <YAxis dataKey="name" type="category" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis dataKey="name" type="category" width={120} stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
