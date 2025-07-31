@@ -26,14 +26,20 @@ import {
   CardDescription
 } from "@/components/ui/card";
 
+export type DashboardFilters = {
+  month: string;
+  analyst: string;
+  status: string;
+}
+
 export default function DashboardPage() {
-  const [filters, setFilters] = React.useState({
+  const [filters, setFilters] = React.useState<DashboardFilters>({
     month: "last_30_days",
     analyst: "all",
     status: "all"
   });
 
-  const handleFilterChange = (filterName: string) => (value: string) => {
+  const handleFilterChange = (filterName: keyof DashboardFilters) => (value: string) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
   };
 
@@ -94,18 +100,21 @@ export default function DashboardPage() {
           value="152"
           description="Muestras actualmente en proceso"
           icon={Activity}
+          filters={filters}
         />
         <StatsCard
           title="Ensayos Pendientes"
           value="32"
           description="Análisis esperando resultados"
           icon={ClipboardList}
+          filters={filters}
         />
         <StatsCard
           title="Informes Aprobados"
           value="45"
           description="Certificados emitidos este mes"
           icon={CheckCircle}
+          filters={filters}
         />
         <StatsCard
           title="Equipos Operativos"
@@ -117,17 +126,17 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <SampleStatusChart />
+          <SampleStatusChart filters={filters} />
         </div>
-        <RecentActivityList />
+        <RecentActivityList filters={filters} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ThroughputTrendChart />
+          <ThroughputTrendChart filters={filters} />
         </div>
         <div className="flex flex-col gap-6">
-          <WorkloadDistributionChart />
+          <WorkloadDistributionChart filters={filters} />
           <EquipmentStatusChart />
         </div>
       </div>

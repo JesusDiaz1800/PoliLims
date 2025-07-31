@@ -1,9 +1,12 @@
+
 "use client"
 
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts"
+import * as React from "react";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 
-const data = [
+const initialData = [
   { name: "Recibidas", value: 125, fill: "hsl(var(--chart-1))"},
   { name: "En Progreso", value: 89, fill: "hsl(var(--chart-2))" },
   { name: "En Análisis", value: 62, fill: "hsl(var(--chart-3))" },
@@ -12,7 +15,22 @@ const data = [
   { name: "Archivadas", value: 54, fill: "hsl(var(--muted))" },
 ]
 
-export function SampleStatusChart() {
+interface SampleStatusChartProps {
+    filters: DashboardFilters;
+}
+
+export function SampleStatusChart({ filters }: SampleStatusChartProps) {
+  const [data, setData] = React.useState(initialData);
+
+  React.useEffect(() => {
+    // Simulate filtering data
+    const newData = initialData.map(item => ({
+      ...item,
+      value: Math.round(item.value * (Math.random() * 0.4 + 0.8)) // Randomize between 80% and 120%
+    }));
+    setData(newData);
+  }, [filters]);
+
   return (
     <Card>
         <CardHeader>

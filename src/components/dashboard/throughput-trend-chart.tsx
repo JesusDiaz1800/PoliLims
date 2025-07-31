@@ -1,10 +1,12 @@
 
 "use client"
 
+import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 
-const data = [
+const initialData = [
   { day: "01/07", completed: 3, received: 5 },
   { day: "03/07", completed: 4, received: 6 },
   { day: "06/07", completed: 2, received: 4 },
@@ -17,7 +19,24 @@ const data = [
   { day: "27/07", completed: 6, received: 7 },
 ];
 
-export function ThroughputTrendChart() {
+interface ThroughputTrendChartProps {
+    filters: DashboardFilters;
+}
+
+export function ThroughputTrendChart({ filters }: ThroughputTrendChartProps) {
+  const [data, setData] = React.useState(initialData);
+
+  React.useEffect(() => {
+    // Simulate filtering data
+    const newData = initialData.map(item => ({
+      ...item,
+      completed: Math.round(item.completed * (Math.random() * 0.4 + 0.8)),
+      received: Math.round(item.received * (Math.random() * 0.4 + 0.8)),
+    }));
+    setData(newData);
+  }, [filters]);
+
+
   return (
     <Card>
         <CardHeader>
