@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
-import { matrizProductos } from "@/lib/matriz-datos"
+import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "../ui/scroll-area"
@@ -75,6 +75,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const { addRegistro, addEnsayo, addRecentActivity } = useDataContext();
   const router = useRouter();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
+  const [matrizProductos, setMatrizProductos] = React.useState<TipoProducto[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -96,6 +97,16 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   React.useEffect(() => {
+    async function loadData() {
+        const data = await getMatrizProductos();
+        setMatrizProductos(data);
+    }
+    loadData();
+  }, []);
+
+  React.useEffect(() => {
+    if (matrizProductos.length === 0) return;
+
     // Primero, encontramos el producto seleccionado en la lista que viene de SAP (o la simulación)
     const productoSeleccionadoSap = productos.find(p => p.value === producto);
     if (!productoSeleccionadoSap) {
@@ -134,7 +145,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     } else {
         setAlerts({})
     }
-  }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m, setValue, productos])
+  }, [producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m, setValue, productos, matrizProductos])
 
   React.useEffect(() => {
     if (peso_muestra !== undefined && largo !== undefined && largo > 0) {

@@ -1,3 +1,6 @@
+
+"use server"
+
 import fs from 'fs';
 import path from 'path';
 import Papa from 'papaparse';
@@ -54,7 +57,7 @@ export const loadMatrizProductos = (): Promise<TipoProducto[]> => {
                     return;
                 }
 
-                matrizProductos = results.data.map(row => ({
+                matrizProductos = results.data.map((row: any) => ({
                     producto: row.producto,
                     material: row.material,
                     diametro_nominal: parseFloat(row.diametro_nominal),
@@ -83,20 +86,14 @@ export const loadMatrizProductos = (): Promise<TipoProducto[]> => {
     });
 };
 
-// Immediately load the data on server start.
-// In a real scenario, you might want to handle this more gracefully,
-// perhaps with a caching layer or by loading it on demand.
-loadMatrizProductos().catch(err => {
-    console.error("Failed to load product matrix on startup:", err);
-    // Exit the process if the essential data can't be loaded.
-    process.exit(1);
-});
 
 /**
  * Gets the loaded product matrix.
  * Note: This assumes `loadMatrizProductos` has completed.
- * In a real app, you might want this to also be async or ensure loading is complete.
  */
-export const getMatrizProductos = (): TipoProducto[] => {
+export async function getMatrizProductos(): Promise<TipoProducto[]> {
+    if (matrizProductos.length === 0) {
+        await loadMatrizProductos();
+    }
     return matrizProductos;
 };

@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
-import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
+import { TipoProducto, getMatrizProductos } from "@/lib/matriz-datos";
 import { useDataContext } from "@/context/data-context";
 
 export type Registro = ReturnType<typeof useDataContext>["registros"][0] & { productoInfo?: TipoProducto };
@@ -32,6 +32,7 @@ export function ControlRutinarioTable({ onAddRecordClick }: ControlRutinarioTabl
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
+  const matrizProductos = getMatrizProductos();
 
   const filteredRegistros = registros
     .filter(registro => 
