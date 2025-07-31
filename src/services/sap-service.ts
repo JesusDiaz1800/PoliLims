@@ -1,10 +1,8 @@
 
+
 "use server"
 
-import fs from 'fs';
-import path from 'path';
-import Papa from 'papaparse';
-
+import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos";
 
 export interface SapProduct {
   code: string; // Código del producto en SAP
@@ -16,45 +14,25 @@ let products: SapProduct[] = [];
 
 /**
  * Simula una llamada a la API de SAP para obtener la lista de productos.
- * En esta versión, lee los datos desde un archivo CSV local.
+ * En esta versión, lee los datos desde el servicio de matriz de datos.
  * @returns Una promesa que resuelve a una lista de productos.
  */
 export async function getProductsFromSap(): Promise<SapProduct[]> {
   if (products.length > 0) {
     return products;
   }
-
-  return new Promise((resolve, reject) => {
-    const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-    
-    try {
-      const csvFile = fs.readFileSync(csvFilePath, 'utf8');
-
-      Papa.parse<any>(csvFile, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          if (results.errors.length) {
-              console.error("Errors parsing product CSV for SAP service:", results.errors);
-              reject(new Error("Failed to parse product CSV."));
-              return;
-          }
-          products = results.data.map((row: any) => ({
-            code: row.code || row.producto.replace(/\s+/g, '-').toUpperCase(),
-            name: row.producto
-          }));
-          resolve(products);
-        },
-        error: (error: any) => {
-          console.error("CSV parsing error in SAP service:", error);
-          reject(error);
-        }
-      });
-    } catch(error) {
-       console.error("Error reading product CSV file:", error);
-       reject(error);
-    }
-  });
+  
+  try {
+    const matriz = await getMatrizProductos();
+    products = matriz.map(p => ({
+        code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
+        name: p.producto
+    }));
+    return products;
+  } catch (error) {
+    console.error("Failed to get products from matrix for SAP service:", error);
+    return []; // Return empty on failure
+  }
 }
 
 /**

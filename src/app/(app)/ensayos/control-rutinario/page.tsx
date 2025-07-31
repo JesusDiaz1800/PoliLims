@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
