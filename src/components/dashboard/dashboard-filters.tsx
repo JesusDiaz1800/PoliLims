@@ -48,14 +48,14 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
     return (
         <Card>
             <CardHeader>
-                <div className="flex items-center justify-between gap-4">
-                    <div className="space-y-1.5">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="space-y-1.5 flex-1">
                         <CardTitle>Filtros del Dashboard</CardTitle>
                         <CardDescription>Seleccione los filtros para visualizar los datos del laboratorio.</CardDescription>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
                         <Select value={defaultValues.month} onValueChange={handleFilterChange("month")}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full sm:w-[180px]">
                                 <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por mes" />
                             </SelectTrigger>
@@ -67,7 +67,7 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
                             </SelectContent>
                         </Select>
                         <Select value={defaultValues.analyst} onValueChange={handleFilterChange("analyst")}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full sm:w-auto">
                                 <User className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por analista" />
                             </SelectTrigger>
@@ -78,7 +78,7 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
                             </SelectContent>
                         </Select>
                          <Select value={defaultValues.status} onValueChange={handleFilterChange("status")}>
-                            <SelectTrigger className="w-[180px]">
+                            <SelectTrigger className="w-full sm:w-auto">
                                 <Package className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por estado" />
                             </SelectTrigger>

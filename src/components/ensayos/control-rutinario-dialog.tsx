@@ -70,7 +70,7 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>Formulario de Control Rutinario de Tuberías</DialogTitle>
           <DialogDescription>
