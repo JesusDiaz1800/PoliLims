@@ -50,9 +50,12 @@ function loadMatrizProductos() {
             dynamicTyping: true,
         });
 
-        if (results.errors.length) {
-            console.error("Errors parsing CSV:", results.errors);
-            throw new Error("Failed to parse product CSV.");
+        if (results.errors.length > 0) {
+            const significantErrors = results.errors.filter(e => e.code !== 'TooFewFields' && e.code !== 'TooManyFields' && e.row !== '');
+             if (significantErrors.length > 0) {
+                console.error("Errors parsing CSV:", significantErrors);
+                throw new Error("Failed to parse product CSV due to significant errors.");
+            }
         }
 
         matrizProductos = results.data.map((row: any) => ({
@@ -74,7 +77,7 @@ function loadMatrizProductos() {
             color_tuberia: toNullableString(row.color_tuberia),
             color_linea: toNullableString(row.color_linea),
             code: row.code,
-        }));
+        })).filter(p => p.producto); // Filter out any completely empty rows that might pass
     } catch (error) {
         console.error("Error reading product CSV file:", error);
         matrizProductos = []; // Ensure it's empty on error
