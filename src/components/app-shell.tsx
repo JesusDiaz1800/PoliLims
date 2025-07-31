@@ -151,7 +151,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
                                      <SidebarMenuItem key={childItem.href}>
                                          <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
                                              <Link href={`${childItem.href}?${userQuery}`}>
-                                                 {childItem.icon ? <childItem.icon className="size-3 mr-2 text-primary/80" /> : <div className="w-3 mr-2" /> }
+                                                 {childItem.icon ? <childItem.icon className="size-3 mr-2 text-primary-foreground/80" /> : <div className="w-3 mr-2" /> }
                                                  {childItem.label}
                                              </Link>
                                          </SidebarMenuButton>
