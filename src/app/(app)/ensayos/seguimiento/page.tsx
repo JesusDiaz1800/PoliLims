@@ -22,9 +22,8 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter, TestTube } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { EnsayosMecanicosDialog, type EnsayoMecanicoInfo } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto, matrizProductos } from "@/lib/matriz-datos";
 import { useDataContext } from "@/context/data-context";
 import { useRouter } from "next/navigation";
@@ -44,11 +43,9 @@ function getStatusVariant(status: string) {
 
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
-  const { ensayos, addEnsayo } = useDataContext();
+  const { ensayos } = useDataContext();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
-  const [selectedEnsayo, setSelectedEnsayo] = React.useState<EnsayoMecanicoInfo | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   
   const ensayoTypes = ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))];
 
@@ -60,21 +57,34 @@ export default function SeguimientoEnsayosPage() {
       ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())
     );
   
-  const handleOpenDialog = (ensayo: Ensayo) => {
-    const productoInfo = matrizProductos.find(p => p.producto === ensayo.producto);
-    setSelectedEnsayo({ id: ensayo.id, producto: ensayo.producto, productoInfo });
-    setIsDialogOpen(true);
-  }
-
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-    setSelectedEnsayo(null);
-  }
-  
   const handleRedirectToRegister = () => {
     // A simple redirect logic, could be a dropdown in a real app
     router.push('/ensayos/control-rutinario');
   }
+
+  const handleEditClick = (ensayo: Ensayo) => {
+    let path = '';
+    switch (ensayo.tipo) {
+      case 'Tubería HDPE':
+        path = '/ensayos/tuberias/hdpe';
+        break;
+      case 'Tubería PP':
+        path = '/ensayos/tuberias/pp';
+        break;
+      case 'Materia Prima':
+        path = '/ensayos/materia-prima';
+        break;
+      case 'Reprocesado':
+        path = '/ensayos/reprocesado';
+        break;
+      default:
+        // Maybe redirect to a generic view page or show a toast
+        path = `/ensayos/seguimiento`; 
+        break;
+    }
+    router.push(path);
+  };
+
 
   return (
     <>
@@ -150,13 +160,8 @@ export default function SeguimientoEnsayosPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
-                      <DropdownMenuItem>Editar</DropdownMenuItem>
+                       <DropdownMenuItem onClick={() => handleEditClick(ensayo)}>Editar</DropdownMenuItem>
                       <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                       <DropdownMenuItem onClick={() => handleOpenDialog(ensayo)}>
-                        <TestTube className="mr-2 h-4 w-4" />
-                        Registrar Ensayos Mecánicos
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -173,13 +178,6 @@ export default function SeguimientoEnsayosPage() {
         )}
       </CardContent>
     </Card>
-    {selectedEnsayo && (
-        <EnsayosMecanicosDialog 
-            isOpen={isDialogOpen}
-            onClose={handleDialogClose}
-            ensayo={selectedEnsayo}
-        />
-    )}
     </>
   );
 }
