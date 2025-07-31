@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDataContext } from "@/context/data-context";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import type { RecentActivity } from "@/context/data-context";
 
 const getAvatarInfo = (name: string) => {
     const fallback = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -32,6 +33,11 @@ const getAvatarInfo = (name: string) => {
 
 export function RecentActivityList() {
     const { recentActivity } = useDataContext();
+    const [isClient, setIsClient] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     return (
         <Card className="h-full">
@@ -55,7 +61,7 @@ export function RecentActivityList() {
                                             <span className="font-semibold text-foreground">{activity.user}</span> {activity.action}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true, locale: es })}
+                                            {isClient ? formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true, locale: es }) : '...'}
                                         </p>
                                     </div>
                                 </div>
