@@ -1,7 +1,9 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { getProductsFromSap, SapProduct } from '@/services/sap-service';
+import { getMatrizProductos, TipoProducto } from '@/lib/matriz-datos';
 
 // Extensible type for any kind of assay data
 type EnsayoData = {
@@ -34,7 +36,7 @@ export interface RecentActivity {
   timestamp: string;
 }
 
-// Initial data
+// Initial data (can be empty or placeholders)
 const initialEnsayos: Ensayo[] = [
   { id: "MP-001", tipo: "Materia Prima", analista: "Jesus Diaz", fecha: "2024-07-22", estado: "Aprobado", producto: "Tuberia PEAD 20 mm PN10" },
   { id: "HDPE-0821-A", tipo: "Tubería HDPE", analista: "Maximiliano Miranda", fecha: "2024-07-21", estado: "En Progreso", producto: "Tuberia PEAD 90 mm PN10" },
@@ -63,6 +65,9 @@ interface DataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
+  sapProducts: SapProduct[];
+  productMatrix: TipoProducto[];
+  loading: boolean;
   addEnsayo: (ensayo: Ensayo) => void;
   updateEnsayo: (ensayo: Ensayo) => void;
   addRegistro: (registro: Registro) => void;
@@ -77,6 +82,29 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
+  const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
+  const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [sapData, matrixData] = await Promise.all([
+          getProductsFromSap(),
+          getMatrizProductos(),
+        ]);
+        setSapProducts(sapData);
+        setProductMatrix(matrixData);
+      } catch (error) {
+        console.error("Failed to load initial app data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
 
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);
@@ -103,6 +131,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     ensayos,
     registros,
     recentActivity,
+    sapProducts,
+    productMatrix,
+    loading,
     addEnsayo,
     updateEnsayo,
     addRegistro,

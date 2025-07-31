@@ -5,11 +5,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/theme-toggle";
-import type { Metadata } from 'next';
-
-// export const metadata: Metadata = {
-//   title: 'Configuración',
-// };
 
 export default function ConfiguracionPage() {
   return (

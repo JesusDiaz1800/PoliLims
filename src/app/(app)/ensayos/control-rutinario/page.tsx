@@ -4,37 +4,12 @@
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import * as React from 'react';
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
-import { getProductsFromSap } from "@/services/sap-service";
-import type { SapProduct } from "@/services/sap-service";
-import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos";
+import { useDataContext } from "@/context/data-context";
 import Loading from "../../loading";
-
 
 export default function ControlRutinarioPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [productos, setProductos] = React.useState<SapProduct[]>([]);
-  const [matriz, setMatriz] = React.useState<TipoProducto[]>([]);
-  const [loading, setLoading] = React.useState(true);
-
-
-  React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const [sapProducts, matrizProductos] = await Promise.all([
-          getProductsFromSap(),
-          getMatrizProductos()
-        ]);
-        setProductos(sapProducts);
-        setMatriz(matrizProductos);
-      } catch (error) {
-        console.error("Failed to load initial data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+  const { sapProducts, productMatrix, loading } = useDataContext();
 
   const handleAddRecordClick = () => {
     setIsDialogOpen(true);
@@ -50,12 +25,12 @@ export default function ControlRutinarioPage() {
 
   return (
     <div className="space-y-6">
-      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} matrizProductos={matriz} />
+      <ControlRutinarioTable onAddRecordClick={handleAddRecordClick} matrizProductos={productMatrix} />
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 
         onClose={handleDialogClose} 
-        productos={productos.map(p => ({ value: p.code, label: p.name }))}
-        matrizProductos={matriz}
+        productos={sapProducts}
+        matrizProductos={productMatrix}
       />
     </div>
   );

@@ -1,5 +1,3 @@
-
-
 "use server"
 
 import fs from 'fs';
@@ -28,6 +26,7 @@ export interface TipoProducto {
 }
 
 let matrizProductos: TipoProducto[] = [];
+let matrizLoaded = false;
 
 const toNumberOrNull = (value: string): number | null => {
     const num = parseFloat(value);
@@ -38,14 +37,14 @@ const toNullableString = (value: string): string | undefined => {
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
-async function loadMatrizProductos(): Promise<TipoProducto[]> {
-    if (matrizProductos.length > 0) {
-        return matrizProductos;
-    }
-
-    const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-    
+export async function loadMatrizProductos(): Promise<TipoProducto[]> {
     return new Promise((resolve, reject) => {
+        if (matrizLoaded) {
+            return resolve(matrizProductos);
+        }
+
+        const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
+        
         try {
             const csvFile = fs.readFileSync(csvFilePath, 'utf8');
             Papa.parse<any>(csvFile, {
@@ -77,6 +76,7 @@ async function loadMatrizProductos(): Promise<TipoProducto[]> {
                         color_linea: toNullableString(row.color_linea),
                         code: row.producto.replace(/\s+/g, '-').toUpperCase(),
                     }));
+                    matrizLoaded = true;
                     resolve(matrizProductos);
                 },
                 error: (error: any) => {
@@ -91,19 +91,13 @@ async function loadMatrizProductos(): Promise<TipoProducto[]> {
     });
 };
 
-
 /**
  * Gets the loaded product matrix.
  * Note: This assumes `loadMatrizProductos` has completed.
  */
 export async function getMatrizProductos(): Promise<TipoProducto[]> {
-    if (matrizProductos.length === 0) {
-        try {
-            await loadMatrizProductos();
-        } catch (error) {
-            console.error("Could not load product matrix:", error);
-            return []; // Return empty array on failure
-        }
+    if (!matrizLoaded) {
+        await loadMatrizProductos();
     }
     return matrizProductos;
 };
