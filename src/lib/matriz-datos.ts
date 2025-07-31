@@ -25,7 +25,8 @@ export interface TipoProducto {
 
 let matrizProductos: TipoProducto[] = [];
 
-const toNumberOrNull = (value: string): number | null => {
+const toNumberOrNull = (value: string | number): number | null => {
+    if (typeof value === 'number') return value;
     const num = parseFloat(value);
     return isNaN(num) ? null : num;
 };
@@ -42,9 +43,11 @@ function loadMatrizProductos() {
     try {
         const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
         const csvFile = fs.readFileSync(csvFilePath, 'utf8');
+        
         const results = Papa.parse<any>(csvFile, {
             header: true,
-            skipEmptyLines: true,
+            skipEmptyLines: 'greedy',
+            dynamicTyping: true,
         });
 
         if (results.errors.length) {
