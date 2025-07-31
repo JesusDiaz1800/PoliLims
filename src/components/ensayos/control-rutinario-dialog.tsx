@@ -11,16 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { ControlRutinarioForm } from "./control-rutinario-form";
 import { TipoProducto } from "@/lib/matriz-datos";
-
-interface Option {
-  value: string;
-  label: string;
-}
+import type { SapProduct } from "@/services/sap-service";
 
 interface ControlRutinarioDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  productos: Option[];
+  productos: SapProduct[];
   matrizProductos: TipoProducto[];
 }
 

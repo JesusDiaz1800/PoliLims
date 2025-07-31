@@ -4,6 +4,8 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { DataProvider } from '@/context/data-context';
+import { getMatrizProductos } from '@/lib/matriz-datos';
+import { getProductsFromSap } from '@/services/sap-service';
 
 export const metadata: Metadata = {
     title: {
@@ -14,6 +16,9 @@ export const metadata: Metadata = {
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+    const productMatrix = getMatrizProductos();
+    const sapProducts = getProductsFromSap();
+
     return (
         <ThemeProvider
             attribute="class"
@@ -21,7 +26,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider>
+            <DataProvider productMatrix={productMatrix} sapProducts={sapProducts}>
                 <div className="bg-background">
                     <SidebarProvider>
                         <AppShell>

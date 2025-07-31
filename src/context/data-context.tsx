@@ -2,8 +2,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { getMatrizProductos, TipoProducto } from "@/lib/matriz-datos";
-import { getProductsFromSap, SapProduct } from "@/services/sap-service";
+import type { TipoProducto } from "@/lib/matriz-datos";
+import type { SapProduct } from "@/services/sap-service";
 
 // Extensible type for any kind of assay data
 type EnsayoData = {
@@ -77,16 +77,18 @@ interface DataContextType {
 // Create context
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
+interface DataProviderProps {
+  children: ReactNode;
+  productMatrix: TipoProducto[];
+  sapProducts: SapProduct[];
+}
+
 // Provider component
-export const DataProvider = ({ children }: { children: ReactNode }) => {
+export const DataProvider = ({ children, productMatrix, sapProducts }: DataProviderProps) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
 
-  // Data loaded from server-cached files, so it's a sync operation on component mount.
-  const productMatrix = getMatrizProductos();
-  const sapProducts = getProductsFromSap();
-  
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);
   };

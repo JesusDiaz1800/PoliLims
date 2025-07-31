@@ -24,18 +24,14 @@ import { ScrollArea } from "../ui/scroll-area"
 import { useDataContext } from "@/context/data-context"
 import { useRouter } from "next/navigation"
 import { Combobox } from "../ui/combobox"
-
-interface Option {
-  value: string
-  label: string
-}
+import type { SapProduct } from "@/services/sap-service"
 
 interface ControlRutinarioFormProps {
-  inspectores: Option[]
-  maquinistas: Option[]
-  maquinas: Option[]
-  productos: Option[]
-  marcas: Option[]
+  inspectores: { value: string; label: string }[]
+  maquinistas: { value: string; label: string }[]
+  maquinas: { value: string; label: string }[]
+  productos: SapProduct[]
+  marcas: { value: string; label: string }[]
   matrizProductos: TipoProducto[];
   onFormSubmit: () => void;
 }
