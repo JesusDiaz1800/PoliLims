@@ -37,10 +37,8 @@ const toNumberOrNull = (value: unknown): number | null => {
 };
 
 const toNullableString = (value: unknown): string | undefined => {
-    if (typeof value !== 'string') {
-        return undefined;
-    }
-    return value && value.trim() !== '' ? value.trim() : undefined;
+    const s = String(value).trim();
+    return s && s !== '' ? s : undefined;
 }
 
 
@@ -72,17 +70,17 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
         }
 
         const loadedProducts = results.data.map((row: any): TipoProducto | null => {
-            if (!row['Producto'] || row['Producto'].trim() === '') {
+            if (!row['Producto'] || String(row['Producto']).trim() === '') {
                 return null;
             }
             return {
                 producto: row.Producto,
                 material: row.Material,
-                linea: toNullableString(row.Línea),
+                linea: toNullableString(row['Línea']),
                 diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
                 largo: toNumberOrNull(row['Largo (m)']),
                 presion_nominal: row['PN - Serie'],
-                sdr: row['PN - Serie'], // Assuming sdr is the same as presion_nominal for now
+                sdr: row['PN - Serie'], 
                 diametro_min: toNumberOrNull(row['D mínimo (mm)']),
                 diametro_max: toNumberOrNull(row['D máximo (mm)']),
                 espesor_min_norma: toNumberOrNull(row['Espesor mínimo (mm)']),
@@ -95,7 +93,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
                 tiempo_phi: toNumberOrNull(row['Tiempo acond. (h)']),
                 color_tuberia: toNullableString(row['Color Tubería']),
                 color_linea: toNullableString(row['Color Línea']),
-                code: row.Producto.replace(/\s+/g, '-').toUpperCase(),
+                code: String(row.Producto).replace(/\s+/g, '-').toUpperCase(),
             };
         }).filter((p): p is TipoProducto => p !== null);
         
