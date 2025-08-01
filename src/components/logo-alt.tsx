@@ -6,12 +6,9 @@ export function LogoAlt({ className }: { className?: string }) {
   return (
     <div className={cn("relative text-foreground", className)}>
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
         width="100%"
         viewBox="0 0 921 664"
-        enableBackground="new 0 0 921 664"
-        xmlSpace="preserve"
+        xmlns="http://www.w3.org/2000/svg"
       >
         <g
           transform="translate(0.000000,664.000000) scale(0.100000,-0.100000)"
