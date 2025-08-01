@@ -29,19 +29,19 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
   ];
 
   const maquinistas = [
-      { value: "andres.reyes", label: "ANDRÉS REYES" },
-      { value: "alexis.sandoval", label: "ALEXIS SANDOVAL" },
-      { value: "carlos.dominguez", label: "CARLOS DOMÍNGUEZ" },
-      { value: "cristian.duque", label: "CRISTIAN DUQUE" },
-      { value: "eliaxer.bustos", label: "ELIAXER BUSTOS" },
-      { value: "ignacio.herrera", label: "IGNACIO HERRERA" },
-      { value: "joniel.joseph", label: "JONIEL JOSEPH" },
-      { value: "jorge.garcia", label: "JORGE GARCÍA" },
-      { value: "moises.fernandez", label: "MOISES FERNANDEZ" },
-      { value: "ramon.salgado", label: "RAMÓN SALGADO" },
-      { value: "sebastian.serra", label: "SEBASTIÁN SERRA" },
-      { value: "segundo.pichilef", label: "SEGUNDO PICHILEF" },
-      { value: "phaniel.phariluz", label: "PHANIEL PHARILUZ" },
+      { value: "ANDRÉS REYES", label: "ANDRÉS REYES" },
+      { value: "ALEXIS SANDOVAL", label: "ALEXIS SANDOVAL" },
+      { value: "CARLOS DOMÍNGUEZ", label: "CARLOS DOMÍNGUEZ" },
+      { value: "CRISTIAN DUQUE", label: "CRISTIAN DUQUE" },
+      { value: "ELIAXER BUSTOS", label: "ELIAXER BUSTOS" },
+      { value: "IGNACIO HERRERA", label: "IGNACIO HERRERA" },
+      { value: "JONIEL JOSEPH", label: "JONIEL JOSEPH" },
+      { value: "JORGE GARCÍA", label: "JORGE GARCÍA" },
+      { value: "MOISES FERNANDEZ", label: "MOISES FERNANDEZ" },
+      { value: "RAMÓN SALGADO", label: "RAMÓN SALGADO" },
+      { value: "SEBASTIÁN SERRA", label: "SEBASTIÁN SERRA" },
+      { value: "SEGUNDO PICHILEF", label: "SEGUNDO PICHILEF" },
+      { value: "PHANIEL PHARILUZ", label: "PHANIEL PHARILUZ" },
   ];
 
   const maquinas = [
@@ -63,8 +63,8 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
   ];
 
   const marcas = [
-    { value: "polifusion", label: "POLIFUSIÓN S.A." },
-    { value: "smart pipes", label: "SMART PIPES SpA" },
+    { value: "POLIFUSIÓN S.A.", label: "POLIFUSIÓN S.A." },
+    { value: "SMART PIPES SpA", label: "SMART PIPES SpA" },
   ];
 
   return (
