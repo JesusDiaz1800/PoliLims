@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
 import { useStaticData } from '@/context/data-context';

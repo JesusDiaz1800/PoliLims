@@ -6,7 +6,7 @@ import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import { initialEnsayos, initialRecentActivity, initialRegistros } from '@/services/data-service';
 
-// --- STATIC DATA (loaded once from server) ---
+// --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
   productMatrix: TipoProducto[];
   sapProducts: SapProduct[];

@@ -1,5 +1,4 @@
 
-
 import Papa from 'papaparse';
 
 export interface TipoProducto {
@@ -63,6 +62,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
             header: true,
             skipEmptyLines: 'greedy',
             transformHeader: (header) => header.trim(),
+            delimiter: '\t', // Specify the delimiter as tab
         });
         
         if (results.errors.length > 0) {
@@ -70,7 +70,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
         }
 
         const loadedProducts = results.data.map((row: any): TipoProducto | null => {
-            if (!row['Producto'] || String(row['Producto']).trim() === '') {
+             if (!row['Producto'] || String(row['Producto']).trim() === '') {
                 return null;
             }
             return {
