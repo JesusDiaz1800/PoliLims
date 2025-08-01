@@ -50,6 +50,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import type { User } from '@/services/user-service';
+import { Logo } from './logo';
 
 
 const ensayosSubMenu = [
@@ -221,7 +222,8 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full">
             <Sidebar variant="sidebar" collapsible="icon" className="bg-primary text-primary-foreground">
                 <SidebarHeader>
-                    <div className="flex items-center justify-center h-16 text-primary w-32 group-data-[collapsible=icon]:w-10 transition-[width] duration-300 ease-in-out">
+                    <div className="flex items-center justify-center h-16 text-primary-foreground w-32 group-data-[collapsible=icon]:w-10 transition-[width] duration-300 ease-in-out">
+                       <Logo className="text-primary-foreground h-10 w-10"/>
                     </div>
                 </SidebarHeader>
                 <SidebarContent>
@@ -306,8 +308,3 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
-
-    
-    
-
-    
