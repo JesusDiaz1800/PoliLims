@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
