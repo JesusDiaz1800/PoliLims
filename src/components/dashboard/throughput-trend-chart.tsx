@@ -6,7 +6,7 @@ import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Ca
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 import type { Ensayo } from "@/context/data-context";
-import { format, subDays, eachDayOfInterval } from "date-fns";
+import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 
 
 interface ThroughputTrendChartProps {
@@ -16,17 +16,21 @@ interface ThroughputTrendChartProps {
 
 export function ThroughputTrendChart({ filters, data: allData }: ThroughputTrendChartProps) {
   const chartData = React.useMemo(() => {
+    const now = new Date(2025, 6, 23); // Set a fixed date for consistent demo data: July 23, 2025
     const interval = eachDayOfInterval({
-        start: subDays(new Date(), 30),
-        end: new Date()
+        start: subDays(now, 29),
+        end: now
     });
 
     return interval.map(day => {
-        const formattedDay = format(day, "dd/MM");
-        const received = allData.filter(e => format(new Date(e.fecha), "dd/MM") === formattedDay).length;
-        const completed = allData.filter(e => e.estado === 'Aprobado' && format(new Date(e.fecha), "dd/MM") === formattedDay).length;
-        return { day: formattedDay, received, completed };
-    }).slice(0, 15); // Show last 15 days for clarity
+        const formattedDayKey = format(day, "yyyy-MM-dd");
+        const formattedDayLabel = format(day, "dd/MM");
+        
+        const received = allData.filter(e => format(parseISO(e.fecha), "yyyy-MM-dd") === formattedDayKey).length;
+        const completed = allData.filter(e => e.estado === 'Aprobado' && format(parseISO(e.fecha), "yyyy-MM-dd") === formattedDayKey).length;
+        
+        return { day: formattedDayLabel, received, completed };
+    });
   }, [allData, filters]);
 
 
