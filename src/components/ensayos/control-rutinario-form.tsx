@@ -59,7 +59,7 @@ const formSchema = z.object({
   color_tuberia: z.string().optional(),
   color_linea: z.string().optional(),
   entregado_laboratorio: z.boolean().default(false),
-})
+}).passthrough();
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -175,6 +175,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
         inspector: data.inspector,
+        maquinista: data.maquinista,
         maquina: data.maquina,
         producto: selectedProductLabel,
         resultado,
@@ -213,7 +214,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         })
     }
     
-    form.reset();
+    form.reset(defaultFormValues);
     onFormSubmit();
   }
 
@@ -438,7 +439,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         </ScrollArea>
 
         <div className="flex justify-end pt-6 gap-4 border-t mt-6">
-            <Button type="button" variant="ghost" onClick={() => form.reset()}>
+            <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Limpiar
             </Button>
@@ -451,3 +452,5 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     </Form>
   )
 }
+
+    
