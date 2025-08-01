@@ -103,10 +103,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const { watch, setValue, control } = form
 
-  React.useEffect(() => {
-    form.reset(defaultFormValues);
-  }, [form]);
-
   const watchedProducto = watch("producto");
   const watchedDiametro = watch("diametro");
   const watchedEspesorMin = watch("espesor_min");
