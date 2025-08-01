@@ -16,7 +16,7 @@ interface ThroughputTrendChartProps {
 
 export function ThroughputTrendChart({ filters, data: allData }: ThroughputTrendChartProps) {
   const chartData = React.useMemo(() => {
-    const now = new Date(2025, 6, 23); // Set a fixed date for consistent demo data: July 23, 2025
+    const now = new Date();
     const interval = eachDayOfInterval({
         start: subDays(now, 29),
         end: now

@@ -61,7 +61,7 @@ export default function DashboardPage() {
   // Apply filters
   const filteredEnsayos = ensayos.filter(ensayo => {
     const ensayoDate = parseISO(ensayo.fecha);
-    const now = new Date(2025, 6, 23); // Fixed date for demo purposes
+    const now = new Date();
 
     // Date filtering
     let dateRange = { start: new Date(0), end: now };
