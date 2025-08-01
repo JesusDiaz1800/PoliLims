@@ -2,8 +2,8 @@
 "use client";
 
 import * as React from "react";
-import { Activity, Beaker, CheckCircle, ClipboardList } from "lucide-react";
-import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'date-fns';
+import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass } from "lucide-react";
+import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear } from 'date-fns';
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -45,7 +45,7 @@ export default function DashboardPage() {
         const userData = await findUserByUsername(username);
         setUser(userData);
         
-        const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean)); // Filter out empty/null/undefined analyst names
+        const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
         const analystOptions = [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
         setAllAnalysts(analystOptions);
     }
@@ -57,13 +57,20 @@ export default function DashboardPage() {
   if (isLoading || !user) {
     return <Loading />;
   }
+  
+  const now = new Date();
+  
+  // Annual data calculation (unaffected by filters)
+  const startOfCurrentYear = startOfYear(now);
+  const endOfCurrentYear = endOfYear(now);
+  const yearlyEnsayos = ensayos.filter(ensayo => isWithinInterval(parseISO(ensayo.fecha), { start: startOfCurrentYear, end: endOfCurrentYear }));
+  const totalYearlyAssays = yearlyEnsayos.length;
 
-  // Apply filters
+
+  // Filtered data calculation
   const filteredEnsayos = ensayos.filter(ensayo => {
     const ensayoDate = parseISO(ensayo.fecha);
-    const now = new Date();
 
-    // Date filtering
     let dateRange = { start: new Date(0), end: now };
     if (month === 'last_30_days') {
         dateRange = { start: subDays(now, 29), end: now };
@@ -84,10 +91,16 @@ export default function DashboardPage() {
     return isDateInRange && filterByAnalyst && filterByStatus;
   });
 
-  const activeSamples = filteredEnsayos.filter(e => e.estado === "En Progreso").length;
-  const pendingAssays = filteredEnsayos.filter(e => e.estado === "Pendiente de Revisión").length;
-  const approvedReports = filteredEnsayos.filter(e => e.estado === "Aprobado").length;
+  const totalFilteredAssays = filteredEnsayos.length;
+  const approvedAssays = filteredEnsayos.filter(e => e.estado === "Aprobado").length;
+  const rejectedAssays = filteredEnsayos.filter(e => e.estado === "Rechazado").length;
+  const finishedAssays = approvedAssays + rejectedAssays;
   
+  const pendingAssays = filteredEnsayos.filter(e => ["En Progreso", "En Análisis", "Pendiente de Revisión"].includes(e.estado)).length;
+  
+  const approvalPercentage = finishedAssays > 0 ? (approvedAssays / finishedAssays) * 100 : 0;
+  const pendingPercentage = totalFilteredAssays > 0 ? (pendingAssays / totalFilteredAssays) * 100 : 0;
+
   const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
   const totalEquipment = equipos.length;
 
@@ -103,27 +116,27 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Muestras Activas"
-          value={activeSamples.toString()}
-          description="Muestras actualmente en proceso"
-          icon={Activity}
+          title="Total Ensayos (Año)"
+          value={totalYearlyAssays.toString()}
+          description={`Ensayos realizados en ${getYear(now)}`}
+          icon={Target}
         />
         <StatsCard
-          title="Ensayos Pendientes"
-          value={pendingAssays.toString()}
-          description="Análisis esperando resultados"
-          icon={ClipboardList}
+          title="% Aprobación"
+          value={`${approvalPercentage.toFixed(1)}%`}
+          description="De ensayos finalizados en el período"
+          icon={Percent}
         />
         <StatsCard
-          title="Informes Aprobados"
-          value={approvedReports.toString()}
-          description="Certificados emitidos este mes"
-          icon={CheckCircle}
+          title="% Pendientes"
+          value={`${pendingPercentage.toFixed(1)}%`}
+          description="Ensayos activos en el período"
+          icon={Hourglass}
         />
         <StatsCard
           title="Equipos Operativos"
           value={`${operationalEquipment} / ${totalEquipment}`}
-          description="Equipos operativos y calibrados"
+          description="Equipos calibrados y activos"
           icon={Beaker}
         />
       </div>
