@@ -23,12 +23,23 @@ export async function getProductsFromSap(): Promise<SapProduct[]> {
   
   try {
     const matriz = await getMatrizProductos();
-    products = matriz.map(p => ({
+    const allProducts = matriz.map(p => ({
         code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
         name: p.producto,
         value: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
         label: p.producto,
     }));
+
+    // Filter out duplicates based on the 'code' property
+    const uniqueProductsMap = new Map<string, SapProduct>();
+    allProducts.forEach(p => {
+        if (!uniqueProductsMap.has(p.code)) {
+            uniqueProductsMap.set(p.code, p);
+        }
+    });
+
+    products = Array.from(uniqueProductsMap.values());
+    
     return products;
   } catch (error) {
     console.error("Failed to get products from matrix for SAP service:", error);
