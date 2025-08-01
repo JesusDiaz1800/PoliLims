@@ -29,14 +29,10 @@ let matrizProductos: TipoProducto[] = [];
 
 const toNumberOrNull = (value: string | number): number | null => {
     if (value === null || value === undefined) return null;
-    if (typeof value === 'number') return isNaN(value) ? null : value;
-    if (typeof value === 'string') {
-        const cleanedValue = value.replace(',', '.').trim();
-        if (cleanedValue === '') return null;
-        const num = parseFloat(cleanedValue);
-        return isNaN(num) ? null : num;
-    }
-    return null;
+    const s = String(value).replace(',', '.').trim();
+    if (s === '') return null;
+    const num = parseFloat(s);
+    return isNaN(num) ? null : num;
 };
 
 const toNullableString = (value: unknown): string | undefined => {
@@ -68,19 +64,6 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
             header: true,
             skipEmptyLines: 'greedy',
             transformHeader: (header) => header.trim(),
-            transform: (value, header) => {
-                 // Replace comma with dot for decimal conversion in numeric columns
-                const numericHeaders = [
-                    'D nominal (mm)', 'D mínimo (mm)', 'D máximo (mm)', 
-                    'Espesor mínimo (mm)', 'Espesor máximo (mm)', 'Ovalidad (mm)',
-                    'Peso (kg/m)', 'Desv. Peso debajo', 'Desv. Peso arriba', 'PHI 20°C (bar)',
-                    'T Horno (°C)', 'Tiempo acond. (h)', 'Largo (m)'
-                ];
-                if (numericHeaders.includes(header as string)) {
-                    return value.replace(',', '.');
-                }
-                return value;
-            }
         });
         
         if (results.errors.length > 0) {
@@ -94,7 +77,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
             return {
                 producto: row.Producto,
                 material: row.Material,
-                linea: row.Línea,
+                linea: toNullableString(row.Línea),
                 diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
                 largo: toNumberOrNull(row['Largo (m)']),
                 presion_nominal: row['PN - Serie'],
