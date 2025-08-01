@@ -71,9 +71,9 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-const defaultFormValues: FormValues = {
+const defaultFormValues: Omit<FormValues, 'fecha_ingreso' | 'hora'> & { fecha_ingreso: Date | undefined, hora: string } = {
   fecha_ingreso: new Date(),
-  hora: '',
+  hora: format(new Date(), 'HH:mm'),
   inspector: '',
   maquinista: '',
   maquina: '',
@@ -101,10 +101,21 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultFormValues,
+    defaultValues: {
+      ...defaultFormValues,
+      fecha_ingreso: new Date(),
+    },
   })
 
-  const { watch, setValue } = form
+  const { watch, setValue, reset } = form
+
+  React.useEffect(() => {
+    reset({
+        ...defaultFormValues,
+        fecha_ingreso: new Date(),
+        hora: format(new Date(), 'HH:mm'),
+    });
+  }, [reset]);
 
   const producto = watch("producto")
   const diametro = watch("diametro")
@@ -214,7 +225,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         })
     }
     
-    form.reset(defaultFormValues);
+    form.reset({ ...defaultFormValues, fecha_ingreso: new Date(), hora: format(new Date(), 'HH:mm') });
     onFormSubmit();
   }
 
@@ -339,7 +350,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                                        <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.label}>{m.label}</SelectItem>)}</SelectContent>
                                     </Select>
                                     <FormMessage />
                                 </FormItem>
@@ -439,7 +450,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         </ScrollArea>
 
         <div className="flex justify-end pt-6 gap-4 border-t mt-6">
-            <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
+            <Button type="button" variant="ghost" onClick={() => form.reset({ ...defaultFormValues, fecha_ingreso: new Date(), hora: format(new Date(), 'HH:mm') })}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Limpiar
             </Button>
@@ -452,5 +463,3 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     </Form>
   )
 }
-
-    

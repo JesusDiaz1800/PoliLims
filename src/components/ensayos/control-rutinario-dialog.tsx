@@ -23,26 +23,32 @@ interface ControlRutinarioDialogProps {
 export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProductos }: ControlRutinarioDialogProps) {
 
   const inspectores = [
-    { value: "elias.ibanez", label: "Elias Ibañez" },
-    { value: "cristian.montellano", label: "Cristian Montellano" },
-    { value: "daniel.palma", label: "Daniel Palma" },
-    { value: "luis.parada", label: "Luis Parada" },
+      { value: "bryan.vasquez", label: "BRYAN VÁSQUEZ" },
+      { value: "cesar.munizaga", label: "CESAR MUNIZAGA" },
+      { value: "cristian.montellano", label: "CRISTIAN MONTELLANO" },
+      { value: "daniel.palma", label: "DANIEL PALMA" },
+      { value: "elias.ibanez", label: "ELIAS IBAÑEZ" },
+      { value: "remilson.cruz", label: "REMILSON CRUZ" },
+      { value: "victor.lutz", label: "VICTOR LUTZ" },
+      { value: "robinson.cordova", label: "ROBINSON CORDOBA" },
+      { value: "luis.parada", label: "LUIS PARADA" },
+      { value: "maximiliano.miranda", label: "MAXIMILIANO MIRANDA" },
   ];
 
   const maquinistas = [
-    { value: "andres.reyes", label: "Andrés Reyes" },
-    { value: "alexis.sandoval", label: "Alexis Sandoval" },
-    { value: "carlos.dominguez", label: "Carlos Domínguez" },
-    { value: "cristian.duque", label: "Cristian Duque" },
-    { value: "eliaxer.bustos", label: "Eliaxer Bustos" },
-    { value: "ignacio.herrera", label: "Ignacio Herrera" },
-    { value: "joniel.joseph", label: "Joniel Joseph" },
-    { value: "jorge.garcia", label: "Jorge García" },
-    { value: "moises.fernandez", label: "Moises Fernandez" },
-    { value: "ramon.salgado", label: "Ramón Salgado" },
-    { value: "sebastian.serra", label: "Sebastián Serra" },
-    { value: "segundo.pichilef", label: "Segundo Pichilef" },
-    { value: "phaniel.phariluz", label: "Phaniel Phariluz" },
+      { value: "andres.reyes", label: "ANDRÉS REYES" },
+      { value: "alexis.sandoval", label: "ALEXIS SANDOVAL" },
+      { value: "carlos.dominguez", label: "CARLOS DOMÍNGUEZ" },
+      { value: "cristian.duque", label: "CRISTIAN DUQUE" },
+      { value: "eliaxer.bustos", label: "ELIAXER BUSTOS" },
+      { value: "ignacio.herrera", label: "IGNACIO HERRERA" },
+      { value: "joniel.joseph", label: "JONIEL JOSEPH" },
+      { value: "jorge.garcia", label: "JORGE GARCÍA" },
+      { value: "moises.fernandez", label: "MOISES FERNANDEZ" },
+      { value: "ramon.salgado", label: "RAMÓN SALGADO" },
+      { value: "sebastian.serra", label: "SEBASTIÁN SERRA" },
+      { value: "segundo.pichilef", label: "SEGUNDO PICHILEF" },
+      { value: "phaniel.phariluz", label: "PHANIEL PHARILUZ" },
   ];
 
   const maquinas = [
@@ -65,7 +71,7 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
 
   const marcas = [
     { value: "polifusion", label: "POLIFUSIÓN S.A." },
-    { value: "smartpipes", label: "SMART PIPES SpA" },
+    { value: "smart pipes", label: "SMART PIPES SpA" },
   ];
 
   return (
