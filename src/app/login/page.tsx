@@ -1,4 +1,4 @@
-import { LogoAlt } from "@/components/logo-alt";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,6 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center space-y-4 pt-8">
             <div className="mx-auto h-16 w-48">
-                <LogoAlt className="w-full h-full" />
             </div>
           <CardTitle className="text-3xl font-headline">Bienvenido a PoliLIMS</CardTitle>
           <CardDescription>Ingrese sus credenciales para acceder al sistema de gestión del laboratorio.</CardDescription>
