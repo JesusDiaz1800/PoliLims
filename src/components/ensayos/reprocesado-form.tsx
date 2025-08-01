@@ -6,7 +6,6 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -46,6 +45,8 @@ interface Option {
 
 interface ReprocesadoFormProps {
   analistas: Option[];
+  ensayoToEdit: Ensayo | null;
+  onFormSubmit: () => void;
 }
 
 const defaultFormValues = {
@@ -70,36 +71,30 @@ const defaultFormValues = {
   tio_tiempo: "",
 };
 
-export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
+export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: ReprocesadoFormProps) {
   const { toast } = useToast();
-  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const ensayoId = searchParams.get('id');
+  const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
-  const { watch, control, getValues, register, handleSubmit, reset } = useForm({
+  const { control, getValues, register, handleSubmit, reset } = useForm({
     defaultValues: defaultFormValues
   });
 
-  const isEditing = Boolean(ensayoId);
+  const isEditing = Boolean(ensayoToEdit);
 
   React.useEffect(() => {
-    if (isEditing) {
-      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
-      if (ensayoToEdit) {
-        const formData = {
-          ...defaultFormValues,
-          ...ensayoToEdit,
-          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
-          id_muestra: ensayoToEdit.id,
-        };
-        reset(formData);
-      }
+    if (ensayoToEdit) {
+      const formData = {
+        ...defaultFormValues,
+        ...ensayoToEdit,
+        fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+        meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+        id_muestra: ensayoToEdit.id,
+      };
+      reset(formData);
     } else {
       reset(defaultFormValues);
     }
-  }, [isEditing, ensayoId, ensayos, reset]);
+  }, [ensayoToEdit, reset]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -193,13 +188,13 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
     };
 
     try {
-        if (isEditing && ensayoId) {
-            const fullEnsayoData = { ...finalEnsayoData, id: ensayoId, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
+        if (isEditing && ensayoToEdit?.id) {
+            const fullEnsayoData = { ...finalEnsayoData, id: ensayoToEdit.id, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
             await updateEnsayo(fullEnsayoData as Ensayo);
-            await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
+            await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
             toast({
                 title: "Ensayo Actualizado",
-                description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+                description: `El ensayo ${ensayoToEdit.id} ha sido actualizado correctamente.`,
             });
         } else {
             const newEnsayo: Omit<Ensayo, 'id'> = {
@@ -215,8 +210,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
             });
         }
 
-        reset(defaultFormValues);
-        router.push('/ensayos/seguimiento');
+        onFormSubmit();
     } catch (error) {
         toast({
             variant: "destructive",
@@ -437,7 +431,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
                       Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                  <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
@@ -454,7 +448,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
                         <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
                         <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumoYCenizas} />
                       </div>
-                       <div className="space-y-2">
+                       <div className="space-y-2 md:col-start-1">
                          <Label>% Negro de Humo</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {negroHumoCalculado.toFixed(2)}%
@@ -471,7 +465,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
                       Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                   <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
@@ -484,7 +478,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
                         <Label htmlFor="nh_m3">m3: Cápsula procesada [g]</Label>
                         <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumoYCenizas} />
                       </div>
-                       <div className="space-y-2">
+                       <div className="space-y-2 md:col-start-1">
                          <Label>% Cenizas</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {cenizasCalculado.toFixed(2)}%
@@ -547,7 +541,7 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
       <div className="flex justify-end pt-4">
         <Button type="submit">
           {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
-          {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Reprocesado'}
+          {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
         </Button>
       </div>
     </form>

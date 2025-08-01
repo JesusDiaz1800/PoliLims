@@ -1,29 +1,55 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { MateriaPrimaForm } from "@/components/ensayos/materia-prima-form";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Ensayos de Materia Prima',
-};
+"use client";
+
+import * as React from 'react';
+import { useDynamicData } from '@/context/data-context';
+import Loading from '@/app/(app)/loading';
+import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
+import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
+import type { Ensayo } from '@/context/data-context';
 
 export default function MateriaPrimaPage() {
+  const { ensayos, isLoading } = useDynamicData();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+
+  const handleOpenDialog = (ensayo?: Ensayo) => {
+    setSelectedEnsayo(ensayo || null);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedEnsayo(null);
+    setIsDialogOpen(false);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const materiaPrimaEnsayos = ensayos.filter(e => e.tipo === 'Materia Prima');
+  
+  const analistas = [
+      { value: "jesus.diaz", label: "Jesus Diaz" },
+      { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
+      { value: "antonia.figueroa", label: "Antonia Figueroa" },
+      { value: "robinson.cordova", label: "Robinson Córdova" },
+      { value: "bryan.vasquez", label: "Bryan Vásquez" },
+  ];
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Registro de Ensayo: Materia Prima</CardTitle>
-        <CardDescription>Complete el formulario para registrar un ensayo de materia prima.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <MateriaPrimaForm
-            analistas={[
-                { value: "jesus.diaz", label: "Jesus Diaz" },
-                { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
-                { value: "antonia.figueroa", label: "Antonia Figueroa" },
-                { value: "robinson.cordova", label: "Robinson Córdova" },
-                { value: "bryan.vasquez", label: "Bryan Vásquez" },
-            ]}
-        />
-      </CardContent>
-    </Card>
+    <div className="space-y-6">
+      <MateriaPrimaTable
+        ensayos={materiaPrimaEnsayos}
+        onAddNew={() => handleOpenDialog()}
+        onEdit={handleOpenDialog}
+      />
+      <MateriaPrimaDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        ensayo={selectedEnsayo}
+        analistas={analistas}
+      />
+    </div>
   );
 }

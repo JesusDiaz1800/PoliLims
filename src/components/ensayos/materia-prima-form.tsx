@@ -6,7 +6,6 @@ import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -46,6 +45,8 @@ interface Option {
 
 interface MateriaPrimaFormProps {
   analistas: Option[];
+  ensayoToEdit: Ensayo | null;
+  onFormSubmit: () => void;
 }
 
 // Define the shape of the form's default values
@@ -80,23 +81,18 @@ const defaultFormValues = {
 };
 
 
-export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
+export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: MateriaPrimaFormProps) {
   const { toast } = useToast();
-  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const ensayoId = searchParams.get('id');
+  const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
   const { watch, control, getValues, register, handleSubmit, reset } = useForm({
     defaultValues: defaultFormValues
   });
   
-  const isEditing = Boolean(ensayoId);
+  const isEditing = Boolean(ensayoToEdit);
 
   React.useEffect(() => {
-    if (isEditing) {
-      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
-      if (ensayoToEdit) {
+    if (ensayoToEdit) {
         // Prepare data for the form, ensuring all fields are defined
         const formData = {
           ...defaultFormValues, // Start with default values to avoid undefined fields
@@ -105,11 +101,11 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
           meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
         };
         reset(formData);
-      }
     } else {
         reset(defaultFormValues);
     }
-  }, [isEditing, ensayoId, ensayos, reset]);
+  }, [ensayoToEdit, reset]);
+
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -199,13 +195,13 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
     };
 
     try {
-        if (isEditing && ensayoId) {
-            const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
+        if (isEditing && ensayoToEdit?.id) {
+            const fullEnsayoData = { ...ensayoData, id: ensayoToEdit.id, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
             await updateEnsayo(fullEnsayoData as Ensayo);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
             toast({
                 title: "Ensayo Actualizado",
-                description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+                description: `El ensayo ${ensayoToEdit.id} ha sido actualizado correctamente.`,
             });
         } else {
             const newEnsayo: Omit<Ensayo, 'id'> = {
@@ -221,8 +217,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
             })
         }
         
-        reset(defaultFormValues);
-        router.push('/ensayos/seguimiento');
+        onFormSubmit();
     } catch (error) {
         toast({
             variant: "destructive",
@@ -606,7 +601,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
       <div className="flex justify-end pt-4">
         <Button type="submit">
             {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
-            {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Materia Prima'}
+            {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
         </Button>
       </div>
     </form>
