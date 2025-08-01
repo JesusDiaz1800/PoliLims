@@ -82,19 +82,19 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   const isEditing = Boolean(ensayoToEdit);
 
   React.useEffect(() => {
-    if (ensayoToEdit) {
+    if (isEditing && ensayoToEdit) {
       const formData = {
         ...defaultFormValues,
         ...ensayoToEdit,
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-        meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones : [{ value: '' }],
         id_muestra: ensayoToEdit.id,
       };
       reset(formData);
     } else {
       reset(defaultFormValues);
     }
-  }, [ensayoToEdit, reset]);
+  }, [ensayoToEdit, reset, isEditing]);
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -189,8 +189,8 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
     try {
         if (isEditing && ensayoToEdit?.id) {
-            const fullEnsayoData = { ...finalEnsayoData, id: ensayoToEdit.id, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
-            await updateEnsayo(fullEnsayoData as Ensayo);
+            const fullEnsayoData = { ...ensayoToEdit, ...finalEnsayoData, id: ensayoToEdit.id, tipo: 'Reprocesado' };
+            await updateEnsayo(ensayoToEdit.id, fullEnsayoData as Partial<Ensayo>);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
             toast({
                 title: "Ensayo Actualizado",
@@ -293,7 +293,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
           <div className="space-y-2">
               <Label htmlFor="id_muestra">ID Muestra</Label>
-              <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")} disabled={isEditing} />
+              <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")} readOnly={isEditing} />
           </div>
 
           <div className="space-y-2">

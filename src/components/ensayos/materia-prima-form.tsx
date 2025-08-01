@@ -92,19 +92,19 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   const isEditing = Boolean(ensayoToEdit);
 
   React.useEffect(() => {
-    if (ensayoToEdit) {
+    if (isEditing && ensayoToEdit) {
         // Prepare data for the form, ensuring all fields are defined
         const formData = {
           ...defaultFormValues, // Start with default values to avoid undefined fields
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones : [{ value: '' }],
         };
         reset(formData);
     } else {
         reset(defaultFormValues);
     }
-  }, [ensayoToEdit, reset]);
+  }, [ensayoToEdit, reset, isEditing]);
 
 
   const { fields, append, remove } = useFieldArray({
@@ -196,8 +196,8 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
 
     try {
         if (isEditing && ensayoToEdit?.id) {
-            const fullEnsayoData = { ...ensayoData, id: ensayoToEdit.id, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
-            await updateEnsayo(fullEnsayoData as Ensayo);
+            const fullEnsayoData = { ...ensayoToEdit, ...ensayoData, id: ensayoToEdit.id, tipo: 'Materia Prima' };
+            await updateEnsayo(ensayoToEdit.id, fullEnsayoData as Partial<Ensayo>);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
             toast({
                 title: "Ensayo Actualizado",

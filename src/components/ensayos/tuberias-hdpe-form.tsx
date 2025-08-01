@@ -96,7 +96,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
               ...defaultFormValues,
               ...ensayo,
               fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
-              meltIndexMediciones: ensayo.meltIndexMediciones || [{ value: '' }],
+              meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones : [{ value: '' }],
               id_muestra: ensayo.id,
           };
           reset(formData);
@@ -169,6 +169,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
 
   const onSubmit = async (data: any) => {
     const ensayoData: Partial<Ensayo> = {
+        ...ensayo,
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
