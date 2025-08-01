@@ -117,14 +117,17 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     });
   }, [reset]);
 
-  const watchedValues = watch();
+  const watchedProducto = watch("producto");
+  const watchedDiametro = watch("diametro");
+  const watchedEspesorMin = watch("espesor_min");
+  const watchedEspesorMax = watch("espesor_max");
+  const watchedOvalidad = watch("ovalidad");
+  const watchedPesoKgm = watch("peso_kg_m");
 
   React.useEffect(() => {
     if (matrizProductos.length === 0) return;
     
-    const { producto, diametro, espesor_min, espesor_max, ovalidad, peso_kg_m } = watchedValues;
-
-    const productoSeleccionadoSap = productos.find(p => p.value === producto);
+    const productoSeleccionadoSap = productos.find(p => p.value === watchedProducto);
     if (!productoSeleccionadoSap) {
       setAlerts({});
       return;
@@ -137,38 +140,40 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         setValue("color_linea", productoParaValidacion.color_linea || "");
         
         const newAlerts: ValidationAlerts = {}
-        if (diametro !== undefined) {
-            if (diametro > productoParaValidacion.diametro_max!) newAlerts.diametro = "Diámetro sobre el máximo"
-            else if (diametro < productoParaValidacion.diametro_min!) newAlerts.diametro = "Diámetro bajo el mínimo"
+        if (watchedDiametro !== undefined) {
+            if (watchedDiametro > productoParaValidacion.diametro_max!) newAlerts.diametro = "Diámetro sobre el máximo"
+            else if (watchedDiametro < productoParaValidacion.diametro_min!) newAlerts.diametro = "Diámetro bajo el mínimo"
         }
-        if (espesor_min !== undefined) {
-            if (espesor_min < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-            else if (espesor_min > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
+        if (watchedEspesorMin !== undefined) {
+            if (watchedEspesorMin < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_min = "Espesor mínimo bajo norma"
+            else if (watchedEspesorMin > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
         }
-        if (espesor_max !== undefined) {
-            if (espesor_max > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_max = "Espesor máximo sobre norma"
-            else if (espesor_max < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
+        if (watchedEspesorMax !== undefined) {
+            if (watchedEspesorMax > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_max = "Espesor máximo sobre norma"
+            else if (watchedEspesorMax < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
         }
-        if (ovalidad !== undefined && productoParaValidacion.ovalidad_norma !== null) {
-            if (ovalidad > productoParaValidacion.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
+        if (watchedOvalidad !== undefined && productoParaValidacion.ovalidad_norma !== null) {
+            if (watchedOvalidad > productoParaValidacion.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
         }
-        if (peso_kg_m !== undefined) {
-            if (peso_kg_m < productoParaValidacion.peso_min_teorico!) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
-            else if (peso_kg_m > productoParaValidacion.peso_max_teorico!) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
+        if (watchedPesoKgm !== undefined) {
+            if (watchedPesoKgm < productoParaValidacion.peso_min_teorico!) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
+            else if (watchedPesoKgm > productoParaValidacion.peso_max_teorico!) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
         }
         setAlerts(newAlerts)
     } else {
         setAlerts({})
     }
-  }, [watchedValues, setValue, productos, matrizProductos])
+  }, [watchedProducto, watchedDiametro, watchedEspesorMin, watchedEspesorMax, watchedOvalidad, watchedPesoKgm, setValue, productos, matrizProductos])
+  
+  const watchedPesoMuestra = watch("peso_muestra");
+  const watchedLargo = watch("largo");
 
   React.useEffect(() => {
-    const { peso_muestra, largo } = watchedValues;
-    if (peso_muestra !== undefined && largo !== undefined && largo > 0) {
-        const pesoCalculado = (peso_muestra / largo) / 10;
+    if (watchedPesoMuestra !== undefined && watchedLargo !== undefined && watchedLargo > 0) {
+        const pesoCalculado = (watchedPesoMuestra / watchedLargo) / 10;
         setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)));
     }
-  }, [watchedValues.largo, watchedValues.peso_muestra, setValue]);
+  }, [watchedLargo, watchedPesoMuestra, setValue]);
 
 
   const onSubmit = async (data: FormValues) => {
@@ -465,3 +470,5 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     </Form>
   )
 }
+
+    
