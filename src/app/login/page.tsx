@@ -5,22 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import type { Metadata } from 'next';
-import { redirect } from "next/navigation";
 import { LogoAlt } from "@/components/logo-alt";
+import { handleLogin } from "./actions";
 
 export const metadata: Metadata = {
   title: 'Iniciar Sesión | PoliLIMS',
 };
 
 export default function LoginPage() {
-
-  async function handleLogin(formData: FormData) {
-    'use server';
-    const email = formData.get('email') as string;
-    const username = email.split('@')[0];
-    redirect(`/dashboard?user=${username}`);
-  }
-
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
