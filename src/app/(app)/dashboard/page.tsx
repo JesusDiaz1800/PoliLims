@@ -44,7 +44,7 @@ export default function DashboardPage() {
         const userData = await findUserByUsername(username);
         setUser(userData);
         
-        const analystSet = new Set(ensayos.map(e => e.analista));
+        const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean)); // Filter out empty/null/undefined analyst names
         const analystOptions = [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
         setAllAnalysts(analystOptions);
     }

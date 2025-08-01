@@ -19,7 +19,8 @@ const demoEnsayos = [
     { id: 'LAB-002', id_muestra: 'CTRL-002', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2024-05-20', estado: 'En Progreso' as const, producto: 'Tubería HDPE 110mm PN-10 SDR-17', lote: 'Lote-240520-PE2' },
     { id: 'LAB-003', id_muestra: 'CTRL-004', tipo: 'Tubería PP', analista: 'Maximiliano Miranda', fecha: '2024-05-19', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm PN-16 SDR-11', lote: 'Lote-240519-PE3' },
     { id: 'LAB-004', tipo: 'Materia Prima', producto: 'EL-Lene H1000PC', analista: 'Jesus Diaz', fecha: '2024-05-18', estado: 'Aprobado' as const, lote: 'MP-2024-54321' },
-    { id: 'LAB-005', tipo: 'Reprocesado', producto: 'Reprocesado Lote RP-0518-A', analista: 'Robinson Córdova', fecha: '2024-05-18', estado: 'Pendiente de Revisión' as const, lote: 'RP-0518-A' }
+    { id: 'LAB-005', tipo: 'Reprocesado', producto: 'Reprocesado Lote RP-0518-A', analista: 'Robinson Córdova', fecha: '2024-05-18', estado: 'Pendiente de Revisión' as const, lote: 'RP-0518-A' },
+    { id: 'LAB-006', tipo: 'Tubería HDPE', producto: 'Tubería de Prueba sin Analista', analista: '', fecha: '2024-05-21', estado: 'Pendiente de Revisión' as const, lote: 'Lote-Test-1' },
 ];
 
 const demoRecentActivity = [
