@@ -71,6 +71,28 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
+const defaultFormValues: FormValues = {
+  fecha_ingreso: new Date(),
+  hora: '',
+  inspector: '',
+  maquinista: '',
+  maquina: '',
+  producto: '',
+  marca: '',
+  entregado_laboratorio: false,
+  diametro: undefined,
+  espesor_min: undefined,
+  espesor_max: undefined,
+  largo: undefined,
+  peso_muestra: undefined,
+  peso_kg_m: undefined,
+  ovalidad: undefined,
+  observaciones_visuales: '',
+  color_tuberia: '',
+  color_linea: '',
+};
+
+
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
@@ -79,9 +101,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      entregado_laboratorio: false,
-    },
+    defaultValues: defaultFormValues,
   })
 
   const { watch, setValue } = form
