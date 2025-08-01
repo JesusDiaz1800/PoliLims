@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { useForm, Controller } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { format } from "date-fns"
@@ -13,7 +13,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
@@ -21,7 +20,6 @@ import { TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { useDynamicData } from "@/context/data-context"
-import { useRouter } from "next/navigation"
 import { Combobox } from "../ui/combobox"
 import type { SapProduct } from "@/services/sap-service"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
@@ -58,7 +56,8 @@ const formSchema = z.object({
   color_tuberia: z.string().optional(),
   color_linea: z.string().optional(),
   entregado_laboratorio: z.boolean().default(false),
-});
+}).passthrough();
+
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -102,11 +101,11 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     defaultValues: defaultFormValues,
   })
 
-  const { watch, setValue, reset, control } = form
+  const { watch, setValue, control } = form
 
   React.useEffect(() => {
-    reset(defaultFormValues);
-  }, [reset]);
+    form.reset(defaultFormValues);
+  }, [form]);
 
   const watchedProducto = watch("producto");
   const watchedDiametro = watch("diametro");
@@ -114,11 +113,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const watchedEspesorMax = watch("espesor_max");
   const watchedOvalidad = watch("ovalidad");
   const watchedPesoKgm = watch("peso_kg_m");
+  
   const watchedPesoMuestra = watch("peso_muestra");
   const watchedLargo = watch("largo");
 
   React.useEffect(() => {
-    if (matrizProductos.length === 0) return;
+    if (matrizProductos.length === 0 || !watchedProducto) return;
     
     const productoSeleccionadoSap = productos.find(p => p.value === watchedProducto);
     if (!productoSeleccionadoSap) {
@@ -133,22 +133,22 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         setValue("color_linea", productoParaValidacion.color_linea || "");
         
         const newAlerts: ValidationAlerts = {}
-        if (watchedDiametro !== undefined) {
-            if (watchedDiametro > productoParaValidacion.diametro_max!) newAlerts.diametro = "Diámetro sobre el máximo"
-            else if (watchedDiametro < productoParaValidacion.diametro_min!) newAlerts.diametro = "Diámetro bajo el mínimo"
+        if (watchedDiametro !== undefined && watchedDiametro !== null) {
+            if (productoParaValidacion.diametro_max !== null && watchedDiametro > productoParaValidacion.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
+            else if (productoParaValidacion.diametro_min !== null && watchedDiametro < productoParaValidacion.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
         }
-        if (watchedEspesorMin !== undefined) {
-            if (watchedEspesorMin < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-            else if (watchedEspesorMin > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
+        if (watchedEspesorMin !== undefined && watchedEspesorMin !== null) {
+            if (productoParaValidacion.espesor_min_norma !== null && watchedEspesorMin < productoParaValidacion.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
+            else if (productoParaValidacion.espesor_max_norma !== null && watchedEspesorMin > productoParaValidacion.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
         }
-        if (watchedEspesorMax !== undefined) {
-            if (watchedEspesorMax > productoParaValidacion.espesor_max_norma!) newAlerts.espesor_max = "Espesor máximo sobre norma"
-            else if (watchedEspesorMax < productoParaValidacion.espesor_min_norma!) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
+        if (watchedEspesorMax !== undefined && watchedEspesorMax !== null) {
+            if (productoParaValidacion.espesor_max_norma !== null && watchedEspesorMax > productoParaValidacion.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
+            else if (productoParaValidacion.espesor_min_norma !== null && watchedEspesorMax < productoParaValidacion.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
         }
-        if (watchedOvalidad !== undefined && productoParaValidacion.ovalidad_norma !== null) {
+        if (watchedOvalidad !== undefined && watchedOvalidad !== null && productoParaValidacion.ovalidad_norma !== null) {
             if (watchedOvalidad > productoParaValidacion.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
         }
-        if (watchedPesoKgm !== undefined && productoParaValidacion.peso_min_teorico !== null && productoParaValidacion.peso_max_teorico !== null) {
+        if (watchedPesoKgm !== undefined && watchedPesoKgm !== null && productoParaValidacion.peso_min_teorico !== null && productoParaValidacion.peso_max_teorico !== null) {
             if (watchedPesoKgm < productoParaValidacion.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
             else if (watchedPesoKgm > productoParaValidacion.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
         }
@@ -179,7 +179,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         });
         return;
     }
-
+    
     const newRegistro = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
@@ -217,7 +217,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,
                 lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`,
-                observaciones: data.observaciones_visuales,
+                observaciones: data.observaciones_visuales || '',
                 maquinista: data.maquinista,
                 maquina: data.maquina,
                 inspector: data.inspector,
@@ -249,7 +249,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-6">
                 <div className="space-y-4">
-                    <Label className="text-base font-medium">Información de Producción</Label>
+                    <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <FormField
                             control={control}
@@ -376,7 +376,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 <Separator />
                 
                 <div className="space-y-4">
-                    <Label className="text-base font-medium">Mediciones Dimensionales y Visuales</Label>
+                    <h3 className="text-lg font-medium font-headline">Mediciones Dimensionales y Visuales</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <FormField
                             control={control}
@@ -385,7 +385,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Diámetro Ext. [mm]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Ingrese el diámetro" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Ingrese el diámetro" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 <AlertaValidacion mensaje={alerts.diametro} />
                                 </FormItem>
@@ -398,7 +398,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Espesor Mín. [mm]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Valor mínimo" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Valor mínimo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 <AlertaValidacion mensaje={alerts.espesor_min} />
                                 </FormItem>
@@ -411,7 +411,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Espesor Máx. [mm]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Valor máximo" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Valor máximo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 <AlertaValidacion mensaje={alerts.espesor_max} />
                                 </FormItem>
@@ -424,7 +424,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Ovalidad [mm]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Medida de ovalidad" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Medida de ovalidad" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 <AlertaValidacion mensaje={alerts.ovalidad} />
                                 </FormItem>
@@ -437,7 +437,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Largo Muestra [mm]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Largo de la muestra" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Largo de la muestra" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 </FormItem>
                             )}
@@ -449,7 +449,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Peso muestra [g]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Peso en gramos" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                    <Input type="number" step="any" placeholder="Peso en gramos" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
                                 </FormControl>
                                 </FormItem>
                             )}
@@ -461,7 +461,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Peso [kg/m]</FormLabel>
                                 <FormControl>
-                                    <Input type="number" step="any" placeholder="Calculado..." {...field} readOnly className="bg-muted"/>
+                                    <Input type="number" step="any" placeholder="Calculado..." {...field} value={field.value ?? ''} readOnly className="bg-muted"/>
                                 </FormControl>
                                  <AlertaValidacion mensaje={alerts.peso_kg_m} />
                                 </FormItem>
@@ -476,7 +476,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Color de Tubería</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Autocompletado..." {...field} readOnly className="bg-muted" />
+                                    <Input placeholder="Autocompletado..." {...field} value={field.value ?? ''} readOnly className="bg-muted" />
                                 </FormControl>
                                 </FormItem>
                             )}
@@ -488,7 +488,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem>
                                 <FormLabel>Color de Línea de Identificación</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Autocompletado..." {...field} readOnly className="bg-muted"/>
+                                    <Input placeholder="Autocompletado..." {...field} value={field.value ?? ''} readOnly className="bg-muted"/>
                                 </FormControl>
                                 </FormItem>
                             )}
@@ -500,7 +500,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                 <FormItem className="md:col-span-3">
                                 <FormLabel>Observaciones de Calidad Visual</FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...field}/>
+                                    <Textarea placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...field} value={field.value ?? ''}/>
                                 </FormControl>
                                 </FormItem>
                             )}
@@ -515,7 +515,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     name="entregado_laboratorio"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-base font-medium">Acción Final</FormLabel>
+                            <h3 className="text-lg font-medium font-headline">Acción Final</h3>
                             <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
                                 <FormControl>
                                     <Checkbox
@@ -543,7 +543,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             </div>
         
 
-        <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-background/95 pb-4 -mb-4">
+        <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
             <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Limpiar
