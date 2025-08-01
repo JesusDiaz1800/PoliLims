@@ -103,7 +103,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const watchedPesoMuestra = watch("peso_muestra");
   const watchedLargo = watch("largo");
   
-  // --- Enter Key Navigation ---
   React.useEffect(() => {
     const formElement = formRef.current;
     if (!formElement) return;
@@ -189,7 +188,8 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
     const selectedProduct = productos.find(p => p.value === data.producto);
-    
+    const inspectorName = inspectores.find(i => i.value === data.inspector)?.label || data.inspector;
+
     if (!selectedProduct) {
         toast({
             variant: "destructive",
@@ -202,7 +202,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     const newRegistroData = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
-        inspector: data.inspector,
+        inspector: inspectorName,
         maquinista: data.maquinista,
         maquina: data.maquina,
         producto: selectedProduct.label,
@@ -217,7 +217,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
           description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
         });
 
-        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
+        await addRecentActivity({ user: inspectorName, action: `registró un nuevo control para ${selectedProduct.label}`});
         
         if (data.entregado_laboratorio) {
             const productoInfo = matrizProductos.find(p => p.code === selectedProduct.value);
@@ -232,7 +232,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             const newEnsayo = {
                 id_muestra: newRegistro.id,
                 tipo: tipoEnsayo,
-                analista: 'Jesus Diaz', // Or assign dynamically
+                analista: 'Jesus Diaz', // Default analyst
                 fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,
@@ -240,7 +240,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 observaciones: data.observaciones_visuales || '',
                 maquinista: data.maquinista,
                 maquina: data.maquina,
-                inspector: data.inspector,
+                inspector: inspectorName,
             };
             await addEnsayo(newEnsayo);
             toast({
@@ -248,7 +248,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
-            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
+            await addRecentActivity({ user: inspectorName, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);

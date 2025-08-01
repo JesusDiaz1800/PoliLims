@@ -54,7 +54,6 @@ interface DynamicDataContextType {
   addRegistro: (registro: Omit<Registro, 'id'>) => Promise<Registro>;
   deleteRegistro: (registroId: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
-  forceRefresh: () => void;
   isLoading: boolean;
 }
 
@@ -76,7 +75,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>([]);
   const [registros, setRegistros] = useState<Registro[]>([]);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
-  const [isDynamicLoading, setIsDynamicLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once
   useEffect(() => {
@@ -95,59 +94,57 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     loadStaticData();
   }, []);
   
-  const loadDynamicData = useCallback(async () => {
-      setIsDynamicLoading(true);
-      try {
-          const [ensayosData, registrosData, activityData] = await Promise.all([
-              dataService.getEnsayos(),
-              dataService.getRegistros(),
-              dataService.getRecentActivity()
-          ]);
-          setEnsayos(ensayosData);
-          setRegistros(registrosData);
-          setRecentActivity(activityData);
-      } catch (error) {
-          console.error("Failed to load dynamic data from Firestore", error);
-      } finally {
-          setIsDynamicLoading(false);
-      }
+  // Load initial dynamic data once
+  useEffect(() => {
+    const loadInitialData = async () => {
+        setIsLoading(true);
+        try {
+            const [ensayosData, registrosData, activityData] = await Promise.all([
+                dataService.getEnsayos(),
+                dataService.getRegistros(),
+                dataService.getRecentActivity()
+            ]);
+            setEnsayos(ensayosData);
+            setRegistros(registrosData);
+            setRecentActivity(activityData);
+        } catch (error) {
+            console.error("Failed to load dynamic data from Firestore", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    loadInitialData();
   }, []);
 
-  // Load dynamic data on mount and when forced
-  useEffect(() => {
-    loadDynamicData();
-  }, [loadDynamicData]);
 
-
-  const addEnsayo = async (ensayoData: Omit<Ensayo, 'id'>) => {
+  const addEnsayo = useCallback(async (ensayoData: Omit<Ensayo, 'id'>) => {
     const newEnsayoId = await dataService.addEnsayo(ensayoData);
     const newEnsayo = { ...ensayoData, id: newEnsayoId };
     setEnsayos(prev => [newEnsayo, ...prev]);
     return newEnsayo;
-  };
+  }, []);
 
-  const updateEnsayo = async (id: string, updatedEnsayoData: Partial<Ensayo>) => {
+  const updateEnsayo = useCallback(async (id: string, updatedEnsayoData: Partial<Ensayo>) => {
     await dataService.updateEnsayo(id, updatedEnsayoData);
     setEnsayos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEnsayoData } : e));
-  };
+  }, []);
 
-  const addRegistro = async (registroData: Omit<Registro, 'id'>) => {
+  const addRegistro = useCallback(async (registroData: Omit<Registro, 'id'>) => {
     const newRegistroId = await dataService.addRegistro(registroData);
     const newRegistro = { ...registroData, id: newRegistroId };
     setRegistros(prev => [newRegistro, ...prev]);
     return newRegistro;
-  };
+  }, []);
 
-  const deleteRegistro = async (registroId: string) => {
+  const deleteRegistro = useCallback(async (registroId: string) => {
     await dataService.deleteRegistro(registroId);
     setRegistros(prev => prev.filter(r => r.id !== registroId));
-  };
+  }, []);
 
-  const addRecentActivity = async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
-    await dataService.addRecentActivity(activity);
-    const newActivityData = await dataService.getRecentActivity(); // Refresh activity separately
-    setRecentActivity(newActivityData);
-  };
+  const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
+    const newActivity = await dataService.addRecentActivity(activity);
+    setRecentActivity(prev => [newActivity, ...prev]);
+  }, []);
 
   const dynamicContextValue = useMemo(() => ({
     ensayos,
@@ -158,9 +155,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addRegistro,
     deleteRegistro,
     addRecentActivity,
-    forceRefresh: loadDynamicData,
-    isLoading: isDynamicLoading,
-  }), [ensayos, registros, recentActivity, loadDynamicData, isDynamicLoading]);
+    isLoading,
+  }), [ensayos, registros, recentActivity, isLoading, addEnsayo, updateEnsayo, addRegistro, deleteRegistro, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,

@@ -16,9 +16,9 @@ export async function addEnsayo(ensayo: Omit<Ensayo, 'id'>): Promise<string> {
   return docRef.id;
 }
 
-export async function updateEnsayo(id: string, ensayo: Partial<Ensayo>): Promise<void> {
+export async function updateEnsayo(id: string, ensayoData: Partial<Ensayo>): Promise<void> {
   const docRef = doc(db, "ensayos", id);
-  await updateDoc(docRef, ensayo);
+  await updateDoc(docRef, ensayoData);
 }
 
 
@@ -30,9 +30,9 @@ export async function getRegistros(): Promise<Registro[]> {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Registro));
 }
 
-export async function addRegistro(registro: Omit<Registro, 'id'>): Promise<string> {
+export async function addRegistro(registro: Omit<Registro, 'id'>): Promise<Registro> {
     const docRef = await addDoc(collection(db, "registros"), registro);
-    return docRef.id;
+    return { ...registro, id: docRef.id };
 }
 
 export async function deleteRegistro(registroId: string): Promise<void> {
@@ -49,11 +49,13 @@ export async function getRecentActivity(): Promise<RecentActivity[]> {
     return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RecentActivity));
 }
 
-export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>): Promise<void> {
-    await addDoc(collection(db, "recentActivity"), {
+export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>): Promise<RecentActivity> {
+    const newActivity = {
         ...activity,
         timestamp: new Date().toISOString()
-    });
+    };
+    const docRef = await addDoc(collection(db, "recentActivity"), newActivity);
+    return { ...newActivity, id: docRef.id };
 }
 
 
