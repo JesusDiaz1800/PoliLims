@@ -5,12 +5,16 @@ import * as React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FilePlus2, Edit, Filter } from 'lucide-react';
+import { Search, FilePlus2, Edit, Filter, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { useDynamicData } from '@/context/data-context';
 
 interface MateriaPrimaTableProps {
   ensayos: Ensayo[];
@@ -35,6 +39,8 @@ const formatValue = (value: any, decimals: number = 2) => {
 
 
 export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTableProps) {
+  const { deleteEnsayo } = useDynamicData();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
 
@@ -43,6 +49,24 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
     ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleDelete = async (ensayoId: string) => {
+    try {
+        await deleteEnsayo(ensayoId);
+        toast({
+            title: "Ensayo Eliminado",
+            description: "El ensayo ha sido eliminado correctamente.",
+        });
+    } catch (error) {
+         toast({
+            variant: "destructive",
+            title: "Error al Eliminar",
+            description: "No se pudo eliminar el ensayo. Intente de nuevo.",
+        });
+        console.error("Failed to delete ensayo", error);
+    }
+  };
+
 
   const ensayoFilters = [
     { value: 'all', label: 'Vista General' },
@@ -62,7 +86,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead className="text-right">M.I. Ensayado</TableHead>
                     <TableHead className="text-right">% Variación</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acción</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
         case 'densidad':
@@ -73,7 +97,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead className="text-right">Densidad Líquido</TableHead>
                     <TableHead className="text-right">Densidad Calculada</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acción</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
         case 'negro_humo':
@@ -83,7 +107,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Negro Humo</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acción</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
         default: // 'all'
@@ -95,7 +119,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead>Fecha</TableHead>
                     <TableHead>Analista</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acción</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
     }
@@ -202,10 +226,45 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                 <TableRow key={ensayo.id}>
                   {renderRow(ensayo)}
                   <TableCell className="text-right">
-                    <Button size="sm" variant="outline" onClick={() => onEdit(ensayo)}>
-                      <Edit className="mr-2 h-4 w-4" />
-                      Editar
-                    </Button>
+                    <AlertDialog>
+                      <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                              <Button size="icon" variant="ghost">
+                                <Edit className="h-4 w-4" />
+                                <span className="sr-only">Acciones</span>
+                              </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Editar
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Eliminar
+                                  </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                          </DropdownMenuContent>
+                      </DropdownMenu>
+                      <AlertDialogContent>
+                          <AlertDialogHeader>
+                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el ensayo
+                                  <span className="font-bold"> {ensayo.id}</span> de los servidores.
+                              </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(ensayo.id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                  Sí, eliminar ensayo
+                              </AlertDialogAction>
+                          </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))}

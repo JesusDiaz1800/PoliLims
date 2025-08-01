@@ -143,6 +143,7 @@ export default function SeguimientoEnsayosPage() {
               <TableHead>Lote</TableHead>
               <TableHead>Analista</TableHead>
               <TableHead className="text-right">Melt Index</TableHead>
+              <TableHead className="text-right">% Var. MI</TableHead>
               <TableHead className="text-right">Densidad</TableHead>
               <TableHead className="text-right">% Negro Humo</TableHead>
               <TableHead className="text-center">Estado</TableHead>
@@ -161,6 +162,7 @@ export default function SeguimientoEnsayosPage() {
                     <TableCell>{ensayo.lote || 'N/A'}</TableCell>
                     <TableCell>{ensayo.analista}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}</TableCell>
                     <TableCell className="text-center">
