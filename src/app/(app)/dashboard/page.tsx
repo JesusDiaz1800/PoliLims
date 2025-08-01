@@ -28,7 +28,7 @@ export type DashboardFilterParams = {
 }
 
 export default function DashboardPage() {
-  const { ensayos, isLoading, recentActivity } = useDynamicData();
+  const { ensayos, isLoading, recentActivity, equipos } = useDynamicData();
   const searchParams = useSearchParams();
   
   const month = searchParams.get('month') || 'last_30_days';
@@ -69,6 +69,9 @@ export default function DashboardPage() {
   const pendingAssays = filteredEnsayos.filter(e => e.estado === "Pendiente de Revisión").length;
   const approvedReports = filteredEnsayos.filter(e => e.estado === "Aprobado").length;
   
+  const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
+  const totalEquipment = equipos.length;
+
   const filters = { month, analyst, status };
 
   return (
@@ -100,7 +103,7 @@ export default function DashboardPage() {
         />
         <StatsCard
           title="Equipos Operativos"
-          value="18 / 22"
+          value={`${operationalEquipment} / ${totalEquipment}`}
           description="Equipos operativos y calibrados"
           icon={Beaker}
         />
@@ -124,7 +127,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex flex-col gap-6">
           <WorkloadDistributionChart data={filteredEnsayos} filters={filters}/>
-          <EquipmentStatusChart />
+          <EquipmentStatusChart data={equipos} />
         </div>
       </div>
     </div>

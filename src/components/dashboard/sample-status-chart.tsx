@@ -15,12 +15,14 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
-const statusOrder = ["Recibidas", "En Progreso", "En Análisis", "En Revisión", "Completadas", "Archivadas"];
+const statusOrder = ["Recibidas", "En Progreso", "En Análisis", "Pendiente de Revisión", "Aprobado", "Rechazado"];
 const statusMapping: { [key: string]: string } = {
-  "Pendiente de Revisión": "En Revisión",
-  "Aprobado": "Completadas",
-  "Rechazado": "Completadas",
+  "Recibida": "Recibidas",
   "En Progreso": "En Progreso",
+  "En Análisis": "En Análisis",
+  "Pendiente de Revisión": "Pendiente de Revisión",
+  "Aprobado": "Aprobado",
+  "Rechazado": "Rechazado",
 };
 
 

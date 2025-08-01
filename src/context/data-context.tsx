@@ -21,28 +21,28 @@ const demoRegistros = [
 const demoEnsayos = [
     // --- July 2025 Data ---
     { id: 'LAB-07-01', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2025-07-22', estado: 'Pendiente de Revisión' as const, producto: 'Tubería HDPE 90mm', lote: 'Lote-250722-PE1' },
-    { id: 'LAB-07-02', tipo: 'Tubería PP', analista: 'Antonia Figueroa', fecha: '2025-07-22', estado: 'En Progreso' as const, producto: 'Tubería PP-R 50mm', lote: 'Lote-250722-PP2' },
+    { id: 'LAB-07-02', tipo: 'Tubería PP', analista: 'Antonia Figueroa', fecha: '2025-07-22', estado: 'En Análisis' as const, producto: 'Tubería PP-R 50mm', lote: 'Lote-250722-PP2' },
     { id: 'LAB-07-03', tipo: 'Materia Prima', analista: 'Maximiliano Miranda', fecha: '2025-07-21', estado: 'Aprobado' as const, producto: 'EL-Lene H1000PC', lote: 'MP-2025-07A' },
-    { id: 'LAB-07-04', tipo: 'Reprocesado', analista: 'Robinson Córdova', fecha: '2025-07-20', estado: 'Aprobado' as const, producto: 'Reprocesado Lote RP-0720', lote: 'RP-0720' },
-    { id: 'LAB-07-05', tipo: 'Tubería HDPE', analista: 'Bryan Vásquez', fecha: '2025-07-19', estado: 'Aprobado' as const, producto: 'Tubería HDPE 110mm', lote: 'Lote-250719-PE2' },
-    { id: 'LAB-07-06', tipo: 'Tubería PP', analista: 'Jesus Diaz', fecha: '2025-07-18', estado: 'Rechazado' as const, producto: 'Tubería PP-R 25mm', lote: 'Lote-250718-PP3' },
-    { id: 'LAB-07-07', tipo: 'Materia Prima', analista: 'Antonia Figueroa', fecha: '2025-07-17', estado: 'Aprobado' as const, producto: 'Hostalen CRP 100', lote: 'MP-2025-07B' },
-    { id: 'LAB-07-08', tipo: 'Tubería HDPE', analista: 'Maximiliano Miranda', fecha: '2025-07-15', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm', lote: 'Lote-250715-PE3' },
-    { id: 'LAB-07-09', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2025-07-14', estado: 'En Progreso' as const, producto: 'Tubería HDPE 200mm', lote: 'Lote-250714-PE4' },
-    { id: 'LAB-07-10', tipo: 'Reprocesado', analista: 'Robinson Córdova', fecha: '2025-07-12', estado: 'Pendiente de Revisión' as const, producto: 'Reprocesado Lote RP-0712', lote: 'RP-0712' },
-    { id: 'LAB-07-11', tipo: 'Tubería PP', analista: 'Bryan Vásquez', fecha: '2025-07-10', estado: 'Aprobado' as const, producto: 'Tubería PP-R 32mm', lote: 'Lote-250710-PP1' },
-    { id: 'LAB-07-12', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2025-07-08', estado: 'Aprobado' as const, producto: 'Tubería HDPE 90mm', lote: 'Lote-250708-PE1' },
-    { id: 'LAB-07-13', tipo: 'Materia Prima', analista: 'Maximiliano Miranda', fecha: '2025-07-05', estado: 'Aprobado' as const, producto: 'BorSafe HE3490-LS', lote: 'MP-2025-07C' },
-    { id: 'LAB-07-14', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2025-07-02', estado: 'En Progreso' as const, producto: 'Tubería HDPE 110mm', lote: 'Lote-250702-PE2' },
-    { id: 'LAB-07-15', tipo: 'Tubería PP', analista: 'Bryan Vásquez', fecha: '2025-07-01', estado: 'Pendiente de Revisión' as const, producto: 'Tubería PP-R 50mm', lote: 'Lote-250701-PP2' },
+    { id: 'LAB-07-04', tipo: 'Reprocesado', analista: 'Robinson Córdova', fecha: '2025-07-21', estado: 'En Progreso' as const, producto: 'Reprocesado Lote RP-0720', lote: 'RP-0720' },
+    { id: 'LAB-07-05', tipo: 'Tubería HDPE', analista: 'Bryan Vásquez', fecha: '2025-07-21', estado: 'Aprobado' as const, producto: 'Tubería HDPE 110mm', lote: 'Lote-250719-PE2' },
+    { id: 'LAB-07-06', tipo: 'Tubería PP', analista: 'Jesus Diaz', fecha: '2025-07-20', estado: 'Rechazado' as const, producto: 'Tubería PP-R 25mm', lote: 'Lote-250718-PP3' },
+    { id: 'LAB-07-07', tipo: 'Materia Prima', analista: 'Antonia Figueroa', fecha: '2025-07-20', estado: 'Aprobado' as const, producto: 'Hostalen CRP 100', lote: 'MP-2025-07B' },
+    { id: 'LAB-07-08', tipo: 'Tubería HDPE', analista: 'Maximiliano Miranda', fecha: '2025-07-19', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm', lote: 'Lote-250715-PE3' },
+    { id: 'LAB-07-09', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2025-07-19', estado: 'En Análisis' as const, producto: 'Tubería HDPE 200mm', lote: 'Lote-250714-PE4' },
+    { id: 'LAB-07-10', tipo: 'Reprocesado', analista: 'Robinson Córdova', fecha: '2025-07-18', estado: 'Pendiente de Revisión' as const, producto: 'Reprocesado Lote RP-0712', lote: 'RP-0712' },
+    { id: 'LAB-07-11', tipo: 'Tubería PP', analista: 'Bryan Vásquez', fecha: '2025-07-17', estado: 'Aprobado' as const, producto: 'Tubería PP-R 32mm', lote: 'Lote-250710-PP1' },
+    { id: 'LAB-07-12', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2025-07-16', estado: 'Aprobado' as const, producto: 'Tubería HDPE 90mm', lote: 'Lote-250708-PE1' },
+    { id: 'LAB-07-13', tipo: 'Materia Prima', analista: 'Maximiliano Miranda', fecha: '2025-07-15', estado: 'Aprobado' as const, producto: 'BorSafe HE3490-LS', lote: 'MP-2025-07C' },
+    { id: 'LAB-07-14', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2025-07-15', estado: 'En Progreso' as const, producto: 'Tubería HDPE 110mm', lote: 'Lote-250702-PE2' },
+    { id: 'LAB-07-15', tipo: 'Tubería PP', analista: 'Bryan Vásquez', fecha: '2025-07-14', estado: 'Pendiente de Revisión' as const, producto: 'Tubería PP-R 50mm', lote: 'Lote-250701-PP2' },
 
     // --- June 2025 Data ---
     { id: 'LAB-06-01', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2025-06-28', estado: 'Aprobado' as const, producto: 'Tubería HDPE 90mm', lote: 'Lote-250628-PE1' },
     { id: 'LAB-06-02', tipo: 'Materia Prima', analista: 'Jesus Diaz', fecha: '2025-06-25', estado: 'Aprobado' as const, producto: 'EL-Lene H1000PC', lote: 'MP-2025-06A' },
-    { id: 'LAB-06-03', tipo: 'Tubería PP', analista: 'Maximiliano Miranda', fecha: '2025-06-22', estado: 'Aprobado' as const, producto: 'Tubería PP-R 25mm', lote: 'Lote-250622-PP3' },
+    { id: 'LAB-06-03', tipo: 'Tubería PP', analista: 'Maximiliano Miranda', fecha: '2025-06-25', estado: 'Aprobado' as const, producto: 'Tubería PP-R 25mm', lote: 'Lote-250622-PP3' },
     { id: 'LAB-06-04', tipo: 'Reprocesado', analista: 'Robinson Córdova', fecha: '2025-06-20', estado: 'Rechazado' as const, producto: 'Reprocesado Lote RP-0620', lote: 'RP-0620' },
     { id: 'LAB-06-05', tipo: 'Tubería HDPE', analista: 'Bryan Vásquez', fecha: '2025-06-18', estado: 'Aprobado' as const, producto: 'Tubería HDPE 110mm', lote: 'Lote-250618-PE2' },
-    { id: 'LAB-06-06', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2025-06-15', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm', lote: 'Lote-250615-PE3' },
+    { id: 'LAB-06-06', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2025-06-18', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm', lote: 'Lote-250615-PE3' },
     { id: 'LAB-06-07', tipo: 'Materia Prima', analista: 'Jesus Diaz', fecha: '2025-06-12', estado: 'Aprobado' as const, producto: 'Hostalen CRP 100', lote: 'MP-2025-06B' },
     { id: 'LAB-06-08', tipo: 'Tubería PP', analista: 'Maximiliano Miranda', fecha: '2025-06-10', estado: 'Aprobado' as const, producto: 'Tubería PP-R 32mm', lote: 'Lote-250610-PP1' },
     { id: 'LAB-06-09', tipo: 'Tubería HDPE', analista: 'Robinson Córdova', fecha: '2025-06-05', estado: 'Aprobado' as const, producto: 'Tubería HDPE 200mm', lote: 'Lote-250605-PE4' },
@@ -94,6 +94,31 @@ const demoRecentActivity = [
     { id: 'ACT-10', user: 'Luis Parada', action: 'ha iniciado sesión', timestamp: new Date('2025-07-18T09:00:00Z').toISOString() },
 ];
 
+const demoEquipos = [
+  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const },
+  { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const },
+  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const },
+  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const },
+  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'Activo' as const },
+  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const },
+  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'En Mantenimiento' as const },
+  { id: 'EQ-08', nombre: 'Termociclador PHI', estado: 'Activo' as const },
+  { id: 'EQ-09', nombre: 'Microscopio Óptico', estado: 'Activo' as const },
+  { id: 'EQ-10', nombre: 'Medidor de Densidad', estado: 'Activo' as const },
+  { id: 'EQ-11', nombre: 'Cámara Climática', estado: 'Inactivo' as const },
+  { id: 'EQ-12', nombre: 'Horno de Contracción', estado: 'Activo' as const },
+  { id: 'EQ-13', nombre: 'Rugosímetro', estado: 'Activo' as const },
+  { id: 'EQ-14', nombre: 'Equipo TIO', estado: 'Activo' as const },
+  { id: 'EQ-15', nombre: 'Prensa de Impacto #2', estado: 'Activo' as const },
+  { id: 'EQ-16', nombre: 'Calorímetro DSC #2', estado: 'Activo' as const },
+  { id: 'EQ-17', nombre: 'Plastómetro MFI #2', estado: 'En Mantenimiento' as const },
+  { id: 'EQ-18', nombre: 'Balanza Analítica #2', estado: 'Activo' as const },
+  { id: 'EQ-19', nombre: 'Máquina de Tracción #2', estado: 'Activo' as const },
+  { id: 'EQ-20', nombre: 'Termociclador PHI #2', estado: 'Activo' as const },
+  { id: 'EQ-21', nombre: 'Microscopio Óptico #2', estado: 'Inactivo' as const },
+  { id: 'EQ-22', nombre: 'Medidor de Densidad #2', estado: 'Activo' as const },
+];
+
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -110,7 +135,7 @@ export type Ensayo = {
   tipo: string;
   analista: string;
   fecha: string;
-  estado: 'Aprobado' | 'En Progreso' | 'Rechazado' | 'Pendiente de Revisión';
+  estado: 'Aprobado' | 'En Progreso' | 'Rechazado' | 'Pendiente de Revisión' | 'En Análisis' | 'Recibida' | 'Archivada';
   producto: string;
   id_muestra?: string; // Optional, to link back to control rutinario if needed
   [key: string]: any; 
@@ -134,10 +159,18 @@ export interface RecentActivity {
   timestamp: string;
 }
 
+export interface Equipo {
+    id: string;
+    nombre: string;
+    estado: 'Activo' | 'En Mantenimiento' | 'Inactivo';
+}
+
+
 interface DynamicDataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
+  equipos: Equipo[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   addRegistro: (registro: Omit<Registro, 'id'>) => Promise<Registro>;
@@ -164,6 +197,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [ensayos, setEnsayos] = useState<Ensayo[]>(demoEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(demoRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(demoRecentActivity);
+  const [equipos, setEquipos] = useState<Equipo[]>(demoEquipos);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once
@@ -227,13 +261,14 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     ensayos,
     registros,
     recentActivity,
+    equipos,
     addEnsayo,
     updateEnsayo,
     addRegistro,
     deleteRegistro,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, isLoading, addEnsayo, updateEnsayo, addRegistro, deleteRegistro, addRecentActivity]);
+  }), [ensayos, registros, recentActivity, equipos, isLoading, addEnsayo, updateEnsayo, addRegistro, deleteRegistro, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
