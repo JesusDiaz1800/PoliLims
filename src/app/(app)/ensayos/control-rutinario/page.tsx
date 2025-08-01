@@ -1,15 +1,27 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
 import { useStaticData } from '@/context/data-context';
 import Loading from '../../loading';
+import { getProductsFromSap, type SapProduct } from '@/services/sap-service';
 
 export default function ControlRutinarioPage() {
-  const { productMatrix, isLoaded } = useStaticData();
+  const { productMatrix, isLoaded: isStaticDataLoaded } = useStaticData();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
+  const [isSapLoaded, setIsSapLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadSapProducts() {
+      const products = await getProductsFromSap();
+      setSapProducts(products);
+      setIsSapLoaded(true);
+    }
+    loadSapProducts();
+  }, []);
 
   const handleAddRecordClick = () => {
     setIsDialogOpen(true);
@@ -19,16 +31,9 @@ export default function ControlRutinarioPage() {
     setIsDialogOpen(false);
   };
 
-  if (!isLoaded) {
+  if (!isStaticDataLoaded || !isSapLoaded) {
     return <Loading />;
   }
-
-  // Transform productMatrix for the combobox
-  const productosParaFormulario = productMatrix.map(p => ({
-    value: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
-    label: p.producto,
-  }));
-
 
   return (
     <div className="space-y-6">
@@ -39,7 +44,7 @@ export default function ControlRutinarioPage() {
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 
         onClose={handleDialogClose} 
-        productos={productosParaFormulario}
+        productos={sapProducts}
         matrizProductos={productMatrix}
       />
     </div>
