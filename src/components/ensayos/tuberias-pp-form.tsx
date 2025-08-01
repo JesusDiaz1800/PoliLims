@@ -4,9 +4,9 @@
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
+import { Form, FormControl, FormItem, FormLabel } from "../ui/form";
 
 interface Option {
   value: string;
@@ -46,6 +47,8 @@ interface Option {
 
 interface TuberiasPpFormProps {
   analistas: Option[];
+  ensayo: Ensayo;
+  onFormSubmit: () => void;
 }
 
 const defaultFormValues = {
@@ -69,36 +72,28 @@ const defaultFormValues = {
 };
 
 
-export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
+export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFormProps) {
   const { toast } = useToast();
-  const { ensayos, addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const ensayoId = searchParams.get('id');
+  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
-  const { control, getValues, register, watch, handleSubmit, reset } = useForm({
+  const form = useForm({
     defaultValues: defaultFormValues,
   });
   
-  const isEditing = Boolean(ensayoId);
+  const { control, getValues, register, watch, handleSubmit, reset } = form;
 
   React.useEffect(() => {
-    if (isEditing) {
-      const ensayoToEdit = ensayos.find(e => e.id === ensayoId);
-      if (ensayoToEdit) {
-        const formData = {
-          ...defaultFormValues,
-          ...ensayoToEdit,
-          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
-          id_muestra: ensayoToEdit.id,
-        };
-        reset(formData);
-      }
-    } else {
-      reset(defaultFormValues);
+    if (ensayo) {
+      const formData = {
+        ...defaultFormValues,
+        ...ensayo,
+        fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
+        meltIndexMediciones: ensayo.meltIndexMediciones || [{ value: '' }],
+        id_muestra: ensayo.id,
+      };
+      reset(formData);
     }
-  }, [isEditing, ensayoId, ensayos, reset]);
+  }, [ensayo, reset]);
 
 
   const { fields, append, remove } = useFieldArray({
@@ -212,7 +207,8 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   }, [watchedFvFields, calculateFV]);
   
   const onSubmit = async (data: any) => {
-     const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado'> & { id?: string } = {
+     const ensayoData: Ensayo = {
+        ...ensayo,
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
@@ -220,32 +216,17 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
         densidadCalculada,
         fvTotalPorcentaje,
         fvIntermediaPorcentaje,
+        estado: 'En Progreso',
     };
-
-    if (isEditing && ensayoId) {
-        const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Tubería PP', estado: 'Pendiente de Revisión' };
-        await updateEnsayo(fullEnsayoData);
-        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de tubería PP para ${data.producto}`});
-        toast({
-            title: "Ensayo Actualizado",
-            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
-        });
-    } else {
-        const newEnsayo: Omit<Ensayo, 'id'> = {
-            ...ensayoData,
-            tipo: 'Tubería PP',
-            estado: 'Pendiente de Revisión',
-        };
-        await addEnsayo(newEnsayo);
-        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería PP para ${data.producto}`});
-        toast({
-          title: "Ensayo Registrado",
-          description: `El nuevo ensayo de tubería PP ha sido añadido a seguimiento.`,
-        })
-    }
-
-    reset(defaultFormValues);
-    router.push('/ensayos/seguimiento');
+    
+    await updateEnsayo(ensayo.id, ensayoData);
+    await addRecentActivity({ user: data.analista, action: `ingresó resultados para el ensayo de Tubería PP: ${ensayo.id}`});
+    toast({
+        title: "Resultados Guardados",
+        description: `Los resultados para el ensayo ${ensayo.id} han sido guardados.`,
+    });
+    
+    onFormSubmit();
   };
   
   const ensayoTabs = [
@@ -255,6 +236,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
   ];
 
   return (
+    <Form {...form}>
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -263,24 +245,27 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
           <CardDescription>Datos principales de identificación y trazabilidad del producto.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
-            <Controller
-              name="fecha_ingreso"
-              control={control}
-              render={({ field }) => (
+          <FormField
+            control={control}
+            name="fecha_ingreso"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel>Fecha de Ingreso</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
+                    <FormControl>
                     <Button
                       variant={"outline"}
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
+                      disabled
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
                     </Button>
+                    </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
                     <Calendar
@@ -292,29 +277,31 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
                     />
                   </PopoverContent>
                 </Popover>
-              )}
-            />
-          </div>
+              </FormItem>
+            )}
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="analista">Analista</Label>
-             <Controller
+          <FormField
               name="analista"
               control={control}
               render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="analista">
-                        <SelectValue placeholder="Seleccione un analista" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {analistas.map(analista => (
-                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <FormItem className="space-y-2">
+                  <FormLabel>Analista</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger id="analista">
+                          <SelectValue placeholder="Seleccione un analista" />
+                      </SelectTrigger>
+                    </FormControl>
+                      <SelectContent>
+                          {analistas.map(analista => (
+                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                          ))}
+                      </SelectContent>
+                  </Select>
+                </FormItem>
               )}
             />
-          </div>
           
            <div className="space-y-2">
               <Label htmlFor="id_muestra">ID Muestra</Label>
@@ -323,12 +310,12 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
 
           <div className="space-y-2">
               <Label htmlFor="producto">Producto</Label>
-              <Input id="producto" placeholder="Nombre del producto" {...register("producto")}/>
+              <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
           </div>
 
           <div className="space-y-2">
               <Label htmlFor="lote">Lote</Label>
-              <Input id="lote" placeholder="Número de lote" {...register("lote")}/>
+              <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
           </div>
         </CardContent>
       </Card>
@@ -549,10 +536,11 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
 
       <div className="flex justify-end pt-4">
         <Button type="submit">
-          {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
-          {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo de Tubería PP'}
+          <Save className="mr-2 h-4 w-4" />
+          Guardar Resultados
         </Button>
       </div>
     </form>
+    </Form>
   );
 }

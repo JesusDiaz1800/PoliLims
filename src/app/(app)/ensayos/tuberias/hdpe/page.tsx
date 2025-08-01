@@ -1,29 +1,46 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { TuberiasHdpeForm } from "@/components/ensayos/tuberias-hdpe-form";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Ensayos de Tuberías HDPE',
-};
+"use client";
+
+import * as React from 'react';
+import { EnsayosProductoTerminadoTable } from '@/components/ensayos/tuberias/ensayos-producto-terminado-table';
+import { useDynamicData } from '@/context/data-context';
+import Loading from '@/app/(app)/loading';
+import { EnsayoProductoTerminadoDialog } from '@/components/ensayos/tuberias/ensayo-producto-terminado-dialog';
+import type { Ensayo } from '@/context/data-context';
 
 export default function TuberiasHdpePage() {
+  const { ensayos, isLoading } = useDynamicData();
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+
+  const handleOpenDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedEnsayo(null);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const hdpeEnsayos = ensayos.filter(e => e.tipo === 'Tubería HDPE');
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Registro de Ensayo: Producto Terminado (HDPE)</CardTitle>
-        <CardDescription>Complete el formulario para registrar un ensayo de tuberías HDPE.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <TuberiasHdpeForm 
-            analistas={[
-                { value: "jesus.diaz", label: "Jesus Diaz" },
-                { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
-                { value: "antonia.figueroa", label: "Antonia Figueroa" },
-                { value: "robinson.cordova", label: "Robinson Córdova" },
-                { value: "bryan.vasquez", label: "Bryan Vásquez" },
-            ]}
+    <div className="space-y-6">
+      <EnsayosProductoTerminadoTable
+        ensayos={hdpeEnsayos}
+        tipoEnsayo="HDPE"
+        onOpenDialog={handleOpenDialog}
+      />
+      {selectedEnsayo && (
+        <EnsayoProductoTerminadoDialog
+          isOpen={!!selectedEnsayo}
+          onClose={handleCloseDialog}
+          ensayo={selectedEnsayo}
+          tipo="HDPE"
         />
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }
