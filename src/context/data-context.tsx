@@ -12,20 +12,33 @@ const demoRegistros = [
   { id: 'CTRL-002', fecha: '2024-05-20', hora: '11:15', inspector: 'Cristian Montellano', maquina: 'PE2', producto: 'Tubería HDPE 110mm PN-10 SDR-17', resultado: 'Conforme' as const, enviado_lab: true },
   { id: 'CTRL-003', fecha: '2024-05-19', hora: '14:00', inspector: 'Daniel Palma', maquina: 'PP3', producto: 'Tubería PP-R 25mm PN-20', resultado: 'No Conforme' as const, enviado_lab: false },
   { id: 'CTRL-004', fecha: '2024-05-19', hora: '09:05', inspector: 'Luis Parada', maquina: 'PE3', producto: 'Tubería HDPE 63mm PN-16 SDR-11', resultado: 'Conforme' as const, enviado_lab: true },
+  { id: 'CTRL-005', fecha: '2024-05-21', hora: '08:45', inspector: 'Elias Ibañez', maquina: 'PP1', producto: 'Tubería PP-R 32mm PN-16', resultado: 'Conforme' as const, enviado_lab: true },
+  { id: 'CTRL-006', fecha: '2024-05-21', hora: '10:00', inspector: 'Daniel Palma', maquina: 'PE4', producto: 'Tubería HDPE 200mm PN-6 SDR-26', resultado: 'No Conforme' as const, enviado_lab: false },
+  { id: 'CTRL-007', fecha: '2024-05-22', hora: '13:20', inspector: 'Cristian Montellano', maquina: 'PP2', producto: 'Tubería PP-R 50mm PN-20', resultado: 'Conforme' as const, enviado_lab: false },
+  { id: 'CTRL-008', fecha: '2024-05-22', hora: '15:00', inspector: 'Luis Parada', maquina: 'PE1', producto: 'Tubería HDPE 90mm PN-10 SDR-17', resultado: 'Conforme' as const, enviado_lab: true },
 ];
 
 const demoEnsayos = [
-    { id: 'LAB-001', id_muestra: 'CTRL-001', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2024-05-20', estado: 'Pendiente de Revisión' as const, producto: 'Tubería HDPE 90mm PN-16 SDR-11', lote: 'Lote-240520-PE1' },
+    { id: 'LAB-001', id_muestra: 'CTRL-001', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2024-05-20', estado: 'Aprobado' as const, producto: 'Tubería HDPE 90mm PN-16 SDR-11', lote: 'Lote-240520-PE1' },
     { id: 'LAB-002', id_muestra: 'CTRL-002', tipo: 'Tubería HDPE', analista: 'Antonia Figueroa', fecha: '2024-05-20', estado: 'En Progreso' as const, producto: 'Tubería HDPE 110mm PN-10 SDR-17', lote: 'Lote-240520-PE2' },
     { id: 'LAB-003', id_muestra: 'CTRL-004', tipo: 'Tubería PP', analista: 'Maximiliano Miranda', fecha: '2024-05-19', estado: 'Aprobado' as const, producto: 'Tubería HDPE 63mm PN-16 SDR-11', lote: 'Lote-240519-PE3' },
     { id: 'LAB-004', tipo: 'Materia Prima', producto: 'EL-Lene H1000PC', analista: 'Jesus Diaz', fecha: '2024-05-18', estado: 'Aprobado' as const, lote: 'MP-2024-54321' },
-    { id: 'LAB-005', tipo: 'Reprocesado', producto: 'Reprocesado Lote RP-0518-A', analista: 'Robinson Córdova', fecha: '2024-05-18', estado: 'Pendiente de Revisión' as const, lote: 'RP-0518-A' },
+    { id: 'LAB-005', tipo: 'Reprocesado', producto: 'Reprocesado Lote RP-0518-A', analista: 'Robinson Córdova', fecha: '2024-05-18', estado: 'Rechazado' as const, lote: 'RP-0518-A' },
     { id: 'LAB-006', tipo: 'Tubería HDPE', producto: 'Tubería de Prueba sin Analista', analista: '', fecha: '2024-05-21', estado: 'Pendiente de Revisión' as const, lote: 'Lote-Test-1' },
+    { id: 'LAB-007', id_muestra: 'CTRL-005', tipo: 'Tubería PP', analista: 'Bryan Vásquez', fecha: '2024-05-21', estado: 'En Progreso' as const, producto: 'Tubería PP-R 32mm PN-16', lote: 'Lote-240521-PP1' },
+    { id: 'LAB-008', id_muestra: 'CTRL-008', tipo: 'Tubería HDPE', analista: 'Jesus Diaz', fecha: '2024-05-22', estado: 'Pendiente de Revisión' as const, producto: 'Tubería HDPE 90mm PN-10 SDR-17', lote: 'Lote-240522-PE1' },
+    { id: 'LAB-009', tipo: 'Materia Prima', producto: 'Hostalen CRP 100', analista: 'Antonia Figueroa', fecha: '2024-05-22', estado: 'En Progreso' as const, lote: 'MP-2024-54322' },
+    { id: 'LAB-010', tipo: 'Reprocesado', producto: 'Reprocesado Lote RP-0522-B', analista: 'Robinson Córdova', fecha: '2024-05-22', estado: 'Pendiente de Revisión' as const, lote: 'RP-0522-B' },
 ];
 
 const demoRecentActivity = [
-    { id: 'ACT-1', user: 'Jesus Diaz', action: 'actualizó el ensayo LAB-004', timestamp: new Date(Date.now() - 3600000).toISOString() },
+    { id: 'ACT-1', user: 'Jesus Diaz', action: 'actualizó el ensayo LAB-001', timestamp: new Date(Date.now() - 3600000).toISOString() },
     { id: 'ACT-2', user: 'Elias Ibañez', action: 'registró un nuevo control para Tubería HDPE 90mm', timestamp: new Date(Date.now() - 7200000).toISOString() },
+    { id: 'ACT-3', user: 'Victor Lutz', action: 'ha iniciado sesión', timestamp: new Date(Date.now() - 8200000).toISOString() },
+    { id: 'ACT-4', user: 'Antonia Figueroa', action: 'comenzó a procesar el ensayo LAB-002', timestamp: new Date(Date.now() - 9500000).toISOString() },
+    { id: 'ACT-5', user: 'Cristian Montellano', action: 'registró un control no conforme para Tubería HDPE 200mm', timestamp: new Date(Date.now() - 12200000).toISOString() },
+    { id: 'ACT-6', user: 'Maximiliano Miranda', action: 'aprobó el informe para el ensayo LAB-003', timestamp: new Date(Date.now() - 24 * 3600000).toISOString() },
+    { id: 'ACT-7', user: 'Robinson Córdova', action: 'registró un nuevo ensayo de reprocesado', timestamp: new Date(Date.now() - 2 * 24 * 3600000).toISOString() },
 ];
 
 
