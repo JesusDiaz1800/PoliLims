@@ -20,6 +20,8 @@ export interface TipoProducto {
   color_tuberia?: string;
   color_linea?: string;
   code?: string;
+  linea?: string;
+  largo?: number;
 }
 
 // Cache for the parsed product matrix to avoid reloading and re-parsing.
@@ -64,13 +66,14 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
         const results = Papa.parse<any>(csvText, {
             header: true,
             skipEmptyLines: 'greedy',
+            transformHeader: (header) => header.trim(),
             transform: (value, header) => {
                  // Replace comma with dot for decimal conversion in numeric columns
                 const numericHeaders = [
-                    'diametro_nominal', 'diametro_min', 'diametro_max', 
-                    'espesor_min_norma', 'espesor_max_norma', 'ovalidad_norma',
-                    'peso_min_teorico', 'peso_max_teorico', 'presion_phi',
-                    'temperatura_phi', 'tiempo_phi'
+                    'D nominal (mm)', 'D mínimo (mm)', 'D máximo (mm)', 
+                    'Espesor mínimo (mm)', 'Espesor máximo (mm)', 'Ovalidad (mm)',
+                    'Peso (kg/m)', 'Desv. Peso debajo', 'Desv. Peso arriba', 'PHI 20°C (bar)',
+                    'T Horno (°C)', 'Tiempo acond. (h)', 'Largo (m)'
                 ];
                 if (numericHeaders.includes(header as string)) {
                     return value.replace(',', '.');
@@ -84,28 +87,30 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
         }
 
         const loadedProducts = results.data.map((row: any): TipoProducto | null => {
-            if (!row.producto || row.producto.trim() === '') {
+            if (!row.Producto || row.Producto.trim() === '') {
                 return null;
             }
             return {
-                producto: row.producto,
-                material: row.material,
-                diametro_nominal: toNumberOrNull(row.diametro_nominal),
-                presion_nominal: row.presion_nominal,
-                sdr: row.sdr,
-                diametro_min: toNumberOrNull(row.diametro_min),
-                diametro_max: toNumberOrNull(row.diametro_max),
-                espesor_min_norma: toNumberOrNull(row.espesor_min_norma),
-                espesor_max_norma: toNumberOrNull(row.espesor_max_norma),
-                ovalidad_norma: toNumberOrNull(row.ovalidad_norma),
-                peso_min_teorico: toNumberOrNull(row.peso_min_teorico),
-                peso_max_teorico: toNumberOrNull(row.peso_max_teorico),
-                presion_phi: toNumberOrNull(row.presion_phi),
-                temperatura_phi: toNumberOrNull(row.temperatura_phi),
-                tiempo_phi: toNumberOrNull(row.tiempo_phi),
-                color_tuberia: toNullableString(row.color_tuberia),
-                color_linea: toNullableString(row.color_linea),
-                code: row.code || row.producto.replace(/\s+/g, '-').toUpperCase(),
+                producto: row.Producto,
+                material: row.Material,
+                linea: row.Línea,
+                diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
+                largo: toNumberOrNull(row['Largo (m)']),
+                presion_nominal: row['PN - Serie'],
+                sdr: row['PN - Serie'], // Assuming sdr is the same as presion_nominal for now
+                diametro_min: toNumberOrNull(row['D mínimo (mm)']),
+                diametro_max: toNumberOrNull(row['D máximo (mm)']),
+                espesor_min_norma: toNumberOrNull(row['Espesor mínimo (mm)']),
+                espesor_max_norma: toNumberOrNull(row['Espesor máximo (mm)']),
+                ovalidad_norma: toNumberOrNull(row['Ovalidad (mm)']),
+                peso_min_teorico: toNumberOrNull(row['Desv. Peso debajo']),
+                peso_max_teorico: toNumberOrNull(row['Desv. Peso arriba']),
+                presion_phi: toNumberOrNull(row['PHI 20°C (bar)']),
+                temperatura_phi: toNumberOrNull(row['T Horno (°C)']),
+                tiempo_phi: toNumberOrNull(row['Tiempo acond. (h)']),
+                color_tuberia: toNullableString(row['Color Tubería']),
+                color_linea: toNullableString(row['Color Línea']),
+                code: row.Producto.replace(/\s+/g, '-').toUpperCase(),
             };
         }).filter((p): p is TipoProducto => p !== null);
         
