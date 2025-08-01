@@ -168,15 +168,14 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
 
 
   const onSubmit = async (data: any) => {
-    const ensayoData: Ensayo = {
-        ...ensayo, // Keep existing data
+    const ensayoData: Partial<Ensayo> = {
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,
         densidadCalculada,
         negroHumoCalculado,
-        estado: 'En Progreso', // Update status
+        estado: 'En Progreso',
     };
 
     await updateEnsayo(ensayo.id, ensayoData);

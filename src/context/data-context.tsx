@@ -49,9 +49,9 @@ interface DynamicDataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
-  addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<void>;
-  updateEnsayo: (ensayo: Ensayo) => Promise<void>;
-  addRegistro: (registro: Omit<Registro, 'id'>) => Promise<void>;
+  addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
+  updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
+  addRegistro: (registro: Omit<Registro, 'id'>) => Promise<Registro>;
   deleteRegistro: (registroId: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   forceRefresh: () => void;
@@ -119,24 +119,28 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   }, [loadDynamicData]);
 
 
-  const addEnsayo = async (ensayo: Omit<Ensayo, 'id'>) => {
-    await dataService.addEnsayo(ensayo);
-    await loadDynamicData();
+  const addEnsayo = async (ensayoData: Omit<Ensayo, 'id'>) => {
+    const newEnsayoId = await dataService.addEnsayo(ensayoData);
+    const newEnsayo = { ...ensayoData, id: newEnsayoId };
+    setEnsayos(prev => [newEnsayo, ...prev]);
+    return newEnsayo;
   };
 
-  const updateEnsayo = async (updatedEnsayo: Ensayo) => {
-    await dataService.updateEnsayo(updatedEnsayo.id, updatedEnsayo);
-    await loadDynamicData();
+  const updateEnsayo = async (id: string, updatedEnsayoData: Partial<Ensayo>) => {
+    await dataService.updateEnsayo(id, updatedEnsayoData);
+    setEnsayos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEnsayoData } : e));
   };
 
-  const addRegistro = async (registro: Omit<Registro, 'id'>) => {
-    await dataService.addRegistro(registro);
-    await loadDynamicData();
+  const addRegistro = async (registroData: Omit<Registro, 'id'>) => {
+    const newRegistroId = await dataService.addRegistro(registroData);
+    const newRegistro = { ...registroData, id: newRegistroId };
+    setRegistros(prev => [newRegistro, ...prev]);
+    return newRegistro;
   };
 
   const deleteRegistro = async (registroId: string) => {
     await dataService.deleteRegistro(registroId);
-    await loadDynamicData();
+    setRegistros(prev => prev.filter(r => r.id !== registroId));
   };
 
   const addRecentActivity = async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {

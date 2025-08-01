@@ -176,7 +176,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         return;
     }
     
-    const newRegistro = {
+    const newRegistroData = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
         inspector: data.inspector,
@@ -188,7 +188,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     };
 
     try {
-        const registroId = await addRegistro(newRegistro);
+        const newRegistro = await addRegistro(newRegistroData);
         await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
         toast({
           title: "Registro Guardado",
@@ -206,9 +206,9 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             }
 
             const newEnsayo = {
-                id_muestra: registroId,
+                id_muestra: newRegistro.id,
                 tipo: tipoEnsayo,
-                analista: 'Jesus Diaz',
+                analista: 'Jesus Diaz', // Or assign dynamically
                 fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,

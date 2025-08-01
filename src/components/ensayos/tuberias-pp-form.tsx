@@ -207,8 +207,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   }, [watchedFvFields, calculateFV]);
   
   const onSubmit = async (data: any) => {
-     const ensayoData: Ensayo = {
-        ...ensayo,
+     const ensayoData: Partial<Ensayo> = {
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
