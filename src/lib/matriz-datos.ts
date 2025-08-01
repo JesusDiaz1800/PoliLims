@@ -4,16 +4,16 @@ import Papa from 'papaparse';
 export interface TipoProducto {
   producto: string;
   material: 'PE100' | 'PP' | 'PP-RCT/FV' | 'PEAD' | 'PPR' | 'PP-R' | 'PPR-CT' | 'PPR-CT/FV' | 'PP-RCT' | 'PP-R(R3)' | 'PP-H' | 'PVDF' | 'PE-RT' | 'PP-RCT/FV/BOX' | 'PP-R100/CACO3';
-  diametro_nominal: number;
+  diametro_nominal: number | null;
   presion_nominal: string;
   sdr: string;
-  diametro_min: number;
-  diametro_max: number;
-  espesor_min_norma: number;
+  diametro_min: number | null;
+  diametro_max: number | null;
+  espesor_min_norma: number | null;
   espesor_max_norma: number | null;
   ovalidad_norma: number | null;
-  peso_min_teorico: number;
-  peso_max_teorico: number;
+  peso_min_teorico: number | null;
+  peso_max_teorico: number | null;
   presion_phi: number | null;
   temperatura_phi: number | null;
   tiempo_phi: number | null;
@@ -21,14 +21,15 @@ export interface TipoProducto {
   color_linea?: string;
   code?: string;
   linea?: string;
-  largo?: number;
+  largo?: number | null;
 }
 
 // Cache for the parsed product matrix to avoid reloading and re-parsing.
 let matrizProductos: TipoProducto[] = [];
 
 const toNumberOrNull = (value: string | number): number | null => {
-    if (typeof value === 'number') return value;
+    if (value === null || value === undefined) return null;
+    if (typeof value === 'number') return isNaN(value) ? null : value;
     if (typeof value === 'string') {
         const cleanedValue = value.replace(',', '.').trim();
         if (cleanedValue === '') return null;
@@ -87,7 +88,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
         }
 
         const loadedProducts = results.data.map((row: any): TipoProducto | null => {
-            if (!row.Producto || row.Producto.trim() === '') {
+            if (!row['Producto'] || row['Producto'].trim() === '') {
                 return null;
             }
             return {
