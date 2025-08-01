@@ -188,7 +188,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
     const selectedProduct = productos.find(p => p.value === data.producto);
-    const inspectorName = inspectores.find(i => i.value === data.inspector)?.label || data.inspector;
 
     if (!selectedProduct) {
         toast({
@@ -202,7 +201,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     const newRegistroData = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
-        inspector: inspectorName,
+        inspector: data.inspector,
         maquinista: data.maquinista,
         maquina: data.maquina,
         producto: selectedProduct.label,
@@ -212,12 +211,13 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
     try {
         const newRegistro = await addRegistro(newRegistroData);
+        
         toast({
           title: "Registro Guardado",
           description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
         });
 
-        await addRecentActivity({ user: inspectorName, action: `registró un nuevo control para ${selectedProduct.label}`});
+        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
         
         if (data.entregado_laboratorio) {
             const productoInfo = matrizProductos.find(p => p.code === selectedProduct.value);
@@ -240,15 +240,16 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 observaciones: data.observaciones_visuales || '',
                 maquinista: data.maquinista,
                 maquina: data.maquina,
-                inspector: inspectorName,
+                inspector: data.inspector,
             };
             await addEnsayo(newEnsayo);
+            
             toast({
                 title: "Muestra Enviada a Laboratorio",
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
-            await addRecentActivity({ user: inspectorName, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
+            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);
