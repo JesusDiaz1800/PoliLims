@@ -202,7 +202,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     const newRegistroData = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
-        inspector: data.inspector,
+        inspector: data.inspector, // This is already a string, no need for .label
         maquinista: data.maquinista,
         maquina: data.maquina,
         producto: selectedProduct.label,
@@ -317,7 +317,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
-                                        <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.label}>{i.label}</SelectItem>)}</SelectContent>
+                                        <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}</SelectContent>
                                     </Select>
                                     <FormMessage />
                                 </FormItem>

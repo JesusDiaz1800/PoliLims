@@ -22,10 +22,10 @@ interface ControlRutinarioDialogProps {
 export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProductos }: ControlRutinarioDialogProps) {
 
   const inspectores = [
-      { value: "elias.ibanez", label: "ELIAS IBAÑEZ" },
-      { value: "cristian.montellano", label: "CRISTIAN MONTELLANO" },
-      { value: "daniel.palma", label: "DANIEL PALMA" },
-      { value: "luis.parada", label: "LUIS PARADA" },
+      { value: "ELIAS IBAÑEZ", label: "ELIAS IBAÑEZ" },
+      { value: "CRISTIAN MONTELLANO", label: "CRISTIAN MONTELLANO" },
+      { value: "DANIEL PALMA", label: "DANIEL PALMA" },
+      { value: "LUIS PARADA", label: "LUIS PARADA" },
   ];
 
   const maquinistas = [
