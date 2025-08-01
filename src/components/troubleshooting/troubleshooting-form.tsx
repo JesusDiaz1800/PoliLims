@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
 import { getTroubleshootingSuggestion } from '@/app/(app)/troubleshooting/actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -32,7 +33,7 @@ function SubmitButton() {
 }
 
 export function TroubleshootingForm() {
-    const [state, formAction] = useFormState(getTroubleshootingSuggestion, initialState);
+    const [state, formAction] = useActionState(getTroubleshootingSuggestion, initialState);
     const { toast } = useToast();
 
     useEffect(() => {
