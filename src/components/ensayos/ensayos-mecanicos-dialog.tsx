@@ -59,9 +59,22 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
         }
     });
 
-    const { watch, register, control } = form;
+    const { watch, register, control, reset } = form;
     const watchedValues = watch();
     const [alertaEnsayo, setAlertaEnsayo] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (isOpen) {
+            reset({
+                tipoEnsayo: "contraccion",
+                impactoTotal: 4,
+                phiSinFallas: false,
+                contraccion1: undefined,
+                contraccion2: undefined,
+                impactoFallas: undefined,
+            });
+        }
+    }, [isOpen, reset]);
 
     React.useEffect(() => {
         const { tipoEnsayo, contraccion1, contraccion2, impactoFallas, phiSinFallas } = watchedValues;
@@ -74,7 +87,7 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
                 alerta = "Fallo: Contracción superior al 3%";
             } else if (material === "PP-RCT/FV" && promedio > 1) {
                 alerta = "Fallo: Contracción superior al 1%";
-            } else if (material !== "PE100" && material !== "PP-RCT/FV" && promedio > 2) {
+            } else if (material && !["PE100", "PP-RCT/FV"].includes(material) && promedio > 2) {
                 alerta = "Fallo: Contracción superior al 2%";
             }
         } else if (tipoEnsayo === 'impacto' && impactoFallas !== undefined) {
@@ -91,7 +104,7 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
 
 
     const onSubmit = (data: FormSchemaType) => {
-        console.log({ ensayoId: ensayo.id, ...data });
+        console.log({ ensayoId: ensayo.id, ...data, alerta: alertaEnsayo });
         toast({
             title: "Ensayos Guardados",
             description: `Los resultados para la muestra ${ensayo.id} han sido guardados.`,
@@ -104,7 +117,6 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
             });
         }
         onClose();
-        form.reset();
     }
     
     const tipoEnsayo = watch("tipoEnsayo");
@@ -203,7 +215,7 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
                                         render={({ field }) => (
                                             <Checkbox
                                                 id="phiSinFallas"
-                                                checked={field.value}
+                                                checked={!!field.value}
                                                 onCheckedChange={field.onChange}
                                             />
                                         )}
