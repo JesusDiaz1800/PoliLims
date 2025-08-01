@@ -8,7 +8,7 @@ import { useStaticData } from '@/context/data-context';
 import Loading from '../../loading';
 
 export default function ControlRutinarioPage() {
-  const { sapProducts, productMatrix, isLoaded } = useStaticData();
+  const { productMatrix, isLoaded } = useStaticData();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleAddRecordClick = () => {
@@ -23,6 +23,13 @@ export default function ControlRutinarioPage() {
     return <Loading />;
   }
 
+  // Transform productMatrix for the combobox
+  const productosParaFormulario = productMatrix.map(p => ({
+    value: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
+    label: p.producto,
+  }));
+
+
   return (
     <div className="space-y-6">
       <ControlRutinarioTable 
@@ -32,7 +39,7 @@ export default function ControlRutinarioPage() {
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 
         onClose={handleDialogClose} 
-        productos={sapProducts}
+        productos={productosParaFormulario}
         matrizProductos={productMatrix}
       />
     </div>

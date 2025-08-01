@@ -21,14 +21,13 @@ import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { useDynamicData } from "@/context/data-context"
 import { Combobox } from "../ui/combobox"
-import type { SapProduct } from "@/services/sap-service"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 
 interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
   maquinistas: { value: string; label: string }[]
   maquinas: { value: string; label: string }[]
-  productos: SapProduct[]
+  productos: { value: string; label: string }[]
   marcas: { value: string; label: string }[]
   matrizProductos: TipoProducto[];
   onFormSubmit: () => void;
@@ -69,7 +68,7 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-const defaultFormValues: FormValues = {
+const defaultFormValues: Partial<FormValues> = {
   fecha_ingreso: new Date(),
   hora: format(new Date(), 'HH:mm'),
   inspector: '',
@@ -78,16 +77,6 @@ const defaultFormValues: FormValues = {
   producto: '',
   marca: '',
   entregado_laboratorio: false,
-  diametro: undefined,
-  espesor_min: undefined,
-  espesor_max: undefined,
-  largo: undefined,
-  peso_muestra: undefined,
-  peso_kg_m: undefined,
-  ovalidad: undefined,
-  observaciones_visuales: '',
-  color_tuberia: '',
-  color_linea: '',
 };
 
 
@@ -104,7 +93,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const { watch, setValue, control } = form
 
-  const watchedProducto = watch("producto");
+  const watchedProductoCode = watch("producto");
   const watchedDiametro = watch("diametro");
   const watchedEspesorMin = watch("espesor_min");
   const watchedEspesorMax = watch("espesor_max");
@@ -151,15 +140,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   React.useEffect(() => {
-    if (matrizProductos.length === 0 || !watchedProducto) return;
-    
-    const productoSeleccionadoSap = productos.find(p => p.value === watchedProducto);
-    if (!productoSeleccionadoSap) {
+    if (matrizProductos.length === 0 || !watchedProductoCode) {
       setAlerts({});
       return;
-    }
-
-    const productoParaValidacion = matrizProductos.find(p => p.producto === productoSeleccionadoSap.label);
+    };
+    
+    const productoParaValidacion = matrizProductos.find(p => p.code === watchedProductoCode);
 
     if (productoParaValidacion) {
         setValue("color_tuberia", productoParaValidacion.color_tuberia || "");
@@ -189,7 +175,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     } else {
         setAlerts({})
     }
-  }, [watchedProducto, watchedDiametro, watchedEspesorMin, watchedEspesorMax, watchedOvalidad, watchedPesoKgm, setValue, productos, matrizProductos])
+  }, [watchedProductoCode, watchedDiametro, watchedEspesorMin, watchedEspesorMax, watchedOvalidad, watchedPesoKgm, setValue, matrizProductos])
   
 
   React.useEffect(() => {
@@ -226,14 +212,15 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
     try {
         const newRegistro = await addRegistro(newRegistroData);
-        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
         toast({
           title: "Registro Guardado",
           description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
         });
 
+        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
+        
         if (data.entregado_laboratorio) {
-            const productoInfo = matrizProductos.find(p => p.producto === selectedProduct.label);
+            const productoInfo = matrizProductos.find(p => p.code === selectedProduct.value);
             
             let tipoEnsayo = 'Tubería';
             if (productoInfo?.material === 'PE100') {
@@ -256,12 +243,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 inspector: data.inspector,
             };
             await addEnsayo(newEnsayo);
-            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
             toast({
                 title: "Muestra Enviada a Laboratorio",
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
+            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);
@@ -373,7 +360,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             name="producto"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Producto (SAP)</FormLabel>
+                                    <FormLabel>Producto</FormLabel>
                                     <FormControl>
                                         <Combobox
                                             options={productos}
