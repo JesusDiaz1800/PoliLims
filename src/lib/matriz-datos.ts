@@ -73,14 +73,19 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
              if (!row['Producto'] || String(row['Producto']).trim() === '') {
                 return null;
             }
+            const producto = row.Producto;
+            const material = row.Material;
+            const pn = row['PN - Serie'];
+            const uniqueCode = `${producto}-${material}-${pn}`.replace(/\s+/g, '-').toUpperCase();
+
             return {
-                producto: row.Producto,
-                material: row.Material,
+                producto: producto,
+                material: material,
                 linea: toNullableString(row['Línea']),
                 diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
                 largo: toNumberOrNull(row['Largo (m)']),
-                presion_nominal: row['PN - Serie'],
-                sdr: row['PN - Serie'], 
+                presion_nominal: pn,
+                sdr: pn, 
                 diametro_min: toNumberOrNull(row['D mínimo (mm)']),
                 diametro_max: toNumberOrNull(row['D máximo (mm)']),
                 espesor_min_norma: toNumberOrNull(row['Espesor mínimo (mm)']),
@@ -93,7 +98,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
                 tiempo_phi: toNumberOrNull(row['Tiempo acond. (h)']),
                 color_tuberia: toNullableString(row['Color Tubería']),
                 color_linea: toNullableString(row['Color Línea']),
-                code: String(row.Producto).replace(/\s+/g, '-').toUpperCase(),
+                code: uniqueCode,
             };
         }).filter((p): p is TipoProducto => p !== null);
         
