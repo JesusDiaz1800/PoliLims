@@ -3,6 +3,7 @@
 
 import * as React from "react";
 import { Activity, Beaker, CheckCircle, ClipboardList } from "lucide-react";
+import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'date-fns';
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -59,10 +60,28 @@ export default function DashboardPage() {
 
   // Apply filters
   const filteredEnsayos = ensayos.filter(ensayo => {
+    const ensayoDate = parseISO(ensayo.fecha);
+    const now = new Date(2025, 6, 23); // Fixed date for demo purposes
+
+    // Date filtering
+    let dateRange = { start: new Date(0), end: now };
+    if (month === 'last_30_days') {
+        dateRange = { start: subDays(now, 29), end: now };
+    } else if (month === 'this_month') {
+        dateRange = { start: startOfMonth(now), end: endOfMonth(now) };
+    } else if (month === 'last_month') {
+        const lastMonthStart = startOfMonth(subMonths(now, 1));
+        const lastMonthEnd = endOfMonth(subMonths(now, 1));
+        dateRange = { start: lastMonthStart, end: lastMonthEnd };
+    } else if (month === 'last_3_months') {
+        dateRange = { start: subMonths(now, 3), end: now };
+    }
+
+    const isDateInRange = isWithinInterval(ensayoDate, dateRange);
     const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
     const filterByStatus = status === 'all' || ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
-    // Note: Month filtering is simulated within charts for now
-    return filterByAnalyst && filterByStatus;
+    
+    return isDateInRange && filterByAnalyst && filterByStatus;
   });
 
   const activeSamples = filteredEnsayos.filter(e => e.estado === "En Progreso").length;
