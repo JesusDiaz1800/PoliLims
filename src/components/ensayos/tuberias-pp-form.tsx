@@ -38,7 +38,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
-import { Form, FormControl, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
 interface Option {
   value: string;
@@ -367,7 +367,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                                 setTimeout(calculateMeltIndex, 0);
                             }}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="mr-2 h-4 w-4" />
                           </Button>
                         </div>
                       ))}
