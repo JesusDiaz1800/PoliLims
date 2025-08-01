@@ -1,6 +1,4 @@
 
-import fs from 'fs/promises';
-import path from 'path';
 import Papa from 'papaparse';
 
 export interface TipoProducto {
@@ -24,12 +22,18 @@ export interface TipoProducto {
   code?: string;
 }
 
+// Cache for the parsed product matrix to avoid reloading and re-parsing.
 let matrizProductos: TipoProducto[] = [];
 
 const toNumberOrNull = (value: string | number): number | null => {
     if (typeof value === 'number') return value;
-    const num = parseFloat(value);
-    return isNaN(num) ? null : num;
+    if (typeof value === 'string') {
+        const cleanedValue = value.replace(',', '.').trim();
+        if (cleanedValue === '') return null;
+        const num = parseFloat(cleanedValue);
+        return isNaN(num) ? null : num;
+    }
+    return null;
 };
 
 const toNullableString = (value: unknown): string | undefined => {
@@ -39,63 +43,76 @@ const toNullableString = (value: unknown): string | undefined => {
     return value && value.trim() !== '' ? value.trim() : undefined;
 }
 
-async function loadMatrizProductos(): Promise<TipoProducto[]> {
+
+/**
+ * Fetches and parses the product data from a remote CSV file.
+ * Caches the result to prevent re-fetching on subsequent calls.
+ * This function is intended to be called from the client-side.
+ */
+export async function getMatrizProductos(): Promise<TipoProducto[]> {
     if (matrizProductos.length > 0) {
         return matrizProductos;
     }
 
     try {
-        const csvFilePath = path.join(process.cwd(), 'public', 'data', 'productos.csv');
-        const csvFile = await fs.readFile(csvFilePath, 'utf8');
+        const response = await fetch('/data/productos.csv');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch CSV: ${response.statusText}`);
+        }
+        const csvText = await response.text();
         
-        const results = Papa.parse<any>(csvFile, {
+        const results = Papa.parse<any>(csvText, {
             header: true,
             skipEmptyLines: 'greedy',
-            dynamicTyping: true,
-        });
-
-        if (results.errors.length > 0) {
-            const significantErrors = results.errors.filter(e => e.code !== 'TooFewFields' && e.code !== 'TooManyFields' && e.row !== '');
-             if (significantErrors.length > 0) {
-                console.error("Errors parsing CSV:", significantErrors);
-                throw new Error("Failed to parse product CSV due to significant errors.");
+            transform: (value, header) => {
+                 // Replace comma with dot for decimal conversion in numeric columns
+                const numericHeaders = [
+                    'diametro_nominal', 'diametro_min', 'diametro_max', 
+                    'espesor_min_norma', 'espesor_max_norma', 'ovalidad_norma',
+                    'peso_min_teorico', 'peso_max_teorico', 'presion_phi',
+                    'temperatura_phi', 'tiempo_phi'
+                ];
+                if (numericHeaders.includes(header as string)) {
+                    return value.replace(',', '.');
+                }
+                return value;
             }
+        });
+        
+        if (results.errors.length > 0) {
+            console.error("Errors parsing CSV:", results.errors);
         }
 
-        const loadedProducts = results.data.map((row: any) => ({
-            producto: row.producto,
-            material: row.material,
-            diametro_nominal: parseFloat(row.diametro_nominal),
-            presion_nominal: row.presion_nominal,
-            sdr: row.sdr,
-            diametro_min: parseFloat(row.diametro_min),
-            diametro_max: parseFloat(row.diametro_max),
-            espesor_min_norma: parseFloat(row.espesor_min_norma),
-            espesor_max_norma: toNumberOrNull(row.espesor_max_norma),
-            ovalidad_norma: toNumberOrNull(row.ovalidad_norma),
-            peso_min_teorico: parseFloat(row.peso_min_teorico),
-            peso_max_teorico: parseFloat(row.peso_max_teorico),
-            presion_phi: toNumberOrNull(row.presion_phi),
-            temperatura_phi: toNumberOrNull(row.temperatura_phi),
-            tiempo_phi: toNumberOrNull(row.tiempo_phi),
-            color_tuberia: toNullableString(row.color_tuberia),
-            color_linea: toNullableString(row.color_linea),
-            code: row.code,
-        })).filter(p => p.producto); // Filter out any completely empty rows
+        const loadedProducts = results.data.map((row: any): TipoProducto | null => {
+            if (!row.Producto || row.Producto.trim() === '') {
+                return null;
+            }
+            return {
+                producto: row.Producto,
+                material: row.Material,
+                diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
+                presion_nominal: row['PN - Serie'],
+                sdr: row['PN - Serie'], // Assuming SDR is part of PN
+                diametro_min: toNumberOrNull(row['D mínimo (mm)']),
+                diametro_max: toNumberOrNull(row['D máximo (mm)']),
+                espesor_min_norma: toNumberOrNull(row['Espesor mínimo (mm)']),
+                espesor_max_norma: toNumberOrNull(row['Espesor máximo (mm)']),
+                ovalidad_norma: toNumberOrNull(row['Ovalidad (mm)']),
+                peso_min_teorico: toNumberOrNull(row['Desv. Peso debajo']),
+                peso_max_teorico: toNumberOrNull(row['Desv. Peso arriba']),
+                presion_phi: toNumberOrNull(row['PHI 20°C (bar)']),
+                temperatura_phi: toNumberOrNull(row['T Horno (°C)']),
+                tiempo_phi: toNumberOrNull(row['Tiempo acond. (h)']),
+                color_tuberia: toNullableString(row['Color Tubería']),
+                color_linea: toNullableString(row['Color Línea']),
+                code: row.producto, // Use product name as code for now
+            };
+        }).filter((p): p is TipoProducto => p !== null);
         
         matrizProductos = loadedProducts; // Cache the result
         return matrizProductos;
     } catch (error) {
-        console.error("Error reading product CSV file:", error);
+        console.error("Error fetching or parsing product CSV file:", error);
         return []; // Return empty on error
     }
 }
-
-/**
- * Gets the loaded product matrix.
- * Note: This assumes `loadMatrizProductos` has completed.
- */
-export async function getMatrizProductos(): Promise<TipoProducto[]> {
-    // This will either return the cache or load it for the first time.
-    return loadMatrizProductos();
-};

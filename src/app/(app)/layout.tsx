@@ -4,9 +4,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { DataProvider } from '@/context/data-context';
-import { getMatrizProductos } from '@/lib/matriz-datos';
-import { getProductsFromSap } from '@/services/sap-service';
-import { findUserByUsername, type User } from '@/services/user-service';
+import { findUserByUsername } from '@/services/user-service';
 
 export const metadata: Metadata = {
     title: {
@@ -17,10 +15,6 @@ export const metadata: Metadata = {
 };
 
 export default async function AppLayout({ children, ...props }: { children: React.ReactNode, params: any }) {
-    // Load static data once on the server layout
-    const productMatrix = await getMatrizProductos();
-    const sapProducts = await getProductsFromSap();
-    
     // Get user from search params to pass to AppShell
     // This is a simplified way to handle user session for this example
     const searchParams = (props as any).searchParams || {};
@@ -35,7 +29,7 @@ export default async function AppLayout({ children, ...props }: { children: Reac
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider staticData={{ productMatrix, sapProducts }}>
+            <DataProvider>
                 <div className="bg-background">
                     <SidebarProvider>
                         <AppShell user={user}>

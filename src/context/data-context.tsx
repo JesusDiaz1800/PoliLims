@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useMemo } from 'react';
-import type { TipoProducto } from "@/lib/matriz-datos";
-import type { SapProduct } from "@/services/sap-service";
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
+import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import { initialEnsayos, initialRecentActivity, initialRegistros } from '@/services/data-service';
 
 // --- STATIC DATA (loaded once from server) ---
@@ -60,16 +60,32 @@ const DynamicDataContext = createContext<DynamicDataContextType | undefined>(und
 // --- PROVIDER COMPONENT ---
 interface DataProviderProps {
   children: ReactNode;
-  staticData: {
-    productMatrix: TipoProducto[];
-    sapProducts: SapProduct[];
-  };
 }
 
-export const DataProvider = ({ children, staticData }: DataProviderProps) => {
+export const DataProvider = ({ children }: DataProviderProps) => {
+  const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
+  const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
   const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const matrix = await getMatrizProductos();
+        setProductMatrix(matrix);
+        const products = await getProductsFromSap();
+        setSapProducts(products);
+      } catch (error) {
+        console.error("Failed to load initial data", error);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+    loadData();
+  }, []);
 
   const addEnsayo = (ensayo: Ensayo) => {
     setEnsayos(prev => [ensayo, ...prev]);
@@ -103,9 +119,10 @@ export const DataProvider = ({ children, staticData }: DataProviderProps) => {
   }), [ensayos, registros, recentActivity]);
 
   const staticContextValue = useMemo(() => ({
-    ...staticData,
-    isLoaded: true
-  }), [staticData]);
+    productMatrix,
+    sapProducts,
+    isLoaded
+  }), [productMatrix, sapProducts, isLoaded]);
 
   return (
     <StaticDataContext.Provider value={staticContextValue}>
