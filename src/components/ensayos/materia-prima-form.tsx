@@ -460,7 +460,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                       Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                  <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
@@ -477,7 +477,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                         <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
                         <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumoYCenizas} />
                       </div>
-                       <div className="space-y-2">
+                       <div className="space-y-2 md:col-start-1">
                          <Label>% Negro de Humo</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {negroHumoCalculado.toFixed(2)}%
@@ -494,7 +494,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                       Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
@@ -507,7 +507,7 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
                         <Label htmlFor="nh_m3">m3: Cápsula procesada [g]</Label>
                         <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumoYCenizas} />
                       </div>
-                       <div className="space-y-2">
+                       <div className="space-y-2 md:col-start-1">
                          <Label>% Cenizas</Label>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {cenizasCalculado.toFixed(2)}%
