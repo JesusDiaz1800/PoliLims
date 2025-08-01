@@ -1,4 +1,5 @@
 
+
 import Papa from 'papaparse';
 
 export interface TipoProducto {
@@ -27,7 +28,7 @@ export interface TipoProducto {
 // Cache for the parsed product matrix to avoid reloading and re-parsing.
 let matrizProductos: TipoProducto[] = [];
 
-const toNumberOrNull = (value: string | number): number | null => {
+const toNumberOrNull = (value: unknown): number | null => {
     if (value === null || value === undefined) return null;
     const s = String(value).replace(',', '.').trim();
     if (s === '') return null;
