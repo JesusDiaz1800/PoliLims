@@ -192,31 +192,39 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
         producto: `Reprocesado Lote ${data.lote}`,
     };
 
+    try {
+        if (isEditing && ensayoId) {
+            const fullEnsayoData = { ...finalEnsayoData, id: ensayoId, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
+            await updateEnsayo(fullEnsayoData as Ensayo);
+            await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
+            toast({
+                title: "Ensayo Actualizado",
+                description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+            });
+        } else {
+            const newEnsayo: Omit<Ensayo, 'id'> = {
+                ...(finalEnsayoData as any),
+                tipo: 'Reprocesado',
+                estado: 'Pendiente de Revisión',
+            };
+            await addEnsayo(newEnsayo);
+            await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para el lote ${data.lote}`});
+            toast({
+                title: "Ensayo Registrado",
+                description: `El nuevo ensayo de reprocesado ha sido añadido a seguimiento.`,
+            });
+        }
 
-    if (isEditing && ensayoId) {
-        const fullEnsayoData = { ...finalEnsayoData, id: ensayoId, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
-        await updateEnsayo(fullEnsayoData);
-        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
+        reset(defaultFormValues);
+        router.push('/ensayos/seguimiento');
+    } catch (error) {
         toast({
-            title: "Ensayo Actualizado",
-            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+            variant: "destructive",
+            title: "Error al Guardar",
+            description: "No se pudo guardar el ensayo. Por favor, intente de nuevo.",
         });
-    } else {
-        const newEnsayo: Omit<Ensayo, 'id'> = {
-            ...finalEnsayoData,
-            tipo: 'Reprocesado',
-            estado: 'Pendiente de Revisión',
-        };
-        await addEnsayo(newEnsayo);
-        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para el lote ${data.lote}`});
-        toast({
-            title: "Ensayo Registrado",
-            description: `El nuevo ensayo de reprocesado ha sido añadido a seguimiento.`,
-        });
+        console.error("Failed to save ensayo:", error);
     }
-
-    reset(defaultFormValues);
-    router.push('/ensayos/seguimiento');
   };
   
   const ensayoTabs = [

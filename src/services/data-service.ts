@@ -1,6 +1,6 @@
 
 import { db } from '@/lib/firebase';
-import { collection, getDocs, addDoc, updateDoc, doc, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, addDoc, updateDoc, doc, query, orderBy, limit, deleteDoc } from 'firebase/firestore';
 import type { Ensayo, Registro, RecentActivity } from "@/context/data-context";
 
 // --- Ensayos ---
@@ -33,6 +33,11 @@ export async function getRegistros(): Promise<Registro[]> {
 export async function addRegistro(registro: Omit<Registro, 'id'>): Promise<string> {
     const docRef = await addDoc(collection(db, "registros"), registro);
     return docRef.id;
+}
+
+export async function deleteRegistro(registroId: string): Promise<void> {
+    const docRef = doc(db, "registros", registroId);
+    await deleteDoc(docRef);
 }
 
 

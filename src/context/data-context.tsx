@@ -52,6 +52,7 @@ interface DynamicDataContextType {
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<void>;
   updateEnsayo: (ensayo: Ensayo) => Promise<void>;
   addRegistro: (registro: Omit<Registro, 'id'>) => Promise<void>;
+  deleteRegistro: (registroId: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   forceRefresh: () => void;
   isLoading: boolean;
@@ -133,6 +134,11 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     await loadDynamicData();
   };
 
+  const deleteRegistro = async (registroId: string) => {
+    await dataService.deleteRegistro(registroId);
+    await loadDynamicData();
+  };
+
   const addRecentActivity = async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
     await dataService.addRecentActivity(activity);
     const newActivityData = await dataService.getRecentActivity(); // Refresh activity separately
@@ -146,6 +152,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addEnsayo,
     updateEnsayo,
     addRegistro,
+    deleteRegistro,
     addRecentActivity,
     forceRefresh: loadDynamicData,
     isLoading: isDynamicLoading,

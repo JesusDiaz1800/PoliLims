@@ -198,30 +198,39 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
         cenizasCorregido,
     };
 
-    if (isEditing && ensayoId) {
-        const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
-        await updateEnsayo(fullEnsayoData);
-        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
+    try {
+        if (isEditing && ensayoId) {
+            const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
+            await updateEnsayo(fullEnsayoData as Ensayo);
+            await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
+            toast({
+                title: "Ensayo Actualizado",
+                description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+            });
+        } else {
+            const newEnsayo: Omit<Ensayo, 'id'> = {
+                ...(ensayoData as any),
+                tipo: 'Materia Prima',
+                estado: 'Pendiente de Revisión',
+            };
+            await addEnsayo(newEnsayo);
+            await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
+            toast({
+              title: "Ensayo Registrado",
+              description: `El nuevo ensayo de materia prima ha sido añadido a seguimiento.`,
+            })
+        }
+        
+        reset(defaultFormValues);
+        router.push('/ensayos/seguimiento');
+    } catch (error) {
         toast({
-            title: "Ensayo Actualizado",
-            description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
+            variant: "destructive",
+            title: "Error al Guardar",
+            description: "No se pudo guardar el ensayo. Por favor, intente de nuevo.",
         });
-    } else {
-        const newEnsayo: Omit<Ensayo, 'id'> = {
-            ...ensayoData,
-            tipo: 'Materia Prima',
-            estado: 'Pendiente de Revisión',
-        };
-        await addEnsayo(newEnsayo);
-        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
-        toast({
-          title: "Ensayo Registrado",
-          description: `El nuevo ensayo de materia prima ha sido añadido a seguimiento.`,
-        })
+        console.error("Failed to save ensayo:", error);
     }
-    
-    reset(defaultFormValues);
-    router.push('/ensayos/seguimiento');
   };
   
   const ensayoTabs = [
