@@ -69,23 +69,21 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
             console.error("Errors parsing CSV:", results.errors);
         }
 
-        const loadedProducts = results.data.map((row: any): TipoProducto | null => {
+        const loadedProducts = results.data.map((row: any, index: number): TipoProducto | null => {
              if (!row['Producto'] || String(row['Producto']).trim() === '') {
                 return null;
             }
             const producto = row.Producto;
-            const material = row.Material;
-            const pn = row['PN - Serie'];
-            const uniqueCode = `${producto}-${material}-${pn}`.replace(/\s+/g, '-').toUpperCase();
+            const uniqueCode = `${producto.replace(/\s+/g, '-')}-${index}`.toUpperCase();
 
             return {
                 producto: producto,
-                material: material,
+                material: row.Material,
                 linea: toNullableString(row['Línea']),
                 diametro_nominal: toNumberOrNull(row['D nominal (mm)']),
                 largo: toNumberOrNull(row['Largo (m)']),
-                presion_nominal: pn,
-                sdr: pn, 
+                presion_nominal: row['PN - Serie'],
+                sdr: row['PN - Serie'], 
                 diametro_min: toNumberOrNull(row['D mínimo (mm)']),
                 diametro_max: toNumberOrNull(row['D máximo (mm)']),
                 espesor_min_norma: toNumberOrNull(row['Espesor mínimo (mm)']),
