@@ -12,6 +12,7 @@ import {
 import { ControlRutinarioForm } from "./control-rutinario-form";
 import { TipoProducto } from "@/lib/matriz-datos";
 import type { SapProduct } from "@/services/sap-service";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface ControlRutinarioDialogProps {
   isOpen: boolean;
@@ -70,22 +71,24 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl">
+      <DialogContent className="sm:max-w-5xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Formulario de Control Rutinario de Tuberías</DialogTitle>
           <DialogDescription>
             Registro diario de control de calidad realizado por los inspectores en la línea de producción.
           </DialogDescription>
         </DialogHeader>
-        <ControlRutinarioForm
-          inspectores={inspectores}
-          maquinistas={maquinistas}
-          maquinas={maquinas}
-          productos={productos}
-          marcas={marcas}
-          matrizProductos={matrizProductos}
-          onFormSubmit={onClose}
-        />
+        <div className="flex-grow overflow-y-auto pr-6 -mr-6 custom-scrollbar">
+            <ControlRutinarioForm
+            inspectores={inspectores}
+            maquinistas={maquinistas}
+            maquinas={maquinas}
+            productos={productos}
+            marcas={marcas}
+            matrizProductos={matrizProductos}
+            onFormSubmit={onClose}
+            />
+        </div>
       </DialogContent>
     </Dialog>
   );

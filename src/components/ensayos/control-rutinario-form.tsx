@@ -20,7 +20,6 @@ import { useToast } from "@/hooks/use-toast"
 import { TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "../ui/scroll-area"
 import { useDynamicData } from "@/context/data-context"
 import { useRouter } from "next/navigation"
 import { Combobox } from "../ui/combobox"
@@ -59,7 +58,7 @@ const formSchema = z.object({
   color_tuberia: z.string().optional(),
   color_linea: z.string().optional(),
   entregado_laboratorio: z.boolean().default(false),
-}).passthrough();
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -71,7 +70,7 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-const defaultFormValues: Omit<FormValues, 'fecha_ingreso' | 'hora'> & { fecha_ingreso: Date | undefined, hora: string } = {
+const defaultFormValues: FormValues = {
   fecha_ingreso: new Date(),
   hora: format(new Date(), 'HH:mm'),
   inspector: '',
@@ -96,25 +95,17 @@ const defaultFormValues: Omit<FormValues, 'fecha_ingreso' | 'hora'> & { fecha_in
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
-  const router = useRouter();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      ...defaultFormValues,
-      fecha_ingreso: new Date(),
-    },
+    defaultValues: defaultFormValues,
   })
 
-  const { watch, setValue, reset } = form
+  const { watch, setValue, reset, control } = form
 
   React.useEffect(() => {
-    reset({
-        ...defaultFormValues,
-        fecha_ingreso: new Date(),
-        hora: format(new Date(), 'HH:mm'),
-    });
+    reset(defaultFormValues);
   }, [reset]);
 
   const watchedProducto = watch("producto");
@@ -123,6 +114,8 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const watchedEspesorMax = watch("espesor_max");
   const watchedOvalidad = watch("ovalidad");
   const watchedPesoKgm = watch("peso_kg_m");
+  const watchedPesoMuestra = watch("peso_muestra");
+  const watchedLargo = watch("largo");
 
   React.useEffect(() => {
     if (matrizProductos.length === 0) return;
@@ -155,9 +148,9 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         if (watchedOvalidad !== undefined && productoParaValidacion.ovalidad_norma !== null) {
             if (watchedOvalidad > productoParaValidacion.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
         }
-        if (watchedPesoKgm !== undefined) {
-            if (watchedPesoKgm < productoParaValidacion.peso_min_teorico!) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
-            else if (watchedPesoKgm > productoParaValidacion.peso_max_teorico!) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
+        if (watchedPesoKgm !== undefined && productoParaValidacion.peso_min_teorico !== null && productoParaValidacion.peso_max_teorico !== null) {
+            if (watchedPesoKgm < productoParaValidacion.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
+            else if (watchedPesoKgm > productoParaValidacion.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
         }
         setAlerts(newAlerts)
     } else {
@@ -165,8 +158,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     }
   }, [watchedProducto, watchedDiametro, watchedEspesorMin, watchedEspesorMax, watchedOvalidad, watchedPesoKgm, setValue, productos, matrizProductos])
   
-  const watchedPesoMuestra = watch("peso_muestra");
-  const watchedLargo = watch("largo");
 
   React.useEffect(() => {
     if (watchedPesoMuestra !== undefined && watchedLargo !== undefined && watchedLargo > 0) {
@@ -178,9 +169,16 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
-
-    const selectedProductLabel = productos.find(p => p.value === data.producto)?.label || data.producto;
-
+    const selectedProduct = productos.find(p => p.value === data.producto);
+    
+    if (!selectedProduct) {
+        toast({
+            variant: "destructive",
+            title: "Error de Validación",
+            description: "Debe seleccionar un producto válido de la lista.",
+        });
+        return;
+    }
 
     const newRegistro = {
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
@@ -188,67 +186,76 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         inspector: data.inspector,
         maquinista: data.maquinista,
         maquina: data.maquina,
-        producto: selectedProductLabel,
+        producto: selectedProduct.label,
         resultado,
         enviado_lab: data.entregado_laboratorio,
     };
-    await addRegistro(newRegistro);
-    await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProductLabel}`});
 
-    toast({
-      title: "Registro Guardado",
-      description: `El control para ${selectedProductLabel} ha sido registrado como ${resultado}.`,
-    })
-
-    if (data.entregado_laboratorio) {
-        const productoInfo = matrizProductos.find(p => p.producto === selectedProductLabel);
-        
-        let tipoEnsayo = 'Producto Terminado'; // Default
-        if (productoInfo?.material === 'PE100') {
-            tipoEnsayo = 'Tubería HDPE';
-        } else if (productoInfo?.material?.startsWith('PP')) {
-            tipoEnsayo = 'Tubería PP';
-        }
-
-        const newEnsayo = {
-            id_muestra: '', // Will be generated by the service
-            tipo: tipoEnsayo,
-            analista: 'Jesus Diaz', // Default analyst, could be selectable
-            fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
-            estado: 'Pendiente de Revisión',
-            producto: selectedProductLabel,
-            lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`, // Example lot
-            observaciones: data.observaciones_visuales,
-            maquinista: data.maquinista,
-            maquina: data.maquina,
-            inspector: data.inspector,
-        };
-        await addEnsayo(newEnsayo);
-        await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProductLabel} a laboratorio.`});
+    try {
+        const registroId = await addRegistro(newRegistro);
+        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
         toast({
-            title: "Muestra Enviada a Laboratorio",
-            description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
-            variant: "default",
-        })
+          title: "Registro Guardado",
+          description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
+        });
+
+        if (data.entregado_laboratorio) {
+            const productoInfo = matrizProductos.find(p => p.producto === selectedProduct.label);
+            
+            let tipoEnsayo = 'Tubería';
+            if (productoInfo?.material === 'PE100') {
+                tipoEnsayo = 'Tubería HDPE';
+            } else if (productoInfo?.material?.startsWith('PP')) {
+                tipoEnsayo = 'Tubería PP';
+            }
+
+            const newEnsayo = {
+                id_muestra: registroId,
+                tipo: tipoEnsayo,
+                analista: 'Jesus Diaz',
+                fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
+                estado: 'Pendiente de Revisión' as const,
+                producto: selectedProduct.label,
+                lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`,
+                observaciones: data.observaciones_visuales,
+                maquinista: data.maquinista,
+                maquina: data.maquina,
+                inspector: data.inspector,
+            };
+            await addEnsayo(newEnsayo);
+            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
+            toast({
+                title: "Muestra Enviada a Laboratorio",
+                description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
+                variant: "default",
+            });
+        }
+        
+        form.reset(defaultFormValues);
+        onFormSubmit();
+
+    } catch (error) {
+        console.error("Error submitting form: ", error);
+        toast({
+            variant: "destructive",
+            title: "Error al Guardar",
+            description: "No se pudo guardar el registro. Por favor, revise la consola para más detalles.",
+        });
     }
-    
-    form.reset({ ...defaultFormValues, fecha_ingreso: new Date(), hora: format(new Date(), 'HH:mm') });
-    onFormSubmit();
   }
 
   return (
     <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <ScrollArea className="h-[65vh] pr-6">
             <div className="space-y-6">
                 <div className="space-y-4">
                     <Label className="text-base font-medium">Información de Producción</Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <FormField
-                            control={form.control}
+                            control={control}
                             name="fecha_ingreso"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                 <FormLabel>Fecha</FormLabel>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -268,10 +275,10 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                         />
                          <FormField
-                            control={form.control}
+                            control={control}
                             name="hora"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                 <FormLabel>Hora</FormLabel>
                                 <FormControl>
                                     <Input type="time" {...field} />
@@ -281,12 +288,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                         />
                          <FormField
-                            control={form.control}
+                            control={control}
                             name="inspector"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                     <FormLabel>Inspector</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
@@ -297,12 +304,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                             />
                         <FormField
-                            control={form.control}
+                            control={control}
                             name="maquinista"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                     <FormLabel>Maquinista</FormLabel>
-                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                     <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
@@ -313,12 +320,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                         />
                          <FormField
-                            control={form.control}
+                            control={control}
                             name="maquina"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                     <FormLabel>Máquina</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
@@ -329,10 +336,10 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                         />
                         <FormField
-                            control={form.control}
+                            control={control}
                             name="producto"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                     <FormLabel>Producto (SAP)</FormLabel>
                                     <FormControl>
                                         <Combobox
@@ -348,12 +355,12 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             )}
                         />
                         <FormField
-                            control={form.control}
+                            control={control}
                             name="marca"
                             render={({ field }) => (
-                                <FormItem className="space-y-2">
+                                <FormItem>
                                     <FormLabel>Marca</FormLabel>
-                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                     <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
                                         </FormControl>
@@ -371,63 +378,143 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 <div className="space-y-4">
                     <Label className="text-base font-medium">Mediciones Dimensionales y Visuales</Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="diametro">Diámetro Ext. [mm]</Label>
-                            <Input id="diametro" type="number" step="any" placeholder="Ingrese el diámetro" {...form.register("diametro", { valueAsNumber: true })}/>
-                            <AlertaValidacion mensaje={alerts.diametro} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="espesor_min">Espesor Mín. [mm]</Label>
-                            <Input id="espesor_min" type="number" step="any" placeholder="Valor mínimo" {...form.register("espesor_min", { valueAsNumber: true })}/>
-                            <AlertaValidacion mensaje={alerts.espesor_min} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="espesor_max">Espesor Máx. [mm]</Label>
-                            <Input id="espesor_max" type="number" step="any" placeholder="Valor máximo" {...form.register("espesor_max", { valueAsNumber: true })}/>
-                            <AlertaValidacion mensaje={alerts.espesor_max} />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="ovalidad">Ovalidad [mm]</Label>
-                            <Input id="ovalidad" type="number" step="any" placeholder="Medida de ovalidad" {...form.register("ovalidad", { valueAsNumber: true })}/>
-                            <AlertaValidacion mensaje={alerts.ovalidad} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="largo">Largo Muestra [mm]</Label>
-                            <Input id="largo" type="number" step="any" placeholder="Largo de la muestra" {...form.register("largo", { valueAsNumber: true })}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="peso_muestra">Peso muestra [g]</Label>
-                            <Input id="peso_muestra" type="number" step="any" placeholder="Peso en gramos" {...form.register("peso_muestra", { valueAsNumber: true })}/>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="peso_kg_m">Peso [kg/m]</Label>
-                            <Input id="peso_kg_m" type="number" step="any" placeholder="Calculado..." {...form.register("peso_kg_m", { valueAsNumber: true })} readOnly className="bg-muted"/>
-                            <AlertaValidacion mensaje={alerts.peso_kg_m} />
-                        </div>
+                        <FormField
+                            control={control}
+                            name="diametro"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Diámetro Ext. [mm]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Ingrese el diámetro" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                <AlertaValidacion mensaje={alerts.diametro} />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={control}
+                            name="espesor_min"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Espesor Mín. [mm]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Valor mínimo" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                <AlertaValidacion mensaje={alerts.espesor_min} />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={control}
+                            name="espesor_max"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Espesor Máx. [mm]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Valor máximo" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                <AlertaValidacion mensaje={alerts.espesor_max} />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={control}
+                            name="ovalidad"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Ovalidad [mm]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Medida de ovalidad" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                <AlertaValidacion mensaje={alerts.ovalidad} />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={control}
+                            name="largo"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Largo Muestra [mm]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Largo de la muestra" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="peso_muestra"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Peso muestra [g]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Peso en gramos" {...field} onChange={event => field.onChange(+event.target.value)} />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="peso_kg_m"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Peso [kg/m]</FormLabel>
+                                <FormControl>
+                                    <Input type="number" step="any" placeholder="Calculado..." {...field} readOnly className="bg-muted"/>
+                                </FormControl>
+                                 <AlertaValidacion mensaje={alerts.peso_kg_m} />
+                                </FormItem>
+                            )}
+                        />
                     </div>
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="color_tuberia">Color de Tubería</Label>
-                            <Input id="color_tuberia" placeholder="Autocompletado..." {...form.register("color_tuberia")} readOnly className="bg-muted" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="color_linea">Color de Línea de Identificación</Label>
-                            <Input id="color_linea" placeholder="Autocompletado..." {...form.register("color_linea")} readOnly className="bg-muted"/>
-                        </div>
-                        <div className="space-y-2 md:col-span-3">
-                            <Label htmlFor="observaciones_visuales">Observaciones de Calidad Visual</Label>
-                            <Textarea id="observaciones_visuales" placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...form.register("observaciones_visuales")}/>
-                        </div>
+                        <FormField
+                            control={control}
+                            name="color_tuberia"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Color de Tubería</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Autocompletado..." {...field} readOnly className="bg-muted" />
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={control}
+                            name="color_linea"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Color de Línea de Identificación</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Autocompletado..." {...field} readOnly className="bg-muted"/>
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={control}
+                            name="observaciones_visuales"
+                            render={({ field }) => (
+                                <FormItem className="md:col-span-3">
+                                <FormLabel>Observaciones de Calidad Visual</FormLabel>
+                                <FormControl>
+                                    <Textarea placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...field}/>
+                                </FormControl>
+                                </FormItem>
+                            )}
+                        />
                     </div>
                 </div>
 
                 <Separator />
                 
                  <FormField
-                    control={form.control}
+                    control={control}
                     name="entregado_laboratorio"
                     render={({ field }) => (
-                        <FormItem className="space-y-4">
+                        <FormItem>
                             <FormLabel className="text-base font-medium">Acción Final</FormLabel>
                             <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
                                 <FormControl>
@@ -454,10 +541,10 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     )}
                     />
             </div>
-        </ScrollArea>
+        
 
-        <div className="flex justify-end pt-6 gap-4 border-t mt-6">
-            <Button type="button" variant="ghost" onClick={() => form.reset({ ...defaultFormValues, fecha_ingreso: new Date(), hora: format(new Date(), 'HH:mm') })}>
+        <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-background/95 pb-4 -mb-4">
+            <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Limpiar
             </Button>
@@ -470,5 +557,3 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     </Form>
   )
 }
-
-    
