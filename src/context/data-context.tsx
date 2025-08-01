@@ -23,6 +23,7 @@ export type Ensayo = {
   fecha: string;
   estado: 'Aprobado' | 'En Progreso' | 'Rechazado' | 'Pendiente de Revisión';
   producto: string;
+  id_muestra?: string; // Optional, to link back to control rutinario if needed
   [key: string]: any; 
 }
 

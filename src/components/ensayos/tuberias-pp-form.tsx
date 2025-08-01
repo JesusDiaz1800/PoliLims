@@ -59,6 +59,7 @@ const defaultFormValues = {
   fecha_ingreso: new Date(),
   analista: "",
   producto: "",
+  id_muestra: "",
   lote: "",
   observaciones: "",
   melt_index_materia_prima: "",
@@ -90,6 +91,7 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
           meltIndexMediciones: ensayoToEdit.meltIndexMediciones || [{ value: '' }],
+          id_muestra: ensayoToEdit.id,
         };
         reset(formData);
       }
@@ -314,6 +316,11 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
             />
           </div>
           
+           <div className="space-y-2">
+              <Label htmlFor="id_muestra">ID Muestra</Label>
+              <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
+          </div>
+
           <div className="space-y-2">
               <Label htmlFor="producto">Producto</Label>
               <Input id="producto" placeholder="Nombre del producto" {...register("producto")}/>
