@@ -145,15 +145,13 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }, [largo, peso_muestra, setValue]);
 
 
-  const onSubmit = (data: FormValues) => {
-    const registroId = `REG-${String(Date.now()).slice(-4)}`;
+  const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
 
     const selectedProductLabel = productos.find(p => p.value === data.producto)?.label || data.producto;
 
 
     const newRegistro = {
-        id: registroId,
         fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
         hora: data.hora,
         inspector: data.inspector,
@@ -162,36 +160,35 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         resultado,
         enviado_lab: data.entregado_laboratorio,
     };
-    addRegistro(newRegistro);
-    addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProductLabel}`});
+    await addRegistro(newRegistro);
+    await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProductLabel}`});
 
     toast({
       title: "Registro Guardado",
-      description: `El control ${registroId} ha sido registrado como ${resultado}.`,
+      description: `El control para ${selectedProductLabel} ha sido registrado como ${resultado}.`,
     })
 
     if (data.entregado_laboratorio) {
         const productoInfo = matrizProductos.find(p => p.producto === selectedProductLabel);
         const materialPrefix = productoInfo?.material === 'PE100' ? 'PEAD' : (productoInfo?.material.startsWith('PP') ? 'PP' : 'MISC');
-        const newEnsayoId = `${materialPrefix}-${String(Date.now()).slice(-4)}`;
         
         const tipoEnsayo = productoInfo?.material === 'PE100' ? 'Tubería HDPE' :
                            productoInfo?.material.startsWith('PP') ? 'Tubería PP' :
                            'Producto Terminado';
 
         const newEnsayo = {
-            id: newEnsayoId,
+            id: '', // Firestore will generate ID
             tipo: tipoEnsayo,
             analista: 'Jesus Diaz', // Default analyst, could be selectable
             fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
             estado: 'Pendiente de Revisión',
             producto: selectedProductLabel,
         };
-        addEnsayo(newEnsayo);
-        addRecentActivity({ user: data.inspector, action: `envió la muestra ${newEnsayoId} a laboratorio.`});
+        await addEnsayo(newEnsayo);
+        await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProductLabel} a laboratorio.`});
         toast({
             title: "Muestra Enviada a Laboratorio",
-            description: `La muestra ${newEnsayoId} está ahora en Seguimiento.`,
+            description: `La muestra está ahora en Seguimiento.`,
             variant: "default",
         })
     }

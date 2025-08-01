@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import { Ensayo } from "@/context/data-context";
+import type { Ensayo } from "@/context/data-context";
 
 interface Option {
   value: string;
@@ -186,8 +186,8 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
   }, [getValues]);
 
 
-  const onSubmit = (data: any) => {
-    const ensayoData = {
+  const onSubmit = async (data: any) => {
+    const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado'> & { id?: string } = {
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
@@ -198,26 +198,25 @@ export function MateriaPrimaForm({ analistas }: MateriaPrimaFormProps) {
         cenizasCorregido,
     };
 
-    if (isEditing) {
-        updateEnsayo({ ...ensayoData, id: ensayoId });
-        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
+    if (isEditing && ensayoId) {
+        const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Materia Prima', estado: 'Pendiente de Revisión' };
+        await updateEnsayo(fullEnsayoData);
+        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
         toast({
             title: "Ensayo Actualizado",
             description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
         });
     } else {
-        const newEnsayoId = `MP-${String(Date.now()).slice(-4)}`;
-        const newEnsayo: Ensayo = {
+        const newEnsayo: Omit<Ensayo, 'id'> = {
             ...ensayoData,
-            id: newEnsayoId,
             tipo: 'Materia Prima',
             estado: 'Pendiente de Revisión',
         };
-        addEnsayo(newEnsayo);
-        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
+        await addEnsayo(newEnsayo);
+        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de materia prima para ${data.producto}`});
         toast({
           title: "Ensayo Registrado",
-          description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
+          description: `El nuevo ensayo de materia prima ha sido añadido a seguimiento.`,
         })
     }
     

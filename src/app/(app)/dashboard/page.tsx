@@ -1,4 +1,6 @@
 
+"use client";
+
 import * as React from "react";
 import { Activity, Beaker, CheckCircle, ClipboardList } from "lucide-react";
 
@@ -11,9 +13,12 @@ import { EquipmentStatusChart } from "@/components/dashboard/equipment-status-ch
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
-import { getEnsayos, getRecentActivity, getAnalystOptions } from "@/services/data-service";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { findUserByUsername } from "@/services/user-service";
+import { useDynamicData } from "@/context/data-context";
+import { useSearchParams } from 'next/navigation';
+import Loading from '../loading';
+import type { User } from "@/services/user-service";
 
 export type DashboardFilterParams = {
   month?: string;
@@ -22,21 +27,41 @@ export type DashboardFilterParams = {
   user?: string;
 }
 
-export default async function DashboardPage({ searchParams }: { searchParams: DashboardFilterParams }) {
+export default function DashboardPage() {
+  const { ensayos, isLoading, recentActivity } = useDynamicData();
+  const searchParams = useSearchParams();
+  
+  const month = searchParams.get('month') || 'last_30_days';
+  const analyst = searchParams.get('analyst') || 'all';
+  const status = searchParams.get('status') || 'all';
+  const username = searchParams.get('user') || 'jefe.calidad';
 
-  const { month = 'last_30_days', analyst = 'all', status = 'all', user: username } = searchParams;
+  const [user, setUser] = React.useState<User | null>(null);
+  const [allAnalysts, setAllAnalysts] = React.useState<{value: string, label: string}[]>([]);
+
+  React.useEffect(() => {
+    async function loadUserAndAnalysts() {
+        const userData = await findUserByUsername(username);
+        setUser(userData);
+        
+        const analystSet = new Set(ensayos.map(e => e.analista));
+        const analystOptions = [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+        setAllAnalysts(analystOptions);
+    }
+    if (username && ensayos.length > 0) {
+      loadUserAndAnalysts();
+    }
+  }, [username, ensayos]);
   
-  // Fetch all data on the server
-  const allEnsayos = await getEnsayos();
-  const recentActivity = await getRecentActivity();
-  const allAnalysts = await getAnalystOptions();
-  const user = await findUserByUsername(username || 'jefe.calidad');
-  
-  // Apply filters on the server
-  const filteredEnsayos = allEnsayos.filter(ensayo => {
+  if (isLoading || !user) {
+    return <Loading />;
+  }
+
+  // Apply filters
+  const filteredEnsayos = ensayos.filter(ensayo => {
     const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
-    const filterByStatus = status === 'all' || ensayo.estado.toLowerCase().replace(' ', '_') === status;
-    // Note: Month filtering is simulated within charts, but could be applied here as well if needed.
+    const filterByStatus = status === 'all' || ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+    // Note: Month filtering is simulated within charts for now
     return filterByAnalyst && filterByStatus;
   });
 

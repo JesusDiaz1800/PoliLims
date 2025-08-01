@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import { Ensayo } from "@/context/data-context";
+import type { Ensayo } from "@/context/data-context";
 
 interface Option {
   value: string;
@@ -209,8 +209,8 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
     calculateFV();
   }, [watchedFvFields, calculateFV]);
   
-  const onSubmit = (data: any) => {
-     const ensayoData = {
+  const onSubmit = async (data: any) => {
+     const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado'> & { id?: string } = {
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
@@ -220,26 +220,25 @@ export function TuberiasPpForm({ analistas }: TuberiasPpFormProps) {
         fvIntermediaPorcentaje,
     };
 
-    if (isEditing) {
-        updateEnsayo({ ...ensayoData, id: ensayoId });
-        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de tubería PP para ${data.producto}`});
+    if (isEditing && ensayoId) {
+        const fullEnsayoData = { ...ensayoData, id: ensayoId, tipo: 'Tubería PP', estado: 'Pendiente de Revisión' };
+        await updateEnsayo(fullEnsayoData);
+        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de tubería PP para ${data.producto}`});
         toast({
             title: "Ensayo Actualizado",
             description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
         });
     } else {
-        const newEnsayoId = `PP-${String(Date.now()).slice(-4)}`;
-        const newEnsayo: Ensayo = {
+        const newEnsayo: Omit<Ensayo, 'id'> = {
             ...ensayoData,
-            id: newEnsayoId,
             tipo: 'Tubería PP',
             estado: 'Pendiente de Revisión',
         };
-        addEnsayo(newEnsayo);
-        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería PP para ${data.producto}`});
+        await addEnsayo(newEnsayo);
+        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de tubería PP para ${data.producto}`});
         toast({
           title: "Ensayo Registrado",
-          description: `El ensayo ${newEnsayoId} ha sido añadido a seguimiento.`,
+          description: `El nuevo ensayo de tubería PP ha sido añadido a seguimiento.`,
         })
     }
 

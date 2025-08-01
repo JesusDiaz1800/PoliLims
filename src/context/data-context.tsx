@@ -1,10 +1,10 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
-import { initialEnsayos, initialRecentActivity, initialRegistros } from '@/services/data-service';
+import * as dataService from '@/services/data-service';
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -48,10 +48,12 @@ interface DynamicDataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
-  addEnsayo: (ensayo: Ensayo) => void;
-  updateEnsayo: (ensayo: Ensayo) => void;
-  addRegistro: (registro: Registro) => void;
-  addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => void;
+  addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<void>;
+  updateEnsayo: (ensayo: Ensayo) => Promise<void>;
+  addRegistro: (registro: Omit<Registro, 'id'>) => Promise<void>;
+  addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
+  forceRefresh: () => void;
+  isLoading: boolean;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
@@ -63,49 +65,77 @@ interface DataProviderProps {
 }
 
 export const DataProvider = ({ children }: DataProviderProps) => {
+  // Static data state
   const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
   const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isStaticLoaded, setIsStaticLoaded] = useState(false);
 
-  const [ensayos, setEnsayos] = useState<Ensayo[]>(initialEnsayos);
-  const [registros, setRegistros] = useState<Registro[]>(initialRegistros);
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialRecentActivity);
+  // Dynamic data state
+  const [ensayos, setEnsayos] = useState<Ensayo[]>([]);
+  const [registros, setRegistros] = useState<Registro[]>([]);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+  const [isDynamicLoading, setIsDynamicLoading] = useState(true);
 
+  // Load static data once
   useEffect(() => {
-    const loadData = async () => {
+    const loadStaticData = async () => {
       try {
         const matrix = await getMatrizProductos();
         setProductMatrix(matrix);
         const products = await getProductsFromSap();
         setSapProducts(products);
       } catch (error) {
-        console.error("Failed to load initial data", error);
+        console.error("Failed to load initial static data", error);
       } finally {
-        setIsLoaded(true);
+        setIsStaticLoaded(true);
       }
     };
-    loadData();
+    loadStaticData();
+  }, []);
+  
+  const loadDynamicData = useCallback(async () => {
+      setIsDynamicLoading(true);
+      try {
+          const [ensayosData, registrosData, activityData] = await Promise.all([
+              dataService.getEnsayos(),
+              dataService.getRegistros(),
+              dataService.getRecentActivity()
+          ]);
+          setEnsayos(ensayosData);
+          setRegistros(registrosData);
+          setRecentActivity(activityData);
+      } catch (error) {
+          console.error("Failed to load dynamic data from Firestore", error);
+      } finally {
+          setIsDynamicLoading(false);
+      }
   }, []);
 
-  const addEnsayo = (ensayo: Ensayo) => {
-    setEnsayos(prev => [ensayo, ...prev]);
+  // Load dynamic data on mount and when forced
+  useEffect(() => {
+    loadDynamicData();
+  }, [loadDynamicData]);
+
+
+  const addEnsayo = async (ensayo: Omit<Ensayo, 'id'>) => {
+    await dataService.addEnsayo(ensayo);
+    await loadDynamicData();
   };
 
-  const updateEnsayo = (updatedEnsayo: Ensayo) => {
-    setEnsayos(prev => prev.map(ensayo => ensayo.id === updatedEnsayo.id ? updatedEnsayo : ensayo));
+  const updateEnsayo = async (updatedEnsayo: Ensayo) => {
+    await dataService.updateEnsayo(updatedEnsayo.id, updatedEnsayo);
+    await loadDynamicData();
   };
 
-  const addRegistro = (registro: Registro) => {
-    setRegistros(prev => [registro, ...prev]);
+  const addRegistro = async (registro: Omit<Registro, 'id'>) => {
+    await dataService.addRegistro(registro);
+    await loadDynamicData();
   };
 
-  const addRecentActivity = (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
-    const newActivity: RecentActivity = {
-        ...activity,
-        id: `act-${Date.now()}`,
-        timestamp: new Date().toISOString()
-    };
-    setRecentActivity(prev => [newActivity, ...prev].slice(0, 20)); // Keep last 20 activities
+  const addRecentActivity = async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
+    await dataService.addRecentActivity(activity);
+    const newActivityData = await dataService.getRecentActivity(); // Refresh activity separately
+    setRecentActivity(newActivityData);
   };
 
   const dynamicContextValue = useMemo(() => ({
@@ -115,14 +145,16 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addEnsayo,
     updateEnsayo,
     addRegistro,
-    addRecentActivity
-  }), [ensayos, registros, recentActivity]);
+    addRecentActivity,
+    forceRefresh: loadDynamicData,
+    isLoading: isDynamicLoading,
+  }), [ensayos, registros, recentActivity, loadDynamicData, isDynamicLoading]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
     sapProducts,
-    isLoaded
-  }), [productMatrix, sapProducts, isLoaded]);
+    isLoaded: isStaticLoaded
+  }), [productMatrix, sapProducts, isStaticLoaded]);
 
   return (
     <StaticDataContext.Provider value={staticContextValue}>

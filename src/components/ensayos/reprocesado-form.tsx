@@ -37,7 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import { Ensayo } from "@/context/data-context";
+import type { Ensayo } from "@/context/data-context";
 
 interface Option {
   value: string;
@@ -175,11 +175,10 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
   }, [getValues]);
 
 
-  const onSubmit = (data: any) => {
-    const ensayoData = {
+  const onSubmit = async (data: any) => {
+    const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado' | 'producto'> & { id?: string, lote: string } = {
         ...data,
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
-        producto: `Reprocesado Lote ${data.lote}`,
         meltIndexCalculado,
         meltIndexVariacion,
         densidadCalculada,
@@ -188,26 +187,31 @@ export function ReprocesadoForm({ analistas }: ReprocesadoFormProps) {
         cenizasCorregido,
     };
 
-    if (isEditing) {
-        updateEnsayo({ ...ensayoData, id: ensayoId });
-        addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
+    const finalEnsayoData = {
+        ...ensayoData,
+        producto: `Reprocesado Lote ${data.lote}`,
+    };
+
+
+    if (isEditing && ensayoId) {
+        const fullEnsayoData = { ...finalEnsayoData, id: ensayoId, tipo: 'Reprocesado', estado: 'Pendiente de Revisión' };
+        await updateEnsayo(fullEnsayoData);
+        await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoId}`});
         toast({
             title: "Ensayo Actualizado",
             description: `El ensayo ${ensayoId} ha sido actualizado correctamente.`,
         });
     } else {
-        const newEnsayoId = `REPRO-${String(Date.now()).slice(-4)}`;
-        const newEnsayo: Ensayo = {
-            ...ensayoData,
-            id: data.id_muestra || newEnsayoId,
+        const newEnsayo: Omit<Ensayo, 'id'> = {
+            ...finalEnsayoData,
             tipo: 'Reprocesado',
             estado: 'Pendiente de Revisión',
         };
-        addEnsayo(newEnsayo);
-        addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para ${newEnsayo.id}`});
+        await addEnsayo(newEnsayo);
+        await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para el lote ${data.lote}`});
         toast({
             title: "Ensayo Registrado",
-            description: `El ensayo ${newEnsayo.id} ha sido añadido a seguimiento.`,
+            description: `El nuevo ensayo de reprocesado ha sido añadido a seguimiento.`,
         });
     }
 
