@@ -39,7 +39,7 @@ export default function DashboardPage() {
   const status = searchParams.get('status') || 'all';
   const type = searchParams.get('type') || 'all';
   const supplier = searchParams.get('supplier') || 'all';
-  const username = searchParams.get('user') || 'jefe.calidad';
+  const username = searchParams.get('user') || 'jdiaz';
 
   const [user, setUser] = React.useState<User | null>(null);
   const [allAnalysts, setAllAnalysts] = React.useState<{value: string, label: string}[]>([]);
@@ -69,59 +69,72 @@ export default function DashboardPage() {
     }
   }, [username, ensayos]);
   
+  const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
+  // Memoize filtered data and calculations to improve performance
+  const {
+    filteredEnsayos,
+    totalFilteredAssays,
+    approvalPercentage,
+    pendingAssays,
+  } = React.useMemo(() => {
+    const now = new Date();
+    
+    const filtered = ensayos.filter(ensayo => {
+      const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
+
+      let dateRange = { start: new Date(0), end: now };
+      if (month === 'last_30_days') {
+          dateRange = { start: subDays(now, 29), end: now };
+      } else if (month === 'this_month') {
+          dateRange = { start: startOfMonth(now), end: endOfMonth(now) };
+      } else if (month === 'last_month') {
+          const lastMonthStart = startOfMonth(subMonths(now, 1));
+          const lastMonthEnd = endOfMonth(subMonths(now, 1));
+          dateRange = { start: lastMonthStart, end: lastMonthEnd };
+      } else if (month === 'last_3_months') {
+          dateRange = { start: subMonths(now, 3), end: now };
+      }
+
+      const isDateInRange = isWithinInterval(ensayoDate, dateRange);
+      const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
+
+      let filterByStatus = true;
+      if (status !== 'all') {
+          if (status === 'pendiente') {
+              filterByStatus = pendingStatuses.includes(ensayo.estado);
+          } else {
+              filterByStatus = ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+          }
+      }
+      
+      const filterByType = type === 'all' || ensayo.tipo === type;
+      const filterBySupplier = supplier === 'all' || ensayo.proveedor === supplier;
+      
+      return isDateInRange && filterByAnalyst && filterByStatus && filterByType && filterBySupplier;
+    });
+
+    const totalFiltered = filtered.length;
+    const approved = filtered.filter(e => e.estado === "Aprobado").length;
+    const rejected = filtered.filter(e => e.estado === "Rechazado").length;
+    const finished = approved + rejected;
+    
+    const pending = filtered.filter(e => pendingStatuses.includes(e.estado)).length;
+    
+    const approval = finished > 0 ? (approved / finished) * 100 : 0;
+    
+    return {
+        filteredEnsayos: filtered,
+        totalFilteredAssays: totalFiltered,
+        approvalPercentage: approval,
+        pendingAssays: pending,
+    }
+  }, [ensayos, month, analyst, status, type, supplier, pendingStatuses]);
+
   if (isLoading || !user) {
     return <Loading />;
   }
   
-  const now = new Date();
-  
-  const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
-
-  // Filtered data calculation
-  const filteredEnsayos = ensayos.filter(ensayo => {
-    const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
-
-    let dateRange = { start: new Date(0), end: now };
-    if (month === 'last_30_days') {
-        dateRange = { start: subDays(now, 29), end: now };
-    } else if (month === 'this_month') {
-        dateRange = { start: startOfMonth(now), end: endOfMonth(now) };
-    } else if (month === 'last_month') {
-        const lastMonthStart = startOfMonth(subMonths(now, 1));
-        const lastMonthEnd = endOfMonth(subMonths(now, 1));
-        dateRange = { start: lastMonthStart, end: lastMonthEnd };
-    } else if (month === 'last_3_months') {
-        dateRange = { start: subMonths(now, 3), end: now };
-    }
-
-    const isDateInRange = isWithinInterval(ensayoDate, dateRange);
-    const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
-
-    let filterByStatus = true;
-    if (status !== 'all') {
-        if (status === 'pendiente') {
-            filterByStatus = pendingStatuses.includes(ensayo.estado);
-        } else {
-            filterByStatus = ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
-        }
-    }
-    
-    const filterByType = type === 'all' || ensayo.tipo === type;
-    const filterBySupplier = supplier === 'all' || ensayo.proveedor === supplier;
-    
-    return isDateInRange && filterByAnalyst && filterByStatus && filterByType && filterBySupplier;
-  });
-
-  const totalFilteredAssays = filteredEnsayos.length;
-  const approvedAssays = filteredEnsayos.filter(e => e.estado === "Aprobado").length;
-  const rejectedAssays = filteredEnsayos.filter(e => e.estado === "Rechazado").length;
-  const finishedAssays = approvedAssays + rejectedAssays;
-  
-  const pendingAssays = filteredEnsayos.filter(e => pendingStatuses.includes(e.estado)).length;
-  
-  const approvalPercentage = finishedAssays > 0 ? (approvedAssays / finishedAssays) * 100 : 0;
-  const pendingPercentage = totalFilteredAssays > 0 ? (pendingAssays / totalFilteredAssays) * 100 : 0;
-
   const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
   const totalEquipment = equipos.length;
 
