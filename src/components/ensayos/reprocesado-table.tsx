@@ -15,6 +15,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 
 interface ReprocesadoTableProps {
   ensayos: Ensayo[];
@@ -80,7 +81,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                 <>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">M.I. Reportado</TableHead>
                     <TableHead className="text-right">M.I. Ensayado</TableHead>
@@ -92,7 +92,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                 <>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Densidad Líquido</TableHead>
                     <TableHead className="text-right">Densidad Calculada</TableHead>
@@ -103,7 +102,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
              return (
                 <>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Negro Humo</TableHead>
                     <TableHead>Estado</TableHead>
@@ -113,7 +111,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
              return (
                 <>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Cenizas</TableHead>
                     <TableHead className="text-right">% Cenizas Corregido</TableHead>
@@ -124,7 +121,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                 <>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Tiempo de Inducción</TableHead>
                     <TableHead>Estado</TableHead>
@@ -133,12 +129,16 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         default: // 'all'
             return (
                 <>
-                    <TableHead>ID Ensayo</TableHead>
-                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Analista</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">M.I. Ensayado</TableHead>
+                    <TableHead className="text-right">% Var. MI</TableHead>
+                    <TableHead className="text-right">Densidad</TableHead>
+                    <TableHead className="text-right">% Negro Humo</TableHead>
+                    <TableHead className="text-right">% Cenizas</TableHead>
+                    <TableHead className="text-right">TIO [min]</TableHead>
                 </>
             );
     }
@@ -150,7 +150,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                 <>
                     <TableCell>{ensayo.fecha}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_reportado, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
@@ -162,7 +161,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                  <>
                     <TableCell>{ensayo.fecha}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidad_liquido, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
@@ -173,7 +171,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                  <>
                     <TableCell>{ensayo.fecha}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
@@ -183,7 +180,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
              return (
                  <>
                     <TableCell>{ensayo.fecha}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCorregido, 2)}%</TableCell>
@@ -194,7 +190,6 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
             return (
                 <>
                     <TableCell>{ensayo.fecha}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
@@ -203,9 +198,7 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         default: // 'all'
             return (
                 <>
-                    <TableCell className="font-mono">{ensayo.id}</TableCell>
-                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
-                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="font-medium">{ensayo.lote}</TableCell>
                     <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.analista}</TableCell>
                     <TableCell>
@@ -213,6 +206,12 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
                         {ensayo.estado}
                         </Badge>
                     </TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)}</TableCell>
                 </>
             );
      }
@@ -258,62 +257,65 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {renderHeaders()}
-              <TableHead className="text-right">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredEnsayos.map((ensayo) => (
-                <TableRow key={ensayo.id}>
-                  {renderRow(ensayo)}
-                  <TableCell className="text-right">
-                    <AlertDialog>
-                      <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                              <Button size="icon" variant="ghost">
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Acciones</span>
-                              </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  Editar / Ingresar Datos
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <AlertDialogTrigger asChild>
-                                  <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
-                                      <Trash2 className="mr-2 h-4 w-4" />
-                                      Eliminar
-                                  </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                          </DropdownMenuContent>
-                      </DropdownMenu>
-                      <AlertDialogContent>
-                          <AlertDialogHeader>
-                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el ensayo
-                                  <span className="font-bold"> {ensayo.id}</span> de los servidores.
-                              </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(ensayo.id)} className={cn(buttonVariants({variant: "destructive"}))}>
-                                  Sí, eliminar ensayo
-                              </AlertDialogAction>
-                          </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <ScrollArea>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {renderHeaders()}
+                <TableHead className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredEnsayos.map((ensayo) => (
+                  <TableRow key={ensayo.id}>
+                    {renderRow(ensayo)}
+                    <TableCell className="text-right">
+                      <AlertDialog>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button size="icon" variant="ghost">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Acciones</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                                <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Editar / Ingresar Datos
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Eliminar
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Esta acción no se puede deshacer. Esto eliminará permanentemente el ensayo
+                                    <span className="font-bold"> {ensayo.id}</span> de los servidores.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(ensayo.id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                    Sí, eliminar ensayo
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />
