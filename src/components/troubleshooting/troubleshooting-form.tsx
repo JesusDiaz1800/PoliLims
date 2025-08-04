@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useActionState, useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
 import { getTroubleshootingSuggestion } from '@/app/(app)/troubleshooting/actions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
