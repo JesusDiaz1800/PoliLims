@@ -1,15 +1,15 @@
 
-
 "use client";
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit, PlusCircle } from "lucide-react";
+import { Edit, PlusCircle, Book, Link2 } from "lucide-react";
 
 import { useDynamicData, type Equipo, type ControlEvento } from "@/context/data-context";
 import { cn } from "@/lib/utils";
@@ -121,11 +121,23 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                       </div>
                       <div className="md:col-span-3">
                           <Separator className="my-2"/>
-                          <DetailItem label="Ensayos Asociados" value={
-                              ensayosAsociadosLabels.length > 0 
-                                  ? <div className="flex flex-wrap gap-2 mt-1">{ensayosAsociadosLabels.map(label => <Badge key={label} variant="secondary">{label}</Badge>)}</div>
-                                  : "Ninguno"
-                          } />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <DetailItem label="Ensayos Asociados" value={
+                                ensayosAsociadosLabels.length > 0 
+                                    ? <div className="flex flex-wrap gap-2 mt-1">{ensayosAsociadosLabels.map(label => <Badge key={label} variant="secondary">{label}</Badge>)}</div>
+                                    : "Ninguno"
+                            } />
+                             <DetailItem label="Documentación" value={
+                                <div className="flex items-center gap-2 mt-1">
+                                    {equipo.manual_url ? (
+                                        <Button asChild variant="outline" size="sm"><Link href={equipo.manual_url} target="_blank"><Link2 className="mr-2"/>Manual</Link></Button>
+                                    ) : <Badge variant="outline">Sin Manual</Badge>}
+                                    {equipo.procedimiento_url ? (
+                                        <Button asChild variant="outline" size="sm"><Link href={equipo.procedimiento_url} target="_blank"><Link2 className="mr-2"/>Procedimiento</Link></Button>
+                                    ) : <Badge variant="outline">Sin Procedimiento</Badge>}
+                                </div>
+                            } />
+                          </div>
                           <Separator className="my-4"/>
                           <DetailItem label="Observaciones" value={equipo.observaciones || "Sin observaciones."} />
                       </div>

@@ -16,7 +16,7 @@ interface EquipoDialogProps {
 export function EquipoDialog({ isOpen, onClose, equipo }: EquipoDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{equipo ? "Editar" : "Registrar"} Equipo</DialogTitle>
           <DialogDescription>
@@ -25,10 +25,12 @@ export function EquipoDialog({ isOpen, onClose, equipo }: EquipoDialogProps) {
               : "Complete el formulario para añadir un nuevo equipo al inventario."}
           </DialogDescription>
         </DialogHeader>
-        <EquipoForm
-            equipoToEdit={equipo}
-            onFormSubmit={onClose}
-        />
+        <ScrollArea className="pr-2">
+          <EquipoForm
+              equipoToEdit={equipo}
+              onFormSubmit={onClose}
+          />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

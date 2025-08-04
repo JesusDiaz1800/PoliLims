@@ -63,6 +63,8 @@ const formSchema = z.object({
   }),
   observaciones: z.string().optional(),
   fotoUrl: z.string().optional(),
+  manual_url: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
+  procedimiento_url: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
   ensayos_asociados: z.array(z.string()).optional(),
 });
 
@@ -94,6 +96,8 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
       proxima_calibracion: parseDateSafe(equipoToEdit?.proxima_calibracion) || new Date(),
       observaciones: equipoToEdit?.observaciones || "",
       fotoUrl: equipoToEdit?.fotoUrl || "",
+      manual_url: equipoToEdit?.manual_url || "",
+      procedimiento_url: equipoToEdit?.procedimiento_url || "",
       ensayos_asociados: equipoToEdit?.ensayos_asociados || [],
     }), [equipoToEdit]);
     
@@ -164,7 +168,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pr-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField control={form.control} name="id" render={({ field }) => (<FormItem><FormLabel>ID de Activo</FormLabel><FormControl><Input placeholder="Ej: EQ-FTIR-01" {...field} disabled={isEditing}/></FormControl><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Equipo</FormLabel><FormControl><Input placeholder="Ej: Espectrómetro FTIR" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -182,6 +186,14 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
             <FormLabel>Ensayos Realizados</FormLabel>
             <p className="text-sm text-muted-foreground">Marque todos los ensayos en los que se utiliza este equipo.</p>
              <FormField control={form.control} name="ensayos_asociados" render={() => (<FormItem className="grid grid-cols-2 md:grid-cols-3 gap-4"> {ensayosDisponibles.map((ensayo) => (<FormField key={ensayo.id} control={form.control} name="ensayos_asociados" render={({ field }) => { return (<FormItem key={ensayo.id} className="flex flex-row items-start space-x-3 space-y-0"><FormControl><Checkbox checked={field.value?.includes(ensayo.id)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), ensayo.id]) : field.onChange((field.value || []).filter((value) => value !== ensayo.id))}} /></FormControl><FormLabel className="font-normal">{ensayo.label}</FormLabel></FormItem>)}} />))}<FormMessage /></FormItem>)}/>
+        </div>
+        <Separator/>
+        <div className="space-y-4">
+            <FormLabel>Documentación</FormLabel>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <FormField control={form.control} name="manual_url" render={({ field }) => (<FormItem><FormLabel>URL del Manual de Usuario</FormLabel><FormControl><Input placeholder="https://ejemplo.com/manual.pdf" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                 <FormField control={form.control} name="procedimiento_url" render={({ field }) => (<FormItem><FormLabel>URL del Procedimiento de Ensayo</FormLabel><FormControl><Input placeholder="https://ejemplo.com/procedimiento.pdf" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+            </div>
         </div>
         <Separator/>
         <div className="space-y-4">

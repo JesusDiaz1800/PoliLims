@@ -49,7 +49,8 @@ import {
     AlertOctagon,
     Ship,
     BookCheck,
-    History
+    History,
+    Library
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -123,6 +124,7 @@ const menuItems = [
     },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
+    { href: '/biblioteca', label: 'Biblioteca', icon: Library },
     { type: 'separator' },
     {
         label: 'Administración',
@@ -228,6 +230,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
         if (pathname.startsWith('/importaciones')) return 'Control de Importaciones';
         if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
+        if (pathname.startsWith('/biblioteca')) return 'Biblioteca de Documentos';
         
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;
