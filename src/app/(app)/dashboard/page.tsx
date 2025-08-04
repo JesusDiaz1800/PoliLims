@@ -26,6 +26,8 @@ export type DashboardFilterParams = {
   analyst?: string;
   status?: string;
   user?: string;
+  type?: string;
+  supplier?: string;
 }
 
 export default function DashboardPage() {
@@ -35,22 +37,35 @@ export default function DashboardPage() {
   const month = searchParams.get('month') || 'last_30_days';
   const analyst = searchParams.get('analyst') || 'all';
   const status = searchParams.get('status') || 'all';
+  const type = searchParams.get('type') || 'all';
+  const supplier = searchParams.get('supplier') || 'all';
   const username = searchParams.get('user') || 'jefe.calidad';
 
   const [user, setUser] = React.useState<User | null>(null);
   const [allAnalysts, setAllAnalysts] = React.useState<{value: string, label: string}[]>([]);
+  const [assayTypes, setAssayTypes] = React.useState<{value: string, label: string}[]>([]);
+  const [suppliers, setSuppliers] = React.useState<{value: string, label: string}[]>([]);
+
 
   React.useEffect(() => {
-    async function loadUserAndAnalysts() {
+    async function loadUserAndFilters() {
         const userData = await findUserByUsername(username);
         setUser(userData);
         
         const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
         const analystOptions = [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
         setAllAnalysts(analystOptions);
+
+        const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
+        const typeOptions = [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
+        setAssayTypes(typeOptions);
+
+        const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
+        const supplierOptions = [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
+        setSuppliers(supplierOptions);
     }
     if (username && ensayos.length > 0) {
-      loadUserAndAnalysts();
+      loadUserAndFilters();
     }
   }, [username, ensayos]);
   
@@ -60,13 +75,6 @@ export default function DashboardPage() {
   
   const now = new Date();
   
-  // Annual data calculation (unaffected by filters)
-  const startOfCurrentYear = startOfYear(now);
-  const endOfCurrentYear = endOfYear(now);
-  const yearlyEnsayos = ensayos.filter(ensayo => isWithinInterval(parseISO(ensayo.fecha), { start: startOfCurrentYear, end: endOfCurrentYear }));
-  const totalYearlyAssays = yearlyEnsayos.length;
-
-
   // Filtered data calculation
   const filteredEnsayos = ensayos.filter(ensayo => {
     const ensayoDate = parseISO(ensayo.fecha);
@@ -87,8 +95,10 @@ export default function DashboardPage() {
     const isDateInRange = isWithinInterval(ensayoDate, dateRange);
     const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
     const filterByStatus = status === 'all' || ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+    const filterByType = type === 'all' || ensayo.tipo === type;
+    const filterBySupplier = supplier === 'all' || ensayo.proveedor === supplier;
     
-    return isDateInRange && filterByAnalyst && filterByStatus;
+    return isDateInRange && filterByAnalyst && filterByStatus && filterByType && filterBySupplier;
   });
 
   const totalFilteredAssays = filteredEnsayos.length;
@@ -104,21 +114,21 @@ export default function DashboardPage() {
   const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
   const totalEquipment = equipos.length;
 
-  const filters = { month, analyst, status };
-
   return (
     <div className="space-y-6">
       <WelcomeBanner user={user} />
       <DashboardFilters 
         analysts={allAnalysts} 
-        defaultValues={{ month, analyst, status }} 
+        assayTypes={assayTypes}
+        suppliers={suppliers}
+        defaultValues={{ month, analyst, status, type, supplier }} 
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Total Ensayos (Año)"
-          value={totalYearlyAssays.toString()}
-          description={`Ensayos realizados en ${getYear(now)}`}
+          title="Total Ensayos (Período)"
+          value={totalFilteredAssays.toString()}
+          description="Ensayos en el período y filtro actual"
           icon={Target}
         />
         <StatsCard
@@ -128,9 +138,9 @@ export default function DashboardPage() {
           icon={Percent}
         />
         <StatsCard
-          title="% Pendientes"
-          value={`${pendingPercentage.toFixed(1)}%`}
-          description="Ensayos activos en el período"
+          title="Ensayos Pendientes"
+          value={`${pendingAssays}`}
+          description="Ensayos activos que requieren acción"
           icon={Hourglass}
         />
         <StatsCard
@@ -143,25 +153,26 @@ export default function DashboardPage() {
 
        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <SampleStatusChart data={filteredEnsayos} />
+           <WorkloadDistributionChart data={filteredEnsayos} />
         </div>
         <RecentActivityList initialActivity={recentActivity}/>
       </div>
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <AssaysByMonthChart data={filteredEnsayos} filters={filters}/>
-        <AssaysByTypeChart data={filteredEnsayos} filters={filters} />
+        <AssaysByMonthChart data={filteredEnsayos} />
+        <AssaysByTypeChart data={filteredEnsayos} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <ThroughputTrendChart data={filteredEnsayos} filters={filters}/>
+          <ThroughputTrendChart data={filteredEnsayos} />
         </div>
         <div className="flex flex-col gap-6">
-          <WorkloadDistributionChart data={filteredEnsayos} filters={filters}/>
+          <SampleStatusChart data={filteredEnsayos} />
           <EquipmentStatusChart data={equipos} />
         </div>
       </div>
     </div>
   );
-}
+
+    

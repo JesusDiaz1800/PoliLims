@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -10,21 +10,14 @@ interface SampleStatusChartProps {
     data: Ensayo[];
 }
 
-const CustomCursor = (props: any) => {
-  const { x, y, width, height } = props;
-  return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
-};
-
-const statusOrder = ["Recibidas", "En Progreso", "En Análisis", "Pendiente de Revisión", "Aprobado", "Rechazado"];
+const statusOrder = ["Aprobado", "En Progreso", "En Análisis", "Pendiente de Revisión", "Rechazado"];
 const statusMapping: { [key: string]: string } = {
-  "Recibida": "Recibidas",
+  "Aprobado": "Aprobado",
   "En Progreso": "En Progreso",
   "En Análisis": "En Análisis",
   "Pendiente de Revisión": "Pendiente de Revisión",
-  "Aprobado": "Aprobado",
   "Rechazado": "Rechazado",
 };
-
 
 export function SampleStatusChart({ data }: SampleStatusChartProps) {
   const chartData = React.useMemo(() => {
@@ -34,7 +27,7 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
     }, {} as Record<string, number>);
 
     data.forEach(ensayo => {
-        const mappedStatus = statusMapping[ensayo.estado] || "Recibidas";
+        const mappedStatus = statusMapping[ensayo.estado] || "Otro";
         if (statusCounts.hasOwnProperty(mappedStatus)) {
             statusCounts[mappedStatus]++;
         }
@@ -44,33 +37,54 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
       name,
       value: statusCounts[name],
       fill: `hsl(var(--chart-${(index % 5) + 1}))`
-    }));
+    })).filter(d => d.value > 0);
   }, [data]);
 
   return (
     <Card>
         <CardHeader>
-            <CardTitle>Estado General de Muestras</CardTitle>
-            <CardDescription>Distribución actual de las muestras en las etapas del flujo de trabajo.</CardDescription>
+            <CardTitle>Análisis de Ensayos por Estado</CardTitle>
+            <CardDescription>Distribución porcentual de los ensayos según su estado actual.</CardDescription>
         </CardHeader>
         <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                    <Tooltip
-                        cursor={<CustomCursor />}
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--background))',
-                          borderColor: 'hsl(var(--border))',
-                          borderRadius: 'var(--radius)',
-                          color: 'hsl(var(--foreground))'
+            <ResponsiveContainer width="100%" height={150}>
+                <PieChart>
+                    <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        outerRadius={60}
+                        innerRadius={40}
+                        paddingAngle={5}
+                        dataKey="value"
+                        label={({ name, percent }) => `${name.split(' ')[0]} ${(percent * 100).toFixed(0)}%`}
+                    >
+                        {chartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
+                        ))}
+                    </Pie>
+                    <Legend 
+                        iconSize={10} 
+                        layout="vertical" 
+                        verticalAlign="middle" 
+                        align="right"
+                        payload={chartData.map(item => ({
+                            id: item.name,
+                            type: "square",
+                            value: `${item.name} (${item.value})`,
+                            color: item.fill
+                        }))}
+                        wrapperStyle={{
+                            fontSize: '14px',
+                            lineHeight: '24px'
                         }}
                     />
-                    <Bar dataKey="value" name="Muestras" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                </PieChart>
             </ResponsiveContainer>
         </CardContent>
     </Card>
   )
 }
+
+    

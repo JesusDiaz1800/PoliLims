@@ -3,7 +3,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from 'react';
-import { Calendar as CalendarIcon, User, Package } from "lucide-react";
+import { Calendar as CalendarIcon, User, Package, TestTube, Truck } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -20,14 +20,18 @@ import {
 
 interface DashboardFiltersProps {
     analysts: { value: string, label: string }[];
+    assayTypes: { value: string, label: string }[];
+    suppliers: { value: string, label: string }[];
     defaultValues: {
         month: string;
         analyst: string;
         status: string;
+        type: string;
+        supplier: string;
     };
 }
 
-export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersProps) {
+export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValues }: DashboardFiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -41,7 +45,7 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
         [searchParams]
     );
 
-    const handleFilterChange = (filterName: 'month' | 'analyst' | 'status') => (value: string) => {
+    const handleFilterChange = (filterName: 'month' | 'analyst' | 'status' | 'type' | 'supplier') => (value: string) => {
         router.push(`${pathname}?${createQueryString(filterName, value)}`);
     };
 
@@ -53,9 +57,9 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
                         <CardTitle>Filtros del Dashboard</CardTitle>
                         <CardDescription>Seleccione los filtros para visualizar los datos del laboratorio.</CardDescription>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-end gap-2 w-full md:w-auto">
                         <Select value={defaultValues.month} onValueChange={handleFilterChange("month")}>
-                            <SelectTrigger className="w-full sm:w-[180px]">
+                            <SelectTrigger className="w-full sm:w-auto">
                                 <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por mes" />
                             </SelectTrigger>
@@ -90,9 +94,33 @@ export function DashboardFilters({ analysts, defaultValues }: DashboardFiltersPr
                                  <SelectItem value="pendiente_de_revision">Pendiente de Revisión</SelectItem>
                             </SelectContent>
                         </Select>
+                         <Select value={defaultValues.type} onValueChange={handleFilterChange("type")}>
+                            <SelectTrigger className="w-full sm:w-auto">
+                                <TestTube className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <SelectValue placeholder="Filtrar por tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {assayTypes.map(type => (
+                                    <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Select value={defaultValues.supplier} onValueChange={handleFilterChange("supplier")}>
+                            <SelectTrigger className="w-full sm:w-auto">
+                                <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
+                                <SelectValue placeholder="Filtrar por proveedor" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {suppliers.map(supplier => (
+                                    <SelectItem key={supplier.value} value={supplier.value}>{supplier.label}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </CardHeader>
         </Card>
     );
 }
+
+    
