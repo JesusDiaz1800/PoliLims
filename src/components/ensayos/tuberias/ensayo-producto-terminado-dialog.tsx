@@ -26,8 +26,6 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }:
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
   ];
   
-  const equipoOptions = equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})`}));
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-5xl">
@@ -39,9 +37,9 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }:
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-6 -mr-2">
           {tipo === 'HDPE' ? (
-            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} equipos={equipoOptions} onFormSubmit={onClose} />
+            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
           ) : (
-            <TuberiasPpForm analistas={analistas} ensayo={ensayo} equipos={equipoOptions} onFormSubmit={onClose} />
+            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
           )}
         </ScrollArea>
       </DialogContent>

@@ -20,8 +20,6 @@ interface ReprocesadoDialogProps {
 }
 
 export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: ReprocesadoDialogProps) {
-  const { equipos } = useDynamicData();
-  const equipoOptions = equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})`}));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -38,7 +36,6 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
            <ScrollArea className="h-full px-6 pb-6">
               <ReprocesadoForm
                   analistas={analistas}
-                  equipos={equipoOptions}
                   ensayoToEdit={ensayo}
                   onFormSubmit={onClose}
               />

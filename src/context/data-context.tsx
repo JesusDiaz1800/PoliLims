@@ -121,13 +121,13 @@ const demoRecentActivity = [
 
 
 const demoEquipos = [
-  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const, marca: 'PerkinElmer', modelo: 'Spectrum Two', proxima_calibracion: '2026-01-15', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta' as const, fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.' },
+  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const, marca: 'PerkinElmer', modelo: 'Spectrum Two', proxima_calibracion: '2026-01-15', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta' as const, fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.', ensayos_asociados: ['dsc', 'tio'] },
   { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const, marca: 'CEAST', modelo: '9050', proxima_calibracion: '2025-12-20', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
-  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const, marca: 'TA Instruments', modelo: 'Q200', proxima_calibracion: '2025-11-30', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta' as const, fotoUrl: '' },
-  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const, marca: 'CEAST', modelo: 'Melt Flow 2000', proxima_calibracion: '2026-03-01', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI' },
-  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento' as const, marca: 'Mettler Toledo', modelo: 'MS-TS', proxima_calibracion: '2025-08-10', ubicacion: 'Sala de Pesaje', criticidad: 'Alta' as const, fotoUrl: '' },
-  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const, marca: 'Thermo Scientific', modelo: 'Thermolyne', proxima_calibracion: '2026-02-28', ubicacion: 'Área de Hornos', criticidad: 'Baja' as const, fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla' },
-  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', proxima_calibracion: '2025-07-30', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: '' },
+  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const, marca: 'TA Instruments', modelo: 'Q200', proxima_calibracion: '2025-11-30', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['dsc', 'tio'] },
+  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const, marca: 'CEAST', modelo: 'Melt Flow 2000', proxima_calibracion: '2026-03-01', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
+  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento' as const, marca: 'Mettler Toledo', modelo: 'MS-TS', proxima_calibracion: '2025-08-10', ubicacion: 'Sala de Pesaje', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
+  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const, marca: 'Thermo Scientific', modelo: 'Thermolyne', proxima_calibracion: '2026-02-28', ubicacion: 'Área de Hornos', criticidad: 'Baja' as const, fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio'] },
+  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', proxima_calibracion: '2025-07-30', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: '', ensayos_asociados: ['traccion'] },
 ];
 
 const demoControles: ControlEvento[] = [
@@ -215,6 +215,7 @@ export interface Equipo {
     proxima_calibracion: string;
     observaciones?: string;
     fotoUrl?: string;
+    ensayos_asociados?: string[];
 }
 
 export interface ControlEvento {

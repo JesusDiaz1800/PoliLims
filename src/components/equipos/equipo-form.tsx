@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format, parseISO } from "date-fns";
@@ -28,11 +28,25 @@ import { useToast } from "@/hooks/use-toast";
 import { useDynamicData, type Equipo } from "@/context/data-context";
 import { Textarea } from "../ui/textarea";
 import Image from "next/image";
+import { Checkbox } from "../ui/checkbox";
+import { Separator } from "../ui/separator";
 
 interface EquipoFormProps {
   equipoToEdit: Equipo | null;
   onFormSubmit: () => void;
 }
+
+const ensayosDisponibles = [
+  { id: 'melt_index', label: 'Melt Index' },
+  { id: 'densidad', label: 'Densidad' },
+  { id: 'traccion', label: 'Tracción y Elongación' },
+  { id: 'negro_humo', label: 'Porcentaje de Negro de Humo' },
+  { id: 'dispersion_nh', label: 'Dispersión de Negro de Humo' },
+  { id: 'tio', label: 'Tiempo de Inducción a la Oxidación (TIO)' },
+  { id: 'fibra_vidrio', label: 'Porcentaje de Fibra de Vidrio' },
+  { id: 'dsc', label: 'DSC (Calorimetría Diferencial de Barrido)' },
+  { id: 'humedad', label: 'Porcentaje de Humedad' },
+];
 
 const formSchema = z.object({
   id: z.string().nonempty("El ID de activo es requerido."),
@@ -47,6 +61,7 @@ const formSchema = z.object({
   }),
   observaciones: z.string().optional(),
   fotoUrl: z.string().optional(),
+  ensayos_asociados: z.array(z.string()).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -70,6 +85,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
         : new Date(),
       observaciones: equipoToEdit?.observaciones || "",
       fotoUrl: equipoToEdit?.fotoUrl || "",
+      ensayos_asociados: equipoToEdit?.ensayos_asociados || [],
     }), [equipoToEdit]);
     
   const form = useForm<FormValues>({
@@ -283,11 +299,62 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                 </FormItem>
                 )}
             />
+        </div>
+        
+        <Separator/>
+
+        <div className="space-y-4">
+            <FormLabel>Ensayos Realizados</FormLabel>
+            <p className="text-sm text-muted-foreground">Marque todos los ensayos en los que se utiliza este equipo.</p>
+             <FormField
+                control={form.control}
+                name="ensayos_asociados"
+                render={() => (
+                    <FormItem className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {ensayosDisponibles.map((ensayo) => (
+                        <FormField
+                        key={ensayo.id}
+                        control={form.control}
+                        name="ensayos_asociados"
+                        render={({ field }) => {
+                            return (
+                            <FormItem key={ensayo.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                <FormControl>
+                                <Checkbox
+                                    checked={field.value?.includes(ensayo.id)}
+                                    onCheckedChange={(checked) => {
+                                    return checked
+                                        ? field.onChange([...(field.value || []), ensayo.id])
+                                        : field.onChange(
+                                            (field.value || []).filter(
+                                                (value) => value !== ensayo.id
+                                            )
+                                            )
+                                    }}
+                                />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                    {ensayo.label}
+                                </FormLabel>
+                            </FormItem>
+                            )
+                        }}
+                        />
+                    ))}
+                    <FormMessage />
+                    </FormItem>
+                )}
+            />
+        </div>
+
+        <Separator/>
+
+        <div className="space-y-4">
              <FormField
                 control={form.control}
                 name="observaciones"
                 render={({ field }) => (
-                <FormItem className="md:col-span-2">
+                <FormItem>
                     <FormLabel>Observaciones</FormLabel>
                     <FormControl>
                         <Textarea placeholder="Añada cualquier nota relevante sobre el equipo..." {...field} />
@@ -296,7 +363,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                 </FormItem>
                 )}
             />
-            <div className="md:col-span-2 space-y-2">
+            <div className="space-y-2">
                  <FormLabel>Fotografía del Equipo</FormLabel>
                  <FormControl>
                     <Input id="picture" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />

@@ -38,6 +38,19 @@ function getStatusVariant(status: Equipo["estado"]) {
   }
 }
 
+const ensayosDisponibles = [
+  { id: 'melt_index', label: 'Melt Index' },
+  { id: 'densidad', label: 'Densidad' },
+  { id: 'traccion', label: 'Tracción y Elongación' },
+  { id: 'negro_humo', label: 'Porcentaje de Negro de Humo' },
+  { id: 'dispersion_nh', label: 'Dispersión de Negro de Humo' },
+  { id: 'tio', label: 'Tiempo de Inducción a la Oxidación (TIO)' },
+  { id: 'fibra_vidrio', label: 'Porcentaje de Fibra de Vidrio' },
+  { id: 'dsc', label: 'DSC (Calorimetría Diferencial de Barrido)' },
+  { id: 'humedad', label: 'Porcentaje de Humedad' },
+];
+
+
 const DetailItem = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
     <h4 className="text-sm font-semibold text-muted-foreground">{label}</h4>
@@ -64,6 +77,10 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
   const equipoControles = controles
     .filter(c => c.equipoId === equipo.id)
     .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+    
+  const ensayosAsociadosLabels = (equipo.ensayos_asociados || [])
+    .map(id => ensayosDisponibles.find(e => e.id === id)?.label)
+    .filter(Boolean);
 
   return (
     <>
@@ -108,9 +125,16 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                                   {equipo.estado}
                               </Badge>
                           </div>
-                          <div className="col-span-2">
-                              <DetailItem label="Observaciones" value={equipo.observaciones || "Sin observaciones."} />
-                          </div>
+                      </div>
+                      <div className="md:col-span-3">
+                          <Separator className="my-2"/>
+                          <DetailItem label="Ensayos Asociados" value={
+                              ensayosAsociadosLabels.length > 0 
+                                  ? <div className="flex flex-wrap gap-2 mt-1">{ensayosAsociadosLabels.map(label => <Badge key={label} variant="secondary">{label}</Badge>)}</div>
+                                  : "Ninguno"
+                          } />
+                          <Separator className="my-4"/>
+                          <DetailItem label="Observaciones" value={equipo.observaciones || "Sin observaciones."} />
                       </div>
                   </div>
               </TabsContent>
