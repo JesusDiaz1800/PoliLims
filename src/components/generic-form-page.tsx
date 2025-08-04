@@ -90,7 +90,7 @@ export function GenericFormPage({ title, description, icon: Icon, formFields, fo
                                             {field.type === 'textarea' ? (
                                                 <Textarea placeholder={field.placeholder} {...formField} />
                                             ) : field.type === 'select' ? (
-                                                <Select onValueChange={formField.onChange} defaultValue={formField.value}>
+                                                <Select onValueChange={formField.onChange} value={formField.value}>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder={field.placeholder} />
                                                     </SelectTrigger>

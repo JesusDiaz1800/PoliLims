@@ -1,30 +1,45 @@
 
 "use client";
 
-import { GenericFormPage } from '@/components/generic-form-page';
-import { Beaker } from 'lucide-react';
+import * as React from 'react';
+import { useDynamicData } from '@/context/data-context';
+import Loading from '@/app/(app)/loading';
+import { EquiposTable } from '@/components/equipos/equipos-table';
+import { EquipoDialog } from '@/components/equipos/equipo-dialog';
+import type { Equipo } from '@/context/data-context';
+
 
 export default function EquiposPage() {
-    const formFields = [
-        { name: 'nombre_equipo', label: 'Nombre del Equipo', type: 'text', placeholder: 'Ej: Espectrómetro FTIR' },
-        { name: 'id_equipo', label: 'ID de Equipo', type: 'text', placeholder: 'Ej: EQ-FTIR-01' },
-        { name: 'marca', label: 'Marca', type: 'text', placeholder: 'Ej: PerkinElmer' },
-        { name: 'modelo', label: 'Modelo', type: 'text', placeholder: 'Ej: Spectrum Two' },
-        { name: 'fecha_adquisicion', label: 'Fecha de Adquisición', type: 'date' },
-        { name: 'estado', label: 'Estado', type: 'select', options: ['Activo', 'En Mantenimiento', 'Inactivo', 'Requiere Calibración'] },
-        { name: 'proxima_calibracion', label: 'Próxima Calibración', type: 'date' },
-        { name: 'ubicacion', label: 'Ubicación', type: 'text', placeholder: 'Ej: Sala de Instrumentación' },
-    ];
+  const { equipos, isLoading } = useDynamicData();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
 
-    return (
-        <GenericFormPage
-            title="Gestión de Equipos"
-            description="Administre el inventario, calibración y mantenimiento de los equipos del laboratorio."
-            icon={Beaker}
-            formFields={formFields}
-            formTitle="Registrar Nuevo Equipo"
-            formDescription="Complete los detalles para añadir un nuevo equipo al inventario."
-            buttonText="Guardar Equipo"
-        />
-    );
+  const handleOpenDialog = (equipo?: Equipo) => {
+    setSelectedEquipo(equipo || null);
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedEquipo(null);
+    setIsDialogOpen(false);
+  };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+  
+  return (
+    <div className="space-y-6">
+      <EquiposTable
+        equipos={equipos}
+        onAddNew={() => handleOpenDialog()}
+        onEdit={handleOpenDialog}
+      />
+      <EquipoDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        equipo={selectedEquipo}
+      />
+    </div>
+  );
 }

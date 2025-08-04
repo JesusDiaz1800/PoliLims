@@ -120,28 +120,13 @@ const demoRecentActivity = [
 
 
 const demoEquipos = [
-  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const },
-  { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const },
-  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const },
-  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const },
-  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'Activo' as const },
-  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const },
-  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'En Mantenimiento' as const },
-  { id: 'EQ-08', nombre: 'Termociclador PHI', estado: 'Activo' as const },
-  { id: 'EQ-09', nombre: 'Microscopio Óptico', estado: 'Activo' as const },
-  { id: 'EQ-10', nombre: 'Medidor de Densidad', estado: 'Activo' as const },
-  { id: 'EQ-11', nombre: 'Cámara Climática', estado: 'Inactivo' as const },
-  { id: 'EQ-12', nombre: 'Horno de Contracción', estado: 'Activo' as const },
-  { id: 'EQ-13', nombre: 'Rugosímetro', estado: 'Activo' as const },
-  { id: 'EQ-14', nombre: 'Equipo TIO', estado: 'Activo' as const },
-  { id: 'EQ-15', nombre: 'Prensa de Impacto #2', estado: 'Activo' as const },
-  { id: 'EQ-16', nombre: 'Calorímetro DSC #2', estado: 'Activo' as const },
-  { id: 'EQ-17', nombre: 'Plastómetro MFI #2', estado: 'En Mantenimiento' as const },
-  { id: 'EQ-18', nombre: 'Balanza Analítica #2', estado: 'Activo' as const },
-  { id: 'EQ-19', nombre: 'Máquina de Tracción #2', estado: 'Activo' as const },
-  { id: 'EQ-20', nombre: 'Termociclador PHI #2', estado: 'Activo' as const },
-  { id: 'EQ-21', nombre: 'Microscopio Óptico #2', estado: 'Inactivo' as const },
-  { id: 'EQ-22', nombre: 'Medidor de Densidad #2', estado: 'Activo' as const },
+  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const, marca: 'PerkinElmer', modelo: 'Spectrum Two', proxima_calibracion: '2026-01-15' },
+  { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const, marca: 'CEAST', modelo: '9050', proxima_calibracion: '2025-12-20' },
+  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const, marca: 'TA Instruments', modelo: 'Q200', proxima_calibracion: '2025-11-30' },
+  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const, marca: 'CEAST', modelo: 'Melt Flow 2000', proxima_calibracion: '2026-03-01' },
+  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento' as const, marca: 'Mettler Toledo', modelo: 'MS-TS', proxima_calibracion: '2025-08-10' },
+  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const, marca: 'Thermo Scientific', modelo: 'Thermolyne', proxima_calibracion: '2026-02-28' },
+  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', proxima_calibracion: '2025-07-30' },
 ];
 
 
@@ -205,7 +190,10 @@ export interface RecentActivity {
 export interface Equipo {
     id: string;
     nombre: string;
-    estado: 'Activo' | 'En Mantenimiento' | 'Inactivo';
+    marca: string;
+    modelo: string;
+    estado: 'Activo' | 'En Mantenimiento' | 'Inactivo' | 'Requiere Calibración';
+    proxima_calibracion: string;
 }
 
 
@@ -219,6 +207,9 @@ interface DynamicDataContextType {
   deleteEnsayo: (id: string) => Promise<void>;
   addRegistro: (registro: Omit<Registro, 'id'>) => Promise<Registro>;
   deleteRegistro: (registroId: string) => Promise<void>;
+  addEquipo: (equipo: Omit<Equipo, 'id'>) => Promise<Equipo>;
+  updateEquipo: (id: string, equipo: Partial<Equipo>) => Promise<void>;
+  deleteEquipo: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -295,6 +286,24 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setRegistros(prev => prev.filter(r => r.id !== registroId));
     console.log("Demo Mode: Deleted Registro", registroId);
   }, []);
+  
+  const addEquipo = useCallback(async (equipoData: Omit<Equipo, 'id'>) => {
+    const newId = `EQ-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const newEquipo = { ...equipoData, id: newId };
+    setEquipos(prev => [newEquipo, ...prev].sort((a, b) => a.nombre.localeCompare(b.nombre)));
+    console.log("Demo Mode: Added Equipo", newEquipo);
+    return newEquipo;
+  }, []);
+
+  const updateEquipo = useCallback(async (id: string, updatedEquipoData: Partial<Equipo>) => {
+      setEquipos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEquipoData } : e).sort((a, b) => a.nombre.localeCompare(b.nombre)));
+      console.log("Demo Mode: Updated Equipo", id, updatedEquipoData);
+  }, []);
+  
+  const deleteEquipo = useCallback(async (id: string) => {
+      setEquipos(prev => prev.filter(e => e.id !== id));
+      console.log("Demo Mode: Deleted Equipo", id);
+  }, []);
 
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const newActivity = {
@@ -316,9 +325,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     deleteEnsayo,
     addRegistro,
     deleteRegistro,
+    addEquipo,
+    updateEquipo,
+    deleteEquipo,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, equipos, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addRecentActivity]);
+  }), [ensayos, registros, recentActivity, equipos, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
