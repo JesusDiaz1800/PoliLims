@@ -31,13 +31,15 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
               : "Complete el formulario para registrar un nuevo ensayo de material reprocesado."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow pr-6 -mr-6 custom-scrollbar">
-            <ReprocesadoForm
-                analistas={analistas}
-                ensayoToEdit={ensayo}
-                onFormSubmit={onClose}
-            />
-        </ScrollArea>
+        <div className="flex-grow overflow-hidden">
+          <ScrollArea className="h-full pr-6">
+              <ReprocesadoForm
+                  analistas={analistas}
+                  ensayoToEdit={ensayo}
+                  onFormSubmit={onClose}
+              />
+          </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

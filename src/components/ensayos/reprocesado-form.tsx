@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
@@ -37,7 +38,6 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import { Label } from "@/components/ui/label";
 
 
 interface Option {
@@ -234,7 +234,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
