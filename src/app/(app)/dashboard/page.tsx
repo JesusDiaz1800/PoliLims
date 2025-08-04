@@ -75,6 +75,8 @@ export default function DashboardPage() {
   
   const now = new Date();
   
+  const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
   // Filtered data calculation
   const filteredEnsayos = ensayos.filter(ensayo => {
     const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
@@ -94,7 +96,16 @@ export default function DashboardPage() {
 
     const isDateInRange = isWithinInterval(ensayoDate, dateRange);
     const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
-    const filterByStatus = status === 'all' || ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+
+    let filterByStatus = true;
+    if (status !== 'all') {
+        if (status === 'pendiente') {
+            filterByStatus = pendingStatuses.includes(ensayo.estado);
+        } else {
+            filterByStatus = ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+        }
+    }
+    
     const filterByType = type === 'all' || ensayo.tipo === type;
     const filterBySupplier = supplier === 'all' || ensayo.proveedor === supplier;
     
@@ -106,7 +117,7 @@ export default function DashboardPage() {
   const rejectedAssays = filteredEnsayos.filter(e => e.estado === "Rechazado").length;
   const finishedAssays = approvedAssays + rejectedAssays;
   
-  const pendingAssays = filteredEnsayos.filter(e => ["En Progreso", "En Análisis", "Pendiente de Revisión"].includes(e.estado)).length;
+  const pendingAssays = filteredEnsayos.filter(e => pendingStatuses.includes(e.estado)).length;
   
   const approvalPercentage = finishedAssays > 0 ? (approvedAssays / finishedAssays) * 100 : 0;
   const pendingPercentage = totalFilteredAssays > 0 ? (pendingAssays / totalFilteredAssays) * 100 : 0;

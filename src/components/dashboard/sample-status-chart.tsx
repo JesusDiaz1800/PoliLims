@@ -12,34 +12,33 @@ interface SampleStatusChartProps {
     data: Ensayo[];
 }
 
-const statusOrder = ["Aprobado", "En Progreso", "En Análisis", "Pendiente de Revisión", "Rechazado"];
-const statusMapping: { [key: string]: string } = {
-  "Aprobado": "Aprobado",
-  "En Progreso": "En Progreso",
-  "En Análisis": "En Análisis",
-  "Pendiente de Revisión": "Pendiente de Revisión",
-  "Rechazado": "Rechazado",
-};
+const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
+const statusOrder = ["Aprobado", "Pendiente", "Rechazado"];
 
 export function SampleStatusChart({ data }: SampleStatusChartProps) {
   const chartData = React.useMemo(() => {
-    const statusCounts = statusOrder.reduce((acc, status) => {
-      acc[status] = 0;
-      return acc;
-    }, {} as Record<string, number>);
+    const statusCounts = {
+      Aprobado: 0,
+      Pendiente: 0,
+      Rechazado: 0,
+    };
 
     data.forEach(ensayo => {
-        const mappedStatus = statusMapping[ensayo.estado] || "Otro";
-        if (statusCounts.hasOwnProperty(mappedStatus)) {
-            statusCounts[mappedStatus]++;
+        if (ensayo.estado === "Aprobado") {
+            statusCounts.Aprobado++;
+        } else if (ensayo.estado === "Rechazado") {
+            statusCounts.Rechazado++;
+        } else if (pendingStatuses.includes(ensayo.estado)) {
+            statusCounts.Pendiente++;
         }
     });
 
-    return statusOrder.map((name, index) => ({
-      name,
-      value: statusCounts[name],
-      fill: `var(--color-chart-${(index % 5) + 1})`
-    })).filter(d => d.value > 0);
+    return [
+        { name: 'Aprobado', value: statusCounts.Aprobado, fill: 'var(--color-chart-2)' },
+        { name: 'Pendiente', value: statusCounts.Pendiente, fill: 'var(--color-chart-3)' },
+        { name: 'Rechazado', value: statusCounts.Rechazado, fill: 'var(--color-chart-5)' },
+    ].filter(d => d.value > 0);
   }, [data]);
   
   const total = React.useMemo(() => chartData.reduce((acc, curr) => acc + curr.value, 0), [chartData]);

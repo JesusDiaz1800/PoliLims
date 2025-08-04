@@ -89,9 +89,8 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                             <SelectContent>
                                 <SelectItem value="all">Todos los Estados</SelectItem>
                                 <SelectItem value="aprobado">Aprobado</SelectItem>
-                                <SelectItem value="en_progreso">En Progreso</SelectItem>
+                                <SelectItem value="pendiente">Pendiente</SelectItem>
                                 <SelectItem value="rechazado">Rechazado</SelectItem>
-                                 <SelectItem value="pendiente_de_revision">Pendiente de Revisión</SelectItem>
                             </SelectContent>
                         </Select>
                          <Select value={defaultValues.type} onValueChange={handleFilterChange("type")}>

@@ -29,15 +29,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
+const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
 function getStatusVariant(status: string) {
+    if (pendingStatuses.includes(status)) return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30";
     switch (status) {
         case "Aprobado": return "bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30";
-        case "En Progreso": return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30";
-        case "En Análisis": return "bg-orange-500/20 text-orange-700 dark:text-orange-300 border-orange-500/30";
         case "Rechazado": return "bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/30";
-        case "Pendiente de Revisión": return "bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30";
         default: return "bg-secondary";
     }
+}
+
+function getStatusLabel(status: string): string {
+  if (pendingStatuses.includes(status)) {
+    return 'Pendiente';
+  }
+  return status;
 }
 
 export default function SeguimientoEnsayosPage() {
@@ -160,7 +167,7 @@ export default function SeguimientoEnsayosPage() {
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell className="text-center">
                         <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
-                            {ensayo.estado}
+                            {getStatusLabel(ensayo.estado)}
                         </Badge>
                     </TableCell>
                     <TableCell>
