@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from 'react';
@@ -44,7 +45,8 @@ import {
     Info,
     LogOut,
     Cylinder,
-    Codepen
+    Codepen,
+    Code2
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -97,6 +99,7 @@ const menuItems = [
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
     { type: 'separator' },
     { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
+    { href: '/assistant', label: 'Asistente IA', icon: Code2 },
     {
         label: 'Administración',
         icon: Settings,
