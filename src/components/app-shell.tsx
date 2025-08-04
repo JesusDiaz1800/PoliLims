@@ -46,7 +46,8 @@ import {
     LogOut,
     Cylinder,
     Code2,
-    AlertOctagon
+    AlertOctagon,
+    Ship
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -82,6 +83,11 @@ const administracionSubMenu = [
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
 ];
 
+const operacionesSubMenu = [
+    { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
+    { href: '/portal', label: 'Portal de Clientes', icon: Users },
+];
+
 const soporteSubMenu = [
     { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
     { href: '/assistant', label: 'Asistente IA', icon: Code2 },
@@ -97,9 +103,14 @@ const menuItems = [
     },
     { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
+    {
+        label: 'Operaciones',
+        icon: Layers3,
+        subMenu: operacionesSubMenu,
+        href: '/operaciones'
+    },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { href: '/portal', label: 'Portal de Clientes', icon: Users },
     { type: 'separator' },
     {
         label: 'Administración',
@@ -202,6 +213,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
         if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
+        if (pathname.startsWith('/importaciones')) return 'Control de Importaciones';
         if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
         
         for (const item of menuItems) {

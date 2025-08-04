@@ -146,6 +146,12 @@ const demoNoConformidades: NoConformidad[] = [
     { id: 'NC-004', tipo: 'Interna', fecha_deteccion: '2025-07-21', descripcion: 'Contaminación cruzada detectada en muestras de Reprocesado.', estado: 'Abierta', severidad: 'Alta', responsable: 'Robinson Córdova', fecha_vencimiento: '2025-07-28' },
 ];
 
+const demoImportaciones: Importacion[] = [
+    { id: 'IMP-001', bl: 'YMLUC236092186', fecha_embarque: '2021-12-11', sca: '65344', fecha_emision_cert: '2022-03-07', di: '2400301661-3', etiqueta_rango_inicio: '7820106', etiqueta_rango_fin: '7820606', operacion: '170389', proveedor: 'RYNO', fecha_solicitada: '2022-02-03', fecha_entrega_calidad: '2022-02-21', cantidad_lote: 15821, fecha_liberacion: '2022-04-05', ingresado_siss: true, estado: 'CADUCADO' },
+    { id: 'IMP-002', bl: '(M)MEDUIG157023(H)GOA0051266', fecha_embarque: '2021-12-02', sca: '65792', fecha_emision_cert: '2022-03-21', di: '2400301371-1', etiqueta_rango_inicio: '7820907', etiqueta_rango_fin: '7821907', operacion: '170374', proveedor: 'UNIDELTA', fecha_solicitada: '2022-02-16', fecha_entrega_calidad: '2022-03-02', cantidad_lote: 16593, fecha_liberacion: '2022-03-25', ingresado_siss: true, estado: 'CADUCADO' },
+    { id: 'IMP-003', bl: 'NBO210082100', fecha_embarque: '2021-12-24', sca: '65793', fecha_emision_cert: '2022-03-21', di: '2400302578-7', etiqueta_rango_inicio: '7821908', etiqueta_rango_fin: '7822908', operacion: '170412', proveedor: 'AOLONG', fecha_solicitada: '2022-02-17', fecha_entrega_calidad: '2022-02-22', cantidad_lote: 7202, fecha_devolucion: '2022-03-21', fecha_liberacion: '2022-03-21', ingresado_siss: true, estado: 'CADUCADO' },
+];
+
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -242,6 +248,27 @@ export interface NoConformidad {
     equipos_implicados?: string[];
 }
 
+export interface Importacion {
+    id: string;
+    bl: string;
+    fecha_embarque?: string;
+    sca?: string;
+    fecha_emision_cert?: string;
+    di?: string;
+    etiqueta_rango_inicio?: string;
+    etiqueta_rango_fin?: string;
+    operacion?: string;
+    proveedor?: string;
+    fecha_solicitada?: string;
+    fecha_entrega_calidad?: string;
+    cantidad_lote?: number;
+    fecha_devolucion?: string;
+    fecha_liberacion?: string;
+    ingresado_siss?: boolean;
+    fecha_caducidad_cert?: string;
+    estado?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO';
+}
+
 
 interface DynamicDataContextType {
   ensayos: Ensayo[];
@@ -250,6 +277,7 @@ interface DynamicDataContextType {
   equipos: Equipo[];
   controles: ControlEvento[];
   noConformidades: NoConformidad[];
+  importaciones: Importacion[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -262,6 +290,9 @@ interface DynamicDataContextType {
   addIncidencia: (incidencia: Omit<NoConformidad, 'id'>) => Promise<NoConformidad>;
   updateIncidencia: (id: string, incidencia: Partial<NoConformidad>) => Promise<void>;
   deleteIncidencia: (id: string) => Promise<void>;
+  addImportacion: (importacion: Omit<Importacion, 'id'>) => Promise<Importacion>;
+  updateImportacion: (id: string, importacion: Partial<Importacion>) => Promise<void>;
+  deleteImportacion: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -287,6 +318,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [equipos, setEquipos] = useState<Equipo[]>(demoEquipos);
   const [controles, setControles] = useState<ControlEvento[]>(demoControles);
   const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(demoNoConformidades);
+  const [importaciones, setImportaciones] = useState<Importacion[]>(demoImportaciones);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once
@@ -395,6 +427,21 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       console.log("Demo Mode: Deleted Incidencia", id);
   }, []);
 
+  const addImportacion = useCallback(async (importacionData: Omit<Importacion, 'id'>) => {
+    const newId = `IMP-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const newImportacion = { ...importacionData, id: newId };
+    setImportaciones(prev => [newImportacion, ...prev]);
+    return newImportacion;
+  }, []);
+
+  const updateImportacion = useCallback(async (id: string, updatedImportacionData: Partial<Importacion>) => {
+      setImportaciones(prev => prev.map(imp => imp.id === id ? { ...imp, ...updatedImportacionData } : imp));
+  }, []);
+
+  const deleteImportacion = useCallback(async (id: string) => {
+      setImportaciones(prev => prev.filter(imp => imp.id !== id));
+  }, []);
+
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const newActivity = {
         ...activity,
@@ -412,6 +459,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     equipos,
     controles,
     noConformidades,
+    importaciones,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -424,9 +472,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addIncidencia,
     updateIncidencia,
     deleteIncidencia,
+    addImportacion,
+    updateImportacion,
+    deleteImportacion,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, equipos, controles, noConformidades, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity]);
+  }), [ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
