@@ -173,7 +173,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell className="text-right font-mono">{formatValue(ensayo.resistencia_traccion, 2)} MPa</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.elongacion_rotura, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            >);
+            </>);
         case 'negro_humo':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -181,7 +181,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            >);
+            </>);
         case 'dispersion_nh':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -189,7 +189,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell>{ensayo.dispersion_nh || 'N/A'}</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            >);
+            </>);
         case 'tio':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -197,7 +197,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            >);
+            </>);
         case 'fibra_vidrio':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -206,7 +206,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell className="text-right font-mono">{formatValue(ensayo.fvTotalPorcentaje, 2)} %</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.fvIntermediaPorcentaje, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            >);
+            </>);
         default: // 'all'
             return (<>
                 <TableCell>{ensayo.fecha_ingreso || 'N/A'}</TableCell>
