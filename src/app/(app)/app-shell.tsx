@@ -91,11 +91,6 @@ const operacionesSubMenu = [
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
 ];
 
-const soporteSubMenu = [
-    { href: '/soporte', label: 'Asistente IA de Laboratorio', icon: Bot },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
-];
-
 const equiposSubMenu = [
     { href: '/equipos', label: 'Inventario de Equipos', icon: BookCheck },
     { href: '/equipos/control', label: 'Control de Equipos', icon: History },
@@ -131,12 +126,6 @@ const menuItems = [
         icon: Settings,
         subMenu: administracionSubMenu,
         href: '/administracion'
-    },
-    {
-        label: 'Soporte IA',
-        icon: Bot,
-        subMenu: soporteSubMenu,
-        href: '/soporte'
     },
 ];
 
