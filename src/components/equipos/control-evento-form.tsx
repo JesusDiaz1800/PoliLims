@@ -99,8 +99,7 @@ export function ControlEventoForm({ onFormSubmit, equipo }: ControlEventoFormPro
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField control={form.control} name="tipo" render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de Evento</FormLabel>
@@ -129,7 +128,6 @@ export function ControlEventoForm({ onFormSubmit, equipo }: ControlEventoFormPro
             <Button type="button" variant="ghost" onClick={onFormSubmit}>Cancelar</Button>
             <Button type="submit"><Save className="mr-2 h-4 w-4" />Guardar Evento</Button>
         </DialogFooter>
-      </form>
     </Form>
   );
 }
