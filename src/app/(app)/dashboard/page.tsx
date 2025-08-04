@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle } from "lucide-react";
-import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear } from 'date-fns';
+import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear, subYears } from 'date-fns';
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const { ensayos, isLoading, recentActivity, equipos } = useDynamicData();
   const searchParams = useSearchParams();
   
-  const month = searchParams.get('month') || 'last_30_days';
+  const month = searchParams.get('month') || 'last_12_months';
   const analyst = searchParams.get('analyst') || 'all';
   const status = searchParams.get('status') || 'all';
   const type = searchParams.get('type') || 'all';
@@ -84,7 +84,7 @@ export default function DashboardPage() {
     const filtered = ensayos.filter(ensayo => {
       const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
 
-      let dateRange = { start: new Date(0), end: now };
+      let dateRange = { start: subYears(now, 10), end: now };
       if (month === 'last_30_days') {
           dateRange = { start: subDays(now, 29), end: now };
       } else if (month === 'this_month') {
@@ -95,6 +95,8 @@ export default function DashboardPage() {
           dateRange = { start: lastMonthStart, end: lastMonthEnd };
       } else if (month === 'last_3_months') {
           dateRange = { start: subMonths(now, 3), end: now };
+      } else if (month === 'last_12_months') {
+          dateRange = { start: subYears(now, 1), end: now };
       }
 
       const isDateInRange = isWithinInterval(ensayoDate, dateRange);
@@ -158,7 +160,7 @@ export default function DashboardPage() {
       
       <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12">
-            <AssaysByMonthChart data={filteredEnsayos} />
+            <AssaysByMonthChart data={ensayos} />
         </div>
         <div className="col-span-12 lg:col-span-8">
             <WorkloadDistributionChart data={filteredEnsayos} />
@@ -185,4 +187,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

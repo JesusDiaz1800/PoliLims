@@ -69,6 +69,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                                 <SelectItem value="this_month">Este Mes</SelectItem>
                                 <SelectItem value="last_month">Mes Pasado</SelectItem>
                                 <SelectItem value="last_3_months">Últimos 3 Meses</SelectItem>
+                                <SelectItem value="last_12_months">Últimos 12 Meses</SelectItem>
                             </SelectContent>
                         </Select>
                         <Select value={defaultValues.analyst} onValueChange={handleFilterChange("analyst")}>
