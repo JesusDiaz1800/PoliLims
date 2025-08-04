@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -121,5 +122,3 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
         </Card>
     );
 }
-
-    
