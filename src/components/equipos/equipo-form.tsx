@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from "react";
@@ -82,7 +80,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
       criticidad: equipoToEdit?.criticidad || "Media",
       estado: equipoToEdit?.estado || "Activo",
       proxima_calibracion: equipoToEdit?.proxima_calibracion
-        ? parseISO(equipoToEdit.proxima_calibracion)
+        ? parseISO(equipoToEdit.proxima_calibracion.split('-').reverse().join('-'))
         : new Date(),
       observaciones: equipoToEdit?.observaciones || "",
       fotoUrl: equipoToEdit?.fotoUrl || "",

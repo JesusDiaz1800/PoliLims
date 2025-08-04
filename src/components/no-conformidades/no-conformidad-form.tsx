@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from "react";
@@ -61,12 +59,12 @@ export function NoConformidadForm({
   const defaultValues = React.useMemo(() => ({
       id: incidenciaToEdit?.id || undefined,
       tipo: incidenciaToEdit?.tipo || 'Interna',
-      fecha_deteccion: incidenciaToEdit?.fecha_deteccion ? parseISO(incidenciaToEdit.fecha_deteccion) : new Date(),
+      fecha_deteccion: incidenciaToEdit?.fecha_deteccion ? parseISO(incidenciaToEdit.fecha_deteccion.split('-').reverse().join('-')) : new Date(),
       descripcion: incidenciaToEdit?.descripcion || "",
       estado: incidenciaToEdit?.estado || 'Abierta',
       severidad: incidenciaToEdit?.severidad || 'Media',
       responsable: incidenciaToEdit?.responsable || "",
-      fecha_vencimiento: incidenciaToEdit?.fecha_vencimiento ? parseISO(incidenciaToEdit.fecha_vencimiento) : undefined,
+      fecha_vencimiento: incidenciaToEdit?.fecha_vencimiento ? parseISO(incidenciaToEdit.fecha_vencimiento.split('-').reverse().join('-')) : undefined,
       accion_correctiva: incidenciaToEdit?.accion_correctiva || "",
     }), [incidenciaToEdit]);
     

@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from "react";
@@ -47,16 +45,24 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const parseDate = (dateString?: string) => {
+    if (!dateString) return undefined;
+    // Handles both yyyy-MM-dd and dd-MM-yyyy formats
+    const parts = dateString.split('-');
+    if (parts.length !== 3) return undefined;
+    let date;
+    if (parts[0].length === 4) { // yyyy-MM-dd
+        date = parseISO(dateString);
+    } else { // dd-MM-yyyy
+        date = parseISO(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+    return isNaN(date.getTime()) ? undefined : date;
+};
+
 export function ImportacionForm({ importacionToEdit, onFormSubmit }: ImportacionFormProps) {
   const { toast } = useToast();
   const { addImportacion, updateImportacion, addRecentActivity } = useDynamicData();
   const isEditing = !!importacionToEdit;
-
-  const parseDate = (dateString: string | undefined) => {
-    if (!dateString) return undefined;
-    const date = parseISO(dateString);
-    return isNaN(date.getTime()) ? undefined : date;
-  }
 
   const defaultValues = React.useMemo(() => ({
       bl: importacionToEdit?.bl || "",

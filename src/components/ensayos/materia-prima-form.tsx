@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import * as React from "react"
@@ -123,7 +121,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
         const formData = {
           ...defaultFormValues,
           ...ensayoToEdit,
-          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+          fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha.split('-').reverse().join('-')) : new Date(),
           meltIndexMediciones: mediciones,
           analista: ensayoToEdit.analista || "",
         };

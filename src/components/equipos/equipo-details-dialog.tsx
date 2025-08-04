@@ -119,7 +119,7 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                           <DetailItem label="Modelo" value={equipo.modelo} />
                           <DetailItem label="Ubicación" value={equipo.ubicacion} />
                           <DetailItem label="Criticidad" value={equipo.criticidad} />
-                          <DetailItem label="Próxima Calibración" value={format(new Date(equipo.proxima_calibracion), 'dd-MM-yyyy')} />
+                          <DetailItem label="Próxima Calibración" value={equipo.proxima_calibracion} />
                           <div>
                               <h4 className="text-sm font-semibold text-muted-foreground">Estado</h4>
                               <Badge className={cn("mt-1 border-transparent font-normal text-base", getStatusVariant(equipo.estado))}>
@@ -169,7 +169,7 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                                        <span>{control.tipo}</span>
                                     </div>
                                 </TableCell>
-                                <TableCell>{format(new Date(control.fecha), 'dd-MM-yyyy')}</TableCell>
+                                <TableCell>{control.fecha}</TableCell>
                                 <TableCell>{control.responsable}</TableCell>
                                 <TableCell className="max-w-xs truncate">{control.observaciones || "N/A"}</TableCell>
                                 <TableCell>

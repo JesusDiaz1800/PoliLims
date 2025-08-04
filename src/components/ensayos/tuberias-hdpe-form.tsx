@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import * as React from "react"
@@ -102,7 +100,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
           const formData = {
               ...defaultFormValues,
               ...ensayo,
-              fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
+              fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha.split('-').reverse().join('-')) : new Date(),
               meltIndexMediciones: mediciones,
               id_muestra: ensayo.id,
               analista: ensayo.analista,
@@ -180,7 +178,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
         ...ensayo,
         ...data,
         meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value).filter((v: string) => v !== ''),
-        fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
+        fecha: format(data.fecha_ingreso, 'dd-MM-yyyy'),
         meltIndexCalculado,
         meltIndexVariacion,
         densidadCalculada,
@@ -235,7 +233,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                       disabled
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
+                      {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
                     </Button>
                     </FormControl>
                   </PopoverTrigger>
@@ -544,5 +542,3 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
     </Form>
   );
 }
-
-    

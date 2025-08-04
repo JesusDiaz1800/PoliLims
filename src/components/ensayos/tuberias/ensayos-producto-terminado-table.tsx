@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -90,7 +89,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableHead className="text-right">Densidad Calculada</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
-        case 'traccion': // HDPE only
+        case 'traccion':
             return (<>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Producto</TableHead>
@@ -99,7 +98,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableHead className="text-right">Elongación Ruptura</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
-        case 'negro_humo': // HDPE only
+        case 'negro_humo':
             return (<>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Producto</TableHead>
@@ -107,7 +106,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableHead className="text-right">% Negro Humo</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
-        case 'dispersion_nh': // HDPE only
+        case 'dispersion_nh':
             return (<>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Producto</TableHead>
@@ -115,7 +114,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableHead>Grado Dispersión</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
-        case 'tio': // HDPE only
+        case 'tio':
             return (<>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Producto</TableHead>
@@ -123,7 +122,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableHead className="text-right">Tiempo Inducción</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
-        case 'fibra_vidrio': // PP only
+        case 'fibra_vidrio':
             return (<>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Producto</TableHead>
@@ -174,7 +173,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell className="text-right font-mono">{formatValue(ensayo.resistencia_traccion, 2)} MPa</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.elongacion_rotura, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            </>);
+            >);
         case 'negro_humo':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -182,7 +181,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            </>);
+            >);
         case 'dispersion_nh':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -190,7 +189,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell>{ensayo.dispersion_nh || 'N/A'}</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            </>);
+            >);
         case 'tio':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -198,7 +197,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            </>);
+            >);
         case 'fibra_vidrio':
             return (<>
                 <TableCell>{ensayo.fecha}</TableCell>
@@ -207,7 +206,7 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
                 <TableCell className="text-right font-mono">{formatValue(ensayo.fvTotalPorcentaje, 2)} %</TableCell>
                 <TableCell className="text-right font-mono">{formatValue(ensayo.fvIntermediaPorcentaje, 2)} %</TableCell>
                 <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
-            </>);
+            >);
         default: // 'all'
             return (<>
                 <TableCell>{ensayo.fecha_ingreso || 'N/A'}</TableCell>

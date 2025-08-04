@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import * as React from "react"
@@ -112,7 +110,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
       const formData = {
         ...defaultFormValues,
         ...ensayoToEdit,
-        fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
+        fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha.split('-').reverse().join('-')) : new Date(),
         meltIndexMediciones: mediciones,
         id_muestra: ensayoToEdit.id,
         analista: ensayoToEdit.analista || "",
@@ -191,7 +189,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         ...ensayoToEdit,
         ...data,
         meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string | number}) => m.value).filter((v: string | number) => v !== ''),
-        fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
+        fecha: format(data.fecha_ingreso, 'dd-MM-yyyy'),
         meltIndexCalculado,
         meltIndexVariacion,
         densidadCalculada,
@@ -268,7 +266,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
+                        {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
                       </Button>
                       </FormControl>
                     </PopoverTrigger>
