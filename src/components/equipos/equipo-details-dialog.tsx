@@ -54,7 +54,7 @@ const ensayosDisponibles = [
 const DetailItem = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
     <h4 className="text-sm font-semibold text-muted-foreground">{label}</h4>
-    <p className="text-base text-foreground">{value || "No especificado"}</p>
+    <div className="text-base text-foreground">{value || "No especificado"}</div>
   </div>
 );
 
