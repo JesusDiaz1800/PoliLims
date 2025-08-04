@@ -46,8 +46,7 @@ import {
     LogOut,
     Cylinder,
     Codepen,
-    Code2,
-    Experiment
+    Code2
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -96,7 +95,7 @@ const administracionSubMenu = [
 
 const soporteSubMenu = [
     { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
+    { href: '/assistant', label: 'Asistente IA', icon: Code2 },
 ];
 
 const menuItems = [
@@ -106,7 +105,7 @@ const menuItems = [
     { type: 'separator' },
     {
         label: 'Laboratorio',
-        icon: Experiment,
+        icon: Layers3,
         subMenu: laboratorioSubMenu,
         href: '/laboratorio'
     },
@@ -203,7 +202,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
-        if (pathname.startsWith('/assistant')) return 'Asistente de Código';
+        if (pathname.startsWith('/assistant')) return 'Asistente IA';
         if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
         if (pathname.startsWith('/muestras')) return 'Gestión de Muestras';
         if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
