@@ -107,6 +107,12 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
+const soporteSubMenu = [
+    { href: '/soporte', label: 'Asistente de Laboratorio', icon: Bot },
+    { href: '/troubleshooting', label: 'Solución de Problemas', icon: Unplug },
+    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
+];
+
 
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -138,8 +144,12 @@ const menuItems = [
         href: '/biblioteca',
     },
     { type: 'separator' },
-    { href: '/soporte', label: 'Asistente IA', icon: Bot },
-    { href: '/assistant', label: 'Asistente Código', icon: Code2 },
+    { 
+        label: 'Soporte Técnico', 
+        icon: Unplug,
+        subMenu: soporteSubMenu,
+        href: '/soporte',
+    },
     { type: 'separator' },
     {
         label: 'Administración',
@@ -229,6 +239,7 @@ const pageTitles: Record<string, string> = {
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/assistant': 'Asistente de Código',
     '/soporte': 'Asistente IA de Laboratorio',
+    '/troubleshooting': 'Solución de Problemas IA',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
