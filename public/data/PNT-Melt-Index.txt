@@ -1,0 +1,56 @@
+PROCEDIMIENTO NORMALIZADO DE TRABAJO: DETERMINACIÓN DEL ÍNDICE DE FLUIDEZ (MELT INDEX)
+CÓDIGO: PNT-CAL-005
+VERSIÓN: 3.2
+FECHA: 15-01-2024
+
+1. OBJETIVO
+Establecer la metodología para determinar el índice de fluidez (Melt Flow Index, MFI) de materiales termoplásticos utilizando el plastómetro de extrusión.
+
+2. ALCANCE
+Este procedimiento aplica a todas las materias primas (polietileno, polipropileno) y productos terminados que requieran la determinación de su MFI en el laboratorio de Polifusión S.A.
+
+3. EQUIPOS Y MATERIALES
+- Plastómetro de extrusión (Ej: CEAST Melt Flow 2000)
+- Balanza analítica con precisión de 0.1 mg
+- Cronómetro
+- Cuchilla o herramienta de corte
+- Embudo
+- Varilla de apisonamiento
+
+4. CONDICIONES DE ENSAYO
+Las condiciones de temperatura y carga deben ser seleccionadas según la norma aplicable al material. A continuación, se detallan las condiciones estándar utilizadas en este laboratorio:
+
+4.1. Polietileno (PEAD, PEBD, etc.):
+- Temperatura del cilindro: 190 °C (± 0.5 °C)
+- Carga nominal (pistón + pesa): 2.16 kg
+- Tiempo de precalentamiento: 5 minutos
+
+4.2. Polipropileno (PP):
+- Temperatura del cilindro: 230 °C (± 0.5 °C)
+- Carga nominal (pistón + pesa): 2.16 kg
+- Tiempo de precalentamiento: 5 minutos
+
+5. PROCEDIMIENTO
+5.1. Pesar entre 3 y 5 gramos de la muestra.
+5.2. Asegurarse de que el plastómetro esté a la temperatura correcta según el material (ver sección 4).
+5.3. Introducir la muestra en el cilindro del plastómetro y compactar con la varilla.
+5.4. Colocar el pistón y iniciar el tiempo de precalentamiento (5 minutos).
+5.5. Transcurrido el precalentamiento, colocar la carga nominal correspondiente.
+5.6. Dejar que el material fluya hasta que la marca inferior del pistón alcance la referencia. En ese momento, cortar el extruido e iniciar el cronómetro.
+5.7. Recolectar el material extruido durante un tiempo predefinido (generalmente entre 10 y 30 segundos, buscando obtener al menos 5 cortes).
+5.8. Pesar cada uno de los segmentos de extruido con una precisión de 0.1 mg.
+
+6. CÁLCULOS
+El índice de fluidez (MFI), expresado en g/10 min, se calcula con la siguiente fórmula:
+
+MFI = (m * 600) / t
+
+Donde:
+- m = masa promedio de los segmentos de extruido, en gramos.
+- 600 = factor de conversión de segundos a 10 minutos.
+- t = tiempo de corte de cada segmento, en segundos.
+
+Alternativamente, si se realiza el método B (medición por desplazamiento), el equipo calcula el valor automáticamente.
+
+7. INFORME DE RESULTADOS
+El resultado debe ser reportado como el valor promedio del MFI, indicando la temperatura y la carga utilizada en el ensayo. Por ejemplo: MFI (190 °C / 2.16 kg) = 0.25 g/10 min.

@@ -2,7 +2,7 @@ import { TroubleshootingForm } from '@/components/troubleshooting/troubleshootin
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Soporte con IA',
+  title: 'Diagnóstico con IA',
 };
 
 export default function TroubleshootingPage() {
@@ -10,7 +10,7 @@ export default function TroubleshootingPage() {
     <div className="w-full max-w-4xl mx-auto">
       <div className="space-y-2 text-center mb-10">
         <h1 className="text-3xl font-bold font-headline tracking-tight sm:text-4xl">
-          Soporte Asistido por IA
+          Diagnóstico Asistido por IA
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Analice mensajes de error y patrones de uso inusuales para identificar problemas potenciales de forma proactiva y recibir documentación y soluciones relevantes.

@@ -14,7 +14,7 @@ export default function AssistantPage() {
           Asistente de Código IA
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Este es tu asistente IA para el desarrollo de la aplicación. No solo puedo generar código o darte sugerencias, sino que también puedo realizar cambios directamente en los archivos del proyecto. Describe tu solicitud y yo me encargaré de aplicar las modificaciones necesarias.
+          Este es tu asistente IA para el desarrollo de la aplicación. Describe tu solicitud y yo me encargaré de aplicar las modificaciones necesarias en el código del proyecto.
         </p>
       </div>
       <AssistantForm />
