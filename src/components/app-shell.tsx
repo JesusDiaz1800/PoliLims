@@ -52,7 +52,8 @@ import {
     History,
     Library,
     Rocket,
-    CalendarCheck
+    CalendarCheck,
+    UploadCloud
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -101,6 +102,12 @@ const equiposSubMenu = [
     { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
 ];
 
+const bibliotecaSubMenu = [
+    { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
+    { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
+];
+
+
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
@@ -124,7 +131,12 @@ const menuItems = [
     },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { href: '/biblioteca', label: 'Biblioteca', icon: Library },
+    { 
+        label: 'Biblioteca', 
+        icon: Library,
+        subMenu: bibliotecaSubMenu,
+        href: '/biblioteca',
+    },
     { type: 'separator' },
     { href: '/soporte', label: 'Asistente IA', icon: Bot },
     { href: '/assistant', label: 'Asistente Código', icon: Code2 },
@@ -198,45 +210,51 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
 );
 }
 
+const pageTitles: Record<string, string> = {
+    '/equipos': 'Inventario de Equipos',
+    '/equipos/control': 'Control de Equipos',
+    '/equipos/programa': 'Programa de Mantenimiento',
+    '/ensayos/tuberias/hdpe': 'Ensayos de Tuberías HDPE',
+    '/ensayos/tuberias/pp': 'Ensayos de Tuberías PP',
+    '/ensayos/materia-prima': 'Ensayos de Materia Prima',
+    '/ensayos/reprocesado': 'Ensayos de Reprocesado',
+    '/ensayos/control-accesorios': 'Control de Accesorios',
+    '/ensayos/control-agua': 'Control de Agua',
+    '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
+    '/ensayos/seguimiento': 'Seguimiento de Ensayos',
+    '/administracion/usuarios': 'Gestión de Usuarios',
+    '/administracion/basedatos': 'Base de Datos',
+    '/administracion/permisos': 'Roles y Permisos',
+    '/administracion/configuracion': 'Configuración',
+    '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
+    '/assistant': 'Asistente de Código',
+    '/soporte': 'Asistente IA de Laboratorio',
+    '/portal': 'Portal de Clientes',
+    '/importaciones': 'Control de Importaciones',
+    '/no-conformidades': 'Gestión de No Conformidades',
+    '/biblioteca/documentos': 'Biblioteca de Documentos',
+    '/biblioteca/upload': 'Cargar Documento',
+};
+
 
 export function AppShell({ children, user }: { children: React.ReactNode, user: User }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { state, isMobile } = useSidebar();
+    const { isMobile } = useSidebar();
     const isInspectorView = user?.role === 'Inspector de Calidad';
 
     const userQuery = searchParams.toString();
 
-    const getPageTitle = () => {
-        if (pathname === '/equipos') return 'Inventario de Equipos';
-        if (pathname.startsWith('/equipos/control')) return 'Control de Equipos';
-        if (pathname.startsWith('/equipos/programa')) return 'Programa de Mantenimiento';
-        if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
-        if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
-        if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
-        if (pathname.startsWith('/ensayos/reprocesado')) return 'Ensayos de Reprocesado';
-        if (pathname.startsWith('/ensayos/control-accesorios')) return 'Control de Accesorios';
-        if (pathname.startsWith('/ensayos/control-agua')) return 'Control de Agua';
-        if (pathname.startsWith('/ensayos/control-rutinario')) return 'Control Rutinario de Tuberías';
-        if (pathname.startsWith('/ensayos/seguimiento')) return 'Seguimiento de Ensayos';
-        if (pathname.startsWith('/administracion/usuarios')) return 'Gestión de Usuarios';
-        if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
-        if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
-        if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
-        if (pathname.startsWith('/administracion/proximos-pasos')) return 'Próximos Pasos para Producción';
-        if (pathname.startsWith('/assistant')) return 'Asistente de Código';
-        if (pathname.startsWith('/soporte')) return 'Asistente IA de Laboratorio';
-        if (pathname.startsWith('/portal')) return 'Portal de Clientes';
-        if (pathname.startsWith('/importaciones')) return 'Control de Importaciones';
-        if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
-        if (pathname.startsWith('/biblioteca')) return 'Biblioteca de Documentos';
-        
+    const getPageTitle = React.useCallback(() => {
+        const title = pageTitles[pathname];
+        if (title) return title;
+
         for (const item of menuItems) {
-             if (item.href && pathname === item.href) return item.label;
+            if (item.href && pathname === item.href) return item.label;
         }
 
         return 'Dashboard';
-    }
+    }, [pathname]);
 
     return (
         <div className="flex min-h-screen w-full">
