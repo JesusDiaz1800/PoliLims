@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format, parseISO } from "date-fns";
-import { CalendarIcon, Save } from "lucide-react";
+import { CalendarIcon, Save, Image as ImageIcon, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,8 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { useDynamicData, type Equipo } from "@/context/data-context";
+import { Textarea } from "../ui/textarea";
+import Image from "next/image";
 
 interface EquipoFormProps {
   equipoToEdit: Equipo | null;
@@ -37,10 +39,14 @@ const formSchema = z.object({
   nombre: z.string().nonempty("El nombre del equipo es requerido."),
   marca: z.string().optional(),
   modelo: z.string().optional(),
+  ubicacion: z.string().optional(),
+  criticidad: z.enum(["Alta", "Media", "Baja"]).optional(),
   estado: z.enum(["Activo", "En Mantenimiento", "Inactivo", "Requiere Calibración"]),
   proxima_calibracion: z.date({
     required_error: "La fecha de próxima calibración es requerida.",
   }),
+  observaciones: z.string().optional(),
+  fotoUrl: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -49,16 +55,21 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   const { toast } = useToast();
   const { addEquipo, updateEquipo, addRecentActivity } = useDynamicData();
   const isEditing = !!equipoToEdit;
+  const [imagePreview, setImagePreview] = React.useState<string | null>(equipoToEdit?.fotoUrl || null);
 
   const defaultValues = React.useMemo(() => ({
       id: equipoToEdit?.id || "",
       nombre: equipoToEdit?.nombre || "",
       marca: equipoToEdit?.marca || "",
       modelo: equipoToEdit?.modelo || "",
+      ubicacion: equipoToEdit?.ubicacion || "",
+      criticidad: equipoToEdit?.criticidad || "Media",
       estado: equipoToEdit?.estado || "Activo",
       proxima_calibracion: equipoToEdit?.proxima_calibracion
         ? parseISO(equipoToEdit.proxima_calibracion)
         : new Date(),
+      observaciones: equipoToEdit?.observaciones || "",
+      fotoUrl: equipoToEdit?.fotoUrl || "",
     }), [equipoToEdit]);
     
   const form = useForm<FormValues>({
@@ -68,7 +79,22 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   
   React.useEffect(() => {
       form.reset(defaultValues);
+      setImagePreview(defaultValues.fotoUrl || null);
   }, [equipoToEdit, defaultValues, form]);
+
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        setImagePreview(dataUrl);
+        form.setValue("fotoUrl", dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
 
   const onSubmit = async (data: FormValues) => {
@@ -111,7 +137,8 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   };
 
   return (
-    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
                 control={form.control}
@@ -163,6 +190,41 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                     </FormControl>
                     <FormMessage />
                 </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="ubicacion"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Ubicación</FormLabel>
+                    <FormControl>
+                    <Input placeholder="Ej: Mesón Central, Lab Principal" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+            <FormField
+                control={form.control}
+                name="criticidad"
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Criticidad</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccione la criticidad" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                               <SelectItem value="Alta">Alta</SelectItem>
+                               <SelectItem value="Media">Media</SelectItem>
+                               <SelectItem value="Baja">Baja</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
                 )}
             />
             <FormField
@@ -222,6 +284,52 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                 </FormItem>
                 )}
             />
+             <FormField
+                control={form.control}
+                name="observaciones"
+                render={({ field }) => (
+                <FormItem className="md:col-span-2">
+                    <FormLabel>Observaciones</FormLabel>
+                    <FormControl>
+                        <Textarea placeholder="Añada cualquier nota relevante sobre el equipo..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+            <div className="md:col-span-2 space-y-2">
+                 <FormLabel>Fotografía del Equipo</FormLabel>
+                 <FormControl>
+                    <Input id="picture" type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+                 </FormControl>
+                 <label htmlFor="picture" className="cursor-pointer">
+                    <div className="relative flex items-center justify-center w-full h-48 border-2 border-dashed rounded-lg text-muted-foreground hover:border-primary hover:text-primary transition-colors">
+                        {imagePreview ? (
+                            <>
+                                <Image src={imagePreview} alt="Vista previa del equipo" layout="fill" objectFit="contain" className="rounded-lg" />
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-2 right-2 z-10"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setImagePreview(null);
+                                        form.setValue("fotoUrl", "");
+                                    }}
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </>
+                        ) : (
+                            <div className="text-center">
+                                <ImageIcon className="mx-auto h-10 w-10 mb-2" />
+                                <span>Haga clic para seleccionar una imagen</span>
+                            </div>
+                        )}
+                    </div>
+                </label>
+            </div>
       </div>
       <div className="flex justify-end pt-4">
         <Button type="submit">
@@ -229,6 +337,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
             {isEditing ? 'Guardar Cambios' : 'Registrar Equipo'}
         </Button>
       </div>
+    </form>
     </Form>
   );
 }

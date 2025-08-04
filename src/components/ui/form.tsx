@@ -16,11 +16,11 @@ import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
 
-// Extender las props del FormProvider para incluir el useForm return
-interface FormProps<TFieldValues extends FieldValues> extends Omit<React.ComponentProps<"form">, "onSubmit"> {
+interface FormProps<TFieldValues extends FieldValues> {
   form: UseFormReturn<TFieldValues>;
   onSubmit: (values: TFieldValues) => void;
   children: React.ReactNode;
+  className?: string;
 }
 
 const Form = <TFieldValues extends FieldValues>({ form, onSubmit, children, className, ...props }: FormProps<TFieldValues>) => {

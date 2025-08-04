@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -39,10 +40,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData, type Equipo } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
+import { EquipoDetailsDialog } from "./equipo-details-dialog";
 
 interface EquiposTableProps {
   equipos: Equipo[];
@@ -69,13 +71,14 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { deleteEquipo } = useDynamicData();
   const { toast } = useToast();
+  const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
 
   const filteredEquipos = equipos.filter(
     (equipo) =>
       equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       equipo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipo.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase())
+      (equipo.marca && equipo.marca.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (equipo.modelo && equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase()))
   );
   
   const handleDelete = async (equipoId: string) => {
@@ -96,6 +99,7 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
   };
 
   return (
+    <>
     <Card>
       <CardHeader>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -127,6 +131,7 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[80px]">Foto</TableHead>
               <TableHead>ID Activo</TableHead>
               <TableHead>Nombre del Equipo</TableHead>
               <TableHead>Marca / Modelo</TableHead>
@@ -138,6 +143,15 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
           <TableBody>
             {filteredEquipos.map((equipo) => (
               <TableRow key={equipo.id}>
+                <TableCell>
+                  <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center overflow-hidden">
+                    {equipo.fotoUrl ? (
+                      <Image src={equipo.fotoUrl} alt={equipo.nombre} width={64} height={64} className="object-cover w-full h-full" />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Sin foto</span>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell className="font-mono">{equipo.id}</TableCell>
                 <TableCell className="font-medium">{equipo.nombre}</TableCell>
                 <TableCell>
@@ -166,6 +180,10 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem onSelect={() => setSelectedEquipoDetails(equipo)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                Ver Detalles
+                            </DropdownMenuItem>
                             <DropdownMenuItem onSelect={() => onEdit(equipo)}>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Editar
@@ -209,5 +227,17 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
         )}
       </CardContent>
     </Card>
+    {selectedEquipoDetails && (
+      <EquipoDetailsDialog
+        equipo={selectedEquipoDetails}
+        isOpen={!!selectedEquipoDetails}
+        onClose={() => setSelectedEquipoDetails(null)}
+        onEdit={() => {
+            onEdit(selectedEquipoDetails);
+            setSelectedEquipoDetails(null);
+        }}
+      />
+    )}
+    </>
   );
 }
