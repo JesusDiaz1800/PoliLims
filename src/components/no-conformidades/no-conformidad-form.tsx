@@ -120,96 +120,94 @@ export function NoConformidadForm({
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-1">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField control={form.control} name="tipo" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de Incidencia</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                <SelectContent>
-                  <SelectItem value="Interna">Interna</SelectItem>
-                  <SelectItem value="Reclamación de Cliente">Reclamación de Cliente</SelectItem>
-                  <SelectItem value="Auditoría">Auditoría</SelectItem>
-                </SelectContent>
-              </Select><FormMessage />
-            </FormItem>
-          )}/>
-          <FormField control={form.control} name="fecha_deteccion" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Detección</FormLabel>
-              <Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
-                <CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger>
-                <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus/></PopoverContent>
-              </Popover><FormMessage />
-            </FormItem>
-          )}/>
-          <FormField control={form.control} name="descripcion" render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Descripción Detallada</FormLabel>
-              <FormControl><Textarea placeholder="Describa la no conformidad, incluyendo detalles, lotes, equipos, etc." {...field} rows={4}/></FormControl><FormMessage />
-            </FormItem>
-          )}/>
-           <FormField control={form.control} name="severidad" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Severidad</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                <SelectContent>
-                  <SelectItem value="Baja">Baja</SelectItem>
-                  <SelectItem value="Media">Media</SelectItem>
-                  <SelectItem value="Alta">Alta</SelectItem>
-                  <SelectItem value="Crítica">Crítica</SelectItem>
-                </SelectContent>
-              </Select><FormMessage />
-            </FormItem>
-          )}/>
-           <FormField control={form.control} name="estado" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
-                <SelectContent>
-                  <SelectItem value="Abierta">Abierta</SelectItem>
-                  <SelectItem value="En Investigación">En Investigación</SelectItem>
-                  <SelectItem value="Resuelta">Resuelta</SelectItem>
-                  <SelectItem value="Cerrada">Cerrada</SelectItem>
-                </SelectContent>
-              </Select><FormMessage />
-            </FormItem>
-          )}/>
-          <FormField control={form.control} name="responsable" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Responsable</FormLabel>
-               <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Asignar a..."/></SelectTrigger></FormControl>
-                <SelectContent>
-                  {analistas.map(a => <SelectItem key={a.value} value={a.label}>{a.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}/>
-          <FormField control={form.control} name="fecha_vencimiento" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Vencimiento</FormLabel>
-              <Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
-                <CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger>
-                <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus/></PopoverContent>
-              </Popover><FormMessage />
-            </FormItem>
-          )}/>
-          <FormField control={form.control} name="accion_correctiva" render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Acción Correctiva / Preventiva</FormLabel>
-              <FormControl><Textarea placeholder="Describa la acción tomada para resolver la incidencia." {...field} rows={4}/></FormControl><FormMessage />
-            </FormItem>
-          )}/>
-        </div>
-        <div className="flex justify-end pt-4">
-          <Button type="submit">
-              <Save className="mr-2 h-4 w-4" />
-              {isEditing ? 'Guardar Cambios' : 'Registrar Incidencia'}
-          </Button>
-        </div>
-      </form>
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField control={form.control} name="tipo" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tipo de Incidencia</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+              <SelectContent>
+                <SelectItem value="Interna">Interna</SelectItem>
+                <SelectItem value="Reclamación de Cliente">Reclamación de Cliente</SelectItem>
+                <SelectItem value="Auditoría">Auditoría</SelectItem>
+              </SelectContent>
+            </Select><FormMessage />
+          </FormItem>
+        )}/>
+        <FormField control={form.control} name="fecha_deteccion" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Fecha de Detección</FormLabel>
+            <Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
+              <CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger>
+              <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus/></PopoverContent>
+            </Popover><FormMessage />
+          </FormItem>
+        )}/>
+        <FormField control={form.control} name="descripcion" render={({ field }) => (
+          <FormItem className="md:col-span-2">
+            <FormLabel>Descripción Detallada</FormLabel>
+            <FormControl><Textarea placeholder="Describa la no conformidad, incluyendo detalles, lotes, equipos, etc." {...field} rows={4}/></FormControl><FormMessage />
+          </FormItem>
+        )}/>
+          <FormField control={form.control} name="severidad" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Severidad</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+              <SelectContent>
+                <SelectItem value="Baja">Baja</SelectItem>
+                <SelectItem value="Media">Media</SelectItem>
+                <SelectItem value="Alta">Alta</SelectItem>
+                <SelectItem value="Crítica">Crítica</SelectItem>
+              </SelectContent>
+            </Select><FormMessage />
+          </FormItem>
+        )}/>
+          <FormField control={form.control} name="estado" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Estado</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
+              <SelectContent>
+                <SelectItem value="Abierta">Abierta</SelectItem>
+                <SelectItem value="En Investigación">En Investigación</SelectItem>
+                <SelectItem value="Resuelta">Resuelta</SelectItem>
+                <SelectItem value="Cerrada">Cerrada</SelectItem>
+              </SelectContent>
+            </Select><FormMessage />
+          </FormItem>
+        )}/>
+        <FormField control={form.control} name="responsable" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Responsable</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue placeholder="Asignar a..."/></SelectTrigger></FormControl>
+              <SelectContent>
+                {analistas.map(a => <SelectItem key={a.value} value={a.label}>{a.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}/>
+        <FormField control={form.control} name="fecha_vencimiento" render={({ field }) => (
+          <FormItem>
+            <FormLabel>Fecha de Vencimiento</FormLabel>
+            <Popover><PopoverTrigger asChild><FormControl><Button variant="outline" className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
+              <CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger>
+              <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus/></PopoverContent>
+            </Popover><FormMessage />
+          </FormItem>
+        )}/>
+        <FormField control={form.control} name="accion_correctiva" render={({ field }) => (
+          <FormItem className="md:col-span-2">
+            <FormLabel>Acción Correctiva / Preventiva</FormLabel>
+            <FormControl><Textarea placeholder="Describa la acción tomada para resolver la incidencia." {...field} rows={4}/></FormControl><FormMessage />
+          </FormItem>
+        )}/>
+      </div>
+      <div className="flex justify-end pt-4">
+        <Button type="submit">
+            <Save className="mr-2 h-4 w-4" />
+            {isEditing ? 'Guardar Cambios' : 'Registrar Incidencia'}
+        </Button>
+      </div>
     </Form>
   );
 }
