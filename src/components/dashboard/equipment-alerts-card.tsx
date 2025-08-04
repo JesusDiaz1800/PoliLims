@@ -2,13 +2,16 @@
 "use client";
 
 import * as React from "react";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Edit } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDynamicData, type Equipo } from "@/context/data-context";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { EquipoDetailsDialog } from "../equipos/equipo-details-dialog";
+import { EquipoDialog } from "../equipos/equipo-dialog";
+
 
 interface EquipmentAlertsCardProps {
   equipos: Equipo[];
@@ -16,6 +19,9 @@ interface EquipmentAlertsCardProps {
 
 export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
   const [isClient, setIsClient] = React.useState(false);
+  const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
+  const [isEditOpen, setIsEditOpen] = React.useState(false);
 
   React.useEffect(() => {
     setIsClient(true);
@@ -23,14 +29,20 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
 
   const equiposConAlerta = React.useMemo(() => {
     if (!isClient) return [];
-    return equipos.filter(equipo => {
-      if (equipo.estado === 'En Mantenimiento' || equipo.estado === 'Requiere Calibración') {
-        return true;
-      }
-      if (!equipo.proxima_calibracion) return false;
-      const calDate = parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date());
-      return differenceInDays(calDate, new Date()) <= 30;
-    });
+    return equipos
+        .filter(equipo => {
+            if (equipo.estado === 'En Mantenimiento' || equipo.estado === 'Requiere Calibración') {
+                return true;
+            }
+            if (!equipo.proxima_calibracion) return false;
+            const calDate = parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date());
+            return differenceInDays(calDate, new Date()) <= 30;
+        })
+        .sort((a,b) => {
+             const calDateA = a.proxima_calibracion ? parse(a.proxima_calibracion, 'dd-MM-yyyy', new Date()) : new Date(8640000000000000) ;
+             const calDateB = b.proxima_calibracion ? parse(b.proxima_calibracion, 'dd-MM-yyyy', new Date()) : new Date(8640000000000000) ;
+             return calDateA.getTime() - calDateB.getTime();
+        });
   }, [equipos, isClient]);
 
   const getAlertDetails = (equipo: Equipo) => {
@@ -44,8 +56,20 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
     const days = differenceInDays(calDate, new Date());
     return { message: `Calibración en ${days} días`, color: "text-orange-600 dark:text-orange-400" };
   };
+  
+  const handleViewDetails = (equipo: Equipo) => {
+      setSelectedEquipo(equipo);
+      setIsDetailsOpen(true);
+  }
+
+  const handleEdit = (equipo: Equipo) => {
+    setSelectedEquipo(equipo);
+    setIsDetailsOpen(false); // Close details dialog if open
+    setIsEditOpen(true);
+  }
 
   return (
+    <>
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-center gap-3">
@@ -68,7 +92,7 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
                       <p className="font-semibold">{equipo.nombre}</p>
                       <p className={cn("text-sm font-medium", alert.color)}>{alert.message}</p>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(equipo)}>
                         Ver
                     </Button>
                   </div>
@@ -84,5 +108,23 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
         </ScrollArea>
       </CardContent>
     </Card>
+
+    {selectedEquipo && (
+        <EquipoDetailsDialog
+          isOpen={isDetailsOpen}
+          onClose={() => setIsDetailsOpen(false)}
+          equipo={selectedEquipo}
+          onEdit={() => handleEdit(selectedEquipo)}
+        />
+      )}
+      {selectedEquipo && (
+        <EquipoDialog
+          isOpen={isEditOpen}
+          onClose={() => setIsEditOpen(false)}
+          equipo={selectedEquipo}
+        />
+      )}
+    </>
   );
 }
+

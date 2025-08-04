@@ -150,58 +150,39 @@ export default function DashboardPage() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatsCard
-          title="Total Ensayos (Período)"
-          value={totalFilteredAssays.toString()}
-          description="Ensayos en el período y filtro actual"
-          icon={Target}
-        />
-        <StatsCard
-          title="% Aprobación"
-          value={`${approvalPercentage.toFixed(1)}%`}
-          description="De ensayos finalizados en el período"
-          icon={Percent}
-        />
-        <StatsCard
-          title="Ensayos Pendientes"
-          value={`${pendingAssays}`}
-          description="Ensayos activos que requieren acción"
-          icon={Hourglass}
-        />
-        <StatsCard
-          title="Equipos Operativos"
-          value={`${operationalEquipment} / ${totalEquipment}`}
-          description="Equipos calibrados y activos"
-          icon={Beaker}
-        />
+        <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="Ensayos en el período y filtro actual" icon={Target} />
+        <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="De ensayos finalizados en el período" icon={Percent} />
+        <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="Ensayos activos que requieren acción" icon={Hourglass} />
+        <StatsCard title="Equipos Operativos" value={`${operationalEquipment} / ${totalEquipment}`} description="Equipos calibrados y activos" icon={Beaker} />
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12">
             <AssaysByMonthChart data={filteredEnsayos} />
         </div>
-        <div className="flex flex-col gap-6">
-          <RecentActivityList initialActivity={recentActivity}/>
-          <EquipmentAlertsCard equipos={equipos} />
+        <div className="col-span-12 lg:col-span-8">
+            <WorkloadDistributionChart data={filteredEnsayos} />
         </div>
-      </div>
-
-       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-           <WorkloadDistributionChart data={filteredEnsayos} />
+         <div className="col-span-12 lg:col-span-4">
+            <RecentActivityList initialActivity={recentActivity}/>
         </div>
-         <AssaysByTypeChart data={filteredEnsayos} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <ThroughputTrendChart data={filteredEnsayos} />
+        <div className="col-span-12 lg:col-span-8">
+            <ThroughputTrendChart data={filteredEnsayos} />
         </div>
-        <div className="flex flex-col gap-6">
+         <div className="col-span-12 lg:col-span-4">
+             <EquipmentAlertsCard equipos={equipos} />
+        </div>
+         <div className="col-span-12 md:col-span-6 lg:col-span-4">
+            <AssaysByTypeChart data={filteredEnsayos} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-4">
           <SampleStatusChart data={filteredEnsayos} />
+        </div>
+        <div className="col-span-12 md:col-span-6 lg:col-span-4">
           <EquipmentStatusChart data={equipos} />
         </div>
       </div>
     </div>
   );
 }
+

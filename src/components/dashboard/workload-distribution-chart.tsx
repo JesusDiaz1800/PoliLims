@@ -29,7 +29,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
 
     return Object.entries(analystCounts)
         .map(([name, value], index) => ({
-            name,
+            name: name.split(' ')[0], // Show only first name
             value,
             fill: `hsl(var(--chart-${(index % 5) + 1}))`
         }))
@@ -38,17 +38,17 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
 
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
-        <CardTitle>Total Registros por Analista</CardTitle>
-        <CardDescription>Número de ensayos registrados por cada analista en el período seleccionado.</CardDescription>
+        <CardTitle>Carga de Trabajo por Analista</CardTitle>
+        <CardDescription>Número de ensayos registrados por analista en el período seleccionado.</CardDescription>
       </CardHeader>
       <CardContent>
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis dataKey="name" type="category" width={120} stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
@@ -58,7 +58,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
                       color: 'hsl(var(--foreground))'
                     }}
                 />
-                <Bar dataKey="value" name="Ensayos" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" name="Ensayos" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -70,5 +70,3 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
     </Card>
   )
 }
-
-    
