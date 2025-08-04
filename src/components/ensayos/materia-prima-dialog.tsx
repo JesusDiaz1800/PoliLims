@@ -42,3 +42,5 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: Mater
     </Dialog>
   );
 }
+
+    

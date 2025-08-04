@@ -84,8 +84,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const { toast } = useToast()
   const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
-  const formRef = React.useRef<HTMLFormElement>(null);
-
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultFormValues,
@@ -103,41 +102,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   const watchedPesoMuestra = watch("peso_muestra");
   const watchedLargo = watch("largo");
   
-  React.useEffect(() => {
-    const formElement = formRef.current;
-    if (!formElement) return;
-
-    const focusableElements = Array.from(
-      formElement.querySelectorAll(
-        'input, button[role="combobox"], textarea, button[type="submit"]'
-      )
-    ) as HTMLElement[];
-
-    focusableElements.forEach((el, index) => {
-        el.setAttribute('data-tabindex', (index + 1).toString());
-    });
-
-  }, []);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === 'Enter') {
-      const target = e.target as HTMLElement;
-      if (target.tagName.toLowerCase() === 'textarea') {
-        return; // Allow enter in textarea
-      }
-      
-      e.preventDefault();
-      const currentIndex = parseInt(target.getAttribute('data-tabindex') || '0', 10);
-      const nextIndex = currentIndex + 1;
-      const nextElement = formRef.current?.querySelector(`[data-tabindex="${nextIndex}"]`) as HTMLElement | null;
-      
-      if (nextElement) {
-        nextElement.focus();
-      }
-    }
-  };
-
-
   React.useEffect(() => {
     if (matrizProductos.length === 0 || !watchedProductoCode) {
       setAlerts({});
@@ -267,7 +231,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   return (
     <Form {...form}>
-    <form ref={formRef} onKeyDown={handleKeyDown} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-6">
                 <div className="space-y-4">
                     <h3 className="text-lg font-medium font-headline">Información de Producción</h3>

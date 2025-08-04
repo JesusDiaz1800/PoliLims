@@ -5,7 +5,7 @@ import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,13 +30,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+
 
 interface Option {
   value: string;
@@ -75,9 +76,11 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   const { toast } = useToast();
   const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
-  const { control, getValues, register, handleSubmit, reset } = useForm({
+  const form = useForm({
     defaultValues: defaultFormValues
   });
+
+  const { control, getValues, register, handleSubmit, reset } = form;
 
   const isEditing = Boolean(ensayoToEdit);
 
@@ -231,6 +234,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
+    <Form {...form}>
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -239,66 +243,70 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
           <CardDescription>Datos principales de identificación y trazabilidad del material.</CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="fecha_ingreso">Fecha de Ingreso</Label>
-            <Controller
-              name="fecha_ingreso"
+          <FormField
               control={control}
+              name="fecha_ingreso"
               render={({ field }) => (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                      locale={es}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <FormItem>
+                  <FormLabel>Fecha de Ingreso</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
+                      </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                        locale={es}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
               )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="analista">Analista</Label>
-            <Controller
-                name="analista"
-                control={control}
-                render={({ field }) => (
+          <FormField
+              control={control}
+              name="analista"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Analista</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
                         <SelectTrigger id="analista">
                             <SelectValue placeholder="Seleccione un analista" />
                         </SelectTrigger>
+                        </FormControl>
                         <SelectContent>
                             {analistas.map(analista => (
                             <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
-                )}
+                </FormItem>
+              )}
             />
-          </div>
 
           <div className="space-y-2">
-              <Label htmlFor="id_muestra">ID Muestra</Label>
+              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
               <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")} readOnly={isEditing} />
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="lote">Lote</Label>
+              <FormLabel htmlFor="lote">Lote</FormLabel>
               <Input id="lote" placeholder="Número de lote" {...register("lote")}/>
           </div>
         </CardContent>
@@ -546,5 +554,8 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         </Button>
       </div>
     </form>
+    </Form>
   );
 }
+
+    
