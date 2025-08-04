@@ -6,6 +6,7 @@ import React, { createContext, useContext, useState, ReactNode, useMemo, useEffe
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
+import { isPast, parseISO } from 'date-fns';
 
 // --- DEMO DATA ---
 const demoRegistros: Registro[] = [
@@ -296,6 +297,17 @@ export const DataProvider = ({ children }: DataProviderProps) => {
         setProductMatrix(matrix);
         const products = await getProductsFromSap();
         setSapProducts(products);
+
+        // Check equipment calibration status on load
+        const today = new Date();
+        const updatedEquipos = demoEquipos.map(equipo => {
+            if (equipo.estado === 'Activo' && isPast(parseISO(equipo.proxima_calibracion))) {
+                return { ...equipo, estado: 'Requiere Calibración' as const };
+            }
+            return equipo;
+        });
+        setEquipos(updatedEquipos);
+
       } catch (error) {
         console.error("Failed to load initial static data", error);
       } finally {
