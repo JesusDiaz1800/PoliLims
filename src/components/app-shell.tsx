@@ -74,17 +74,6 @@ const ensayosSubMenu = [
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
 
-const laboratorioSubMenu = [
-    { href: '/muestras', label: 'Gestión de Muestras', icon: FlaskConical },
-    {
-        label: 'Ensayos',
-        icon: SlidersHorizontal,
-        subMenu: ensayosSubMenu,
-        href: '/ensayos'
-    },
-    { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
-];
-
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
@@ -99,15 +88,15 @@ const soporteSubMenu = [
 
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    {
+        label: 'Ensayos',
+        icon: SlidersHorizontal,
+        subMenu: ensayosSubMenu,
+        href: '/ensayos'
+    },
+    { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { type: 'separator' },
-    {
-        label: 'Laboratorio',
-        icon: Layers3,
-        subMenu: laboratorioSubMenu,
-        href: '/laboratorio'
-    },
      { type: 'separator' },
     {
         label: 'Gestión y Soporte',
