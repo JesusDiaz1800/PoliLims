@@ -12,7 +12,7 @@ export default function BibliotecaPage() {
     <Card>
       <CardHeader>
         <CardTitle>Biblioteca de Documentos</CardTitle>
-        <CardDescription>Repositorio central para manuales, procedimientos (PNTs) y otros documentos importantes.</CardDescription>
+        <CardDescription>Repositorio central para manuales, procedimientos y otros documentos importantes.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <div className="flex items-center justify-center gap-8 mb-8">

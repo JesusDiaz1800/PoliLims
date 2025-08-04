@@ -14,7 +14,7 @@ export default function SoportePage() {
           Asistente IA de Laboratorio
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Inicia una conversación con el asistente. Puedes preguntar sobre procedimientos, PNTs, o describir problemas para obtener un diagnóstico. La IA ha leído todos los documentos de la base de conocimiento.
+          Inicia una conversación con el asistente. Puedes preguntar sobre procedimientos o describir problemas para obtener un diagnóstico. La IA ha leído todos los documentos de la base de conocimiento.
         </p>
       </div>
       <SoporteChat />
