@@ -107,7 +107,6 @@ const menuItems = [
             { label: 'Administración', icon: Settings, subMenu: administracionSubMenu, href: '/administracion' },
             { label: 'Soporte IA', icon: Bot, subMenu: soporteSubMenu, href: '/soporte' }
         ],
-        href: '/gestion'
     },
 ];
 
