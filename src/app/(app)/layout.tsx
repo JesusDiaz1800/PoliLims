@@ -24,7 +24,7 @@ export default async function AppLayout({
 }) {
     // Get user from search params to pass to AppShell
     // This is a simplified way to handle user session for this example
-    const username = (searchParams?.user as string) || 'jefe.calidad';
+    const username = (searchParams?.user as string) || 'jdiaz';
     const user = await findUserByUsername(username);
 
     // Fetch initial data on the server
