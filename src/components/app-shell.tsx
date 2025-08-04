@@ -50,7 +50,8 @@ import {
     Ship,
     BookCheck,
     History,
-    Library
+    Library,
+    Rocket
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -84,6 +85,8 @@ const administracionSubMenu = [
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
+    { type: 'separator' },
+    { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
 const operacionesSubMenu = [
@@ -217,6 +220,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
+        if (pathname.startsWith('/administracion/proximos-pasos')) return 'Próximos Pasos para Producción';
         if (pathname.startsWith('/assistant')) return 'Asistente de Código';
         if (pathname.startsWith('/soporte')) return 'Asistente IA de Laboratorio';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
