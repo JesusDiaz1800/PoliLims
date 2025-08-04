@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
@@ -118,14 +119,14 @@ const demoRecentActivity = [
 ];
 
 
-const demoEquipos = [
-  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const, marca: 'PerkinElmer', modelo: 'Spectrum Two', proxima_calibracion: '15-01-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta' as const, fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.', ensayos_asociados: ['dsc', 'tio'] },
-  { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const, marca: 'CEAST', modelo: '9050', proxima_calibracion: '20-12-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
-  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const, marca: 'TA Instruments', modelo: 'Q200', proxima_calibracion: '30-11-2025', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['dsc', 'tio'] },
-  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const, marca: 'CEAST', modelo: 'Melt Flow 2000', proxima_calibracion: '01-03-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
-  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento' as const, marca: 'Mettler Toledo', modelo: 'MS-TS', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
-  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const, marca: 'Thermo Scientific', modelo: 'Thermolyne', proxima_calibracion: '28-02-2026', ubicacion: 'Área de Hornos', criticidad: 'Baja' as const, fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio'] },
-  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', proxima_calibracion: '30-07-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: '', ensayos_asociados: ['traccion'] },
+const demoEquipos: Equipo[] = [
+  { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo' as const, marca: 'PerkinElmer', modelo: 'Spectrum Two', numero_serie: 'FTIR-9876', fecha_puesta_marcha: '10-01-2022', proxima_calibracion: '15-01-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta' as const, fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.', ensayos_asociados: ['dsc', 'tio'] },
+  { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo' as const, marca: 'CEAST', modelo: '9050', numero_serie: 'IMP-5432', fecha_puesta_marcha: '05-03-2021', proxima_calibracion: '20-12-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
+  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo' as const, marca: 'TA Instruments', modelo: 'Q200', numero_serie: 'DSC-1122', fecha_puesta_marcha: '15-06-2020', proxima_calibracion: '30-11-2025', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['dsc', 'tio'] },
+  { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo' as const, marca: 'CEAST', modelo: 'Melt Flow 2000', numero_serie: 'MFI-3344', fecha_puesta_marcha: '20-02-2023', proxima_calibracion: '01-03-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media' as const, fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
+  { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento' as const, marca: 'Mettler Toledo', modelo: 'MS-TS', numero_serie: 'BAL-5566', fecha_puesta_marcha: '01-09-2019', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta' as const, fotoUrl: '', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
+  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo' as const, marca: 'Thermo Scientific', modelo: 'Thermolyne', numero_serie: 'MUF-7788', fecha_puesta_marcha: '12-11-2018', proxima_calibracion: '28-02-2026', ubicacion: 'Área de Hornos', criticidad: 'Baja' as const, fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio'] },
+  { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', numero_serie: 'TRAC-9900', fecha_puesta_marcha: '30-01-2017', proxima_calibracion: '30-07-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: '', ensayos_asociados: ['traccion'] },
 ];
 
 const demoControles: ControlEvento[] = [
@@ -213,9 +214,11 @@ export interface Equipo {
     nombre: string;
     marca?: string;
     modelo?: string;
+    numero_serie?: string;
     ubicacion?: string;
     criticidad?: 'Alta' | 'Media' | 'Baja';
     estado: 'Activo' | 'En Mantenimiento' | 'Inactivo' | 'Requiere Calibración';
+    fecha_puesta_marcha?: string;
     proxima_calibracion: string;
     observaciones?: string;
     fotoUrl?: string;
@@ -229,6 +232,7 @@ export interface ControlEvento {
     tipo: 'Calibración' | 'Verificación' | 'Mantenimiento Preventivo' | 'Mantenimiento Correctivo';
     responsable: string;
     observaciones?: string;
+    proximo_control?: string;
     certificadoUrl?: string;
 }
 

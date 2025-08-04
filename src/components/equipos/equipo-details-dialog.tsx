@@ -4,18 +4,17 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { format } from "date-fns";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Edit, PlusCircle, Calendar, Wrench, CheckSquare, FileText } from "lucide-react";
+import { Edit, PlusCircle } from "lucide-react";
 
 import { useDynamicData, type Equipo, type ControlEvento } from "@/context/data-context";
 import { cn } from "@/lib/utils";
 import { ControlEventoDialog } from "./control-evento-dialog";
+import { ControlEventosTable } from "./control-eventos-table";
 
 interface EquipoDetailsDialogProps {
   isOpen: boolean;
@@ -59,15 +58,6 @@ const DetailItem = ({ label, value }: { label: string; value: React.ReactNode })
   </div>
 );
 
-const EventoIcon = ({ tipo }: { tipo: ControlEvento['tipo']}) => {
-    switch (tipo) {
-        case 'Calibración': return <Calendar className="h-4 w-4 text-blue-500" />;
-        case 'Verificación': return <CheckSquare className="h-4 w-4 text-green-500" />;
-        case 'Mantenimiento Preventivo': return <Wrench className="h-4 w-4 text-yellow-500" />;
-        case 'Mantenimiento Correctivo': return <Wrench className="h-4 w-4 text-red-500" />;
-        default: return <FileText className="h-4 w-4" />;
-    }
-}
 
 export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoDetailsDialogProps) {
   const { controles } = useDynamicData();
@@ -117,9 +107,11 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                           <DetailItem label="Nombre del Equipo" value={equipo.nombre} />
                           <DetailItem label="Marca" value={equipo.marca} />
                           <DetailItem label="Modelo" value={equipo.modelo} />
+                          <DetailItem label="N° Serie" value={equipo.numero_serie || "N/A"} />
                           <DetailItem label="Ubicación" value={equipo.ubicacion} />
-                          <DetailItem label="Criticidad" value={equipo.criticidad} />
+                          <DetailItem label="Puesta en Marcha" value={equipo.fecha_puesta_marcha || "N/A"} />
                           <DetailItem label="Próxima Calibración" value={equipo.proxima_calibracion} />
+                           <DetailItem label="Criticidad" value={equipo.criticidad} />
                           <div>
                               <h4 className="text-sm font-semibold text-muted-foreground">Estado</h4>
                               <Badge className={cn("mt-1 border-transparent font-normal text-base", getStatusVariant(equipo.estado))}>
@@ -149,45 +141,7 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                             Registrar Evento
                           </Button>
                       </div>
-                      {equipoControles.length > 0 ? (
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Tipo</TableHead>
-                              <TableHead>Fecha</TableHead>
-                              <TableHead>Responsable</TableHead>
-                              <TableHead>Observaciones</TableHead>
-                              <TableHead>Certificado</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {equipoControles.map(control => (
-                              <TableRow key={control.id}>
-                                <TableCell>
-                                    <div className="flex items-center gap-2">
-                                       <EventoIcon tipo={control.tipo} />
-                                       <span>{control.tipo}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell>{control.fecha}</TableCell>
-                                <TableCell>{control.responsable}</TableCell>
-                                <TableCell className="max-w-xs truncate">{control.observaciones || "N/A"}</TableCell>
-                                <TableCell>
-                                  {control.certificadoUrl ? (
-                                    <Button variant="link" size="sm" className="p-0 h-auto" asChild>
-                                      <a href={control.certificadoUrl} target="_blank" rel="noopener noreferrer">Ver</a>
-                                    </Button>
-                                  ) : "N/A"}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      ) : (
-                         <p className="text-sm text-muted-foreground text-center py-8 bg-muted rounded-md">
-                            No hay eventos de control registrados para este equipo.
-                         </p>
-                      )}
+                      <ControlEventosTable controles={equipoControles} equipos={[equipo]} isDialogView />
                   </div>
               </TabsContent>
             </Tabs>

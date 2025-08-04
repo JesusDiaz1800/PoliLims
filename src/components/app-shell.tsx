@@ -47,7 +47,9 @@ import {
     Cylinder,
     Code2,
     AlertOctagon,
-    Ship
+    Ship,
+    BookCheck,
+    History
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -93,6 +95,11 @@ const soporteSubMenu = [
     { href: '/assistant', label: 'Asistente IA', icon: Code2 },
 ];
 
+const equiposSubMenu = [
+    { href: '/equipos', label: 'Inventario de Equipos', icon: BookCheck },
+    { href: '/equipos/control', label: 'Control de Equipos', icon: History },
+];
+
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
@@ -101,7 +108,12 @@ const menuItems = [
         subMenu: ensayosSubMenu,
         href: '/ensayos'
     },
-    { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
+    { 
+        label: 'Gestión de Equipos', 
+        icon: Beaker,
+        subMenu: equiposSubMenu,
+        href: '/equipos',
+    },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     {
         label: 'Operaciones',
@@ -197,6 +209,8 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     const userQuery = searchParams.toString();
 
     const getPageTitle = () => {
+        if (pathname === '/equipos') return 'Inventario de Equipos';
+        if (pathname.startsWith('/equipos/control')) return 'Control de Equipos';
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
         if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
         if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
@@ -211,7 +225,6 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
         if (pathname.startsWith('/assistant')) return 'Asistente IA';
         if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
-        if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
         if (pathname.startsWith('/importaciones')) return 'Control de Importaciones';
         if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
