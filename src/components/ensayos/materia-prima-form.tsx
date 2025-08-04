@@ -302,7 +302,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </FormControl>
                   <SelectContent>
                       {analistas.map(analista => (
-                        <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                        <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
                       ))}
                   </SelectContent>
               </Select>
@@ -604,7 +604,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
         </CardContent>
       </Card>
 
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-end pt-4 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
         <Button type="submit">
             {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
             {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
