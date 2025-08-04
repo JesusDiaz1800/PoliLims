@@ -48,6 +48,7 @@ interface Option {
 
 interface TuberiasHdpeFormProps {
   analistas: Option[];
+  equipos: Option[];
   ensayo: Ensayo;
   onFormSubmit: () => void;
 }
@@ -77,9 +78,14 @@ const defaultFormValues = {
   tio_temperatura: "",
   tio_metodo: "",
   tio_tiempo: "",
+  equipo_mi: "",
+  equipo_densidad: "",
+  equipo_traccion: "",
+  equipo_nh: "",
+  equipo_tio: "",
 };
 
-export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHdpeFormProps) {
+export function TuberiasHdpeForm({ analistas, ensayo, equipos, onFormSubmit }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -208,7 +214,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -319,6 +325,23 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    <FormField
+                      control={control}
+                      name="equipo_mi"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Equipo Utilizado</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Seleccione un equipo" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                              </Select>
+                          </FormItem>
+                      )}
+                    />
                     <div className="space-y-4 p-4 border rounded-md">
                       <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
@@ -387,6 +410,23 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <FormField
+                      control={control}
+                      name="equipo_densidad"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Equipo Utilizado</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Seleccione un equipo (Balanza)" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                              </Select>
+                          </FormItem>
+                      )}
+                    />
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -417,18 +457,37 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                     <CardHeader>
                         <CardTitle>Ensayo: Tracción y Elongación</CardTitle>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
-                            <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...register("resistencia_traccion")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</FormLabel>
-                            <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...register("limite_fluencia")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</FormLabel>
-                            <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...register("elongacion_rotura")} />
+                    <CardContent className="space-y-6">
+                        <FormField
+                          control={control}
+                          name="equipo_traccion"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Equipo Utilizado</FormLabel>
+                                  <Select onValueChange={field.onChange} value={field.value}>
+                                      <FormControl>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Seleccione un equipo" />
+                                      </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                                  </Select>
+                              </FormItem>
+                          )}
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
+                              <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...register("resistencia_traccion")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</FormLabel>
+                              <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...register("limite_fluencia")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</FormLabel>
+                              <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...register("elongacion_rotura")} />
+                          </div>
                         </div>
                     </CardContent>
                  </Card>
@@ -443,7 +502,25 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                       Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                  <CardContent className="space-y-6">
+                     <FormField
+                        control={control}
+                        name="equipo_nh"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccione un equipo (Mufla)" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                      />
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
@@ -466,6 +543,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                             {negroHumoCalculado.toFixed(2)}%
                          </div>
                        </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -489,27 +567,46 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   <CardHeader>
                     <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
-                            <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
-                            <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
-                        </div>
+                  <CardContent className="space-y-6">
+                    <FormField
+                      control={control}
+                      name="equipo_tio"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Equipo Utilizado</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Seleccione un equipo (DSC)" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                              </Select>
+                          </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
+                          <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
+                          <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
+                          <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
+                          <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
+                          <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                      </div>
+                    </div>
                     </CardContent>
                 </Card>
               </TabsContent>

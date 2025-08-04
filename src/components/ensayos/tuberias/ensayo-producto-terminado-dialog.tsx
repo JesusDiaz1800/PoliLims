@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { TuberiasHdpeForm } from "@/components/ensayos/tuberias-hdpe-form";
 import { TuberiasPpForm } from "@/components/ensayos/tuberias-pp-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Ensayo } from "@/context/data-context";
+import { useDynamicData, type Ensayo } from "@/context/data-context";
 
 interface EnsayoProductoTerminadoDialogProps {
   isOpen: boolean;
@@ -16,7 +16,8 @@ interface EnsayoProductoTerminadoDialogProps {
 }
 
 export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }: EnsayoProductoTerminadoDialogProps) {
-  
+  const { equipos } = useDynamicData();
+
   const analistas = [
       { value: "jesus.diaz", label: "Jesus Diaz" },
       { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
@@ -24,6 +25,8 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }:
       { value: "robinson.cordova", label: "Robinson Córdova" },
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
   ];
+  
+  const equipoOptions = equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})`}));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -36,9 +39,9 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }:
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-6 -mr-2">
           {tipo === 'HDPE' ? (
-            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
+            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} equipos={equipoOptions} onFormSubmit={onClose} />
           ) : (
-            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
+            <TuberiasPpForm analistas={analistas} ensayo={ensayo} equipos={equipoOptions} onFormSubmit={onClose} />
           )}
         </ScrollArea>
       </DialogContent>

@@ -47,6 +47,7 @@ interface Option {
 
 interface TuberiasPpFormProps {
   analistas: Option[];
+  equipos: Option[];
   ensayo: Ensayo;
   onFormSubmit: () => void;
 }
@@ -69,10 +70,13 @@ const defaultFormValues = {
   densidad_liquido: "",
   masa_aire: "",
   masa_agua: "",
+  equipo_mi: "",
+  equipo_densidad: "",
+  equipo_fv: "",
 };
 
 
-export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFormProps) {
+export function TuberiasPpForm({ analistas, ensayo, equipos, onFormSubmit }: TuberiasPpFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -246,7 +250,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -356,6 +360,23 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    <FormField
+                      control={control}
+                      name="equipo_mi"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Equipo Utilizado</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                  <FormControl>
+                                  <SelectTrigger>
+                                      <SelectValue placeholder="Seleccione un equipo" />
+                                  </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                              </Select>
+                          </FormItem>
+                      )}
+                    />
                     <div className="space-y-4 p-4 border rounded-md">
                       <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
@@ -424,6 +445,23 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                     <FormField
+                        control={control}
+                        name="equipo_densidad"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccione un equipo (Balanza)" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                      />
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -451,6 +489,23 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
               {/* Pestaña Fibra de Vidrio */}
               <TabsContent value="fibra_vidrio" className="mt-4">
                 <div className="space-y-6">
+                  <FormField
+                    control={control}
+                    name="equipo_fv"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Seleccione un equipo (Mufla)" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>{equipos.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select>
+                        </FormItem>
+                    )}
+                  />
                     <Card>
                         <CardHeader>
                             <CardTitle>Fibra de vidrio Total</CardTitle>
