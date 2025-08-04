@@ -22,8 +22,8 @@ interface ReprocesadoDialogProps {
 export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: ReprocesadoDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-5xl h-[90vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-0">
           <DialogTitle>{ensayo ? "Editar" : "Registrar"} Ensayo: Reprocesado</DialogTitle>
           <DialogDescription>
             {ensayo
@@ -31,15 +31,15 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
               : "Complete el formulario para registrar un nuevo ensayo de material reprocesado."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-hidden">
-          <ScrollArea className="h-full pr-6">
+        <ScrollArea className="flex-grow overflow-y-auto">
+           <div className="px-6 pb-6">
               <ReprocesadoForm
                   analistas={analistas}
                   ensayoToEdit={ensayo}
                   onFormSubmit={onClose}
               />
-          </ScrollArea>
-        </div>
+            </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

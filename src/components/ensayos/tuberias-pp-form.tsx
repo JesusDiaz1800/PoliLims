@@ -31,7 +31,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
@@ -237,7 +236,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit} className="space-y-6">
+    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -295,7 +294,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </FormControl>
                       <SelectContent>
                           {analistas.map(analista => (
-                            <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
+                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
                           ))}
                       </SelectContent>
                   </Select>
@@ -304,17 +303,17 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
             />
           
            <div className="space-y-2">
-              <Label htmlFor="id_muestra">ID Muestra</Label>
+              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
               <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="producto">Producto</Label>
+              <FormLabel htmlFor="producto">Producto</FormLabel>
               <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="lote">Lote</Label>
+              <FormLabel htmlFor="lote">Lote</FormLabel>
               <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
           </div>
         </CardContent>
@@ -348,7 +347,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-4 p-4 border rounded-md">
-                      <Label>Mediciones de extrusionado [g]</Label>
+                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
                         <div key={field.id} className="flex items-center gap-2">
                           <Input
@@ -385,17 +384,17 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</Label>
+                        <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
                         <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Índice de fluidez Producto Terminado [g/10min]</Label>
+                         <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexCalculado.toFixed(4)}
                          </div>
                        </div>
                        <div className="space-y-2">
-                         <Label>Porcentaje de variación [%]</Label>
+                         <FormLabel>Porcentaje de variación [%]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexVariacion.toFixed(2)}%
                          </div>
@@ -417,19 +416,19 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
+                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
                         <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
+                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
                         <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
+                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
                         <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Densidad de la muestra [g/cm³]</Label>
+                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {densidadCalculada.toFixed(4)}
                          </div>
@@ -448,31 +447,31 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m1">M1: Masa de Crisol [g]</Label>
+                                <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
                                 <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</Label>
+                                <FormLabel htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
                                 <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</Label>
+                                <FormLabel htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
                                 <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
                             </div>
                             <div className="space-y-2">
-                                <Label>Masa Muestra [g]</Label>
+                                <FormLabel>Masa Muestra [g]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvTotalMasaMuestra.toFixed(4)}
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Masa Ceniza [g]</Label>
+                                <FormLabel>Masa Ceniza [g]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvTotalMasaCeniza.toFixed(4)}
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Porcentaje FV Total [%]</Label>
+                                <FormLabel>Porcentaje FV Total [%]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvTotalPorcentaje.toFixed(2)}%
                                 </div>
@@ -485,31 +484,31 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                         </CardHeader>
                         <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m1">M1: Masa de Crisol [g]</Label>
+                                <FormLabel htmlFor="fv_intermedia_m1">M1: Masa de Crisol [g]</FormLabel>
                                 <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_intermedia_m1")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m2">M2: Masa de Crisol + Muestra [g]</Label>
+                                <FormLabel htmlFor="fv_intermedia_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
                                 <Input id="fv_intermedia_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_intermedia_m2")} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="fv_intermedia_m3">M3: Masa de Crisol + Ceniza [g]</Label>
+                                <FormLabel htmlFor="fv_intermedia_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
                                 <Input id="fv_intermedia_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_intermedia_m3")} />
                             </div>
                              <div className="space-y-2">
-                                <Label>Masa Muestra [g]</Label>
+                                <FormLabel>Masa Muestra [g]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvIntermediaMasaMuestra.toFixed(4)}
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Masa Ceniza [g]</Label>
+                                <FormLabel>Masa Ceniza [g]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvIntermediaMasaCeniza.toFixed(4)}
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Porcentaje FV Capa Intermedia [%]</Label>
+                                <FormLabel>Porcentaje FV Capa Intermedia [%]</FormLabel>
                                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                                     {fvIntermediaPorcentaje.toFixed(2)}%
                                 </div>

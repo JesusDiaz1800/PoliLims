@@ -30,7 +30,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
@@ -91,7 +90,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
     defaultValues: defaultFormValues,
   });
   
-  const { control, getValues, register, handleSubmit, reset, watch } = form;
+  const { control, getValues, register, handleSubmit, reset, watch, setValue } = form;
 
   const isEditing = Boolean(ensayoToEdit);
   
@@ -302,7 +301,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </FormControl>
                   <SelectContent>
                       {analistas.map(analista => (
-                        <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
+                        <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
                       ))}
                   </SelectContent>
               </Select>
@@ -311,27 +310,27 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
             />
 
           <div className="space-y-2">
-              <Label htmlFor="tipo_material">Tipo de Material</Label>
+              <FormLabel htmlFor="tipo_material">Tipo de Material</FormLabel>
               <Input id="tipo_material" placeholder="Ej: Polietileno de Alta Densidad" {...register("tipo_material")}/>
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="proveedor">Proveedor</Label>
+              <FormLabel htmlFor="proveedor">Proveedor</FormLabel>
               <Input id="proveedor" placeholder="Nombre del proveedor" {...register("proveedor")}/>
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="producto">Producto</Label>
+              <FormLabel htmlFor="producto">Producto</FormLabel>
               <Input id="producto" placeholder="Nombre del producto" {...register("producto")} />
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="orden_compra">Orden de Compra</Label>
+              <FormLabel htmlFor="orden_compra">Orden de Compra</FormLabel>
               <Input id="orden_compra" placeholder="Número de orden de compra" {...register("orden_compra")}/>
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="lote">Lote</Label>
+              <FormLabel htmlFor="lote">Lote</FormLabel>
               <Input id="lote" placeholder="Número de lote" {...register("lote")} />
           </div>
         </CardContent>
@@ -365,7 +364,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-4 p-4 border rounded-md">
-                      <Label>Mediciones de extrusionado [g]</Label>
+                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
                         <div key={field.id} className="flex items-center gap-2">
                           <Input
@@ -398,17 +397,17 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</Label>
+                        <FormLabel htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</FormLabel>
                         <Input id="melt_index_reportado" type="number" placeholder="Valor del proveedor" {...register("melt_index_reportado")} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Índice de fluidez ensayado [g/10min]</Label>
+                         <FormLabel>Índice de fluidez ensayado [g/10min]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexCalculado.toFixed(4)}
                          </div>
                        </div>
                        <div className="space-y-2">
-                         <Label>Variación</Label>
+                         <FormLabel>Variación</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexVariacion.toFixed(2)}%
                          </div>
@@ -430,19 +429,19 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
+                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
                         <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
+                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
                         <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
+                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
                         <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Densidad de la muestra [g/cm³]</Label>
+                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {densidadCalculada.toFixed(4)}
                          </div>
@@ -463,23 +462,23 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
+                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
+                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
                         <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</Label>
+                        <FormLabel htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</FormLabel>
                         <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
+                        <FormLabel htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</FormLabel>
                         <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
                       </div>
                        <div className="space-y-2 md:col-start-1">
-                         <Label>% Negro de Humo</Label>
+                         <FormLabel>% Negro de Humo</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {negroHumoCalculado.toFixed(2)}%
                          </div>
@@ -497,25 +496,25 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </CardHeader>
                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
+                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
+                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
                         <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m3">m3: Cápsula procesada [g]</Label>
+                        <FormLabel htmlFor="nh_m3">m3: Cápsula procesada [g]</FormLabel>
                         <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
                       </div>
                        <div className="space-y-2 md:col-start-1">
-                         <Label>% Cenizas</Label>
+                         <FormLabel>% Cenizas</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {cenizasCalculado.toFixed(2)}%
                          </div>
                        </div>
                        <div className="space-y-2">
-                         <Label>% Cenizas Corregido</Label>
+                         <FormLabel>% Cenizas Corregido</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {cenizasCorregido.toFixed(2)}%
                          </div>
@@ -530,23 +529,23 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</Label>
+                            <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
                             <Input id="dsc_temp_max" type="number" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</Label>
+                            <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
                             <Input id="dsc_temp_inicio" type="number" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</Label>
+                            <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
                             <Input id="dsc_temp_final" type="number" placeholder="Temp. final" {...register("dsc_temp_final")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="dsc_punto_fusion">Punto de fusión [°C]</Label>
+                            <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
                             <Input id="dsc_punto_fusion" type="number" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
                         </div>
                          <div className="space-y-2">
-                            <Label htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</Label>
+                            <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
                             <Input id="dsc_punto_fusion_opcional" type="number" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
                         </div>
                     </CardContent>
@@ -559,23 +558,23 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="tio_gas">Gas utilizado</Label>
+                            <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
                             <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_flujo">Flujo de gas [L/min]</Label>
+                            <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
                             <Input id="tio_flujo" type="number" placeholder="Ej: 50" {...register("tio_flujo")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_temperatura">Temperatura de ensayo [°C]</Label>
+                            <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
                             <Input id="tio_temperatura" type="number" placeholder="Ej: 200" {...register("tio_temperatura")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_metodo">Método utilizado</Label>
+                            <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
                             <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</Label>
+                            <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
                             <Input id="tio_tiempo" type="number" placeholder="Ej: 45" {...register("tio_tiempo")} />
                         </div>
                     </CardContent>

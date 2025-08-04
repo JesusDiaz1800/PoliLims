@@ -31,7 +31,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
@@ -199,7 +198,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit} className="space-y-6">
+    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -258,7 +257,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   </FormControl>
                     <SelectContent>
                         {analistas.map(analista => (
-                          <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
+                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -267,17 +266,17 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
           />
           
            <div className="space-y-2">
-              <Label htmlFor="id_muestra">ID Muestra</Label>
+              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
               <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="producto">Producto</Label>
+              <FormLabel htmlFor="producto">Producto</FormLabel>
               <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
           </div>
 
           <div className="space-y-2">
-              <Label htmlFor="lote">Lote</Label>
+              <FormLabel htmlFor="lote">Lote</FormLabel>
               <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
           </div>
         </CardContent>
@@ -311,7 +310,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="space-y-4 p-4 border rounded-md">
-                      <Label>Mediciones de extrusionado [g]</Label>
+                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
                         <div key={field.id} className="flex items-center gap-2">
                           <Input
@@ -348,17 +347,17 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</Label>
+                        <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
                         <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Índice de fluidez Producto Terminado [g/10min]</Label>
+                         <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexCalculado.toFixed(4)}
                          </div>
                        </div>
                        <div className="space-y-2">
-                         <Label>Porcentaje de variación [%]</Label>
+                         <FormLabel>Porcentaje de variación [%]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {meltIndexVariacion.toFixed(2)}%
                          </div>
@@ -380,19 +379,19 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   <CardContent className="space-y-4">
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
+                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
                         <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
+                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
                         <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
+                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
                         <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
                       </div>
                        <div className="space-y-2">
-                         <Label>Densidad de la muestra [g/cm³]</Label>
+                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {densidadCalculada.toFixed(4)}
                          </div>
@@ -410,15 +409,15 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</Label>
+                            <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
                             <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...register("resistencia_traccion")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</Label>
+                            <FormLabel htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</FormLabel>
                             <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...register("limite_fluencia")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</Label>
+                            <FormLabel htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</FormLabel>
                             <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...register("elongacion_rotura")} />
                         </div>
                     </CardContent>
@@ -436,23 +435,23 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
-                        <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
+                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                         <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
+                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
                         <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</Label>
+                        <FormLabel htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</FormLabel>
                         <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
-                        <Label htmlFor="nh_m4">m4: Cápsula con ceniza [g]</Label>
+                        <FormLabel htmlFor="nh_m4">m4: Cápsula con ceniza [g]</FormLabel>
                         <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
-                         <Label>% Negro de Humo</Label>
+                         <FormLabel>% Negro de Humo</FormLabel>
                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                             {negroHumoCalculado.toFixed(2)}%
                          </div>
@@ -467,7 +466,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                        <Label htmlFor="dispersion_nh">Grado de Dispersión</Label>
+                        <FormLabel htmlFor="dispersion_nh">Grado de Dispersión</FormLabel>
                         <Input id="dispersion_nh" placeholder="Ej: Grado A1" {...register("dispersion_nh")} />
                     </div>
                   </CardContent>
@@ -482,23 +481,23 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
-                            <Label htmlFor="tio_gas">Gas utilizado</Label>
+                            <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
                             <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_flujo">Flujo de gas [L/min]</Label>
+                            <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
                             <Input id="tio_flujo" type="number" placeholder="Ej: 50" {...register("tio_flujo")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_temperatura">Temperatura de ensayo [°C]</Label>
+                            <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
                             <Input id="tio_temperatura" type="number" placeholder="Ej: 200" {...register("tio_temperatura")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_metodo">Método utilizado</Label>
+                            <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
                             <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</Label>
+                            <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
                             <Input id="tio_tiempo" type="number" placeholder="Ej: 45" {...register("tio_tiempo")} />
                         </div>
                     </CardContent>
