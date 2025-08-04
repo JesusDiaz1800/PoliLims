@@ -98,28 +98,26 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-col gap-4">
-            <div>
-                <CardTitle>Historial de Controles Rutinarios</CardTitle>
-                <CardDescription>Visualice y filtre los últimos registros de control de calidad ingresados, incluyendo resultados de laboratorio.</CardDescription>
-            </div>
-            <div className="flex items-center justify-end gap-2 w-full">
-                <div className="relative w-full sm:w-auto flex-1 md:flex-initial max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                        placeholder="Buscar por ID, inspector o producto..."
-                        className="pl-9 w-full"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-                <Button onClick={onAddRecordClick} className="w-full sm:w-auto">
-                    <FilePlus className="mr-2 h-4 w-4" />
-                    Ingresar Producto
-                </Button>
-            </div>
+        <CardHeader>
+          <CardTitle>Historial de Controles Rutinarios</CardTitle>
+          <CardDescription>Visualice y filtre los últimos registros de control de calidad ingresados, incluyendo resultados de laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex items-center justify-start gap-2 w-full mb-4">
+              <div className="relative w-full sm:w-auto flex-1 md:flex-initial max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                      placeholder="Buscar por ID, inspector o producto..."
+                      className="pl-9 w-full"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+              </div>
+              <Button onClick={onAddRecordClick} className="w-full sm:w-auto">
+                  <FilePlus className="mr-2 h-4 w-4" />
+                  Ingresar Producto
+              </Button>
+          </div>
           <ScrollArea>
             <Table className="whitespace-nowrap">
               <TableHeader>
