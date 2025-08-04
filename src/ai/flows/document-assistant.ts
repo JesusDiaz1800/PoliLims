@@ -13,55 +13,33 @@ import {z} from 'genkit';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-const dataDirectory = path.join(process.cwd(), 'public', 'data');
-
-// Define a tool for the AI to list available documents.
-const listAvailableDocuments = ai.defineTool(
-  {
-    name: 'listAvailableDocuments',
-    description: 'Lists the available documents in the knowledge base.',
-    inputSchema: z.object({}),
-    outputSchema: z.array(z.string()),
-  },
-  async () => {
+// Helper function to read all documents from the data directory
+async function getKnowledgeBaseContent(): Promise<string> {
+    const dataDirectory = path.join(process.cwd(), 'public', 'data');
+    let knowledgeBase = '';
     try {
-      const files = await fs.readdir(dataDirectory);
-      return files.filter(file => file.endsWith('.txt'));
+        const files = await fs.readdir(dataDirectory);
+        for (const file of files) {
+            if (file.endsWith('.txt')) {
+                const filePath = path.join(dataDirectory, file);
+                const content = await fs.readFile(filePath, 'utf-8');
+                knowledgeBase += `--- INICIO DEL DOCUMENTO: ${file} ---\n\n${content}\n\n--- FIN DEL DOCUMENTO: ${file} ---\n\n`;
+            }
+        }
+        return knowledgeBase;
     } catch (error) {
-      console.error('Failed to list documents:', error);
-      return ['Error: Could not retrieve the list of documents.'];
+        console.error('Failed to read knowledge base:', error);
+        return 'Error: No se pudo cargar la base de conocimiento.';
     }
-  }
-);
-
-
-// Define a tool for the AI to get document content.
-const getDocumentContent = ai.defineTool(
-  {
-    name: 'getDocumentContent',
-    description: 'Retrieves the content of a specified document from the knowledge base.',
-    inputSchema: z.object({
-      documentName: z.string().describe('The name of the document to retrieve, e.g., "PNT-Melt-Index.txt"'),
-    }),
-    outputSchema: z.string(),
-  },
-  async ({documentName}) => {
-    try {
-      // In a real app, this would fetch from a secure storage like Firebase Storage.
-      // For this demo, we'll read from the local /public/data directory.
-      const filePath = path.join(dataDirectory, documentName);
-      const content = await fs.readFile(filePath, 'utf-8');
-      return content;
-    } catch (error) {
-      console.error(`Failed to read document: ${documentName}`, error);
-      return `Error: Could not retrieve the document named ${documentName}. Please ensure the name is correct.`;
-    }
-  }
-);
+}
 
 
 const DocumentAssistantInputSchema = z.object({
-  prompt: z.string().describe("The user's question about a procedure or document."),
+  history: z.array(z.object({
+    role: z.string(),
+    content: z.string(),
+  })).describe("The conversation history."),
+  prompt: z.string().describe("The user's latest question about a procedure or document."),
 });
 export type DocumentAssistantInput = z.infer<typeof DocumentAssistantInputSchema>;
 
@@ -78,18 +56,24 @@ const prompt = ai.definePrompt({
   name: 'documentAssistantPrompt',
   input: {schema: DocumentAssistantInputSchema},
   output: {schema: DocumentAssistantOutputSchema},
-  tools: [getDocumentContent, listAvailableDocuments],
-  prompt: `You are an expert assistant for the PoliLIMS laboratory. Your role is to answer questions based *only* on the content of the provided documents.
+  prompt: `You are an expert assistant for the PoliLIMS laboratory. Your role is to answer questions based *only* on the content of the provided documents. You will be given the entire knowledge base and the conversation history.
 
-  The user has asked a question. Follow these steps:
-  1. Use the 'listAvailableDocuments' tool to see which documents are available.
-  2. Based on the user's question and the list of documents, determine which document is most likely to contain the answer.
-  3. Use the 'getDocumentContent' tool to retrieve the content of that specific document.
-  4. Analyze the retrieved document content.
-  5. Formulate a clear, concise, and accurate answer to the user's question based *exclusively* on the information from the document.
-  6. If the documents do not contain the answer, state that the information is not available in the provided knowledge base. Do not use your general knowledge.
+  Base de Conocimiento (Documentos del Laboratorio):
+  {{{knowledgeBase}}}
 
-  User's Question: {{{prompt}}}
+  Historial de la Conversación:
+  {{#each history}}
+  - **{{role}}**: {{content}}
+  {{/each}}
+
+  PREGUNTA DEL USUARIO:
+  "{{{prompt}}}"
+
+  Instructions:
+  1. Analyze the user's question.
+  2. Formulate a clear, concise, and accurate answer based *exclusively* on the information from the provided knowledge base.
+  3. If the documents do not contain the answer, state that the information is not available in the provided knowledge base. Do not use your general knowledge.
+  4. Format your response clearly. Use markdown for lists, bolding, etc. if it helps with clarity.
   `,
 });
 
@@ -99,8 +83,20 @@ const documentAssistantFlow = ai.defineFlow(
     inputSchema: DocumentAssistantInputSchema,
     outputSchema: DocumentAssistantOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async ({ history, prompt: userPrompt }) => {
+    
+    const knowledgeBase = await getKnowledgeBaseContent();
+
+    const {output} = await prompt({
+        history,
+        prompt: userPrompt,
+        // This is a way to inject extra context into the handlebars prompt
+        // that is not part of the formally defined input schema.
+        context: {
+            knowledgeBase
+        }
+    });
+    
     return output!;
   }
 );

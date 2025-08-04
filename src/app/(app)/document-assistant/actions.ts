@@ -2,10 +2,14 @@
 "use server";
 
 import { z } from "zod";
-import { documentAssistant } from "@/ai/flows/document-assistant";
+import { documentAssistant, type DocumentAssistantInput } from "@/ai/flows/document-assistant";
 
 const formSchema = z.object({
   prompt: z.string().min(10, "Your request must be at least 10 characters."),
+  history: z.array(z.object({
+    role: z.string(),
+    content: z.string(),
+  })),
 });
 
 type FormState = {
@@ -18,9 +22,13 @@ type FormState = {
 }
 
 export async function getDocumentSuggestion(prevState: FormState, formData: FormData): Promise<FormState> {
-  const parsed = formSchema.safeParse({
+  
+  const rawData = {
     prompt: formData.get("prompt"),
-  });
+    history: JSON.parse(formData.get("history") as string || "[]"),
+  }
+
+  const parsed = formSchema.safeParse(rawData);
 
   if (!parsed.success) {
     return { 
@@ -30,7 +38,7 @@ export async function getDocumentSuggestion(prevState: FormState, formData: Form
   }
 
   try {
-    const result = await documentAssistant(parsed.data);
+    const result = await documentAssistant(parsed.data as DocumentAssistantInput);
     return { message: "Success", data: result };
   } catch (error) {
     console.error("AI Document Assistant Error:", error);

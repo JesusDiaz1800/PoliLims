@@ -1,0 +1,25 @@
+Procedimientos Generales del Laboratorio de Calidad
+
+1. Introducción
+Este documento describe las normas y procedimientos generales que deben seguir todos los analistas y personal del laboratorio de Polifusión S.A. para garantizar la seguridad, calidad y trazabilidad de los ensayos.
+
+2. Seguridad
+- Es obligatorio el uso de equipo de protección personal (EPP) en todo momento: bata de laboratorio, gafas de seguridad y guantes adecuados.
+- Conocer la ubicación y el uso de los equipos de seguridad: duchas de emergencia, lavaojos, extintores de incendios.
+- No comer, beber o fumar dentro del laboratorio.
+- Manipular todos los productos químicos bajo una campana de extracción de gases.
+
+3. Gestión de Muestras
+- Todas las muestras recibidas deben ser registradas inmediatamente en el sistema PoliLIMS.
+- A cada muestra se le asignará un ID único para su trazabilidad.
+- Las muestras deben ser almacenadas en las condiciones adecuadas para preservar su integridad hasta el momento del ensayo.
+
+4. Gestión de Equipos
+- Cada equipo tiene un registro único en el sistema PoliLIMS.
+- Es responsabilidad del analista verificar el estado de calibración del equipo antes de su uso. Un equipo con calibración vencida no debe ser utilizado.
+- Cualquier anomalía o mal funcionamiento de un equipo debe ser reportado inmediatamente al Jefe de Calidad y registrado como una incidencia de "No Conformidad".
+
+5. Documentación y Registros
+- Todos los resultados de los ensayos deben ser registrados directamente en los formularios correspondientes del sistema PoliLIMS.
+- Los cálculos deben ser verificados. El sistema realiza los cálculos automáticamente cuando es posible.
+- Cualquier desviación del procedimiento estándar debe ser anotada en el campo de "Observaciones".
