@@ -35,7 +35,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 
 interface Option {
@@ -47,6 +47,7 @@ interface TuberiasPpFormProps {
   analistas: Option[];
   ensayo: Ensayo;
   onFormSubmit: () => void;
+  equipos: Equipo[];
 }
 
 const defaultFormValues = {
@@ -67,10 +68,13 @@ const defaultFormValues = {
   densidad_liquido: "",
   masa_aire: "",
   masa_agua: "",
+  equipo_mi: "",
+  equipo_densidad: "",
+  equipo_fv: "",
 };
 
 
-export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFormProps) {
+export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos }: TuberiasPpFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -224,7 +228,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
         densidadCalculada,
         fvTotalPorcentaje,
         fvIntermediaPorcentaje,
-        estado: 'En Progreso',
+        estado: 'En Análisis',
     };
     
     await updateEnsayo(ensayo.id, ensayoData);
@@ -242,6 +246,12 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
     { value: "densidad", label: "Densidad" },
     { value: "fibra_vidrio", label: "Fibra de Vidrio" },
   ];
+  
+  const getEquiposPorEnsayo = (ensayoId: string) => {
+      return equipos
+        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
@@ -354,6 +364,12 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                     <FormField control={control} name="equipo_mi" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
                     <div className="space-y-4 p-4 border rounded-md">
                       <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
@@ -422,6 +438,12 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                     <FormField control={control} name="equipo_densidad" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -453,35 +475,43 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                         <CardHeader>
                             <CardTitle>Fibra de vidrio Total</CardTitle>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
-                                <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
-                                <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
-                                <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel>Masa Muestra [g]</FormLabel>
-                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                    {fvTotalMasaMuestra.toFixed(4)}
+                        <CardContent className="space-y-6">
+                            <FormField control={control} name="equipo_fv" render={({ field }) => (
+                                <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                                <SelectContent>{getEquiposPorEnsayo('fibra_vidrio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                                </Select></FormItem>
+                            )}/>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
+                                    <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel>Masa Ceniza [g]</FormLabel>
-                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                    {fvTotalMasaCeniza.toFixed(4)}
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
+                                    <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel>Porcentaje FV Total [%]</FormLabel>
-                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                    {fvTotalPorcentaje.toFixed(2)}%
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
+                                    <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Masa Muestra [g]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalMasaMuestra.toFixed(4)}
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Masa Ceniza [g]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalMasaCeniza.toFixed(4)}
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Porcentaje FV Total [%]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalPorcentaje.toFixed(2)}%
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
