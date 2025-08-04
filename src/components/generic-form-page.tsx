@@ -37,7 +37,18 @@ interface GenericFormPageProps {
 
 export function GenericFormPage({ title, description, icon: Icon, formFields, formTitle, formDescription, buttonText }: GenericFormPageProps) {
     const { toast } = useToast();
-    const form = useForm();
+
+    // Create default values dynamically to avoid uncontrolled to controlled error
+    const defaultValues = React.useMemo(() => {
+        return formFields.reduce((acc, field) => {
+            acc[field.name] = '';
+            return acc;
+        }, {} as Record<string, any>);
+    }, [formFields]);
+
+    const form = useForm({
+        defaultValues,
+    });
 
     const onSubmit = (data: any) => {
         console.log(data);
