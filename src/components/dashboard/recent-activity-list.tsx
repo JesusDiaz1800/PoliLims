@@ -49,10 +49,10 @@ export function RecentActivityList({ initialActivity }: RecentActivityListProps)
         <Card className="h-full">
             <CardHeader>
                 <CardTitle>Actividad Reciente</CardTitle>
-                <CardDescription>Un registro de las acciones más recientes en el laboratorio.</CardDescription>
+                <CardDescription>Un registro de las acciones más recientes.</CardDescription>
             </CardHeader>
             <CardContent>
-                <ScrollArea className="h-[300px] pr-4">
+                <ScrollArea className="h-[200px] pr-4">
                     <div className="space-y-6">
                         {activityList.length > 0 ? activityList.map((activity) => {
                             const avatar = getAvatarInfo(activity.user);

@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass } from "lucide-react";
+import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle } from "lucide-react";
 import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear } from 'date-fns';
 
 import { StatsCard } from "@/components/dashboard/stats-card";
@@ -15,6 +15,7 @@ import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import { findUserByUsername } from "@/services/user-service";
 import { useDynamicData } from "@/context/data-context";
 import { useSearchParams } from 'next/navigation';
@@ -129,7 +130,7 @@ export default function DashboardPage() {
         approvalPercentage: approval,
         pendingAssays: pending,
     }
-  }, [ensayos, month, analyst, status, type, supplier, pendingStatuses]);
+  }, [ensayos, month, analyst, status, type, supplier]);
 
   if (isLoading || !user) {
     return <Loading />;
@@ -179,7 +180,10 @@ export default function DashboardPage() {
         <div className="lg:col-span-2">
             <AssaysByMonthChart data={filteredEnsayos} />
         </div>
-        <RecentActivityList initialActivity={recentActivity}/>
+        <div className="flex flex-col gap-6">
+          <RecentActivityList initialActivity={recentActivity}/>
+          <EquipmentAlertsCard equipos={equipos} />
+        </div>
       </div>
 
        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
