@@ -51,7 +51,7 @@ interface ReprocesadoFormProps {
 }
 
 const defaultFormValues = {
-  meltIndexMediciones: [{ value: '' }],
+  meltIndexMediciones: [{ value: '' as string | number }],
   fecha_ingreso: new Date(),
   analista: "",
   id_muestra: "",
@@ -106,6 +106,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
         meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
         id_muestra: ensayoToEdit.id,
+        analista: ensayoToEdit.analista || "",
       };
       reset(formData);
     } else {
@@ -119,7 +120,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     // Melt Index
     const mediciones = values.meltIndexMediciones;
     const valoresNumericos = mediciones
-      .map(m => parseFloat(m.value))
+      .map(m => parseFloat(String(m.value)))
       .filter(v => !isNaN(v) && v > 0);
 
     let promedio = 0;
@@ -130,7 +131,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     const miCalculado = promedio > 0 ? promedio * 2 : 0;
     setMeltIndexCalculado(miCalculado);
     
-    const reportado = parseFloat(values.melt_index_reportado);
+    const reportado = parseFloat(String(values.melt_index_reportado));
     if (!isNaN(reportado) && reportado > 0 && miCalculado > 0) {
       const variacion = ((miCalculado - reportado) / reportado) * 100;
       setMeltIndexVariacion(variacion);
@@ -139,9 +140,9 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     }
 
     // Densidad
-    const densidadLiquido = parseFloat(values.densidad_liquido);
-    const masaAire = parseFloat(values.masa_aire);
-    const masaAgua = parseFloat(values.masa_agua);
+    const densidadLiquido = parseFloat(String(values.densidad_liquido));
+    const masaAire = parseFloat(String(values.masa_aire));
+    const masaAgua = parseFloat(String(values.masa_agua));
     if (!isNaN(densidadLiquido) && !isNaN(masaAire) && !isNaN(masaAgua) && (masaAire - masaAgua) !== 0) {
       const resultado = densidadLiquido * (masaAire / (masaAire - masaAgua));
       setDensidadCalculada(resultado);
@@ -150,10 +151,10 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     }
 
     // Negro de Humo y Cenizas
-    const m1 = parseFloat(values.nh_m1);
-    const m2 = parseFloat(values.nh_m2);
-    const m3 = parseFloat(values.nh_m3);
-    const m4 = parseFloat(values.nh_m4);
+    const m1 = parseFloat(String(values.nh_m1));
+    const m2 = parseFloat(String(values.nh_m2));
+    const m3 = parseFloat(String(values.nh_m3));
+    const m4 = parseFloat(String(values.nh_m4));
     if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && (m2 - m1) !== 0) {
       if (!isNaN(m4)) {
         const nh = ((m3 - m4) / (m2 - m1)) * 100;
@@ -178,8 +179,9 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
   const onSubmit = async (data: any) => {
     const ensayoData = {
+        ...ensayoToEdit,
         ...data,
-        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value).filter((v: string) => v !== ''),
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string | number}) => m.value).filter((v: string | number) => v !== ''),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,
@@ -192,8 +194,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
     try {
         if (isEditing && ensayoToEdit?.id) {
-            const fullEnsayoData = { ...ensayoToEdit, ...ensayoData, id: ensayoToEdit.id, tipo: 'Reprocesado' };
-            await updateEnsayo(ensayoToEdit.id, fullEnsayoData as Partial<Ensayo>);
+            await updateEnsayo(ensayoToEdit.id, ensayoData as Partial<Ensayo>);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
             toast({
                 title: "Ensayo Actualizado",
@@ -233,7 +234,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -541,7 +542,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         </CardContent>
       </Card>
 
-      <div className="flex justify-end pt-4 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
+      <div className="flex justify-end pt-4 sticky bottom-0 bg-background/95">
         <Button type="submit">
           {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
           {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}

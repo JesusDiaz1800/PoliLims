@@ -116,6 +116,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
           meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
+          analista: ensayoToEdit.analista || "",
         };
         reset(formData);
     } else {
@@ -188,6 +189,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
 
   const onSubmit = async (data: any) => {
     const ensayoData = {
+        ...ensayoToEdit,
         ...data,
         meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string | number}) => m.value).filter((v: string | number) => v !== ''),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
@@ -201,8 +203,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
 
     try {
         if (isEditing && ensayoToEdit?.id) {
-            const fullEnsayoData = { ...ensayoToEdit, ...ensayoData, id: ensayoToEdit.id, tipo: 'Materia Prima' };
-            await updateEnsayo(ensayoToEdit.id, fullEnsayoData as Partial<Ensayo>);
+            await updateEnsayo(ensayoToEdit.id, ensayoData as Partial<Ensayo>);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de materia prima para ${data.producto}`});
             toast({
                 title: "Ensayo Actualizado",
@@ -244,7 +245,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -603,7 +604,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
         </CardContent>
       </Card>
 
-      <div className="flex justify-end pt-4 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
+      <div className="flex justify-end pt-4 sticky bottom-0 bg-background/95">
         <Button type="submit">
             {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
             {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
