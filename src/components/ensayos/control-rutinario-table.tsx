@@ -205,7 +205,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                             <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
                             <DropdownMenuItem disabled>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)} disabled={true}>
+                            <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)}>
                               <TestTube className="mr-2 h-4 w-4" />
                               Ingresar Ensayos Mecánicos
                             </DropdownMenuItem>

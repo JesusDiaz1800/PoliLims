@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -241,5 +242,3 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
         </Dialog>
     );
 }
-
-    
