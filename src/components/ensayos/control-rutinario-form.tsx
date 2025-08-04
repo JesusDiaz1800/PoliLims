@@ -208,7 +208,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             const newEnsayo = {
                 id_muestra: newRegistro.id,
                 tipo: tipoEnsayo,
-                analista: 'Jesus Diaz', // Default analyst
+                analista: '', // Default analyst, lab will assign it
                 fecha: format(new Date(), "yyyy-MM-dd"), // Fecha del Ensayo es hoy
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,
