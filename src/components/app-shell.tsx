@@ -121,6 +121,9 @@ const menuItems = [
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { href: '/biblioteca', label: 'Biblioteca', icon: Library },
     { type: 'separator' },
+    { href: '/soporte', label: 'Asistente IA', icon: Bot },
+    { href: '/assistant', label: 'Asistente Código', icon: Code2 },
+    { type: 'separator' },
     {
         label: 'Administración',
         icon: Settings,
