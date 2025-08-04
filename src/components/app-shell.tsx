@@ -50,8 +50,7 @@ import {
     Ship,
     BookCheck,
     History,
-    Library,
-    FileQuestion
+    Library
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -92,12 +91,6 @@ const operacionesSubMenu = [
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
 ];
 
-const soporteSubMenu = [
-    { href: '/troubleshooting', label: 'Diagnóstico IA', icon: Bot },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
-    { href: '/document-assistant', label: 'Asistente de Documentos', icon: FileQuestion },
-];
-
 const equiposSubMenu = [
     { href: '/equipos', label: 'Inventario de Equipos', icon: BookCheck },
     { href: '/equipos/control', label: 'Control de Equipos', icon: History },
@@ -133,12 +126,6 @@ const menuItems = [
         icon: Settings,
         subMenu: administracionSubMenu,
         href: '/administracion'
-    },
-    {
-        label: 'Soporte IA',
-        icon: Bot,
-        subMenu: soporteSubMenu,
-        href: '/soporte'
     },
 ];
 
@@ -228,8 +215,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
         if (pathname.startsWith('/assistant')) return 'Asistente de Código';
-        if (pathname.startsWith('/troubleshooting')) return 'Diagnóstico con IA';
-        if (pathname.startsWith('/document-assistant')) return 'Asistente de Documentos';
+        if (pathname.startsWith('/soporte')) return 'Asistente IA de Laboratorio';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
         if (pathname.startsWith('/importaciones')) return 'Control de Importaciones';
         if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
