@@ -97,16 +97,19 @@ const menuItems = [
     { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-     { type: 'separator' },
+    { href: '/portal', label: 'Portal de Clientes', icon: Users },
+    { type: 'separator' },
     {
-        label: 'Gestión y Soporte',
+        label: 'Administración',
         icon: Settings,
-        subMenu: [
-            { href: '/portal', label: 'Portal de Clientes', icon: Users },
-            { type: 'separator' },
-            { label: 'Administración', icon: Settings, subMenu: administracionSubMenu, href: '/administracion' },
-            { label: 'Soporte IA', icon: Bot, subMenu: soporteSubMenu, href: '/soporte' }
-        ],
+        subMenu: administracionSubMenu,
+        href: '/administracion'
+    },
+    {
+        label: 'Soporte IA',
+        icon: Bot,
+        subMenu: soporteSubMenu,
+        href: '/soporte'
     },
 ];
 
