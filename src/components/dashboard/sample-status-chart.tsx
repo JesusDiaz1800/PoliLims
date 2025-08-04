@@ -2,9 +2,11 @@
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
+import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 interface SampleStatusChartProps {
     data: Ensayo[];
@@ -36,9 +38,12 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
     return statusOrder.map((name, index) => ({
       name,
       value: statusCounts[name],
-      fill: `hsl(var(--chart-${(index % 5) + 1}))`
+      fill: `var(--color-chart-${(index % 5) + 1})`
     })).filter(d => d.value > 0);
   }, [data]);
+  
+  const total = React.useMemo(() => chartData.reduce((acc, curr) => acc + curr.value, 0), [chartData]);
+
 
   return (
     <Card>
@@ -47,41 +52,64 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
             <CardDescription>Distribución porcentual de los ensayos según su estado actual.</CardDescription>
         </CardHeader>
         <CardContent>
-            <ResponsiveContainer width="100%" height={150}>
-                <PieChart>
-                    <Pie
-                        data={chartData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={60}
-                        innerRadius={40}
-                        paddingAngle={5}
-                        dataKey="value"
-                        label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                    >
-                        {chartData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
-                        ))}
-                    </Pie>
-                    <Legend 
-                        iconSize={10} 
-                        layout="vertical" 
-                        verticalAlign="middle" 
-                        align="right"
-                        payload={chartData.map(item => ({
-                            id: item.name,
-                            type: "square",
-                            value: `${item.name} (${item.value})`,
-                            color: item.fill
-                        }))}
-                        wrapperStyle={{
-                            fontSize: '14px',
-                            lineHeight: '24px'
-                        }}
-                    />
-                </PieChart>
-            </ResponsiveContainer>
+             <div className="flex items-center gap-4">
+                 <div className="w-1/2">
+                    <ResponsiveContainer width="100%" height={150}>
+                        <PieChart>
+                            <style>
+                                {
+                                    `
+                                    :root {
+                                        --color-chart-1: hsl(var(--chart-1));
+                                        --color-chart-2: hsl(var(--chart-2));
+                                        --color-chart-3: hsl(var(--chart-3));
+                                        --color-chart-4: hsl(var(--chart-4));
+                                        --color-chart-5: hsl(var(--chart-5));
+                                    }
+                                    .dark {
+                                        --color-chart-1: hsl(var(--chart-1));
+                                        --color-chart-2: hsl(var(--chart-2));
+                                        --color-chart-3: hsl(var(--chart-3));
+                                        --color-chart-4: hsl(var(--chart-4));
+                                        --color-chart-5: hsl(var(--chart-5));
+                                    }
+                                    `
+                                }
+                            </style>
+                            <Pie
+                                data={chartData}
+                                cx="50%"
+                                cy="50%"
+                                labelLine={false}
+                                outerRadius={60}
+                                innerRadius={40}
+                                paddingAngle={5}
+                                dataKey="value"
+                                label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                            >
+                                {chartData.map((entry) => (
+                                    <Cell key={entry.name} fill={entry.fill} stroke={entry.fill} />
+                                ))}
+                            </Pie>
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+                <div className="w-1/2 space-y-2">
+                    {chartData.map((item) => (
+                        <div key={item.name} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.fill }}></span>
+                                <span className="text-sm text-muted-foreground">{item.name}</span>
+                            </div>
+                            <span className="font-semibold text-sm">{item.value}</span>
+                        </div>
+                    ))}
+                    <div className="flex items-center justify-between border-t pt-2 mt-2">
+                        <span className="text-sm font-semibold text-muted-foreground">Total</span>
+                        <span className="font-bold">{total}</span>
+                    </div>
+                </div>
+            </div>
         </CardContent>
     </Card>
   )
