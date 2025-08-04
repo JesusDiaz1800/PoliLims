@@ -126,6 +126,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
             <Table className="whitespace-nowrap">
               <TableHeader>
                 <TableRow>
+                  <TableHead className="sticky left-0 bg-card z-10">Acciones</TableHead>
                   <TableHead>Fecha ingreso</TableHead>
                   <TableHead>Hora</TableHead>
                   <TableHead>Inspector</TableHead>
@@ -151,7 +152,6 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                   <TableHead className="text-right">Densidad [g/cm³]</TableHead>
                   <TableHead className="text-right">% Negro Humo</TableHead>
                   <TableHead className="text-right">% Fibra Vidrio</TableHead>
-                  <TableHead className="sticky right-0 bg-card">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -159,6 +159,49 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                   const labResults = findLabResults(registro.id);
                   return (
                   <TableRow key={registro.id}>
+                    <TableCell className="sticky left-0 bg-card z-10">
+                      <AlertDialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
+                            <DropdownMenuItem disabled>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)}>
+                              <TestTube className="mr-2 h-4 w-4" />
+                              Ingresar Ensayos Mecánicos
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                             <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Eliminar
+                                </DropdownMenuItem>
+                             </AlertDialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                         <AlertDialogContent>
+                              <AlertDialogHeader>
+                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el registro de control
+                                  <span className="font-bold"> {registro.id}</span> de los servidores.
+                              </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(registro.id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                  Sí, eliminar registro
+                              </AlertDialogAction>
+                              </AlertDialogFooter>
+                          </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
                     <TableCell>{registro.fecha}</TableCell>
                     <TableCell>{registro.hora}</TableCell>
                     <TableCell>{registro.inspector}</TableCell>
@@ -208,49 +251,6 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                     <TableCell className="text-right font-mono">{formatValue(labResults?.densidadCalculada, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(labResults?.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(labResults?.fvTotalPorcentaje, 2)}%</TableCell>
-                    <TableCell className="sticky right-0 bg-card">
-                      <AlertDialog>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
-                            <DropdownMenuItem disabled>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)}>
-                              <TestTube className="mr-2 h-4 w-4" />
-                              Ingresar Ensayos Mecánicos
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                             <AlertDialogTrigger asChild>
-                                <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Eliminar
-                                </DropdownMenuItem>
-                             </AlertDialogTrigger>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                         <AlertDialogContent>
-                              <AlertDialogHeader>
-                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el registro de control
-                                  <span className="font-bold"> {registro.id}</span> de los servidores.
-                              </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDelete(registro.id)} className={cn(buttonVariants({variant: "destructive"}))}>
-                                  Sí, eliminar registro
-                              </AlertDialogAction>
-                              </AlertDialogFooter>
-                          </AlertDialogContent>
-                      </AlertDialog>
-                    </TableCell>
                   </TableRow>
                 )})}
               </TableBody>
