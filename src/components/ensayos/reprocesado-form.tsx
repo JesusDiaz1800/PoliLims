@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -242,7 +243,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form {...form} form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>

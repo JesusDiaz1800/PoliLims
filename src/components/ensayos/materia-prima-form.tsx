@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -253,7 +254,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form {...form} form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -619,5 +620,5 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
         </Button>
       </div>
     </Form>
-  );
+  )
 }
