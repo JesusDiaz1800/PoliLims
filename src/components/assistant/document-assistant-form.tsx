@@ -86,7 +86,7 @@ export function DocumentAssistantForm() {
                     </CardHeader>
                     <CardContent>
                         <div className="bg-secondary p-4 rounded-md space-y-4">
-                            <p className="text-sm text-secondary-foreground">
+                            <p className="text-sm text-secondary-foreground whitespace-pre-wrap">
                                 {state.data.response}
                             </p>
                         </div>

@@ -13,6 +13,28 @@ import {z} from 'genkit';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
+const dataDirectory = path.join(process.cwd(), 'public', 'data');
+
+// Define a tool for the AI to list available documents.
+const listAvailableDocuments = ai.defineTool(
+  {
+    name: 'listAvailableDocuments',
+    description: 'Lists the available documents in the knowledge base.',
+    inputSchema: z.object({}),
+    outputSchema: z.array(z.string()),
+  },
+  async () => {
+    try {
+      const files = await fs.readdir(dataDirectory);
+      return files.filter(file => file.endsWith('.txt'));
+    } catch (error) {
+      console.error('Failed to list documents:', error);
+      return ['Error: Could not retrieve the list of documents.'];
+    }
+  }
+);
+
+
 // Define a tool for the AI to get document content.
 const getDocumentContent = ai.defineTool(
   {
@@ -27,7 +49,7 @@ const getDocumentContent = ai.defineTool(
     try {
       // In a real app, this would fetch from a secure storage like Firebase Storage.
       // For this demo, we'll read from the local /public/data directory.
-      const filePath = path.join(process.cwd(), 'public', 'data', documentName);
+      const filePath = path.join(dataDirectory, documentName);
       const content = await fs.readFile(filePath, 'utf-8');
       return content;
     } catch (error) {
@@ -56,14 +78,16 @@ const prompt = ai.definePrompt({
   name: 'documentAssistantPrompt',
   input: {schema: DocumentAssistantInputSchema},
   output: {schema: DocumentAssistantOutputSchema},
-  tools: [getDocumentContent],
+  tools: [getDocumentContent, listAvailableDocuments],
   prompt: `You are an expert assistant for the PoliLIMS laboratory. Your role is to answer questions based *only* on the content of the provided documents.
 
   The user has asked a question. Follow these steps:
-  1. Use the 'getDocumentContent' tool to retrieve the content of the relevant document(s). For now, assume the relevant document is 'PNT-Melt-Index.txt' if the user asks about Melt Index or MFI.
-  2. Analyze the retrieved document content.
-  3. Formulate a clear, concise, and accurate answer to the user's question based *exclusively* on the information from the document.
-  4. If the document does not contain the answer, state that the information is not available in the provided document. Do not use your general knowledge.
+  1. Use the 'listAvailableDocuments' tool to see which documents are available.
+  2. Based on the user's question and the list of documents, determine which document is most likely to contain the answer.
+  3. Use the 'getDocumentContent' tool to retrieve the content of that specific document.
+  4. Analyze the retrieved document content.
+  5. Formulate a clear, concise, and accurate answer to the user's question based *exclusively* on the information from the document.
+  6. If the documents do not contain the answer, state that the information is not available in the provided knowledge base. Do not use your general knowledge.
 
   User's Question: {{{prompt}}}
   `,

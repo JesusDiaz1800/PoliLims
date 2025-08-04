@@ -1,0 +1,44 @@
+Procedimiento Normalizado de Trabajo: Determinación de Contenido de Negro de Humo
+Código: PNT-QC-005
+Versión: 3.1
+Fecha: 15-01-2024
+
+1. Objetivo
+Determinar el contenido de negro de humo en compuestos de polietileno, polipropileno y polibutileno.
+
+2. Alcance
+Este procedimiento aplica a todas las materias primas y productos terminados de poliolefinas que contienen negro de humo.
+
+3. Equipos y Materiales
+- Mufla con control de temperatura (hasta 600 °C).
+- Balanza analítica (precisión 0.1 mg).
+- Crisoles de porcelana.
+- Desecador con sílica gel.
+- Pinzas para crisol.
+- Guantes resistentes al calor.
+- Muestra representativa del material a analizar.
+- Nitrógeno gaseoso de alta pureza.
+
+4. Procedimiento
+4.1. Preparación
+  4.1.1. Calentar los crisoles vacíos en la mufla a 600 °C durante 1 hora.
+  4.1.2. Enfriar los crisoles en el desecador hasta temperatura ambiente.
+  4.1.3. Pesar el crisol vacío (m1) con una precisión de 0.1 mg.
+
+4.2. Ensayo
+  4.2.1. Pesar aproximadamente 1 g de la muestra en el crisol (m2).
+  4.2.2. Introducir el crisol con la muestra en la mufla.
+  4.2.3. Purgar la mufla con nitrógeno a un flujo de 1.7 L/min durante 10 minutos.
+  4.2.4. Calentar la mufla a una temperatura de 550 °C ± 10 °C. Mantener la muestra a esta temperatura durante 20 minutos bajo flujo de nitrógeno.
+  4.2.5. Apagar el flujo de nitrógeno y enfriar la mufla a 300 °C.
+  4.2.6. Pesar el crisol con el residuo (m3).
+  4.2.7. Introducir nuevamente el crisol en la mufla y calentar a 600 °C durante 20 minutos, esta vez en atmósfera de aire para quemar el negro de humo.
+  4.2.8. Enfriar en desecador y pesar el crisol con las cenizas (m4).
+
+5. Cálculos
+5.1. El contenido de negro de humo (%NH) se calcula con la siguiente fórmula:
+   %NH = ((m3 - m4) / (m2 - m1)) * 100
+
+6. Criterios de Aceptación
+- Para la mayoría de las tuberías de HDPE, el contenido de negro de humo debe estar entre 2.0% y 2.5%.
+- Consultar la especificación técnica del producto para valores exactos.
