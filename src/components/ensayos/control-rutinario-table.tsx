@@ -20,7 +20,7 @@ import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, T
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto } from "@/lib/matriz-datos";
-import { useDynamicData } from "@/context/data-context";
+import { useDynamicData, type Ensayo } from "@/context/data-context";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,7 +44,7 @@ interface ControlRutinarioTableProps {
 }
 
 export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) {
-  const { registros, deleteRegistro } = useDynamicData();
+  const { registros, deleteRegistro, ensayos } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
@@ -89,6 +89,10 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
     if (value === null || value === undefined || isNaN(value)) return 'N/A';
     return Number(value).toFixed(decimals);
   }
+  
+  const findLabResults = (registroId: string): Ensayo | undefined => {
+    return ensayos.find(e => e.id_muestra === registroId);
+  }
 
 
   return (
@@ -98,7 +102,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="space-y-1.5 flex-1">
                   <CardTitle>Historial de Controles Rutinarios</CardTitle>
-                  <CardDescription>Visualice y filtre los últimos registros de control de calidad ingresados.</CardDescription>
+                  <CardDescription>Visualice y filtre los últimos registros de control de calidad ingresados, incluyendo resultados de laboratorio.</CardDescription>
               </div>
               <div className="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
                    <div className="relative w-full sm:w-auto">
@@ -142,11 +146,18 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                   <TableHead>Resultado</TableHead>
                   <TableHead>Enviado a Lab</TableHead>
                   <TableHead>Ensayos Mecánicos</TableHead>
+                  <TableHead className="text-right">M.I. [g/10min]</TableHead>
+                  <TableHead className="text-right">Var. M.I. [%]</TableHead>
+                  <TableHead className="text-right">Densidad [g/cm³]</TableHead>
+                  <TableHead className="text-right">% Negro Humo</TableHead>
+                  <TableHead className="text-right">% Fibra Vidrio</TableHead>
                   <TableHead className="sticky right-0 bg-card">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredRegistros.map((registro) => (
+                {filteredRegistros.map((registro) => {
+                  const labResults = findLabResults(registro.id);
+                  return (
                   <TableRow key={registro.id}>
                     <TableCell>{registro.fecha}</TableCell>
                     <TableCell>{registro.hora}</TableCell>
@@ -192,6 +203,11 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                             Pendiente
                         </Badge>
                     </TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(labResults?.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(labResults?.meltIndexVariacion, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(labResults?.densidadCalculada, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(labResults?.negroHumoCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(labResults?.fvTotalPorcentaje, 2)}%</TableCell>
                     <TableCell className="sticky right-0 bg-card">
                       <AlertDialog>
                         <DropdownMenu>
@@ -236,7 +252,7 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
                       </AlertDialog>
                     </TableCell>
                   </TableRow>
-                ))}
+                )})}
               </TableBody>
             </Table>
             <ScrollBar orientation="horizontal" />
