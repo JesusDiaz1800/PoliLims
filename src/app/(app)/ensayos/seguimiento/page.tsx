@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData } from "@/context/data-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
@@ -43,6 +43,7 @@ function getStatusVariant(status: string) {
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
   const { ensayos } = useDynamicData();
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
   
@@ -63,15 +64,7 @@ export default function SeguimientoEnsayosPage() {
 
   const handleEditClick = (ensayo: Ensayo) => {
     let path = '';
-    let queryParams = `?id=${ensayo.id}`;
-
-    // Pass the full user query string to maintain filters
-    if (typeof window !== 'undefined') {
-        const currentQuery = new URLSearchParams(window.location.search);
-        currentQuery.set('id', ensayo.id);
-        queryParams = `?${currentQuery.toString()}`;
-    }
-
+    const userQuery = searchParams.toString();
 
     switch (ensayo.tipo) {
       case 'Tubería HDPE':
@@ -90,11 +83,11 @@ export default function SeguimientoEnsayosPage() {
         path = `/ensayos/seguimiento`; 
         break;
     }
-    router.push(`${path}${queryParams}`);
+    router.push(`${path}?id=${ensayo.id}&${userQuery}`);
   };
 
   const formatValue = (value: any, decimals: number = 2) => {
-    if (value === null || value === undefined || isNaN(value)) return 'N/A';
+    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
     return Number(value).toFixed(decimals);
   }
 
@@ -139,7 +132,7 @@ export default function SeguimientoEnsayosPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Producto</TableHead>
+              <TableHead>Producto / ID</TableHead>
               <TableHead>Lote</TableHead>
               <TableHead>Analista</TableHead>
               <TableHead className="text-right">Melt Index</TableHead>
@@ -164,9 +157,9 @@ export default function SeguimientoEnsayosPage() {
                     <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell className="text-center">
-                        <Badge className={cn("border-transparent", getStatusVariant(ensayo.estado))}>
+                        <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
                             {ensayo.estado}
                         </Badge>
                     </TableCell>
