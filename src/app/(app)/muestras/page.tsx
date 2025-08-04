@@ -1,23 +1,29 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { FlaskConical } from "lucide-react";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Gestión de Muestras',
-};
+"use client";
+
+import { GenericFormPage } from '@/components/generic-form-page';
+import { FlaskConical } from 'lucide-react';
 
 export default function MuestrasPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Gestión de Muestras</CardTitle>
-        <CardDescription>Administre el inventario y el ciclo de vida de las muestras.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <FlaskConical className="w-16 h-16 text-muted-foreground/50 mb-4" />
-        <h3 className="text-xl font-semibold font-headline">Gestión de Muestras Próximamente</h3>
-        <p className="text-muted-foreground mt-2">Aquí podrá registrar, rastrear y gestionar todas las muestras del laboratorio.</p>
-      </CardContent>
-    </Card>
-  );
+    const formFields = [
+        { name: 'id_muestra', label: 'ID de Muestra', type: 'text', placeholder: 'Ej: M-2024-07-001' },
+        { name: 'tipo_muestra', label: 'Tipo de Muestra', type: 'text', placeholder: 'Ej: Tubería HDPE' },
+        { name: 'fecha_recepcion', label: 'Fecha de Recepción', type: 'date' },
+        { name: 'cliente', label: 'Cliente', type: 'text', placeholder: 'Ej: Cliente Interno / Nombre Cliente' },
+        { name: 'estado', label: 'Estado de la Muestra', type: 'select', options: ['Recibida', 'En Almacenamiento', 'En Ensayo', 'Archivada', 'Desechada'] },
+        { name: 'ubicacion', label: 'Ubicación de Almacenamiento', type: 'text', placeholder: 'Ej: Refrigerador A, Estante 3' },
+        { name: 'responsable', label: 'Responsable de Recepción', type: 'text', placeholder: 'Nombre del analista' },
+    ];
+
+    return (
+        <GenericFormPage
+            title="Gestión de Muestras"
+            description="Administre el inventario y el ciclo de vida de las muestras del laboratorio."
+            icon={FlaskConical}
+            formFields={formFields}
+            formTitle="Registrar Nueva Muestra"
+            formDescription="Complete los campos para registrar una nueva muestra en el sistema."
+            buttonText="Guardar Muestra"
+        />
+    );
 }

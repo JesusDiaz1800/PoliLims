@@ -1,23 +1,30 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Beaker } from "lucide-react";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Gestión de Equipos',
-};
+"use client";
+
+import { GenericFormPage } from '@/components/generic-form-page';
+import { Beaker } from 'lucide-react';
 
 export default function EquiposPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Gestión de Equipos</CardTitle>
-        <CardDescription>Administre el inventario, calibración y mantenimiento de los equipos.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <Beaker className="w-16 h-16 text-muted-foreground/50 mb-4" />
-        <h3 className="text-xl font-semibold font-headline">Gestión de Equipos Próximamente</h3>
-        <p className="text-muted-foreground mt-2">Esta sección permitirá administrar todos los equipos del laboratorio.</p>
-      </CardContent>
-    </Card>
-  );
+    const formFields = [
+        { name: 'nombre_equipo', label: 'Nombre del Equipo', type: 'text', placeholder: 'Ej: Espectrómetro FTIR' },
+        { name: 'id_equipo', label: 'ID de Equipo', type: 'text', placeholder: 'Ej: EQ-FTIR-01' },
+        { name: 'marca', label: 'Marca', type: 'text', placeholder: 'Ej: PerkinElmer' },
+        { name: 'modelo', label: 'Modelo', type: 'text', placeholder: 'Ej: Spectrum Two' },
+        { name: 'fecha_adquisicion', label: 'Fecha de Adquisición', type: 'date' },
+        { name: 'estado', label: 'Estado', type: 'select', options: ['Activo', 'En Mantenimiento', 'Inactivo', 'Requiere Calibración'] },
+        { name: 'proxima_calibracion', label: 'Próxima Calibración', type: 'date' },
+        { name: 'ubicacion', label: 'Ubicación', type: 'text', placeholder: 'Ej: Sala de Instrumentación' },
+    ];
+
+    return (
+        <GenericFormPage
+            title="Gestión de Equipos"
+            description="Administre el inventario, calibración y mantenimiento de los equipos del laboratorio."
+            icon={Beaker}
+            formFields={formFields}
+            formTitle="Registrar Nuevo Equipo"
+            formDescription="Complete los detalles para añadir un nuevo equipo al inventario."
+            buttonText="Guardar Equipo"
+        />
+    );
 }

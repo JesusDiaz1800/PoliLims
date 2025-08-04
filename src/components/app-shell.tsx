@@ -46,7 +46,8 @@ import {
     LogOut,
     Cylinder,
     Codepen,
-    Code2
+    Code2,
+    Experiment
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -72,7 +73,18 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
     { type: 'separator' },
-    { href: '/ensayos/seguimiento', label: 'Seguimiento', icon: ClipboardList },
+    { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
+];
+
+const laboratorioSubMenu = [
+    { href: '/muestras', label: 'Gestión de Muestras', icon: FlaskConical },
+    {
+        label: 'Ensayos',
+        icon: SlidersHorizontal,
+        subMenu: ensayosSubMenu,
+        href: '/ensayos'
+    },
+    { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
 ];
 
 const administracionSubMenu = [
@@ -82,29 +94,33 @@ const administracionSubMenu = [
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
 ];
 
+const soporteSubMenu = [
+    { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
+    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
+];
+
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { href: '/reports', label: 'Informes', icon: FileText },
     { type: 'separator' },
     {
-        label: 'Ensayos',
-        icon: SlidersHorizontal,
-        subMenu: ensayosSubMenu,
-        href: '/ensayos'
+        label: 'Laboratorio',
+        icon: Experiment,
+        subMenu: laboratorioSubMenu,
+        href: '/laboratorio'
     },
-    { type: 'separator' },
-    { href: '/muestras', label: 'Muestras', icon: FlaskConical },
-    { href: '/equipos', label: 'Equipos', icon: Beaker },
-    { href: '/portal', label: 'Portal de Clientes', icon: Users },
-    { type: 'separator' },
-    { href: '/troubleshooting', label: 'Soporte IA', icon: Bot },
-    { href: '/assistant', label: 'Asistente IA', icon: Code2 },
+     { type: 'separator' },
     {
-        label: 'Administración',
+        label: 'Gestión y Soporte',
         icon: Settings,
-        subMenu: administracionSubMenu,
-        href: '/administracion'
+        subMenu: [
+            { href: '/portal', label: 'Portal de Clientes', icon: Users },
+            { type: 'separator' },
+            { label: 'Administración', icon: Settings, subMenu: administracionSubMenu, href: '/administracion' },
+            { label: 'Soporte IA', icon: Bot, subMenu: soporteSubMenu, href: '/soporte' }
+        ],
+        href: '/gestion'
     },
 ];
 
@@ -136,34 +152,8 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
             if (subItem.type === 'separator') {
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
             }
-            if (subItem.subItems) {
-                return (
-                    <Collapsible key={subItem.label || subItem.href} defaultOpen={subItem.href && pathname.startsWith(subItem.href)} className="w-full" disabled={disabled}>
-                         <CollapsibleTrigger asChild disabled={disabled}>
-                             <SidebarMenuButton size="sm" variant="ghost" className="w-full justify-between group/sub-button pr-3" disabled={disabled} aria-disabled={disabled}>
-                                <div className="flex items-center gap-3">
-                                    {subItem.icon && <subItem.icon className="size-4" />}
-                                    <span>{subItem.label}</span>
-                                </div>
-                                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/sub-button:rotate-180" />
-                            </SidebarMenuButton>
-                         </CollapsibleTrigger>
-                         <CollapsibleContent>
-                             <SidebarMenu className="pl-5 border-l-2 border-dashed border-sidebar-border/30">
-                                 {subItem.subItems.map((childItem: any) => (
-                                     <SidebarMenuItem key={childItem.href}>
-                                         <SidebarMenuButton asChild size="sm" variant="ghost" className="w-full justify-start" disabled={disabled} aria-disabled={disabled}>
-                                             <Link href={`${childItem.href}?${userQuery}`}>
-                                                 {childItem.icon ? <childItem.icon className="size-3 mr-2 text-primary-foreground/80" /> : <div className="w-3 mr-2" /> }
-                                                 {childItem.label}
-                                             </Link>
-                                         </SidebarMenuButton>
-                                     </SidebarMenuItem>
-                                 ))}
-                             </SidebarMenu>
-                         </CollapsibleContent>
-                    </Collapsible>
-                );
+            if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
+                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
             }
             const isSubItemActive = pathname === subItem.href;
             
@@ -213,6 +203,11 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/basedatos')) return 'Base de Datos';
         if (pathname.startsWith('/administracion/permisos')) return 'Roles y Permisos';
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
+        if (pathname.startsWith('/assistant')) return 'Asistente de Código';
+        if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
+        if (pathname.startsWith('/muestras')) return 'Gestión de Muestras';
+        if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
+        if (pathname.startsWith('/portal')) return 'Portal de Clientes';
         
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;
@@ -241,7 +236,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     )}
                     <SidebarMenu>
                         {menuItems.map((item, index) => {
-                            const isDisabled = isInspectorView && item.href !== '/ensayos/control-rutinario' && item.href !== '/dashboard';
+                            const isDisabled = isInspectorView && !['/dashboard', '/ensayos/control-rutinario'].some(p => item.href?.startsWith(p));
 
                             if (item.type === 'separator') {
                                 return <SidebarSeparator key={`sep-${index}`} className="my-2" />;

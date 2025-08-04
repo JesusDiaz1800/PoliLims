@@ -1,23 +1,28 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Users } from "lucide-react";
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Portal de Clientes',
-};
+"use client";
+
+import { GenericFormPage } from '@/components/generic-form-page';
+import { Users } from 'lucide-react';
 
 export default function ClientPortalPage() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Portal de Clientes</CardTitle>
-        <CardDescription>Un portal dedicado para que los clientes envíen muestras.</CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center min-h-[400px] text-center">
-        <Users className="w-16 h-16 text-muted-foreground/50 mb-4" />
-        <h3 className="text-xl font-semibold font-headline">Portal de Clientes Próximamente</h3>
-        <p className="text-muted-foreground mt-2">Una interfaz web personalizada para que los clientes envíen muestras de forma independiente.</p>
-      </CardContent>
-    </Card>
-  );
+    const formFields = [
+        { name: 'nombre_cliente', label: 'Nombre del Cliente', type: 'text', placeholder: 'Su nombre o el de su empresa' },
+        { name: 'email_cliente', label: 'Correo Electrónico', type: 'email', placeholder: 'sudireccion@ejemplo.com' },
+        { name: 'telefono_cliente', label: 'Teléfono de Contacto', type: 'tel', placeholder: '+56 9 1234 5678' },
+        { name: 'tipo_muestra', label: 'Tipo de Muestra Enviada', type: 'text', placeholder: 'Ej: Granulado de PP, Trozo de tubería' },
+        { name: 'cantidad_muestra', label: 'Cantidad', type: 'number', placeholder: 'Ej: 5' },
+        { name: 'ensayos_requeridos', label: 'Ensayos Requeridos', type: 'textarea', placeholder: 'Liste los ensayos que necesita (ej: Melt Index, Densidad, etc.)' },
+    ];
+
+    return (
+        <GenericFormPage
+            title="Portal de Clientes"
+            description="Un portal dedicado para que los clientes envíen solicitudes de ensayo de manera sencilla."
+            icon={Users}
+            formFields={formFields}
+            formTitle="Enviar Nueva Solicitud de Ensayo"
+            formDescription="Por favor, complete el formulario para registrar su muestra y los ensayos que necesita."
+            buttonText="Enviar Solicitud"
+        />
+    );
 }
