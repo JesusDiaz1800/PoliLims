@@ -5,7 +5,7 @@ import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
@@ -82,7 +82,6 @@ const defaultFormValues = {
 export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
-  const router = useRouter();
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -96,7 +95,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
               ...defaultFormValues,
               ...ensayo,
               fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
-              meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones : [{ value: '' }],
+              meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
               id_muestra: ensayo.id,
           };
           reset(formData);
@@ -171,6 +170,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
     const ensayoData: Partial<Ensayo> = {
         ...ensayo,
         ...data,
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value).filter((v: string) => v !== ''),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,
@@ -199,8 +199,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
   ];
 
   return (
-    <Form {...form}>
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -259,7 +258,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                   </FormControl>
                     <SelectContent>
                         {analistas.map(analista => (
-                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                          <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
@@ -527,7 +526,6 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
             Guardar Resultados
         </Button>
       </div>
-    </form>
     </Form>
   );
 }

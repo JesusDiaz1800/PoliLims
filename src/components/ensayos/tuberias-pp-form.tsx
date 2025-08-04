@@ -5,7 +5,7 @@ import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
 import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
@@ -88,7 +88,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
         ...defaultFormValues,
         ...ensayo,
         fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
-        meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones : [{ value: '' }],
+        meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
         id_muestra: ensayo.id,
       };
       reset(formData);
@@ -210,6 +210,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
      const ensayoData: Partial<Ensayo> = {
         ...ensayo,
         ...data,
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value).filter((v: string) => v !== ''),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,
@@ -236,8 +237,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   ];
 
   return (
-    <Form {...form}>
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit} className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -295,7 +295,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
                     </FormControl>
                       <SelectContent>
                           {analistas.map(analista => (
-                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                            <SelectItem key={analista.value} value={analista.value}>{analista.label}</SelectItem>
                           ))}
                       </SelectContent>
                   </Select>
@@ -540,7 +540,6 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
           Guardar Resultados
         </Button>
       </div>
-    </form>
     </Form>
   );
 }
