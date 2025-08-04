@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
-import { DataProvider } from '@/context/data-context';
+import { DataProvider, getInitialData } from '@/context/data-context';
 import { findUserByUsername } from '@/services/user-service';
 
 export const metadata: Metadata = {
@@ -26,6 +26,8 @@ export default async function AppLayout({
     const username = (searchParams?.user as string) || 'jesus.diaz';
     const user = await findUserByUsername(username);
 
+    // Fetch initial data on the server
+    const initialData = await getInitialData();
 
     return (
         <ThemeProvider
@@ -34,7 +36,7 @@ export default async function AppLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider>
+            <DataProvider initialData={initialData}>
                 <div className="bg-background">
                     <SidebarProvider>
                         <AppShell user={user}>

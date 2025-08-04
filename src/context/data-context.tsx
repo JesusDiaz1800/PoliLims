@@ -151,6 +151,26 @@ const demoImportaciones: Importacion[] = [
     { id: 'IMP-003', bl: 'NBO210082100', fecha_embarque: '24-12-2021', sca: '65793', fecha_emision_cert: '21-03-2022', di: '2400302578-7', etiqueta_rango_inicio: '7821908', etiqueta_rango_fin: '7822908', operacion: '170412', proveedor: 'AOLONG', fecha_solicitada: '17-02-2022', fecha_entrega_calidad: '22-02-2022', cantidad_lote: 7202, fecha_devolucion: '21-03-2022', fecha_liberacion: '21-03-2022', ingresado_siss: true, estado: 'CADUCADO' },
 ];
 
+export async function getInitialData() {
+    const today = new Date();
+    const updatedEquipos = demoEquipos.map(equipo => {
+        if (equipo.estado === 'Activo' && isPast(parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date()))) {
+            return { ...equipo, estado: 'Requiere Calibración' as const };
+        }
+        return equipo;
+    });
+
+    return {
+        ensayos: demoEnsayos,
+        registros: demoRegistros,
+        recentActivity: demoRecentActivity,
+        equipos: updatedEquipos,
+        controles: demoControles,
+        noConformidades: demoNoConformidades,
+        importaciones: demoImportaciones
+    };
+}
+
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -273,15 +293,9 @@ export interface Importacion {
     estado?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO';
 }
 
+type InitialData = Awaited<ReturnType<typeof getInitialData>>;
 
-interface DynamicDataContextType {
-  ensayos: Ensayo[];
-  registros: Registro[];
-  recentActivity: RecentActivity[];
-  equipos: Equipo[];
-  controles: ControlEvento[];
-  noConformidades: NoConformidad[];
-  importaciones: Importacion[];
+interface DynamicDataContextType extends InitialData {
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -307,56 +321,43 @@ const DynamicDataContext = createContext<DynamicDataContextType | undefined>(und
 // --- PROVIDER COMPONENT ---
 interface DataProviderProps {
   children: ReactNode;
+  initialData: InitialData;
 }
 
-export const DataProvider = ({ children }: DataProviderProps) => {
+export const DataProvider = ({ children, initialData }: DataProviderProps) => {
   // Static data state
   const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
   const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
   const [isStaticLoaded, setIsStaticLoaded] = useState(false);
 
-  // Dynamic data state (initialized with demo data)
-  const [ensayos, setEnsayos] = useState<Ensayo[]>(demoEnsayos);
-  const [registros, setRegistros] = useState<Registro[]>(demoRegistros);
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(demoRecentActivity);
-  const [equipos, setEquipos] = useState<Equipo[]>(demoEquipos);
-  const [controles, setControles] = useState<ControlEvento[]>(demoControles);
-  const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(demoNoConformidades);
-  const [importaciones, setImportaciones] = useState<Importacion[]>(demoImportaciones);
-  const [isLoading, setIsLoading] = useState(true);
+  // Dynamic data state (initialized with server-side data)
+  const [ensayos, setEnsayos] = useState<Ensayo[]>(initialData.ensayos);
+  const [registros, setRegistros] = useState<Registro[]>(initialData.registros);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialData.recentActivity);
+  const [equipos, setEquipos] = useState<Equipo[]>(initialData.equipos);
+  const [controles, setControles] = useState<ControlEvento[]>(initialData.controles);
+  const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(initialData.noConformidades);
+  const [importaciones, setImportaciones] = useState<Importacion[]>(initialData.importaciones);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load static data once
+  // Load static data once on the client
   useEffect(() => {
     const loadStaticData = async () => {
-      setIsLoading(true);
       try {
         const matrix = await getMatrizProductos();
         setProductMatrix(matrix);
         const products = await getProductsFromSap();
         setSapProducts(products);
-
-        // Check equipment calibration status on load
-        const today = new Date();
-        const updatedEquipos = demoEquipos.map(equipo => {
-            if (equipo.estado === 'Activo' && isPast(parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date()))) {
-                return { ...equipo, estado: 'Requiere Calibración' as const };
-            }
-            return equipo;
-        });
-        setEquipos(updatedEquipos);
-
       } catch (error) {
         console.error("Failed to load initial static data", error);
       } finally {
         setIsStaticLoaded(true);
-        setIsLoading(false); // Stop loading after static data is fetched
       }
     };
     loadStaticData();
   }, []);
 
   const addEnsayo = useCallback(async (ensayoData: Omit<Ensayo, 'id'>) => {
-    // In demo mode, we just simulate adding to the list.
     const newId = `LAB-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     const newEnsayo = { ...ensayoData, id: newId };
     setEnsayos(prev => [newEnsayo, ...prev]);
@@ -375,7 +376,6 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   }, []);
 
   const addRegistro = useCallback(async (registroData: Omit<Registro, 'id'>) => {
-     // In demo mode, we just simulate adding to the list.
     const newId = `CTRL-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     const newRegistro = { ...registroData, id: newId };
     setRegistros(prev => [newRegistro, ...prev]);
@@ -389,7 +389,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   }, []);
   
   const addEquipo = useCallback(async (equipoData: Omit<Equipo, 'id'>) => {
-    const newEquipo = { ...equipoData, id: equipoData.id }; // Use provided ID
+    const newEquipo = { ...equipoData, id: equipoData.id };
     setEquipos(prev => [newEquipo, ...prev].sort((a, b) => a.nombre.localeCompare(b.nombre)));
     console.log("Demo Mode: Added Equipo", newEquipo);
     return newEquipo;
@@ -481,7 +481,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     deleteImportacion,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, addRecentActivity]);
+  }), [
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, 
+    addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
+    addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
+    addRecentActivity
+  ]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
