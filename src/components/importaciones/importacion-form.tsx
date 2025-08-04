@@ -158,7 +158,7 @@ export function ImportacionForm({ importacionToEdit, onFormSubmit }: Importacion
 
 
   return (
-    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-1">
+    <Form form={form} onSubmit={onSubmit} className="space-y-4 p-1">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField control={form.control} name="bl" render={({ field }) => (<FormItem><FormLabel>BL N°</FormLabel><FormControl><Input placeholder="Número de Bill of Lading" {...field} /></FormControl><FormMessage /></FormItem>)} />
             <FormField control={form.control} name="proveedor" render={({ field }) => (<FormItem><FormLabel>Proveedor</FormLabel><FormControl><Input placeholder="Nombre del proveedor" {...field} /></FormControl><FormMessage /></FormItem>)} />
