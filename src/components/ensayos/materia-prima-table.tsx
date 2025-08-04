@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FilePlus2, Edit, Filter, Trash2 } from 'lucide-react';
+import { Search, FilePlus2, Edit, Filter, Trash2, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -33,7 +33,7 @@ function getStatusVariant(status: string) {
 }
 
 const formatValue = (value: any, decimals: number = 2) => {
-    if (value === null || value === undefined || value === '' || isNaN(value)) return 'N/A';
+    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
     return Number(value).toFixed(decimals);
 };
 
@@ -46,8 +46,8 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
 
   const filteredEnsayos = ensayos.filter(ensayo =>
     (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
+    (ensayo.producto && ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   const handleDelete = async (ensayoId: string) => {
@@ -67,12 +67,14 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
     }
   };
 
-
   const ensayoFilters = [
     { value: 'all', label: 'Vista General' },
     { value: 'melt_index', label: 'Melt Index' },
     { value: 'densidad', label: 'Densidad' },
     { value: 'negro_humo', label: '% Negro de Humo' },
+    { value: 'cenizas', label: '% Cenizas' },
+    { value: 'dsc', label: 'DSC' },
+    { value: 'tio', label: 'TIO' },
   ];
 
   const renderHeaders = () => {
@@ -86,7 +88,6 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead className="text-right">M.I. Ensayado</TableHead>
                     <TableHead className="text-right">% Variación</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
         case 'densidad':
@@ -97,7 +98,6 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead className="text-right">Densidad Líquido</TableHead>
                     <TableHead className="text-right">Densidad Calculada</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
         case 'negro_humo':
@@ -107,7 +107,36 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Negro Humo</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                </>
+            );
+        case 'cenizas':
+             return (
+                <>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">% Cenizas</TableHead>
+                    <TableHead className="text-right">% Cenizas Corregido</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'dsc':
+            return (
+                <>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">Temp. Inicio Fusión</TableHead>
+                    <TableHead className="text-right">Punto Fusión</TableHead>
+                    <TableHead className="text-right">Temp. Final Fusión</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'tio':
+            return (
+                <>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">Tiempo de Inducción</TableHead>
+                    <TableHead>Estado</TableHead>
                 </>
             );
         default: // 'all'
@@ -119,7 +148,6 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableHead>Fecha</TableHead>
                     <TableHead>Analista</TableHead>
                     <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
                 </>
             );
     }
@@ -156,6 +184,36 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                  </>
+            );
+        case 'cenizas':
+             return (
+                 <>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCorregido, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                 </>
+            );
+        case 'dsc':
+            return (
+                <>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.dsc_temp_inicio, 2)} °C</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.dsc_punto_fusion, 2)} °C</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.dsc_temp_final, 2)} °C</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                </>
+            );
+        case 'tio':
+            return (
+                <>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                </>
             );
         default: // 'all'
             return (
@@ -219,6 +277,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
           <TableHeader>
             <TableRow>
               {renderHeaders()}
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -230,7 +289,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                       <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                               <Button size="icon" variant="ghost">
-                                <Edit className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4" />
                                 <span className="sr-only">Acciones</span>
                               </Button>
                           </DropdownMenuTrigger>
@@ -238,7 +297,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                               <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
                                   <Edit className="mr-2 h-4 w-4" />
-                                  Editar
+                                  Editar / Ingresar Datos
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <AlertDialogTrigger asChild>

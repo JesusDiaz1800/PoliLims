@@ -7,13 +7,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FilePlus2, Edit, Trash2 } from 'lucide-react';
+import { Search, FilePlus2, Edit, Trash2, MoreHorizontal, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 
 interface ReprocesadoTableProps {
   ensayos: Ensayo[];
@@ -31,14 +32,20 @@ function getStatusVariant(status: string) {
     }
 }
 
+const formatValue = (value: any, decimals: number = 2) => {
+    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
+    return Number(value).toFixed(decimals);
+};
+
 export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTableProps) {
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [filterType, setFilterType] = React.useState('all');
   const { deleteEnsayo } = useDynamicData();
   const { toast } = useToast();
 
   const filteredEnsayos = ensayos.filter(ensayo =>
     (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
+    (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase())))
   );
   
   const handleDelete = async (ensayoId: string) => {
@@ -56,6 +63,139 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         });
         console.error("Failed to delete ensayo", error);
     }
+  };
+
+  const ensayoFilters = [
+    { value: 'all', label: 'Vista General' },
+    { value: 'melt_index', label: 'Melt Index' },
+    { value: 'densidad', label: 'Densidad' },
+    { value: 'negro_humo', label: '% Negro de Humo' },
+    { value: 'cenizas', label: '% Cenizas' },
+    { value: 'tio', label: 'TIO' },
+  ];
+
+  const renderHeaders = () => {
+    switch (filterType) {
+        case 'melt_index':
+            return (
+                <>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">M.I. Reportado</TableHead>
+                    <TableHead className="text-right">M.I. Ensayado</TableHead>
+                    <TableHead className="text-right">% Variación</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'densidad':
+            return (
+                <>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">Densidad Líquido</TableHead>
+                    <TableHead className="text-right">Densidad Calculada</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'negro_humo':
+             return (
+                <>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">% Negro Humo</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'cenizas':
+             return (
+                <>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">% Cenizas</TableHead>
+                    <TableHead className="text-right">% Cenizas Corregido</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        case 'tio':
+            return (
+                <>
+                    <TableHead>Lote</TableHead>
+                    <TableHead className="text-right">Tiempo de Inducción</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+        default: // 'all'
+            return (
+                <>
+                    <TableHead>ID Ensayo</TableHead>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Lote</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Analista</TableHead>
+                    <TableHead>Estado</TableHead>
+                </>
+            );
+    }
+  };
+
+  const renderRow = (ensayo: Ensayo) => {
+     switch (filterType) {
+        case 'melt_index':
+            return (
+                <>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_reportado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                </>
+            );
+        case 'densidad':
+            return (
+                 <>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidad_liquido, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                 </>
+            );
+        case 'negro_humo':
+            return (
+                 <>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                 </>
+            );
+        case 'cenizas':
+             return (
+                 <>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCorregido, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                 </>
+            );
+        case 'tio':
+            return (
+                <>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                </>
+            );
+        default: // 'all'
+            return (
+                <>
+                    <TableCell className="font-mono">{ensayo.id}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
+                    <TableCell>{ensayo.lote}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell>{ensayo.analista}</TableCell>
+                    <TableCell>
+                        <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
+                        {ensayo.estado}
+                        </Badge>
+                    </TableCell>
+                </>
+            );
+     }
   };
 
 
@@ -79,6 +219,17 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
                 onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
+             <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-full sm:w-auto">
+                    <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Filtrar por ensayo" />
+                </SelectTrigger>
+                <SelectContent>
+                    {ensayoFilters.map(filter => (
+                        <SelectItem key={filter.value} value={filter.value}>{filter.label}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <Button onClick={onAddNew} className="w-full sm:w-auto">
                 <FilePlus2 className="mr-2 h-4 w-4" />
                 Registrar Nuevo Ensayo
@@ -90,32 +241,20 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID Ensayo</TableHead>
-              <TableHead>Lote</TableHead>
-              <TableHead>Fecha</TableHead>
-              <TableHead>Analista</TableHead>
-              <TableHead>Estado</TableHead>
+              {renderHeaders()}
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredEnsayos.map((ensayo) => (
                 <TableRow key={ensayo.id}>
-                  <TableCell className="font-mono">{ensayo.id}</TableCell>
-                  <TableCell className="font-medium">{ensayo.lote}</TableCell>
-                  <TableCell>{ensayo.fecha}</TableCell>
-                  <TableCell>{ensayo.analista}</TableCell>
-                  <TableCell>
-                    <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
-                      {ensayo.estado}
-                    </Badge>
-                  </TableCell>
+                  {renderRow(ensayo)}
                   <TableCell className="text-right">
                     <AlertDialog>
                       <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                               <Button size="icon" variant="ghost">
-                                <Edit className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4" />
                                 <span className="sr-only">Acciones</span>
                               </Button>
                           </DropdownMenuTrigger>
@@ -123,7 +262,7 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                               <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
                                   <Edit className="mr-2 h-4 w-4" />
-                                  Editar
+                                  Editar / Ingresar Datos
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <AlertDialogTrigger asChild>
@@ -136,7 +275,7 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
                       </DropdownMenu>
                       <AlertDialogContent>
                           <AlertDialogHeader>
-                              <AlertDialogTitle>¿Está absolutely seguro?</AlertDialogTitle>
+                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
                               <AlertDialogDescription>
                                   Esta acción no se puede deshacer. Esto eliminará permanentemente el ensayo
                                   <span className="font-bold"> {ensayo.id}</span> de los servidores.
