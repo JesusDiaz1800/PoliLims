@@ -77,7 +77,7 @@ export default function DashboardPage() {
   
   // Filtered data calculation
   const filteredEnsayos = ensayos.filter(ensayo => {
-    const ensayoDate = parseISO(ensayo.fecha);
+    const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
 
     let dateRange = { start: new Date(0), end: now };
     if (month === 'last_30_days') {
@@ -174,5 +174,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-
-    
+}

@@ -4,17 +4,15 @@
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 import type { Ensayo } from "@/context/data-context";
 import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 
 
 interface ThroughputTrendChartProps {
-    filters: DashboardFilters;
     data: Ensayo[];
 }
 
-export function ThroughputTrendChart({ filters, data: allData }: ThroughputTrendChartProps) {
+export function ThroughputTrendChart({ data: allData }: ThroughputTrendChartProps) {
   const chartData = React.useMemo(() => {
     const now = new Date();
     const interval = eachDayOfInterval({
@@ -26,12 +24,12 @@ export function ThroughputTrendChart({ filters, data: allData }: ThroughputTrend
         const formattedDayKey = format(day, "yyyy-MM-dd");
         const formattedDayLabel = format(day, "dd/MM");
         
-        const received = allData.filter(e => format(parseISO(e.fecha), "yyyy-MM-dd") === formattedDayKey).length;
-        const completed = allData.filter(e => e.estado === 'Aprobado' && format(parseISO(e.fecha), "yyyy-MM-dd") === formattedDayKey).length;
+        const received = allData.filter(e => format(parseISO(e.fecha.split('-').reverse().join('-')), "yyyy-MM-dd") === formattedDayKey).length;
+        const completed = allData.filter(e => e.estado === 'Aprobado' && format(parseISO(e.fecha.split('-').reverse().join('-')), "yyyy-MM-dd") === formattedDayKey).length;
         
         return { day: formattedDayLabel, received, completed };
     });
-  }, [allData, filters]);
+  }, [allData]);
 
 
   return (

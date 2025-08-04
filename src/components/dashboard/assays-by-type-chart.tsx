@@ -4,12 +4,10 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 import type { Ensayo } from "@/context/data-context";
 
 
 interface AssaysByTypeChartProps {
-    filters: DashboardFilters;
     data: Ensayo[];
 }
 
@@ -18,7 +16,7 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
-export function AssaysByTypeChart({ filters, data: allData }: AssaysByTypeChartProps) {
+export function AssaysByTypeChart({ data: allData }: AssaysByTypeChartProps) {
     const chartData = React.useMemo(() => {
         const typeCounts = allData.reduce((acc, ensayo) => {
             acc[ensayo.tipo] = (acc[ensayo.tipo] || 0) + 1;
@@ -32,7 +30,7 @@ export function AssaysByTypeChart({ filters, data: allData }: AssaysByTypeChartP
                 fill: `hsl(var(--chart-${(index % 5) + 1}))`
             }))
             .sort((a, b) => b.value - a.value);
-    }, [allData, filters]);
+    }, [allData]);
 
   return (
     <Card>

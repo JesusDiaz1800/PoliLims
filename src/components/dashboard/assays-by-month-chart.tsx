@@ -4,12 +4,10 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { DashboardFilters } from "@/app/(app)/dashboard/page";
 import type { Ensayo } from "@/context/data-context";
-import { format, subMonths, getMonth } from "date-fns";
+import { format, subMonths, getMonth, parseISO } from "date-fns";
 
 interface AssaysByMonthChartProps {
-    filters: DashboardFilters;
     data: Ensayo[];
 }
 
@@ -20,7 +18,7 @@ const CustomCursor = (props: any) => {
 
 const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
-export function AssaysByMonthChart({ filters, data: allData }: AssaysByMonthChartProps) {
+export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
   const chartData = React.useMemo(() => {
     const now = new Date();
     const monthlyData: { [key: string]: number } = {};
@@ -32,7 +30,7 @@ export function AssaysByMonthChart({ filters, data: allData }: AssaysByMonthChar
     }
 
     allData.forEach(ensayo => {
-        const ensayoDate = new Date(ensayo.fecha);
+        const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
         const monthIndex = getMonth(ensayoDate);
         const monthName = monthNames[monthIndex];
         monthlyData[monthName]++;
