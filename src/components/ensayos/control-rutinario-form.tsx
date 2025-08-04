@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -169,6 +170,17 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         maquinista: data.maquinista,
         maquina: data.maquina,
         producto: selectedProduct.label,
+        marca: data.marca,
+        diametro: data.diametro,
+        espesor_min: data.espesor_min,
+        espesor_max: data.espesor_max,
+        largo: data.largo,
+        peso_muestra: data.peso_muestra,
+        peso_kg_m: data.peso_kg_m,
+        ovalidad: data.ovalidad,
+        observaciones_visuales: data.observaciones_visuales,
+        color_tuberia: data.color_tuberia,
+        color_linea: data.color_linea,
         resultado,
         enviado_lab: data.entregado_laboratorio,
     };
@@ -233,7 +245,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
             <div className="space-y-4">
                 <h3 className="text-lg font-medium font-headline">Información de Producción</h3>

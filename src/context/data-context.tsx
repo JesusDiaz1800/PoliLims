@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
@@ -7,15 +8,11 @@ import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
 
 // --- DEMO DATA ---
-const demoRegistros = [
-    { id: 'CTRL-001', fecha: '2025-07-20', hora: '10:30', inspector: 'Elias Ibañez', maquina: 'PE1', producto: 'Tubería HDPE 90mm PN-16 SDR-11', resultado: 'Conforme' as const, enviado_lab: true },
-    { id: 'CTRL-002', fecha: '2025-07-20', hora: '11:15', inspector: 'Cristian Montellano', maquina: 'PE2', producto: 'Tubería HDPE 110mm PN-10 SDR-17', resultado: 'Conforme' as const, enviado_lab: true },
-    { id: 'CTRL-003', fecha: '2025-07-19', hora: '14:00', inspector: 'Daniel Palma', maquina: 'PP3', producto: 'Tubería PP-R 25mm PN-20', resultado: 'No Conforme' as const, enviado_lab: false },
-    { id: 'CTRL-004', fecha: '2025-07-19', hora: '09:05', inspector: 'Luis Parada', maquina: 'PE3', producto: 'Tubería HDPE 63mm PN-16 SDR-11', resultado: 'Conforme' as const, enviado_lab: true },
-    { id: 'CTRL-005', fecha: '2025-07-21', hora: '08:45', inspector: 'Elias Ibañez', maquina: 'PP1', producto: 'Tubería PP-R 32mm PN-16', resultado: 'Conforme' as const, enviado_lab: true },
-    { id: 'CTRL-006', fecha: '2025-07-21', hora: '10:00', inspector: 'Daniel Palma', maquina: 'PE4', producto: 'Tubería HDPE 200mm PN-6 SDR-26', resultado: 'No Conforme' as const, enviado_lab: false },
-    { id: 'CTRL-007', fecha: '2025-07-22', hora: '13:20', inspector: 'Cristian Montellano', maquina: 'PP2', producto: 'Tubería PP-R 50mm PN-20', resultado: 'Conforme' as const, enviado_lab: false },
-    { id: 'CTRL-008', fecha: '2025-07-22', hora: '15:00', inspector: 'Luis Parada', maquina: 'PE1', producto: 'Tubería HDPE 90mm PN-10 SDR-17', resultado: 'Conforme' as const, enviado_lab: true },
+const demoRegistros: Registro[] = [
+    { id: 'CTRL-001', fecha: '2025-07-20', hora: '10:30', inspector: 'Elias Ibañez', maquinista: 'ANDRÉS REYES', maquina: 'PE1', producto: 'Tubería HDPE 90mm PN-16 SDR-11', marca: 'POLIFUSIÓN S.A.', diametro: 90.1, espesor_min: 8.2, espesor_max: 8.3, largo: 1000, peso_muestra: 2200, peso_kg_m: 2.2, ovalidad: 0.5, observaciones_visuales: 'Sin observaciones', color_tuberia: 'Negro', color_linea: 'Azul', resultado: 'Conforme', enviado_lab: true },
+    { id: 'CTRL-002', fecha: '2025-07-20', hora: '11:15', inspector: 'Cristian Montellano', maquinista: 'ALEXIS SANDOVAL', maquina: 'PE2', producto: 'Tubería HDPE 110mm PN-10 SDR-17', marca: 'POLIFUSIÓN S.A.', diametro: 110.2, espesor_min: 6.5, espesor_max: 6.6, largo: 1000, peso_muestra: 2100, peso_kg_m: 2.1, ovalidad: 0.6, observaciones_visuales: '', color_tuberia: 'Negro', color_linea: 'Azul', resultado: 'Conforme', enviado_lab: true },
+    { id: 'CTRL-003', fecha: '2025-07-19', hora: '14:00', inspector: 'Daniel Palma', maquinista: 'CARLOS DOMÍNGUEZ', maquina: 'PP3', producto: 'Tubería PP-R 25mm PN-20', marca: 'SMART PIPES SpA', diametro: 25.3, espesor_min: 4.2, espesor_max: 4.3, largo: 1000, peso_muestra: 300, peso_kg_m: 0.3, ovalidad: 0.2, observaciones_visuales: 'Superficie ligeramente rugosa', color_tuberia: 'Verde', color_linea: 'Roja', resultado: 'No Conforme', enviado_lab: false },
+    { id: 'CTRL-004', fecha: '2025-07-19', hora: '09:05', inspector: 'Luis Parada', maquinista: 'CRISTIAN DUQUE', maquina: 'PE3', producto: 'Tubería HDPE 63mm PN-16 SDR-11', marca: 'POLIFUSIÓN S.A.', diametro: 63.1, espesor_min: 5.8, espesor_max: 5.9, largo: 1000, peso_muestra: 1100, peso_kg_m: 1.1, ovalidad: 0.4, observaciones_visuales: '', color_tuberia: 'Negro', color_linea: 'Azul', resultado: 'Conforme', enviado_lab: true },
 ];
 
 const demoEnsayos = [
@@ -178,8 +175,20 @@ export interface Registro {
   fecha: string;
   hora: string;
   inspector: string;
+  maquinista: string;
   maquina: string;
   producto: string;
+  marca: string;
+  diametro?: number | null;
+  espesor_min?: number | null;
+  espesor_max?: number | null;
+  largo?: number | null;
+  peso_muestra?: number | null;
+  peso_kg_m?: number | null;
+  ovalidad?: number | null;
+  observaciones_visuales?: string | null;
+  color_tuberia?: string | null;
+  color_linea?: string | null;
   resultado: 'Conforme' | 'No Conforme';
   enviado_lab: boolean;
 }

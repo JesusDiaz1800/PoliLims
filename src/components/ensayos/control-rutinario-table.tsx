@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, Trash2 } from "lucide-react";
+import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, Trash2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto } from "@/lib/matriz-datos";
@@ -33,6 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 
 export type Registro = ReturnType<typeof useDynamicData>["registros"][0] & { productoInfo?: TipoProducto };
@@ -84,6 +85,11 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
     }
   };
 
+  const formatValue = (value: any, decimals: number = 2) => {
+    if (value === null || value === undefined || isNaN(value)) return 'N/A';
+    return Number(value).toFixed(decimals);
+  }
+
 
   return (
     <>
@@ -112,101 +118,129 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Fecha / Hora</TableHead>
-                <TableHead>Inspector</TableHead>
-                <TableHead>Máquina</TableHead>
-                <TableHead>Producto</TableHead>
-                <TableHead>Resultado</TableHead>
-                <TableHead className="text-center">Enviado a Lab</TableHead>
-                <TableHead>
-                  <span className="sr-only">Acciones</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredRegistros.map((registro) => (
-                <TableRow key={registro.id}>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{registro.fecha}</span>
-                      <span className="text-muted-foreground text-xs">{registro.hora}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{registro.inspector}</TableCell>
-                  <TableCell>{registro.maquina}</TableCell>
-                  <TableCell className="font-medium">{registro.producto}</TableCell>
-                  <TableCell>
-                    <Badge variant={registro.resultado === 'Conforme' ? 'default' : 'destructive'} className={cn(
-                      "font-normal border-transparent",
-                       registro.resultado === 'Conforme' 
-                        ? 'bg-green-500/20 text-green-700 dark:text-green-300' 
-                        : 'bg-orange-500/20 text-orange-700 dark:text-orange-300'
-                    )}>
-                      {registro.resultado === 'Conforme' ? <CheckCircle className="mr-1.5 h-3.5 w-3.5"/> : <AlertCircle className="mr-1.5 h-3.5 w-3.5"/>}
-                      {registro.resultado}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {registro.enviado_lab ? (
-                      <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30 border-transparent font-normal">
-                        Sí
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="border-dashed font-normal">
-                        No
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <AlertDialog>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
-                          <DropdownMenuItem disabled>Editar</DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)} disabled={!registro.enviado_lab}>
-                            <TestTube className="mr-2 h-4 w-4" />
-                            Ingresar Ensayos Mecánicos
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                           <AlertDialogTrigger asChild>
-                              <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Eliminar
-                              </DropdownMenuItem>
-                           </AlertDialogTrigger>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                       <AlertDialogContent>
-                            <AlertDialogHeader>
-                            <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Esta acción no se puede deshacer. Esto eliminará permanentemente el registro de control
-                                <span className="font-bold"> {registro.id}</span> de los servidores.
-                            </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => handleDelete(registro.id)} className={cn(buttonVariants({variant: "destructive"}))}>
-                                Sí, eliminar registro
-                            </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
+          <ScrollArea>
+            <Table className="whitespace-nowrap">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Fecha ingreso</TableHead>
+                  <TableHead>Hora</TableHead>
+                  <TableHead>Inspector</TableHead>
+                  <TableHead>Maquinista</TableHead>
+                  <TableHead>Máquina</TableHead>
+                  <TableHead>Producto</TableHead>
+                  <TableHead>Marca</TableHead>
+                  <TableHead>Diámetro [mm]</TableHead>
+                  <TableHead>Espesor Mín. [mm]</TableHead>
+                  <TableHead>Espesor Máx. [mm]</TableHead>
+                  <TableHead>Largo [mm]</TableHead>
+                  <TableHead>Peso muestra [g]</TableHead>
+                  <TableHead>Peso [kg/m]</TableHead>
+                  <TableHead>Ovalidad [mm]</TableHead>
+                  <TableHead>Observaciones</TableHead>
+                  <TableHead>Color Tubería</TableHead>
+                  <TableHead>Color Línea</TableHead>
+                  <TableHead>Resultado</TableHead>
+                  <TableHead>Enviado a Lab</TableHead>
+                  <TableHead>Ensayos Mecánicos</TableHead>
+                  <TableHead className="sticky right-0 bg-card">Acciones</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredRegistros.map((registro) => (
+                  <TableRow key={registro.id}>
+                    <TableCell>{registro.fecha}</TableCell>
+                    <TableCell>{registro.hora}</TableCell>
+                    <TableCell>{registro.inspector}</TableCell>
+                    <TableCell>{registro.maquinista}</TableCell>
+                    <TableCell>{registro.maquina}</TableCell>
+                    <TableCell className="font-medium max-w-xs truncate">{registro.producto}</TableCell>
+                    <TableCell>{registro.marca || 'N/A'}</TableCell>
+                    <TableCell>{formatValue(registro.diametro)}</TableCell>
+                    <TableCell>{formatValue(registro.espesor_min)}</TableCell>
+                    <TableCell>{formatValue(registro.espesor_max)}</TableCell>
+                    <TableCell>{formatValue(registro.largo,0)}</TableCell>
+                    <TableCell>{formatValue(registro.peso_muestra,0)}</TableCell>
+                    <TableCell>{formatValue(registro.peso_kg_m, 4)}</TableCell>
+                    <TableCell>{formatValue(registro.ovalidad)}</TableCell>
+                    <TableCell className="max-w-xs truncate">{registro.observaciones_visuales || 'N/A'}</TableCell>
+                    <TableCell>{registro.color_tuberia || 'N/A'}</TableCell>
+                    <TableCell>{registro.color_linea || 'N/A'}</TableCell>
+                    <TableCell>
+                      <Badge variant={registro.resultado === 'Conforme' ? 'default' : 'destructive'} className={cn(
+                        "font-normal border-transparent",
+                         registro.resultado === 'Conforme' 
+                          ? 'bg-green-500/20 text-green-700 dark:text-green-300' 
+                          : 'bg-orange-500/20 text-orange-700 dark:text-orange-300'
+                      )}>
+                        {registro.resultado === 'Conforme' ? <CheckCircle className="mr-1.5 h-3.5 w-3.5"/> : <AlertCircle className="mr-1.5 h-3.5 w-3.5"/>}
+                        {registro.resultado}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {registro.enviado_lab ? (
+                        <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30 border-transparent font-normal">
+                          Sí
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-dashed font-normal">
+                          No
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                        <Badge variant="outline" className="border-dashed font-normal">
+                            Pendiente
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="sticky right-0 bg-card">
+                      <AlertDialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
+                            <DropdownMenuItem disabled>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleOpenMecanicosDialog(registro)} disabled={true}>
+                              <TestTube className="mr-2 h-4 w-4" />
+                              Ingresar Ensayos Mecánicos
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                             <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Eliminar
+                                </DropdownMenuItem>
+                             </AlertDialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                         <AlertDialogContent>
+                              <AlertDialogHeader>
+                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el registro de control
+                                  <span className="font-bold"> {registro.id}</span> de los servidores.
+                              </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(registro.id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                  Sí, eliminar registro
+                              </AlertDialogAction>
+                              </AlertDialogFooter>
+                          </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
            {filteredRegistros.length === 0 && (
               <div className="text-center py-16 text-muted-foreground">
                   <Search className="mx-auto h-12 w-12 mb-4" />
