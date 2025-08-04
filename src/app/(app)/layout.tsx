@@ -14,11 +14,16 @@ export const metadata: Metadata = {
     description: 'Laboratorio de Ensayos Polifusión S.A.',
 };
 
-export default async function AppLayout({ children, ...props }: { children: React.ReactNode, params: any }) {
+export default async function AppLayout({ 
+    children,
+    searchParams 
+}: { 
+    children: React.ReactNode,
+    searchParams: { [key: string]: string | string[] | undefined }
+}) {
     // Get user from search params to pass to AppShell
     // This is a simplified way to handle user session for this example
-    const searchParams = (props as any).searchParams || {};
-    const username = searchParams?.user || 'jesus.diaz';
+    const username = (searchParams?.user as string) || 'jesus.diaz';
     const user = await findUserByUsername(username);
 
 
