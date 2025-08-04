@@ -31,3 +31,4 @@ export function CalendarioEquipos({ eventos, onEventClick }: CalendarioEquiposPr
         </div>
     );
 }
+
