@@ -82,8 +82,14 @@ export default function DashboardPage() {
     const now = new Date();
     
     const filtered = ensayos.filter(ensayo => {
-      const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
-
+      let ensayoDate;
+      try {
+        ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
+      } catch (error) {
+        console.warn(`Invalid date format for ensayo ${ensayo.id}: ${ensayo.fecha}`);
+        return false;
+      }
+      
       let dateRange = { start: subYears(now, 10), end: now };
       if (month === 'last_30_days') {
           dateRange = { start: subDays(now, 29), end: now };
@@ -160,15 +166,11 @@ export default function DashboardPage() {
       
       <div className="grid grid-cols-12 gap-6">
          <div className="col-span-12 lg:col-span-8">
-           <WorkloadDistributionChart data={filteredEnsayos} />
+           <AssaysByMonthChart data={ensayos} />
         </div>
         <div className="col-span-12 lg:col-span-4">
             <RecentActivityList initialActivity={recentActivity}/>
         </div>
-      </div>
-      
-      <div className="grid grid-cols-1 gap-6">
-        <AssaysByMonthChart data={ensayos} />
       </div>
       
       <div className="grid grid-cols-12 gap-6">
@@ -185,7 +187,7 @@ export default function DashboardPage() {
           <SampleStatusChart data={filteredEnsayos} />
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-4">
-          <EquipmentStatusChart data={equipos} />
+          <WorkloadDistributionChart data={filteredEnsayos} />
         </div>
       </div>
     </div>

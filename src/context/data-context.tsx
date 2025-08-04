@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
@@ -130,7 +131,14 @@ export interface Importacion {
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
-interface DynamicDataContextType extends InitialData {
+interface DynamicDataContextType {
+  ensayos: Ensayo[];
+  registros: Registro[];
+  recentActivity: RecentActivity[];
+  equipos: Equipo[];
+  controles: ControlEvento[];
+  noConformidades: NoConformidad[];
+  importaciones: Importacion[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -173,11 +181,12 @@ export const DataProvider = ({ children, initialData }: DataProviderProps) => {
   const [controles, setControles] = useState<ControlEvento[]>(initialData.controles);
   const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(initialData.noConformidades);
   const [importaciones, setImportaciones] = useState<Importacion[]>(initialData.importaciones);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once on the client
   useEffect(() => {
     const loadStaticData = async () => {
+      setIsLoading(true);
       try {
         const matrix = await getMatrizProductos();
         setProductMatrix(matrix);
@@ -186,6 +195,7 @@ export const DataProvider = ({ children, initialData }: DataProviderProps) => {
       } catch (error) {
         console.error("Failed to load initial static data", error);
       } finally {
+        setIsLoading(false);
         setIsStaticLoaded(true);
       }
     };
@@ -315,9 +325,9 @@ export const DataProvider = ({ children, initialData }: DataProviderProps) => {
     updateImportacion,
     deleteImportacion,
     addRecentActivity,
-    isLoading,
+    isLoading: isLoading || !isStaticLoaded,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, 
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, isStaticLoaded,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
     addRecentActivity

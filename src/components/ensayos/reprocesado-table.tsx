@@ -38,7 +38,7 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTableProps) {
+const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit }: ReprocesadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
   const { deleteEnsayo } = useDynamicData();
@@ -327,3 +327,5 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
     </Card>
   );
 }
+
+export const ReprocesadoTable = React.memo(ReprocesadoTableInternal);

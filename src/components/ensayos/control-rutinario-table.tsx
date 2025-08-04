@@ -43,7 +43,7 @@ interface ControlRutinarioTableProps {
   matrizProductos: TipoProducto[];
 }
 
-export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) {
+const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) => {
   const { registros, deleteRegistro, ensayos } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -276,3 +276,4 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
     </>
   );
 }
+export const ControlRutinarioTable = React.memo(ControlRutinarioTableInternal);

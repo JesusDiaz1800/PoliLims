@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -40,7 +41,7 @@ const formatValue = (value: any, decimals: number = 2) => {
 };
 
 
-export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialog }: EnsayosProductoTerminadoTableProps) {
+const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog }: EnsayosProductoTerminadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
 
@@ -304,3 +305,5 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
     </Card>
   );
 }
+
+export const EnsayosProductoTerminadoTable = React.memo(EnsayosProductoTerminadoTableInternal);

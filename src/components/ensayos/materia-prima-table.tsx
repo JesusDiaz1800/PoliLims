@@ -38,8 +38,7 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-
-export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTableProps) {
+const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit }: MateriaPrimaTableProps) => {
   const { deleteEnsayo } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -368,3 +367,5 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
     </Card>
   );
 }
+
+export const MateriaPrimaTable = React.memo(MateriaPrimaTableInternal);
