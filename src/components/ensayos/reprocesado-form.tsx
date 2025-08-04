@@ -91,7 +91,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         ...defaultFormValues,
         ...ensayoToEdit,
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v })) : [{ value: '' }],
+        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
         id_muestra: ensayoToEdit.id,
       };
       reset(formData);
@@ -128,9 +128,9 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     setMeltIndexCalculado(resultado);
 
     const reportado = parseFloat(getValues("melt_index_reportado"));
-    if (!isNaN(reportado) && reportado !== 0) {
-        const variacion = Math.abs(resultado - reportado) / reportado;
-        setMeltIndexVariacion(variacion * 100);
+    if (!isNaN(reportado) && reportado !== 0 && !isNaN(resultado)) {
+        const variacion = ((resultado - reportado) / reportado) * 100;
+        setMeltIndexVariacion(variacion);
     } else {
         setMeltIndexVariacion(0);
     }
@@ -175,9 +175,9 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
 
   const onSubmit = async (data: any) => {
-    const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado' | 'producto'> & { id?: string, lote: string } = {
+    const ensayoData = {
         ...data,
-        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value),
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value).filter((v: string) => v !== ''),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,
