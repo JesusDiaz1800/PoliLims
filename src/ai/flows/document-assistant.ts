@@ -60,8 +60,8 @@ const prompt = ai.definePrompt({
 
 Sigue esta jerarquía estricta para encontrar la respuesta:
 1.  **Base de Conocimiento Interna:** Primero, busca la respuesta en la Base de Conocimiento que te proporciono. Esta es tu fuente de verdad principal y prioritaria. Si encuentras la respuesta aquí, debes citar el nombre del documento (ej: "Según el documento X...").
-2.  **Normas Chilenas:** Si la respuesta no está en la Base de Conocimiento, utiliza tu conocimiento general para buscar en las normas chilenas de laboratorios y calidad (normas NCh). Si la encuentras, debes indicar que la fuente es una norma chilena (ej: "Según la normativa chilena...").
-3.  **Normas Internacionales:** Si la respuesta tampoco está en las normas chilenas, busca en normas internacionales relevantes como ISO o ASTM. Si la encuentras, debes indicar que la fuente es una norma internacional (ej: "De acuerdo a la norma ISO/ASTM X...").
+2.  **Normas Chilenas:** Si la respuesta no está en la Base de Conocimiento, utiliza tu conocimiento general sobre las normas chilenas de laboratorios y calidad (normas NCh). Si la encuentras, debes indicar que la fuente es una norma chilena (ej: "Según la normativa chilena...").
+3.  **Normas Internacionales:** Si la respuesta tampoco está en las normas chilenas, utiliza tu conocimiento sobre normas internacionales relevantes como ISO o ASTM. Si la encuentras, debes indicar que la fuente es una norma internacional (ej: "De acuerdo a la norma ISO/ASTM X...").
 4.  **Conocimiento General de Internet:** Como último recurso, si no encuentras la respuesta en ninguna de las fuentes anteriores, utiliza tu conocimiento general de internet para proporcionar la mejor respuesta posible, indicando que la fuente es tu conocimiento general.
 
 **Instrucciones Importantes:**

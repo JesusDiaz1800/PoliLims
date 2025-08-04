@@ -2,9 +2,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Bot, User } from "lucide-react";
-import ReactMarkdown from 'react-markdown';
+import DOMPurify from 'dompurify';
 
 interface ChatMessageProps {
     role: 'user' | 'assistant';
@@ -13,6 +13,10 @@ interface ChatMessageProps {
 
 export function ChatMessage({ role, content }: ChatMessageProps) {
     const isAssistant = role === 'assistant';
+
+    // Sanitize the HTML content from the assistant to prevent XSS attacks
+    const sanitizedContent = isAssistant ? DOMPurify.sanitize(content) : content;
+
     return (
         <div className={cn(
             "flex items-start gap-4",
@@ -24,20 +28,16 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
                 </Avatar>
             )}
             <div className={cn(
-                "max-w-xl rounded-lg px-4 py-3 text-sm prose",
+                "max-w-xl rounded-lg px-4 py-3 text-sm",
                 isAssistant 
                     ? "bg-muted text-muted-foreground"
                     : "bg-primary text-primary-foreground"
             )}>
-               <ReactMarkdown
-                 components={{
-                     p: ({ node, ...props }) => <p className="my-2" {...props} />,
-                     ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2" {...props} />,
-                     li: ({ node, ...props }) => <li className="my-1" {...props} />,
-                 }}
-               >
-                   {content}
-                </ReactMarkdown>
+               {isAssistant ? (
+                 <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
+               ) : (
+                 <p>{content}</p>
+               )}
             </div>
              {!isAssistant && (
                 <Avatar className="h-8 w-8 shrink-0">
