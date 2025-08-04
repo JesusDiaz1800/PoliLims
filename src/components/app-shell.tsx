@@ -45,7 +45,8 @@ import {
     Info,
     LogOut,
     Cylinder,
-    Code2
+    Code2,
+    AlertOctagon
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -95,6 +96,7 @@ const menuItems = [
         href: '/ensayos'
     },
     { href: '/equipos', label: 'Gestión de Equipos', icon: Beaker },
+    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
@@ -200,6 +202,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
         if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
+        if (pathname.startsWith('/no-conformidades')) return 'Gestión de No Conformidades';
         
         for (const item of menuItems) {
              if (item.href && pathname === item.href) return item.label;

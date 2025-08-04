@@ -138,6 +138,13 @@ const demoControles: ControlEvento[] = [
     { id: 'CE-06', equipoId: 'EQ-06', fecha: '2025-06-01', tipo: 'Mantenimiento Preventivo', responsable: 'Robinson Córdova', observaciones: 'Limpieza de cámara y revisión de termocupla.' },
 ];
 
+const demoNoConformidades: NoConformidad[] = [
+    { id: 'NC-001', tipo: 'Interna', fecha_deteccion: '2025-07-15', descripcion: 'El equipo EQ-05 (Balanza Analítica) está fuera de calibración desde el 2025-07-10.', estado: 'En Investigación', severidad: 'Alta', responsable: 'Victor Lutz', fecha_vencimiento: '2025-07-25' },
+    { id: 'NC-002', tipo: 'Reclamación de Cliente', fecha_deteccion: '2025-07-18', descripcion: 'El cliente "Constructora XYZ" reporta que el lote Lote-250710-PP1 presenta fragilidad.', estado: 'Abierta', severidad: 'Crítica', responsable: 'Jesus Diaz', fecha_vencimiento: '2025-07-22' },
+    { id: 'NC-003', tipo: 'Auditoría', fecha_deteccion: '2025-06-30', descripcion: 'Durante la auditoría interna se detectó que el PNT para ensayos de impacto no está actualizado a la última versión de la norma.', estado: 'Resuelta', severidad: 'Media', responsable: 'Maximiliano Miranda', fecha_vencimiento: '2025-07-15', accion_correctiva: 'Se actualizó el PNT y se realizó capacitación al personal.' },
+    { id: 'NC-004', tipo: 'Interna', fecha_deteccion: '2025-07-21', descripcion: 'Contaminación cruzada detectada en muestras de Reprocesado.', estado: 'Abierta', severidad: 'Alta', responsable: 'Robinson Córdova', fecha_vencimiento: '2025-07-28' },
+];
+
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -219,6 +226,20 @@ export interface ControlEvento {
     certificadoUrl?: string;
 }
 
+export interface NoConformidad {
+    id: string;
+    tipo: 'Interna' | 'Reclamación de Cliente' | 'Auditoría';
+    fecha_deteccion: string;
+    descripcion: string;
+    estado: 'Abierta' | 'En Investigación' | 'Resuelta' | 'Cerrada';
+    severidad: 'Baja' | 'Media' | 'Alta' | 'Crítica';
+    responsable: string;
+    fecha_vencimiento?: string;
+    accion_correctiva?: string;
+    productos_afectados?: string[];
+    equipos_implicados?: string[];
+}
+
 
 interface DynamicDataContextType {
   ensayos: Ensayo[];
@@ -226,6 +247,7 @@ interface DynamicDataContextType {
   recentActivity: RecentActivity[];
   equipos: Equipo[];
   controles: ControlEvento[];
+  noConformidades: NoConformidad[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -235,6 +257,9 @@ interface DynamicDataContextType {
   updateEquipo: (id: string, equipo: Partial<Equipo>) => Promise<void>;
   deleteEquipo: (id: string) => Promise<void>;
   addControlEvento: (evento: Omit<ControlEvento, 'id'>) => Promise<ControlEvento>;
+  addIncidencia: (incidencia: Omit<NoConformidad, 'id'>) => Promise<NoConformidad>;
+  updateIncidencia: (id: string, incidencia: Partial<NoConformidad>) => Promise<void>;
+  deleteIncidencia: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -259,6 +284,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(demoRecentActivity);
   const [equipos, setEquipos] = useState<Equipo[]>(demoEquipos);
   const [controles, setControles] = useState<ControlEvento[]>(demoControles);
+  const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(demoNoConformidades);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once
@@ -338,6 +364,24 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     return newEvento;
   }, []);
 
+  const addIncidencia = useCallback(async (incidenciaData: Omit<NoConformidad, 'id'>) => {
+    const newId = `NC-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const newIncidencia = { ...incidenciaData, id: newId };
+    setNoConformidades(prev => [newIncidencia, ...prev]);
+    console.log("Demo Mode: Added Incidencia", newIncidencia);
+    return newIncidencia;
+  }, []);
+
+  const updateIncidencia = useCallback(async (id: string, updatedIncidenciaData: Partial<NoConformidad>) => {
+      setNoConformidades(prev => prev.map(nc => nc.id === id ? { ...nc, ...updatedIncidenciaData } : nc));
+      console.log("Demo Mode: Updated Incidencia", id, updatedIncidenciaData);
+  }, []);
+
+  const deleteIncidencia = useCallback(async (id: string) => {
+      setNoConformidades(prev => prev.filter(nc => nc.id !== id));
+      console.log("Demo Mode: Deleted Incidencia", id);
+  }, []);
+
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const newActivity = {
         ...activity,
@@ -354,6 +398,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     recentActivity,
     equipos,
     controles,
+    noConformidades,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -363,9 +408,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     updateEquipo,
     deleteEquipo,
     addControlEvento,
+    addIncidencia,
+    updateIncidencia,
+    deleteIncidencia,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, equipos, controles, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addRecentActivity]);
+  }), [ensayos, registros, recentActivity, equipos, controles, noConformidades, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,
