@@ -129,6 +129,15 @@ const demoEquipos = [
   { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo' as const, marca: 'Instron', modelo: '3369', proxima_calibracion: '2025-07-30', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media' as const, fotoUrl: '' },
 ];
 
+const demoControles: ControlEvento[] = [
+    { id: 'CE-01', equipoId: 'EQ-01', fecha: '2025-01-15', tipo: 'Calibración', responsable: 'Servicio Externo', observaciones: 'Calibración anual completa según procedimiento XYZ.', certificadoUrl: '#' },
+    { id: 'CE-02', equipoId: 'EQ-01', fecha: '2025-04-15', tipo: 'Verificación', responsable: 'Jesus Diaz', observaciones: 'Verificación interna con patrón de referencia. Todo OK.' },
+    { id: 'CE-03', equipoId: 'EQ-05', fecha: '2025-07-10', tipo: 'Mantenimiento Correctivo', responsable: 'Servicio Técnico Mettler', observaciones: 'Reemplazo de celda de carga. Requiere recalibración.' },
+    { id: 'CE-04', equipoId: 'EQ-02', fecha: '2024-12-20', tipo: 'Calibración', responsable: 'Servicio Externo', certificadoUrl: '#' },
+    { id: 'CE-05', equipoId: 'EQ-02', fecha: '2025-06-20', tipo: 'Verificación', responsable: 'Maximiliano Miranda' },
+    { id: 'CE-06', equipoId: 'EQ-06', fecha: '2025-06-01', tipo: 'Mantenimiento Preventivo', responsable: 'Robinson Córdova', observaciones: 'Limpieza de cámara y revisión de termocupla.' },
+];
+
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -200,12 +209,23 @@ export interface Equipo {
     fotoUrl?: string;
 }
 
+export interface ControlEvento {
+    id: string;
+    equipoId: string;
+    fecha: string;
+    tipo: 'Calibración' | 'Verificación' | 'Mantenimiento Preventivo' | 'Mantenimiento Correctivo';
+    responsable: string;
+    observaciones?: string;
+    certificadoUrl?: string;
+}
+
 
 interface DynamicDataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
   recentActivity: RecentActivity[];
   equipos: Equipo[];
+  controles: ControlEvento[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -214,6 +234,7 @@ interface DynamicDataContextType {
   addEquipo: (equipo: Omit<Equipo, 'id'>) => Promise<Equipo>;
   updateEquipo: (id: string, equipo: Partial<Equipo>) => Promise<void>;
   deleteEquipo: (id: string) => Promise<void>;
+  addControlEvento: (evento: Omit<ControlEvento, 'id'>) => Promise<ControlEvento>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -237,6 +258,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [registros, setRegistros] = useState<Registro[]>(demoRegistros);
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(demoRecentActivity);
   const [equipos, setEquipos] = useState<Equipo[]>(demoEquipos);
+  const [controles, setControles] = useState<ControlEvento[]>(demoControles);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load static data once
@@ -308,6 +330,14 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       console.log("Demo Mode: Deleted Equipo", id);
   }, []);
 
+  const addControlEvento = useCallback(async (eventoData: Omit<ControlEvento, 'id'>) => {
+    const newId = `CE-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const newEvento = { ...eventoData, id: newId };
+    setControles(prev => [newEvento, ...prev]);
+    console.log("Demo Mode: Added Control Evento", newEvento);
+    return newEvento;
+  }, []);
+
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const newActivity = {
         ...activity,
@@ -323,6 +353,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     registros,
     recentActivity,
     equipos,
+    controles,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -331,9 +362,10 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addEquipo,
     updateEquipo,
     deleteEquipo,
+    addControlEvento,
     addRecentActivity,
     isLoading,
-  }), [ensayos, registros, recentActivity, equipos, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addRecentActivity]);
+  }), [ensayos, registros, recentActivity, equipos, controles, isLoading, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addRecentActivity]);
 
   const staticContextValue = useMemo(() => ({
     productMatrix,

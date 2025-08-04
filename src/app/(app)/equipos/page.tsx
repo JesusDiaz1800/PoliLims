@@ -11,17 +11,17 @@ import type { Equipo } from '@/context/data-context';
 
 export default function EquiposPage() {
   const { equipos, isLoading } = useDynamicData();
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isEquipoDialogOpen, setIsEquipoDialogOpen] = React.useState(false);
   const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
 
-  const handleOpenDialog = (equipo?: Equipo) => {
+  const handleOpenEquipoDialog = (equipo?: Equipo) => {
     setSelectedEquipo(equipo || null);
-    setIsDialogOpen(true);
+    setIsEquipoDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseEquipoDialog = () => {
     setSelectedEquipo(null);
-    setIsDialogOpen(false);
+    setIsEquipoDialogOpen(false);
   };
 
   if (isLoading) {
@@ -32,12 +32,12 @@ export default function EquiposPage() {
     <div className="space-y-6">
       <EquiposTable
         equipos={equipos}
-        onAddNew={() => handleOpenDialog()}
-        onEdit={handleOpenDialog}
+        onAddNew={() => handleOpenEquipoDialog()}
+        onEdit={handleOpenEquipoDialog}
       />
       <EquipoDialog
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
+        isOpen={isEquipoDialogOpen}
+        onClose={handleCloseEquipoDialog}
         equipo={selectedEquipo}
       />
     </div>
