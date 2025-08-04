@@ -151,17 +151,17 @@ export default function DashboardPage() {
         />
       </div>
 
-       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-           <WorkloadDistributionChart data={filteredEnsayos} />
+            <AssaysByMonthChart data={filteredEnsayos} />
         </div>
         <RecentActivityList initialActivity={recentActivity}/>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-         <div className="lg:col-span-2">
-            <AssaysByMonthChart data={filteredEnsayos} />
-         </div>
+       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+           <WorkloadDistributionChart data={filteredEnsayos} />
+        </div>
          <AssaysByTypeChart data={filteredEnsayos} />
       </div>
 

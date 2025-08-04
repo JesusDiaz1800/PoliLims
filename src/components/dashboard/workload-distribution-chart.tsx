@@ -40,8 +40,8 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Carga de Trabajo por Analista</CardTitle>
-        <CardDescription>Número de ensayos asignados a cada analista en el período seleccionado.</CardDescription>
+        <CardTitle>Total Registros por Analista</CardTitle>
+        <CardDescription>Número de ensayos registrados por cada analista en el período seleccionado.</CardDescription>
       </CardHeader>
       <CardContent>
         {chartData.length > 0 ? (
