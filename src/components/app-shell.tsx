@@ -122,7 +122,10 @@ const menuItems = [
     },
 ];
 
-const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => (
+const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
+    const subMenuItems = item.subMenu || item.subItems;
+
+    return (
     <Collapsible
       key={item.label}
       defaultOpen={pathname.startsWith(item.href)}
@@ -146,7 +149,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
       </CollapsibleTrigger>
       <CollapsibleContent>
         <SidebarMenu className="pl-4">
-          {item.subMenu.map((subItem: any, index: number) => {
+          {subMenuItems && subMenuItems.map((subItem: any, index: number) => {
             if (subItem.type === 'separator') {
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
             }
@@ -178,6 +181,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
       </CollapsibleContent>
     </Collapsible>
 );
+}
 
 
 export function AppShell({ children, user }: { children: React.ReactNode, user: User }) {
