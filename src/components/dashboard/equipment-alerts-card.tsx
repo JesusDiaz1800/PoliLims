@@ -81,7 +81,7 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[200px] pr-4">
+        <ScrollArea className="h-[210px] pr-4">
           <div className="space-y-4">
             {equiposConAlerta.length > 0 ? (
               equiposConAlerta.map(equipo => {
@@ -127,4 +127,3 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
     </>
   );
 }
-

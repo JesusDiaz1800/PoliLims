@@ -39,7 +39,7 @@ export function ThroughputTrendChart({ data: allData }: ThroughputTrendChartProp
             <CardDescription>Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
         </CardHeader>
         <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={210}>
                 <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                     <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />

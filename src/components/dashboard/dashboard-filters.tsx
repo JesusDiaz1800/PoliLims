@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -16,7 +15,8 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription
+  CardDescription,
+  CardContent,
 } from "@/components/ui/card";
 
 interface DashboardFiltersProps {
@@ -52,15 +52,14 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
 
     return (
         <Card>
-            <CardHeader>
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="space-y-1.5 flex-1">
-                        <CardTitle>Filtros del Dashboard</CardTitle>
-                        <CardDescription>Seleccione los filtros para visualizar los datos del laboratorio.</CardDescription>
+            <CardContent className="p-4">
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-2">
+                    <div className="space-y-1.5 flex-1 hidden lg:block">
+                        <CardTitle className="text-base">Filtros</CardTitle>
                     </div>
-                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-end gap-2 w-full md:w-auto">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-end gap-2 w-full">
                         <Select value={defaultValues.month} onValueChange={handleFilterChange("month")}>
-                            <SelectTrigger className="w-full sm:w-auto">
+                            <SelectTrigger className="w-full sm:w-[180px] h-9">
                                 <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por mes" />
                             </SelectTrigger>
@@ -73,7 +72,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                             </SelectContent>
                         </Select>
                         <Select value={defaultValues.analyst} onValueChange={handleFilterChange("analyst")}>
-                            <SelectTrigger className="w-full sm:w-auto">
+                            <SelectTrigger className="w-full sm:w-[180px] h-9">
                                 <User className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por analista" />
                             </SelectTrigger>
@@ -84,7 +83,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                             </SelectContent>
                         </Select>
                          <Select value={defaultValues.status} onValueChange={handleFilterChange("status")}>
-                            <SelectTrigger className="w-full sm:w-auto">
+                            <SelectTrigger className="w-full sm:w-[180px] h-9">
                                 <Package className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por estado" />
                             </SelectTrigger>
@@ -96,7 +95,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                             </SelectContent>
                         </Select>
                          <Select value={defaultValues.type} onValueChange={handleFilterChange("type")}>
-                            <SelectTrigger className="w-full sm:w-auto">
+                            <SelectTrigger className="w-full sm:w-[180px] h-9">
                                 <TestTube className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por tipo" />
                             </SelectTrigger>
@@ -107,7 +106,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                             </SelectContent>
                         </Select>
                         <Select value={defaultValues.supplier} onValueChange={handleFilterChange("supplier")}>
-                            <SelectTrigger className="w-full sm:w-auto">
+                            <SelectTrigger className="w-full sm:w-[180px] h-9">
                                 <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
                                 <SelectValue placeholder="Filtrar por proveedor" />
                             </SelectTrigger>
@@ -119,7 +118,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, defaultValue
                         </Select>
                     </div>
                 </div>
-            </CardHeader>
+            </CardContent>
         </Card>
     );
 }

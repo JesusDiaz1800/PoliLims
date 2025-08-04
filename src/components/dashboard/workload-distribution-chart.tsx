@@ -45,7 +45,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
       </CardHeader>
       <CardContent>
         {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -62,7 +62,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
             </BarChart>
           </ResponsiveContainer>
         ) : (
-           <div className="flex items-center justify-center h-[300px]">
+           <div className="flex items-center justify-center h-[250px]">
              <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar con los filtros actuales.</p>
            </div>
         )}
