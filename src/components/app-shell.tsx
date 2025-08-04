@@ -45,7 +45,6 @@ import {
     Info,
     LogOut,
     Cylinder,
-    Codepen,
     Code2
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
