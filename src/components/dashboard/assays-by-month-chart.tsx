@@ -21,43 +21,33 @@ const CustomCursor = (props: any) => {
 export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
   const chartData = React.useMemo(() => {
     const now = new Date();
-    const monthlyData: { [key: string]: number } = {};
-    const monthLabels: string[] = [];
+    const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
 
     // Initialize months for the last 12 months
     for (let i = 11; i >= 0; i--) {
         const d = subMonths(now, i);
         const monthKey = format(d, 'yyyy-MM');
         const monthLabel = format(d, 'MMM yy', { locale: es });
-        monthlyData[monthKey] = 0;
-        if (!monthLabels.includes(monthLabel)) {
-           monthLabels.push(monthLabel);
-        }
+        monthlyData[monthKey] = {
+            total: 0,
+            name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
+            fill: `hsl(var(--chart-${((11 - i) % 5) + 1}))`
+        };
     }
 
     allData.forEach(ensayo => {
         try {
             const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
             const monthKey = format(ensayoDate, 'yyyy-MM');
-            if (monthlyData.hasOwnProperty(monthKey)) {
-                monthlyData[monthKey]++;
+            if (monthlyData[monthKey]) {
+                monthlyData[monthKey].total++;
             }
         } catch (e) {
             console.warn(`Invalid date format for ensayo ${ensayo.id}: ${ensayo.fecha}`);
         }
     });
     
-    return monthLabels.map((label, index) => {
-        const [monthName, year] = label.split(' ');
-        const d = new Date(`${monthName} 1, ${'20' + year}`);
-        const monthKey = format(d, 'yyyy-MM');
-        
-        return {
-            name: label.charAt(0).toUpperCase() + label.slice(1),
-            total: monthlyData[monthKey] || 0,
-            fill: `hsl(var(--chart-${(index % 5) + 1}))`
-        };
-    });
+    return Object.values(monthlyData);
 
   }, [allData]);
 
