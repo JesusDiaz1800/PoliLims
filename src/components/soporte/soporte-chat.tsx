@@ -21,7 +21,7 @@ export function SoporteChat() {
     const [state, formAction] = useActionState(getDocumentSuggestion, initialState);
     const { toast } = useToast();
     const [history, setHistory] = useState<ChatMessage[]>([]);
-    const viewportRef = useRef<HTMLDivElement>(null);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (state.message === "Failed to get suggestion from AI.") {
@@ -50,14 +50,17 @@ export function SoporteChat() {
     
     // Scroll to bottom when history changes
     useEffect(() => {
-        if (viewportRef.current) {
-            viewportRef.current.scrollTo({ top: viewportRef.current.scrollHeight, behavior: 'smooth' });
+        if (scrollAreaRef.current) {
+            const viewport = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+            if (viewport) {
+                viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
+            }
         }
     }, [history]);
 
     return (
         <div className="flex flex-col flex-grow border rounded-lg bg-card">
-            <ScrollArea className="flex-grow p-4 space-y-4" viewportRef={viewportRef}>
+            <ScrollArea className="flex-grow p-4 space-y-4" ref={scrollAreaRef}>
                 {history.length === 0 ? (
                     <WelcomeMessage />
                 ) : (
