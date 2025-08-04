@@ -34,7 +34,7 @@ interface NoConformidadFormProps {
 
 const formSchema = z.object({
   id: z.string().optional(),
-  tipo: z.enum(['Interna', 'Reclamación de Cliente', 'Auditoría']),
+  tipo: z.enum(['Interna', 'Reclamo de Cliente', 'Auditoría']),
   fecha_deteccion: z.date({ required_error: "La fecha es requerida." }),
   descripcion: z.string().nonempty("La descripción es requerida."),
   estado: z.enum(['Abierta', 'En Investigación', 'Resuelta', 'Cerrada']),
@@ -128,7 +128,7 @@ export function NoConformidadForm({
             <Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
               <SelectContent>
                 <SelectItem value="Interna">Interna</SelectItem>
-                <SelectItem value="Reclamación de Cliente">Reclamación de Cliente</SelectItem>
+                <SelectItem value="Reclamo de Cliente">Reclamo de Cliente</SelectItem>
                 <SelectItem value="Auditoría">Auditoría</SelectItem>
               </SelectContent>
             </Select><FormMessage />

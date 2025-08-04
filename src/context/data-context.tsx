@@ -141,7 +141,7 @@ const demoControles: ControlEvento[] = [
 
 const demoNoConformidades: NoConformidad[] = [
     { id: 'NC-001', tipo: 'Interna', fecha_deteccion: '2025-07-15', descripcion: 'El equipo EQ-05 (Balanza Analítica) está fuera de calibración desde el 2025-07-10.', estado: 'En Investigación', severidad: 'Alta', responsable: 'Victor Lutz', fecha_vencimiento: '2025-07-25' },
-    { id: 'NC-002', tipo: 'Reclamación de Cliente', fecha_deteccion: '2025-07-18', descripcion: 'El cliente "Constructora XYZ" reporta que el lote Lote-250710-PP1 presenta fragilidad.', estado: 'Abierta', severidad: 'Crítica', responsable: 'Jesus Diaz', fecha_vencimiento: '2025-07-22' },
+    { id: 'NC-002', tipo: 'Reclamo de Cliente', fecha_deteccion: '2025-07-18', descripcion: 'El cliente "Constructora XYZ" reporta que el lote Lote-250710-PP1 presenta fragilidad.', estado: 'Abierta', severidad: 'Crítica', responsable: 'Jesus Diaz', fecha_vencimiento: '2025-07-22' },
     { id: 'NC-003', tipo: 'Auditoría', fecha_deteccion: '2025-06-30', descripcion: 'Durante la auditoría interna se detectó que el PNT para ensayos de impacto no está actualizado a la última versión de la norma.', estado: 'Resuelta', severidad: 'Media', responsable: 'Maximiliano Miranda', fecha_vencimiento: '2025-07-15', accion_correctiva: 'Se actualizó el PNT y se realizó capacitación al personal.' },
     { id: 'NC-004', tipo: 'Interna', fecha_deteccion: '2025-07-21', descripcion: 'Contaminación cruzada detectada en muestras de Reprocesado.', estado: 'Abierta', severidad: 'Alta', responsable: 'Robinson Córdova', fecha_vencimiento: '2025-07-28' },
 ];
@@ -229,7 +229,7 @@ export interface ControlEvento {
 
 export interface NoConformidad {
     id: string;
-    tipo: 'Interna' | 'Reclamación de Cliente' | 'Auditoría';
+    tipo: 'Interna' | 'Reclamo de Cliente' | 'Auditoría';
     fecha_deteccion: string;
     descripcion: string;
     estado: 'Abierta' | 'En Investigación' | 'Resuelta' | 'Cerrada';
