@@ -196,7 +196,6 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         if (pathname.startsWith('/administracion/configuracion')) return 'Configuración';
         if (pathname.startsWith('/assistant')) return 'Asistente IA';
         if (pathname.startsWith('/troubleshooting')) return 'Soporte con IA';
-        if (pathname.startsWith('/muestras')) return 'Gestión de Muestras';
         if (pathname.startsWith('/equipos')) return 'Gestión de Equipos';
         if (pathname.startsWith('/portal')) return 'Portal de Clientes';
         
