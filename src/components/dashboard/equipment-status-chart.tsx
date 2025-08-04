@@ -18,9 +18,10 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
     }, {} as Record<string, number>);
 
     return [
-      { name: "Activos", value: statusCounts["Activo"] || 0, color: "hsl(var(--chart-1))" },
+      { name: "Activo", value: statusCounts["Activo"] || 0, color: "hsl(var(--chart-1))" },
       { name: "Mantenimiento", value: statusCounts["En Mantenimiento"] || 0, color: "hsl(var(--chart-3))" },
-      { name: "Inactivos", value: statusCounts["Inactivo"] || 0, color: "hsl(var(--muted))" },
+      { name: "Requiere Calibración", value: statusCounts["Requiere Calibración"] || 0, color: "hsl(var(--chart-4))" },
+      { name: "Inactivo", value: statusCounts["Inactivo"] || 0, color: "hsl(var(--muted))" },
     ].filter(item => item.value > 0);
   }, [data]);
 

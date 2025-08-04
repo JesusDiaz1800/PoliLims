@@ -58,7 +58,7 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
                         innerRadius={40}
                         paddingAngle={5}
                         dataKey="value"
-                        label={({ name, percent }) => `${name.split(' ')[0]} ${(percent * 100).toFixed(0)}%`}
+                        label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
                     >
                         {chartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.fill} stroke={entry.fill} />
@@ -86,5 +86,3 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
     </Card>
   )
 }
-
-    
