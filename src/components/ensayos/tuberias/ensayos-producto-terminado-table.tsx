@@ -134,11 +134,13 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
             </>);
         default: // 'all'
             return (<>
-                <TableHead>ID Muestra</TableHead>
+                <TableHead>Fecha Ingreso</TableHead>
+                <TableHead>Hora</TableHead>
+                <TableHead>Inspector</TableHead>
+                <TableHead>Máquina</TableHead>
+                <TableHead>Fecha Ensayo</TableHead>
                 <TableHead>Producto</TableHead>
                 <TableHead>Lote</TableHead>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Analista</TableHead>
                 <TableHead>Estado</TableHead>
             </>);
     }
@@ -208,11 +210,13 @@ export function EnsayosProductoTerminadoTable({ ensayos, tipoEnsayo, onOpenDialo
             </>);
         default: // 'all'
             return (<>
-                <TableCell className="font-mono">{ensayo.id}</TableCell>
+                <TableCell>{ensayo.fecha_ingreso || 'N/A'}</TableCell>
+                <TableCell>{ensayo.hora || 'N/A'}</TableCell>
+                <TableCell>{ensayo.inspector || 'N/A'}</TableCell>
+                <TableCell>{ensayo.maquina || 'N/A'}</TableCell>
+                <TableCell>{ensayo.fecha}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell>{ensayo.fecha}</TableCell>
-                <TableCell>{ensayo.analista}</TableCell>
                 <TableCell>
                   <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
                     {ensayo.estado}

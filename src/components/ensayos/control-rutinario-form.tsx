@@ -197,11 +197,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 id_muestra: newRegistro.id,
                 tipo: tipoEnsayo,
                 analista: 'Jesus Diaz', // Default analyst
-                fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
+                fecha: format(new Date(), "yyyy-MM-dd"), // Fecha del Ensayo es hoy
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,
                 lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`,
                 observaciones: data.observaciones_visuales || '',
+                // Trazabilidad
+                fecha_ingreso: format(data.fecha_ingreso, "yyyy-MM-dd"),
+                hora: data.hora,
                 maquinista: data.maquinista,
                 maquina: data.maquina,
                 inspector: data.inspector,
