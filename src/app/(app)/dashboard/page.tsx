@@ -158,17 +158,20 @@ export default function DashboardPage() {
         <StatsCard title="Equipos Operativos" value={`${operationalEquipment} / ${totalEquipment}`} description="Equipos calibrados y activos" icon={Beaker} />
       </div>
       
+      <div className="grid grid-cols-12 gap-6">
+         <div className="col-span-12 lg:col-span-8">
+           <WorkloadDistributionChart data={filteredEnsayos} />
+        </div>
+        <div className="col-span-12 lg:col-span-4">
+            <RecentActivityList initialActivity={recentActivity}/>
+        </div>
+      </div>
+      
       <div className="grid grid-cols-1 gap-6">
         <AssaysByMonthChart data={ensayos} />
       </div>
       
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 lg:col-span-8">
-          <WorkloadDistributionChart data={filteredEnsayos} />
-        </div>
-        <div className="col-span-12 lg:col-span-4">
-          <RecentActivityList initialActivity={recentActivity}/>
-        </div>
         <div className="col-span-12 lg:col-span-8">
             <ThroughputTrendChart data={filteredEnsayos} />
         </div>
