@@ -37,9 +37,9 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo }:
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-6 -mr-2">
           {tipo === 'HDPE' ? (
-            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
+            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} />
           ) : (
-            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} />
+            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} />
           )}
         </ScrollArea>
       </DialogContent>
