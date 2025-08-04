@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -68,12 +69,13 @@ export function ImportacionesTable({ importaciones, onAddNew, onEdit }: Importac
   const { deleteImportacion } = useDynamicData();
   const { toast } = useToast();
 
-  const filteredImportaciones = importaciones.filter(
-    (item) =>
-      item.bl.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.proveedor && item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredImportaciones = React.useMemo(() => 
+    importaciones.filter(
+      (item) =>
+        item.bl.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.proveedor && item.proveedor.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [importaciones, searchTerm]);
   
   const handleDelete = async (id: string) => {
     try {

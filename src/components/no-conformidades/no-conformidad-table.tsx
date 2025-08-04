@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -74,12 +75,13 @@ export function NoConformidadTable({ incidencias, onAddNew, onEdit }: NoConformi
   const { deleteIncidencia } = useDynamicData();
   const { toast } = useToast();
 
-  const filteredIncidencias = incidencias.filter(
-    (incidencia) =>
-      incidencia.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      incidencia.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      incidencia.responsable.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredIncidencias = React.useMemo(() => 
+    incidencias.filter(
+      (incidencia) =>
+        incidencia.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        incidencia.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        incidencia.responsable.toLowerCase().includes(searchTerm.toLowerCase())
+    ), [incidencias, searchTerm]);
   
   const handleDelete = async (incidenciaId: string) => {
     try {

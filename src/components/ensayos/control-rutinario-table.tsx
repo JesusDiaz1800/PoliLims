@@ -50,12 +50,12 @@ export function ControlRutinarioTable({ onAddRecordClick, matrizProductos }: Con
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
 
-  const filteredRegistros = registros
-    .filter(registro => 
+  const filteredRegistros = React.useMemo(() => 
+    registros.filter(registro => 
       registro.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.inspector.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.producto.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    ), [registros, searchTerm]);
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
     const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
