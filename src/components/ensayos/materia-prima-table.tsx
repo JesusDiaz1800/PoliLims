@@ -82,6 +82,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'melt_index':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">M.I. Reportado</TableHead>
@@ -93,6 +94,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'densidad':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Densidad Líquido</TableHead>
@@ -103,6 +105,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'negro_humo':
              return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Negro Humo</TableHead>
@@ -112,6 +115,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'cenizas':
              return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Cenizas</TableHead>
@@ -122,6 +126,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'dsc':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Temp. Inicio Fusión</TableHead>
@@ -133,6 +138,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'tio':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
                     <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Tiempo de Inducción</TableHead>
@@ -158,6 +164,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'melt_index':
             return (
                 <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_reportado, 4)}</TableCell>
@@ -169,6 +176,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'densidad':
             return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidad_liquido, 4)}</TableCell>
@@ -179,6 +187,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'negro_humo':
             return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
@@ -188,6 +197,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'cenizas':
              return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
@@ -198,6 +208,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'dsc':
             return (
                 <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.dsc_temp_inicio, 2)} °C</TableCell>
@@ -209,6 +220,7 @@ export function MateriaPrimaTable({ ensayos, onAddNew, onEdit }: MateriaPrimaTab
         case 'tio':
             return (
                 <>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>

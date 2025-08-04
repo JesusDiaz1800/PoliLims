@@ -79,6 +79,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'melt_index':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">M.I. Reportado</TableHead>
                     <TableHead className="text-right">M.I. Ensayado</TableHead>
@@ -89,6 +91,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'densidad':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Densidad Líquido</TableHead>
                     <TableHead className="text-right">Densidad Calculada</TableHead>
@@ -98,6 +102,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'negro_humo':
              return (
                 <>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Negro Humo</TableHead>
                     <TableHead>Estado</TableHead>
@@ -106,6 +112,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'cenizas':
              return (
                 <>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">% Cenizas</TableHead>
                     <TableHead className="text-right">% Cenizas Corregido</TableHead>
@@ -115,6 +123,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'tio':
             return (
                 <>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Producto</TableHead>
                     <TableHead>Lote</TableHead>
                     <TableHead className="text-right">Tiempo de Inducción</TableHead>
                     <TableHead>Estado</TableHead>
@@ -139,6 +149,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'melt_index':
             return (
                 <>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_reportado, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
@@ -149,6 +161,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'densidad':
             return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidad_liquido, 4)}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
@@ -158,6 +172,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'negro_humo':
             return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
@@ -166,6 +182,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'cenizas':
              return (
                  <>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCorregido, 2)}%</TableCell>
@@ -175,6 +193,8 @@ export function ReprocesadoTable({ ensayos, onAddNew, onEdit }: ReprocesadoTable
         case 'tio':
             return (
                 <>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell className="font-medium">{ensayo.producto}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
                     <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
