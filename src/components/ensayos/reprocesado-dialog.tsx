@@ -42,5 +42,3 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
     </Dialog>
   );
 }
-
-    

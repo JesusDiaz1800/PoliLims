@@ -81,9 +81,23 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     defaultValues: defaultFormValues
   });
 
-  const { control, getValues, register, handleSubmit, reset } = form;
+  const { control, getValues, register, handleSubmit, reset, watch } = form;
 
   const isEditing = Boolean(ensayoToEdit);
+  
+  const watchedFields = watch();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "meltIndexMediciones",
+  });
+  
+  const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
+  const [meltIndexCalculado, setMeltIndexCalculado] = React.useState(0);
+  const [densidadCalculada, setDensidadCalculada] = React.useState(0);
+  const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
+  const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
+  const [cenizasCorregido, setCenizasCorregido] = React.useState(0);
 
   React.useEffect(() => {
     if (isEditing && ensayoToEdit) {
@@ -98,80 +112,69 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     } else {
       reset(defaultFormValues);
     }
-  }, [ensayoToEdit, reset, isEditing]);
+  }, [ensayoToEdit, isEditing, reset]);
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "meltIndexMediciones",
-  });
-  
-  const [meltIndexVariacion, setMeltIndexVariacion] = React.useState(0);
-  const [meltIndexCalculado, setMeltIndexCalculado] = React.useState(0);
-  const [densidadCalculada, setDensidadCalculada] = React.useState(0);
-  const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
-  const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
-  const [cenizasCorregido, setCenizasCorregido] = React.useState(0);
 
-  const calculateMeltIndex = React.useCallback(() => {
-    const mediciones = getValues("meltIndexMediciones");
+  const calculateResults = React.useCallback(() => {
+    const values = getValues();
+    // Melt Index
+    const mediciones = values.meltIndexMediciones;
     const valoresNumericos = mediciones
       .map(m => parseFloat(m.value))
-      .filter(v => !isNaN(v) && v !== 0);
+      .filter(v => !isNaN(v) && v > 0);
 
     let promedio = 0;
     if (valoresNumericos.length > 0) {
       const sum = valoresNumericos.reduce((a, b) => a + b, 0);
       promedio = sum / valoresNumericos.length;
     }
+    const miCalculado = promedio > 0 ? promedio * 2 : 0;
+    setMeltIndexCalculado(miCalculado);
     
-    const resultado = promedio * 2;
-    setMeltIndexCalculado(resultado);
-
-    const reportado = parseFloat(getValues("melt_index_reportado"));
-    if (!isNaN(reportado) && reportado !== 0 && !isNaN(resultado)) {
-        const variacion = ((resultado - reportado) / reportado) * 100;
-        setMeltIndexVariacion(variacion);
+    const reportado = parseFloat(values.melt_index_reportado);
+    if (!isNaN(reportado) && reportado > 0 && miCalculado > 0) {
+      const variacion = ((miCalculado - reportado) / reportado) * 100;
+      setMeltIndexVariacion(variacion);
     } else {
-        setMeltIndexVariacion(0);
+      setMeltIndexVariacion(0);
     }
-  }, [getValues]);
 
-
-  const calculateDensidad = React.useCallback(() => {
-    const densidadLiquido = parseFloat(getValues("densidad_liquido"));
-    const masaAire = parseFloat(getValues("masa_aire"));
-    const masaAgua = parseFloat(getValues("masa_agua"));
-
+    // Densidad
+    const densidadLiquido = parseFloat(values.densidad_liquido);
+    const masaAire = parseFloat(values.masa_aire);
+    const masaAgua = parseFloat(values.masa_agua);
     if (!isNaN(densidadLiquido) && !isNaN(masaAire) && !isNaN(masaAgua) && (masaAire - masaAgua) !== 0) {
       const resultado = densidadLiquido * (masaAire / (masaAire - masaAgua));
       setDensidadCalculada(resultado);
     } else {
       setDensidadCalculada(0);
     }
-  }, [getValues]);
-  
-  const calculateNegroHumoYCenizas = React.useCallback(() => {
-    const m1 = parseFloat(getValues("nh_m1"));
-    const m2 = parseFloat(getValues("nh_m2"));
-    const m3 = parseFloat(getValues("nh_m3"));
-    const m4 = parseFloat(getValues("nh_m4"));
 
-    if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && !isNaN(m4) && (m2 - m1) !== 0) {
-      const nh = ((m3 - m4) / (m2 - m1)) * 100;
-      setNegroHumoCalculado(nh);
+    // Negro de Humo y Cenizas
+    const m1 = parseFloat(values.nh_m1);
+    const m2 = parseFloat(values.nh_m2);
+    const m3 = parseFloat(values.nh_m3);
+    const m4 = parseFloat(values.nh_m4);
+    if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && (m2 - m1) !== 0) {
+      if (!isNaN(m4)) {
+        const nh = ((m3 - m4) / (m2 - m1)) * 100;
+        setNegroHumoCalculado(nh);
+      } else {
+        setNegroHumoCalculado(0);
+      }
+      const cenizas = ((m3 - m1) / (m2 - m1)) * 100;
+      setCenizasCalculado(cenizas);
+      setCenizasCorregido(cenizas - 0.86);
     } else {
       setNegroHumoCalculado(0);
-    }
-
-    if (!isNaN(m1) && !isNaN(m2) && !isNaN(m3) && (m2 - m1) !== 0) {
-        const cenizas = ((m3 - m1) / (m2 - m1)) * 100;
-        setCenizasCalculado(cenizas);
-        setCenizasCorregido(cenizas - 0.86);
-    } else {
-        setCenizasCalculado(0);
-        setCenizasCorregido(0);
+      setCenizasCalculado(0);
+      setCenizasCorregido(0);
     }
   }, [getValues]);
+  
+  React.useEffect(() => {
+    calculateResults();
+  }, [watchedFields, calculateResults]);
 
 
   const onSubmit = async (data: any) => {
@@ -185,16 +188,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         negroHumoCalculado,
         cenizasCalculado,
         cenizasCorregido,
-    };
-
-    const finalEnsayoData = {
-        ...ensayoData,
         producto: `Reprocesado Lote ${data.lote}`,
     };
 
     try {
         if (isEditing && ensayoToEdit?.id) {
-            const fullEnsayoData = { ...ensayoToEdit, ...finalEnsayoData, id: ensayoToEdit.id, tipo: 'Reprocesado' };
+            const fullEnsayoData = { ...ensayoToEdit, ...ensayoData, id: ensayoToEdit.id, tipo: 'Reprocesado' };
             await updateEnsayo(ensayoToEdit.id, fullEnsayoData as Partial<Ensayo>);
             await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
             toast({
@@ -203,7 +202,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
             });
         } else {
             const newEnsayo: Omit<Ensayo, 'id'> = {
-                ...(finalEnsayoData as any),
+                ...(ensayoData as any),
                 tipo: 'Reprocesado',
                 estado: 'Pendiente de Revisión',
             };
@@ -348,17 +347,13 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                             type="number"
                             step="any"
                             placeholder={`Medición #${index + 1}`}
-                            onChange={calculateMeltIndex}
                             className="flex-1"
                           />
                           <Button
                             type="button"
                             variant="destructive"
                             size="icon"
-                            onClick={() => {
-                                remove(index);
-                                setTimeout(calculateMeltIndex, 0);
-                            }}
+                            onClick={() => remove(index)}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -378,7 +373,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</Label>
-                        <Input id="melt_index_reportado" type="number" placeholder="Valor de referencia" {...register("melt_index_reportado")} onChange={calculateMeltIndex} />
+                        <Input id="melt_index_reportado" type="number" placeholder="Valor de referencia" {...register("melt_index_reportado")} />
                       </div>
                        <div className="space-y-2">
                          <Label>Índice de fluidez ensayado [g/10min]</Label>
@@ -410,15 +405,15 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</Label>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_aire">Masa de la muestra en aire [g]</Label>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="masa_agua">Masa de la muestra en agua [g]</Label>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
                       </div>
                        <div className="space-y-2">
                          <Label>Densidad de la muestra [g/cm³]</Label>
@@ -443,19 +438,19 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                   <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</Label>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</Label>
-                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
                       </div>
                        <div className="space-y-2 md:col-start-1">
                          <Label>% Negro de Humo</Label>
@@ -477,15 +472,15 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <Label htmlFor="nh_m1">m1: Cápsula vacía [g]</Label>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m2">m2: Cápsula con muestra [g]</Label>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
                       </div>
                        <div className="space-y-2">
                         <Label htmlFor="nh_m3">m3: Cápsula procesada [g]</Label>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumoYCenizas} />
+                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
                       </div>
                        <div className="space-y-2 md:col-start-1">
                          <Label>% Cenizas</Label>
