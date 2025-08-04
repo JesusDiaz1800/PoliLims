@@ -52,7 +52,7 @@ interface MateriaPrimaFormProps {
 
 // Define the shape of the form's default values
 const defaultFormValues = {
-  meltIndexMediciones: [{ value: '' as string | number }],
+  meltIndexMediciones: Array(6).fill({ value: '' as string | number }),
   fecha_ingreso: new Date(),
   analista: "",
   producto: "",
@@ -111,11 +111,19 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
 
   React.useEffect(() => {
     if (isEditing && ensayoToEdit) {
+        let mediciones = ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 
+            ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) 
+            : [];
+        
+        if (mediciones.length < 6) {
+           mediciones = [...mediciones, ...Array(6 - mediciones.length).fill({ value: '' })];
+        }
+
         const formData = {
           ...defaultFormValues,
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
+          meltIndexMediciones: mediciones,
           analista: ensayoToEdit.analista || "",
         };
         reset(formData);
@@ -245,7 +253,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -399,7 +407,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</FormLabel>
-                        <Input id="melt_index_reportado" type="number" placeholder="Valor del proveedor" {...register("melt_index_reportado")} />
+                        <Input id="melt_index_reportado" type="number" step="any" placeholder="Valor del proveedor" {...register("melt_index_reportado")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez ensayado [g/10min]</FormLabel>
@@ -531,23 +539,23 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                             <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
-                            <Input id="dsc_temp_max" type="number" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
+                            <Input id="dsc_temp_max" type="number" step="any" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
-                            <Input id="dsc_temp_inicio" type="number" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
+                            <Input id="dsc_temp_inicio" type="number" step="any" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
-                            <Input id="dsc_temp_final" type="number" placeholder="Temp. final" {...register("dsc_temp_final")} />
+                            <Input id="dsc_temp_final" type="number" step="any" placeholder="Temp. final" {...register("dsc_temp_final")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
-                            <Input id="dsc_punto_fusion" type="number" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
+                            <Input id="dsc_punto_fusion" type="number" step="any" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
                         </div>
                          <div className="space-y-2">
                             <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
-                            <Input id="dsc_punto_fusion_opcional" type="number" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
+                            <Input id="dsc_punto_fusion_opcional" type="number" step="any" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
                         </div>
                     </CardContent>
                  </Card>
@@ -564,11 +572,11 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" placeholder="Ej: 50" {...register("tio_flujo")} />
+                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
@@ -576,7 +584,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
                         </div>
                     </CardContent>
                 </Card>
@@ -613,3 +621,5 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
     </Form>
   );
 }
+
+    

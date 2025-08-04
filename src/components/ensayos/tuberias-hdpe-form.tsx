@@ -52,7 +52,7 @@ interface TuberiasHdpeFormProps {
 }
 
 const defaultFormValues = {
-  meltIndexMediciones: [{ value: '' }],
+  meltIndexMediciones: Array(6).fill({ value: '' as string | number }),
   fecha_ingreso: new Date(),
   analista: "",
   producto: "",
@@ -90,12 +90,21 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
 
   React.useEffect(() => {
       if (ensayo) {
+          let mediciones = ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 
+            ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) 
+            : [];
+        
+          if (mediciones.length < 6) {
+              mediciones = [...mediciones, ...Array(6 - mediciones.length).fill({ value: '' })];
+          }
+
           const formData = {
               ...defaultFormValues,
               ...ensayo,
               fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
-              meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
+              meltIndexMediciones: mediciones,
               id_muestra: ensayo.id,
+              analista: ensayo.analista,
           };
           reset(formData);
       }
@@ -198,7 +207,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -486,11 +495,11 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" placeholder="Ej: 50" {...register("tio_flujo")} />
+                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
@@ -498,7 +507,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
                         </div>
                     </CardContent>
                 </Card>
@@ -528,3 +537,5 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit }: TuberiasHd
     </Form>
   );
 }
+
+    

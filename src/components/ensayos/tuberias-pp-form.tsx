@@ -51,7 +51,7 @@ interface TuberiasPpFormProps {
 }
 
 const defaultFormValues = {
-  meltIndexMediciones: [{ value: '' }],
+  meltIndexMediciones: Array(6).fill({ value: '' as string | number }),
   fv_total_m1: "",
   fv_total_m2: "",
   fv_total_m3: "",
@@ -83,12 +83,21 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
 
   React.useEffect(() => {
     if (ensayo) {
+      let mediciones = ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 
+            ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) 
+            : [];
+        
+      if (mediciones.length < 6) {
+          mediciones = [...mediciones, ...Array(6 - mediciones.length).fill({ value: '' })];
+      }
+
       const formData = {
         ...defaultFormValues,
         ...ensayo,
         fecha_ingreso: ensayo.fecha ? parseISO(ensayo.fecha) : new Date(),
-        meltIndexMediciones: ensayo.meltIndexMediciones && ensayo.meltIndexMediciones.length > 0 ? ensayo.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
+        meltIndexMediciones: mediciones,
         id_muestra: ensayo.id,
+        analista: ensayo.analista,
       };
       reset(formData);
     }
@@ -236,7 +245,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -542,3 +551,5 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
     </Form>
   );
 }
+
+    

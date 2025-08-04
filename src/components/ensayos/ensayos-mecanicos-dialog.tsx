@@ -177,11 +177,11 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
                             <div className="grid grid-cols-2 gap-6 animate-in fade-in">
                                 <div className="space-y-2">
                                     <Label htmlFor="impactoFallas">N° de Fallas</Label>
-                                    <Input id="impactoFallas" type="number" {...register("impactoFallas", { valueAsNumber: true })} />
+                                    <Input id="impactoFallas" type="number" step="any" {...register("impactoFallas", { valueAsNumber: true })} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="impactoTotal">N° Total de Muestras</Label>
-                                    <Input id="impactoTotal" type="number" {...register("impactoTotal", { valueAsNumber: true })} />
+                                    <Input id="impactoTotal" type="number" step="any" {...register("impactoTotal", { valueAsNumber: true })} />
                                 </div>
                             </div>
                         )}
@@ -241,3 +241,5 @@ export function EnsayosMecanicosDialog({ isOpen, onClose, ensayo }: EnsayosMecan
         </Dialog>
     );
 }
+
+    

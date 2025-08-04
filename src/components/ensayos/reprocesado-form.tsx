@@ -51,7 +51,7 @@ interface ReprocesadoFormProps {
 }
 
 const defaultFormValues = {
-  meltIndexMediciones: [{ value: '' as string | number }],
+  meltIndexMediciones: Array(6).fill({ value: '' as string | number }),
   fecha_ingreso: new Date(),
   analista: "",
   id_muestra: "",
@@ -100,11 +100,19 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
 
   React.useEffect(() => {
     if (isEditing && ensayoToEdit) {
+      let mediciones = ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 
+            ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) 
+            : [];
+        
+      if (mediciones.length < 6) {
+          mediciones = [...mediciones, ...Array(6 - mediciones.length).fill({ value: '' })];
+      }
+      
       const formData = {
         ...defaultFormValues,
         ...ensayoToEdit,
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v || '' })) : [{ value: '' }],
+        meltIndexMediciones: mediciones,
         id_muestra: ensayoToEdit.id,
         analista: ensayoToEdit.analista || "",
       };
@@ -234,7 +242,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -373,7 +381,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</FormLabel>
-                        <Input id="melt_index_reportado" type="number" placeholder="Valor de referencia" {...register("melt_index_reportado")} />
+                        <Input id="melt_index_reportado" type="number" step="any" placeholder="Valor de referencia" {...register("melt_index_reportado")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez ensayado [g/10min]</FormLabel>
@@ -509,11 +517,11 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" placeholder="Ej: 50" {...register("tio_flujo")} />
+                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
@@ -521,7 +529,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
                         </div>
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
                         </div>
                     </CardContent>
                 </Card>
@@ -551,3 +559,5 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     </Form>
   );
 }
+
+    
