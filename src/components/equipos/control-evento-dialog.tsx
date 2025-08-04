@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -65,12 +66,12 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
         await addControlEvento({
             equipoId: equipo.id,
             ...data,
-            fecha: format(data.fecha, "yyyy-MM-dd"),
+            fecha: format(data.fecha, "dd-MM-yyyy"),
         });
 
         const updates: Partial<Equipo> = {};
         if (data.proximo_control) {
-            updates.proxima_calibracion = format(data.proximo_control, "yyyy-MM-dd");
+            updates.proxima_calibracion = format(data.proximo_control, "dd-MM-yyyy");
         }
         
         if (data.tipo === 'Mantenimiento Correctivo') {
@@ -114,8 +115,8 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
             Añada un nuevo registro de calibración, verificación o mantenimiento para el equipo <span className="font-bold">{equipo.nombre}</span>.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <Form {...form} form={form} onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="space-y-4">
             <FormField
               control={form.control}
               name="tipo"
@@ -153,7 +154,7 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
                                 variant={"outline"}
                                 className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}
+                                {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione fecha</span>}
                             </Button>
                             </FormControl>
                         </PopoverTrigger>
@@ -177,7 +178,7 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
                                     variant={"outline"}
                                     className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}>
                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}
+                                    {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione fecha</span>}
                                 </Button>
                                 </FormControl>
                             </PopoverTrigger>
@@ -237,7 +238,7 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
                     Guardar Evento
                 </Button>
             </DialogFooter>
-          </form>
+          </div>
         </Form>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -90,13 +91,13 @@ export function ImportacionForm({ importacionToEdit, onFormSubmit }: Importacion
     const importacionData = {
       ...data,
       cantidad_lote: data.cantidad_lote ? Number(data.cantidad_lote) : undefined,
-      fecha_embarque: data.fecha_embarque ? format(data.fecha_embarque, "yyyy-MM-dd") : undefined,
-      fecha_emision_cert: data.fecha_emision_cert ? format(data.fecha_emision_cert, "yyyy-MM-dd") : undefined,
-      fecha_solicitada: data.fecha_solicitada ? format(data.fecha_solicitada, "yyyy-MM-dd") : undefined,
-      fecha_entrega_calidad: data.fecha_entrega_calidad ? format(data.fecha_entrega_calidad, "yyyy-MM-dd") : undefined,
-      fecha_devolucion: data.fecha_devolucion ? format(data.fecha_devolucion, "yyyy-MM-dd") : undefined,
-      fecha_liberacion: data.fecha_liberacion ? format(data.fecha_liberacion, "yyyy-MM-dd") : undefined,
-      fecha_caducidad_cert: data.fecha_caducidad_cert ? format(data.fecha_caducidad_cert, "yyyy-MM-dd") : undefined,
+      fecha_embarque: data.fecha_embarque ? format(data.fecha_embarque, "dd-MM-yyyy") : undefined,
+      fecha_emision_cert: data.fecha_emision_cert ? format(data.fecha_emision_cert, "dd-MM-yyyy") : undefined,
+      fecha_solicitada: data.fecha_solicitada ? format(data.fecha_solicitada, "dd-MM-yyyy") : undefined,
+      fecha_entrega_calidad: data.fecha_entrega_calidad ? format(data.fecha_entrega_calidad, "dd-MM-yyyy") : undefined,
+      fecha_devolucion: data.fecha_devolucion ? format(data.fecha_devolucion, "dd-MM-yyyy") : undefined,
+      fecha_liberacion: data.fecha_liberacion ? format(data.fecha_liberacion, "dd-MM-yyyy") : undefined,
+      fecha_caducidad_cert: data.fecha_caducidad_cert ? format(data.fecha_caducidad_cert, "dd-MM-yyyy") : undefined,
     };
 
     try {
@@ -158,7 +159,7 @@ export function ImportacionForm({ importacionToEdit, onFormSubmit }: Importacion
 
 
   return (
-    <Form form={form} onSubmit={onSubmit} className="space-y-4 p-1">
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-1">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField control={form.control} name="bl" render={({ field }) => (<FormItem><FormLabel>BL N°</FormLabel><FormControl><Input placeholder="Número de Bill of Lading" {...field} /></FormControl><FormMessage /></FormItem>)} />
             <FormField control={form.control} name="proveedor" render={({ field }) => (<FormItem><FormLabel>Proveedor</FormLabel><FormControl><Input placeholder="Nombre del proveedor" {...field} /></FormControl><FormMessage /></FormItem>)} />

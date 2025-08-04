@@ -164,7 +164,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     }
     
     const newRegistroData = {
-        fecha: format(data.fecha_ingreso, "yyyy-MM-dd"),
+        fecha: format(data.fecha_ingreso, "dd-MM-yyyy"),
         hora: data.hora,
         inspector: data.inspector,
         maquinista: data.maquinista,
@@ -209,13 +209,13 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 id_muestra: newRegistro.id,
                 tipo: tipoEnsayo,
                 analista: '', // Default analyst, lab will assign it
-                fecha: format(new Date(), "yyyy-MM-dd"), // Fecha del Ensayo es hoy
+                fecha: format(new Date(), "dd-MM-yyyy"), // Fecha del Ensayo es hoy
                 estado: 'Pendiente de Revisión' as const,
                 producto: selectedProduct.label,
                 lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`,
                 observaciones: data.observaciones_visuales || '',
                 // Trazabilidad
-                fecha_ingreso: format(data.fecha_ingreso, "yyyy-MM-dd"),
+                fecha_ingreso: format(data.fecha_ingreso, "dd-MM-yyyy"),
                 hora: data.hora,
                 maquinista: data.maquinista,
                 maquina: data.maquina,
@@ -245,7 +245,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="space-y-6">
             <div className="space-y-4">
                 <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
@@ -261,7 +261,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                                     <FormControl>
                                         <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
                                             <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {field.value ? format(field.value, "PPP") : <span>Seleccione una fecha</span>}
+                                            {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
                                         </Button>
                                     </FormControl>
                                 </PopoverTrigger>

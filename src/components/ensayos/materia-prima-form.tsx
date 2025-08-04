@@ -201,7 +201,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
         ...ensayoToEdit,
         ...data,
         meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string | number}) => m.value).filter((v: string | number) => v !== ''),
-        fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
+        fecha: format(data.fecha_ingreso, 'dd-MM-yyyy'),
         meltIndexCalculado,
         meltIndexVariacion,
         densidadCalculada,
@@ -254,7 +254,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -279,7 +279,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "PPP", { locale: es }) : <span>Seleccione una fecha</span>}
+                    {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
                   </Button>
                   </FormControl>
                 </PopoverTrigger>

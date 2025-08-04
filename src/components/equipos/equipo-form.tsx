@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -116,7 +117,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   const onSubmit = async (data: FormValues) => {
     const equipoData = {
         ...data,
-        proxima_calibracion: format(data.proxima_calibracion, "yyyy-MM-dd"),
+        proxima_calibracion: format(data.proxima_calibracion, "dd-MM-yyyy"),
     };
 
     try {
@@ -282,7 +283,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Seleccione fecha</span>}
+                            {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione fecha</span>}
                         </Button>
                         </FormControl>
                     </PopoverTrigger>
