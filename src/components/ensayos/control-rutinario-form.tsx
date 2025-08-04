@@ -245,8 +245,8 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
   }
 
   return (
-    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
                 <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -539,7 +539,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                     </FormItem>
                 )}
                 />
-        </div>
+        
     
 
     <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
@@ -552,6 +552,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         Registrar Control
         </Button>
     </div>
-</Form>
+      </form>
+    </Form>
   )
 }
