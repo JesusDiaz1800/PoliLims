@@ -37,6 +37,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Label } from "@/components/ui/label";
 
 
 interface Option {
@@ -90,7 +91,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         ...defaultFormValues,
         ...ensayoToEdit,
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map(v => ({ value: v })) : [{ value: '' }],
+        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v })) : [{ value: '' }],
         id_muestra: ensayoToEdit.id,
       };
       reset(formData);
@@ -234,8 +235,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form {...form}>
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -301,12 +301,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
             />
 
           <div className="space-y-2">
-              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
+              <Label htmlFor="id_muestra">ID Muestra</Label>
               <Input id="id_muestra" placeholder="Ej: REPRO-034" {...register("id_muestra")} readOnly={isEditing} />
           </div>
 
           <div className="space-y-2">
-              <FormLabel htmlFor="lote">Lote</FormLabel>
+              <Label htmlFor="lote">Lote</Label>
               <Input id="lote" placeholder="Número de lote" {...register("lote")}/>
           </div>
         </CardContent>
@@ -553,9 +553,6 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
           {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
         </Button>
       </div>
-    </form>
     </Form>
   );
 }
-
-    

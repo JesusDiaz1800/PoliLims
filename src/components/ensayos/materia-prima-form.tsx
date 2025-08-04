@@ -37,6 +37,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Label } from "@/components/ui/label";
 
 
 interface Option {
@@ -101,7 +102,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
           ...defaultFormValues, // Start with default values to avoid undefined fields
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map(v => ({ value: v })) : [{ value: '' }],
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map((v: any) => ({ value: v })) : [{ value: '' }],
         };
         reset(formData);
     } else {
@@ -243,8 +244,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form {...form}>
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -613,9 +613,6 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
             {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
         </Button>
       </div>
-    </form>
     </Form>
   );
 }
-
-    
