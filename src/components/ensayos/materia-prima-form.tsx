@@ -98,7 +98,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
           ...defaultFormValues, // Start with default values to avoid undefined fields
           ...ensayoToEdit,
           fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones : [{ value: '' }],
+          meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map(v => ({ value: v })) : [{ value: '' }],
         };
         reset(formData);
     } else {
@@ -185,6 +185,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   const onSubmit = async (data: any) => {
     const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado'> & { id?: string } = {
         ...data,
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,

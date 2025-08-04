@@ -87,7 +87,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         ...defaultFormValues,
         ...ensayoToEdit,
         fecha_ingreso: ensayoToEdit.fecha ? parseISO(ensayoToEdit.fecha) : new Date(),
-        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones : [{ value: '' }],
+        meltIndexMediciones: ensayoToEdit.meltIndexMediciones && ensayoToEdit.meltIndexMediciones.length > 0 ? ensayoToEdit.meltIndexMediciones.map(v => ({ value: v })) : [{ value: '' }],
         id_muestra: ensayoToEdit.id,
       };
       reset(formData);
@@ -173,6 +173,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   const onSubmit = async (data: any) => {
     const ensayoData: Omit<Ensayo, 'id' | 'tipo' | 'estado' | 'producto'> & { id?: string, lote: string } = {
         ...data,
+        meltIndexMediciones: data.meltIndexMediciones.map((m: {value: string}) => m.value),
         fecha: format(data.fecha_ingreso, 'yyyy-MM-dd'),
         meltIndexCalculado,
         meltIndexVariacion,

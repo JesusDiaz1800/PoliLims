@@ -22,7 +22,7 @@ interface MateriaPrimaDialogProps {
 export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: MateriaPrimaDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl">
+      <DialogContent className="sm:max-w-5xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{ensayo ? "Editar" : "Registrar"} Ensayo: Materia Prima</DialogTitle>
           <DialogDescription>
@@ -31,7 +31,7 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: Mater
               : "Complete el formulario para registrar un nuevo ensayo de materia prima."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[70vh] pr-6 -mr-2">
+        <ScrollArea className="flex-grow pr-6 -mr-6 custom-scrollbar">
             <MateriaPrimaForm
                 analistas={analistas}
                 ensayoToEdit={ensayo}
