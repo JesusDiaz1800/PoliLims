@@ -51,7 +51,8 @@ import {
     BookCheck,
     History,
     Library,
-    Rocket
+    Rocket,
+    CalendarCheck
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -97,6 +98,7 @@ const operacionesSubMenu = [
 const equiposSubMenu = [
     { href: '/equipos', label: 'Inventario de Equipos', icon: BookCheck },
     { href: '/equipos/control', label: 'Control de Equipos', icon: History },
+    { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
 ];
 
 const menuItems = [
@@ -208,6 +210,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     const getPageTitle = () => {
         if (pathname === '/equipos') return 'Inventario de Equipos';
         if (pathname.startsWith('/equipos/control')) return 'Control de Equipos';
+        if (pathname.startsWith('/equipos/programa')) return 'Programa de Mantenimiento';
         if (pathname.startsWith('/ensayos/tuberias/hdpe')) return 'Ensayos de Tuberías HDPE';
         if (pathname.startsWith('/ensayos/tuberias/pp')) return 'Ensayos de Tuberías PP';
         if (pathname.startsWith('/ensayos/materia-prima')) return 'Ensayos de Materia Prima';
