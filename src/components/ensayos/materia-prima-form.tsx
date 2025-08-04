@@ -253,7 +253,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form {...form} form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -621,5 +621,3 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
     </Form>
   );
 }
-
-    

@@ -242,7 +242,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form {...form} form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -559,5 +559,3 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
     </Form>
   );
 }
-
-    

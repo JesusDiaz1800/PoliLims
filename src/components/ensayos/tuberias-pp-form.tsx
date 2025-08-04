@@ -245,7 +245,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
   ];
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form {...form} form={form} onSubmit={onSubmit}>
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -551,5 +551,3 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit }: TuberiasPpFo
     </Form>
   );
 }
-
-    
