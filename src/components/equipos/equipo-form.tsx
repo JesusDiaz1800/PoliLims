@@ -137,8 +137,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <Form form={form} onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
                 control={form.control}
@@ -337,7 +336,6 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
             {isEditing ? 'Guardar Cambios' : 'Registrar Equipo'}
         </Button>
       </div>
-    </form>
     </Form>
   );
 }
