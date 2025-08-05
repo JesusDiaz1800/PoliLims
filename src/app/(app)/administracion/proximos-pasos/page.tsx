@@ -51,7 +51,7 @@ export default function ProximosPasosPage() {
         <StepCard 
             icon={Database}
             title="Configurar una Base de Datos Central"
-            description="Los datos actuales son de prueba. Se debe configurar una base de datos centralizada (como Firestore o una base de datos SQL) para que la información registrada por un usuario esté disponible para todos en tiempo real y se guarde de forma persistente."
+            description="Los datos actuales son de prueba. Dado que su empresa ya usa SQL, la opción ideal es que el equipo de TI cree un esquema para esta aplicación en su base de datos existente. Como alternativa inicial y gratuita, pueden configurar una base de datos Firestore (de Firebase), cuyo nivel gratuito es muy amplio."
         />
          <StepCard 
             icon={KeyRound}
