@@ -83,7 +83,7 @@ export function UploadForm() {
              <Alert>
                 <AlertTitle>Recomendación</AlertTitle>
                 <AlertDescription>
-                    Para mejores resultados con la IA, asegúrese de que sus archivos de texto tengan una estructura clara. Utilice títulos, subtítulos, listas y párrafos bien definidos para facilitar la búsqueda de información.
+                    Para mejores resultados, asegúrese de que sus archivos de texto tengan una estructura clara. Utilice títulos, subtítulos, listas y párrafos bien definidos para facilitar la búsqueda de información.
                 </AlertDescription>
             </Alert>
         </form>

@@ -32,7 +32,7 @@ export function DocumentosTable({ files }: DocumentosTableProps) {
             <div>
                 <CardTitle>Biblioteca de Documentos</CardTitle>
                 <CardDescription>
-                    Esta es la base de conocimiento actual para el Asistente de IA. Los archivos listados aquí son consultados para responder preguntas.
+                    Esta es la base de conocimiento actual para el Asistente de Soporte. Los archivos listados aquí son consultados para responder preguntas.
                 </CardDescription>
             </div>
         </div>
@@ -69,7 +69,7 @@ export function DocumentosTable({ files }: DocumentosTableProps) {
                          <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                             <ServerCrash className="h-8 w-8"/>
                             <span className="font-semibold">La base de conocimiento está vacía.</span>
-                            <span>Cargue documentos para que el Asistente de IA pueda consultarlos.</span>
+                            <span>Cargue documentos para que el Asistente de Soporte pueda consultarlos.</span>
                          </div>
                     </TableCell>
                 </TableRow>

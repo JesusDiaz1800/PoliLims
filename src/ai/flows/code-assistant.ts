@@ -17,7 +17,7 @@ const CodeAssistantInputSchema = z.object({
 export type CodeAssistantInput = z.infer<typeof CodeAssistantInputSchema>;
 
 const CodeAssistantOutputSchema = z.object({
-  response: z.string().describe('The generated code or response from the AI assistant.'),
+  response: z.string().describe('The generated code or response from the assistant.'),
 });
 export type CodeAssistantOutput = z.infer<typeof CodeAssistantOutputSchema>;
 
@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'codeAssistantPrompt',
   input: {schema: CodeAssistantInputSchema},
   output: {schema: CodeAssistantOutputSchema},
-  prompt: `You are an expert AI coding assistant for an application built with Next.js, React, TypeScript, TailwindCSS, and ShadCN UI components.
+  prompt: `You are an expert coding assistant for an application built with Next.js, React, TypeScript, TailwindCSS, and ShadCN UI components.
 
   The user has requested help. Analyze their prompt and provide a helpful response.
   If they ask for code, provide a complete, clean, and well-formatted code block.

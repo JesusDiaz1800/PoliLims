@@ -41,7 +41,7 @@ export function TroubleshootingForm() {
         if (state.message === "Failed to get suggestion from AI.") {
             toast({
                 variant: "destructive",
-                title: "Error de IA",
+                title: "Error de Sistema",
                 description: state.error || "Ocurrió un error desconocido.",
             });
         }
@@ -53,7 +53,7 @@ export function TroubleshootingForm() {
             <Card>
                 <CardHeader>
                     <CardTitle>Describa el Problema</CardTitle>
-                    <CardDescription>Proporcione el mensaje de error y describa qué estaba haciendo cuando ocurrió. Nuestra IA analizará el problema.</CardDescription>
+                    <CardDescription>Proporcione el mensaje de error y describa qué estaba haciendo cuando ocurrió. El sistema analizará el problema.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form action={formAction} className="space-y-6">
@@ -95,9 +95,9 @@ export function TroubleshootingForm() {
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <Sparkles className="h-6 w-6 text-primary" />
-                            <CardTitle>Análisis y Sugerencias de la IA</CardTitle>
+                            <CardTitle>Análisis y Sugerencias</CardTitle>
                         </div>
-                        <CardDescription>Este es el análisis de nuestro asistente de IA.</CardDescription>
+                        <CardDescription>Este es el análisis del asistente de diagnóstico.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div>

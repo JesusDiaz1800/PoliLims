@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Unplug } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Solución de Problemas IA',
+  title: 'Solución de Problemas',
 };
 
 export default function TroubleshootingPage() {
@@ -18,7 +18,7 @@ export default function TroubleshootingPage() {
           Asistente para Solución de Problemas
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          ¿Tienes un problema en el laboratorio? Describe el error y las circunstancias, y nuestra IA te guiará hacia la solución.
+          ¿Tienes un problema en el laboratorio? Describe el error y las circunstancias, y el sistema te guiará hacia la solución.
         </p>
       </div>
       <TroubleshootingForm />

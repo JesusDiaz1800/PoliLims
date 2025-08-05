@@ -238,8 +238,8 @@ const pageTitles: Record<string, string> = {
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/assistant': 'Asistente de Código',
-    '/soporte': 'Asistente IA de Laboratorio',
-    '/troubleshooting': 'Solución de Problemas IA',
+    '/soporte': 'Soporte de Laboratorio',
+    '/troubleshooting': 'Solución de Problemas',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
@@ -331,7 +331,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     <SidebarSeparator className="my-2" />
                     <div className="flex items-center gap-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:py-2">
                         <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
-                            <AvatarImage src={user.avatarUrl} alt={user.fullName} data-ai-hint="man portrait"/>
+                            <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-sm overflow-hidden group-data-[collapsible=icon]:hidden">

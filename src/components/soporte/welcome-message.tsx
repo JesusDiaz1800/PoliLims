@@ -20,7 +20,7 @@ export function WelcomeMessage() {
     return (
         <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="space-y-2">
-                <h2 className="text-2xl font-bold font-headline">Asistente IA de PoliLIMS</h2>
+                <h2 className="text-2xl font-bold font-headline">Asistente de Soporte</h2>
                 <p className="text-muted-foreground">¿Cómo puedo ayudarte hoy?</p>
             </div>
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
@@ -36,4 +36,3 @@ export function WelcomeMessage() {
         </div>
     );
 }
-

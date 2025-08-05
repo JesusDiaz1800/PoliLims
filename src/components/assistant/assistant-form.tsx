@@ -41,7 +41,7 @@ export function AssistantForm() {
         if (state.message === "Failed to get suggestion from AI.") {
             toast({
                 variant: "destructive",
-                title: "Error de IA",
+                title: "Error de Sistema",
                 description: state.error || "Ocurrió un error desconocido.",
             });
         }
@@ -81,7 +81,7 @@ export function AssistantForm() {
                     <CardHeader>
                         <div className="flex items-center gap-2">
                             <Sparkles className="h-6 w-6 text-primary" />
-                            <CardTitle>Respuesta de la IA</CardTitle>
+                            <CardTitle>Respuesta Generada</CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent>
