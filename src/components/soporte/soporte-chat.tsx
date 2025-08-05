@@ -2,7 +2,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from 'react';
-import { getDocumentSuggestion } from '@/app/(app)/document-assistant/actions';
+import { getSoporteSuggestion } from '@/app/(app)/soporte/actions';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from '../ui/scroll-area';
 import { ChatMessage } from './chat-message';
@@ -18,7 +18,7 @@ export interface ChatMessage {
 const initialState = { message: '', data: null, error: null, fieldErrors: null };
 
 export function SoporteChat() {
-    const [state, formAction] = useActionState(getDocumentSuggestion, initialState);
+    const [state, formAction] = useActionState(getSoporteSuggestion, initialState);
     const { toast } = useToast();
     const [history, setHistory] = useState<ChatMessage[]>([]);
     const scrollAreaRef = useRef<HTMLDivElement>(null);

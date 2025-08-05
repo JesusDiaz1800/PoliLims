@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from "zod";
-import { documentAssistant, type DocumentAssistantInput } from "@/ai/flows/document-assistant";
+import { soporteLaboratorio, type SoporteInput } from "@/ai/flows/soporte-laboratorio";
 
 const formSchema = z.object({
   prompt: z.string().min(10, "Your request must be at least 10 characters."),
@@ -21,7 +21,7 @@ type FormState = {
   fieldErrors?: Record<string, string[] | undefined> | null;
 }
 
-export async function getDocumentSuggestion(prevState: FormState, formData: FormData): Promise<FormState> {
+export async function getSoporteSuggestion(prevState: FormState, formData: FormData): Promise<FormState> {
   
   const rawData = {
     prompt: formData.get("prompt"),
@@ -38,10 +38,10 @@ export async function getDocumentSuggestion(prevState: FormState, formData: Form
   }
 
   try {
-    const result = await documentAssistant(parsed.data as DocumentAssistantInput);
+    const result = await soporteLaboratorio(parsed.data as SoporteInput);
     return { message: "Success", data: result };
   } catch (error) {
-    console.error("AI Document Assistant Error:", error);
+    console.error("AI Soporte Error:", error);
     return { message: "Failed to get suggestion from AI.", error: (error as Error).message };
   }
 }

@@ -109,7 +109,6 @@ const bibliotecaSubMenu = [
 
 const soporteSubMenu = [
     { href: '/soporte', label: 'Asistente de Laboratorio', icon: Bot },
-    { href: '/troubleshooting', label: 'Solución de Problemas', icon: Unplug },
     { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
 ];
 
