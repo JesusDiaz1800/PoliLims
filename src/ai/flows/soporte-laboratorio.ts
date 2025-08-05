@@ -46,7 +46,7 @@ export type SoporteInput = z.infer<typeof SoporteInputSchema>;
 
 const SoporteOutputSchema = z.object({
   response: z.string().describe('The generated answer or troubleshooting steps.'),
-  navigation: z.string().nullable().describe('The path to navigate to, if requested.'),
+  navigation: z.string().nullable().describe('The path to navigate to, if requested.').optional(),
 });
 export type SoporteOutput = z.infer<typeof SoporteOutputSchema>;
 
@@ -85,7 +85,7 @@ Primero, determina la intención del usuario a partir de su último mensaje:
    - Si NO encuentras la respuesta, CONTINÚA AL PASO 4.
 **Paso 4:** Como último recurso, utiliza tu conocimiento general de internet para dar la mejor respuesta posible, indicando que es tu conocimiento general.
 
-**REGLAS CRÍTICAS (PARA PREGuntas):**
+**REGLAS CRÍTICAS (PARA PREGUNTAS):**
 - JAMÁS SUGIERAS AL USUARIO QUE CONSULTE UNA NORMA. TU TRABAJO ES CONSULTAR LA NORMA Y PROPORCIONAR LA RESPUESTA DIRECTAMENTE.
 - NO TE RINDAS. Debes esforzarte al máximo por dar una respuesta útil siguiendo los pasos.
 - SÉ DIRECTO y CITA TU FUENTE SIEMPRE.
