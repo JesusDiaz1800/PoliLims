@@ -223,7 +223,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
 const pageTitles: Record<string, string> = {
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
-    '/equipos/programa': 'Programa de Mantenimiento',
+    '/equipos/programa': 'Programa de Calibración y Mantenimiento',
     '/ensayos/tuberias/hdpe': 'Ensayos de Tuberías HDPE',
     '/ensayos/tuberias/pp': 'Ensayos de Tuberías PP',
     '/ensayos/materia-prima': 'Ensayos de Materia Prima',
