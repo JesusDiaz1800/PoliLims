@@ -11,10 +11,6 @@ const examplePrompts = [
         icon: <FileText className="h-5 w-5 text-primary" />,
         text: "¿Cuál es el procedimiento para el ensayo de negro de humo?",
     },
-    {
-        icon: <FlaskConical className="h-5 w-5 text-primary" />,
-        text: "Explícame cómo se calcula la densidad de una muestra.",
-    },
 ];
 
 interface WelcomeMessageProps {

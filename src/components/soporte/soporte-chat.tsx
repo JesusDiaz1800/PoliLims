@@ -8,6 +8,8 @@ import { ScrollArea } from '../ui/scroll-area';
 import { ChatMessage } from './chat-message';
 import { ChatInputForm } from './chat-input-form';
 import { WelcomeMessage } from './welcome-message';
+import { Button } from '../ui/button';
+import { SheetClose } from '../ui/sheet';
 
 
 export interface ChatMessage {
@@ -91,6 +93,11 @@ export function SoporteChat() {
                 onInputChange={setInput}
                 isPending={isPending}
             />
+            <div className="p-4 border-t bg-background">
+                <SheetClose asChild>
+                    <Button variant="outline" className="w-full">Cerrar</Button>
+                </SheetClose>
+            </div>
         </div>
     );
 }
