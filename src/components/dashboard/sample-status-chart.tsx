@@ -3,7 +3,7 @@
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Label } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { Badge } from "../ui/badge";
@@ -85,7 +85,16 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
                                 innerRadius={40}
                                 paddingAngle={5}
                                 dataKey="value"
-                                label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
+                                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+                                    return (
+                                        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+                                            {`${(percent * 100).toFixed(0)}%`}
+                                        </text>
+                                    );
+                                }}
                             >
                                 {chartData.map((entry) => (
                                     <Cell key={entry.name} fill={entry.fill} stroke={entry.fill} />

@@ -46,8 +46,18 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
       <CardContent>
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+                <XAxis 
+                    dataKey="name" 
+                    stroke="hsl(var(--muted-foreground))" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false}
+                    angle={-45}
+                    textAnchor="end"
+                    interval={0}
+                    dy={10}
+                 />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}

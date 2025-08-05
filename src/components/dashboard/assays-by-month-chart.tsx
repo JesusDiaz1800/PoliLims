@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, ReferenceLine } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
@@ -19,7 +19,7 @@ const CustomCursor = (props: any) => {
 
 
 export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
-  const chartData = React.useMemo(() => {
+  const {chartData, average} = React.useMemo(() => {
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
 
@@ -47,7 +47,11 @@ export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
         }
     });
     
-    return Object.values(monthlyData);
+    const dataPoints = Object.values(monthlyData);
+    const totalAssays = dataPoints.reduce((sum, item) => sum + item.total, 0);
+    const avg = totalAssays > 0 ? totalAssays / dataPoints.length : 0;
+    
+    return { chartData: dataPoints, average: avg };
 
   }, [allData]);
 
@@ -72,6 +76,12 @@ export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
                     }}
                 />
                 <Bar dataKey="total" name="Ensayos" radius={[4, 4, 0, 0]} />
+                <ReferenceLine 
+                    y={average} 
+                    label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    stroke="hsl(var(--muted-foreground))" 
+                    strokeDasharray="3 3" 
+                />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
