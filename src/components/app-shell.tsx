@@ -58,7 +58,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import type { User } from '@/services/user-service';
 import { Logo } from './logo';
-import { ChatWidget, useChatWidget } from './soporte/chat-widget';
+import { useChatWidget } from './soporte/chat-widget';
 
 
 const ensayosSubMenu = [
@@ -237,7 +237,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { isMobile } = useSidebar();
-    const { setIsOpen } = useChatWidget();
+    const { setIsOpen, setIsWidgetVisible } = useChatWidget();
     const isInspectorView = user?.role === 'Inspector de Calidad';
 
     const userQuery = searchParams.toString();
@@ -258,6 +258,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
         if(onClick) {
             e.preventDefault();
+            setIsWidgetVisible(true);
             setIsOpen(true);
         }
     }
