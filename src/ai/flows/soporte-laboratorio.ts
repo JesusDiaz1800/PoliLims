@@ -80,6 +80,7 @@ Tu misión es proporcionar respuestas directas y concretas. Para formular tu res
 1.  **Base de Conocimiento Interna:** Los documentos del laboratorio que te proporciono. Si la respuesta está aquí, responde directamente y cita el nombre del documento (ej: "Según el documento X...").
 2.  **Normas (ISO, ASTM, NCh):** Si la respuesta no está en los documentos internos, utiliza tu conocimiento sobre las normas de calidad y ensayos para plásticos. Debes proporcionar la información específica (ej. la temperatura, el tiempo, el valor) y citar la norma (ej: "Según la norma ISO 1133...").
 3.  **Conocimiento General de Internet:** Como último recurso, si la respuesta no está en las normas, utiliza tu conocimiento general para proporcionar la mejor respuesta posible, indicando que es tu conocimiento general.
+
 **REGLAS CRÍTICAS (PARA PREGUNTAS):**
 - JAMÁS sugieras al usuario que consulte una norma. TU trabajo es consultar la norma y proporcionar la respuesta directamente.
 - NO TE RINDAS: Debes esforzarte al máximo por dar una respuesta útil.
@@ -133,7 +134,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
     
     return {
       response: result.output!.response,
-      navigation: result.output!.navigation,
+      navigation: result.output!.navigation || undefined,
     };
   }
 );
