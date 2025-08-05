@@ -46,7 +46,7 @@ export type SoporteInput = z.infer<typeof SoporteInputSchema>;
 
 const SoporteOutputSchema = z.object({
   response: z.string().describe('The generated answer or troubleshooting steps.'),
-  navigation: z.string().optional().describe('The path to navigate to, if requested.'),
+  navigation: z.string().nullable().optional().describe('The path to navigate to, if requested.'),
 });
 export type SoporteOutput = z.infer<typeof SoporteOutputSchema>;
 
@@ -73,6 +73,7 @@ Primero, determina la intención del usuario a partir de su último mensaje:
 **SI LA INTENCIÓN ES NAVEGAR:**
 - Utiliza la herramienta 'navigateTool' para redirigir al usuario.
 - Confirma la acción con un mensaje corto, por ejemplo: "Claro, llevándote a la sección de Control Rutinario."
+- NO incluyas ninguna otra información en tu respuesta, solo la confirmación.
 
 **SI LA INTENCIÓN ES UNA PREGUNTA:**
 Tu misión es proporcionar respuestas directas y concretas. Para formular tu respuesta, utiliza las siguientes fuentes de información en este orden de prioridad:
@@ -132,7 +133,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
     
     return {
       response: result.output!.response,
-      navigation: undefined,
+      navigation: result.output!.navigation,
     };
   }
 );
