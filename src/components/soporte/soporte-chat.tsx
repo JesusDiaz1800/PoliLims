@@ -10,6 +10,7 @@ import { ChatInputForm } from './chat-input-form';
 import { WelcomeMessage } from './welcome-message';
 import { Button } from '../ui/button';
 import { SheetClose } from '../ui/sheet';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 
 export interface ChatMessage {
@@ -20,6 +21,8 @@ export interface ChatMessage {
 const initialState = { message: '', data: null, error: null, fieldErrors: null };
 
 export function SoporteChat() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [state, formAction] = useActionState(getSoporteSuggestion, initialState);
     const { toast } = useToast();
     const [history, setHistory] = useState<ChatMessage[]>([]);
@@ -40,8 +43,12 @@ export function SoporteChat() {
              setHistory(prev => prev.slice(0, -1));
         } else if (state.data?.response) {
             setHistory(prev => [...prev, { role: 'assistant', content: state.data.response }]);
+            if (state.data.navigation) {
+                const userQuery = searchParams.toString();
+                router.push(`${state.data.navigation}?${userQuery}`);
+            }
         }
-    }, [state, toast]);
+    }, [state, toast, router, searchParams]);
     
     const handleFormAction = (formData: FormData) => {
         const prompt = formData.get('prompt') as string;

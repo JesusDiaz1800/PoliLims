@@ -12,6 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { navigateTool } from '../tools/navigation-tool';
 
 // Helper function to read all documents from the data directory
 async function getKnowledgeBaseContent(): Promise<string> {
@@ -45,6 +46,7 @@ export type SoporteInput = z.infer<typeof SoporteInputSchema>;
 
 const SoporteOutputSchema = z.object({
   response: z.string().describe('The generated answer or troubleshooting steps.'),
+  navigation: z.string().optional().describe('The path to navigate to, if requested.'),
 });
 export type SoporteOutput = z.infer<typeof SoporteOutputSchema>;
 
@@ -56,11 +58,17 @@ const prompt = ai.definePrompt({
   name: 'soporteLaboratorioPrompt',
   input: {schema: SoporteInputSchema},
   output: {schema: SoporteOutputSchema},
-  prompt: `Eres un asistente experto para el laboratorio de calidad de Polifusión S.A. Tu objetivo es responder las preguntas y solucionar los problemas del personal del laboratorio de manera precisa y siempre en español.
+  tools: [navigateTool],
+  prompt: `Eres un asistente experto para el laboratorio de calidad de Polifusión S.A. Tu objetivo es responder las preguntas, solucionar problemas y ayudar a navegar la aplicación para el personal del laboratorio. Debes ser siempre preciso y hablar en español.
 
 Primero, determina la intención del usuario a partir de su último mensaje:
-1.  **Pregunta sobre procedimiento o conocimiento:** Si el usuario hace una pregunta (ej: "¿cómo se hace...?", "¿cuál es la temperatura para...?").
-2.  **Descripción de un problema:** Si el usuario describe un error, un fallo o un problema (ej: "el equipo no enciende", "los resultados son inconsistentes").
+1.  **Navegación:** Si el usuario pide ir a una sección, página o vista (ej: "llévame a...", "muéstrame los ensayos", "quiero ver el dashboard").
+2.  **Pregunta sobre procedimiento o conocimiento:** Si el usuario hace una pregunta (ej: "¿cómo se hace...?", "¿cuál es la temperatura para...?").
+3.  **Descripción de un problema:** Si el usuario describe un error, un fallo o un problema (ej: "el equipo no enciende", "los resultados son inconsistentes").
+
+**SI LA INTENCIÓN ES NAVEGAR:**
+- Utiliza la herramienta 'navigateTool' para redirigir al usuario.
+- Confirma la acción con un mensaje corto, por ejemplo: "Claro, llevándote a la sección de Control Rutinario."
 
 **SI LA INTENCIÓN ES UNA PREGUNTA:**
 Tu misión es proporcionar respuestas directas y concretas. Para formular tu respuesta, utiliza las siguientes fuentes de información en este orden de prioridad:
@@ -103,16 +111,23 @@ const soporteLaboratorioFlow = ai.defineFlow(
     
     const knowledgeBase = await getKnowledgeBaseContent();
 
-    const {output} = await prompt({
+    const result = await prompt({
         history,
         prompt: userPrompt,
-        // This is a way to inject extra context into the handlebars prompt
-        // that is not part of the formally defined input schema.
         context: {
             knowledgeBase
         }
     });
+
+    const toolResponse = result.toolRequest?.toolResponse;
+
+    if (toolResponse && toolResponse.name === 'navigate' && toolResponse.output) {
+      return {
+        response: result.output?.response || "Navegando...",
+        navigation: toolResponse.output as string
+      };
+    }
     
-    return output!;
+    return result.output!;
   }
 );
