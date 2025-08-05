@@ -1,7 +1,7 @@
 
 import { DocumentosTable } from '@/components/biblioteca/documentos-table';
 import type { Metadata } from 'next';
-import { getKnowledgeBaseFiles } from '@/services/data-service';
+import { getKnowledgeBaseFiles } from '@/services/server-data-service';
 
 export const metadata: Metadata = {
   title: 'Biblioteca de Documentos',
