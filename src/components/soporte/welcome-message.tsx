@@ -1,5 +1,6 @@
 
 import { FileText, Thermometer, FlaskConical } from "lucide-react";
+import { Button } from "../ui/button";
 
 const examplePrompts = [
     {
@@ -16,21 +17,30 @@ const examplePrompts = [
     },
 ];
 
-export function WelcomeMessage() {
+interface WelcomeMessageProps {
+    onPromptClick: (promptText: string) => void;
+}
+
+export function WelcomeMessage({ onPromptClick }: WelcomeMessageProps) {
     return (
-        <div className="flex flex-col items-center justify-center h-full text-center">
+        <div className="flex flex-col items-center justify-center h-full text-center p-4">
             <div className="space-y-2">
-                <h2 className="text-2xl font-bold font-headline">Asistente de Soporte</h2>
-                <p className="text-muted-foreground">¿Cómo puedo ayudarte hoy?</p>
+                <h2 className="text-2xl font-bold font-headline">Bienvenido al Asistente</h2>
+                <p className="text-muted-foreground max-w-md">¿Cómo puedo ayudarte hoy? Selecciona un ejemplo o escribe tu propia pregunta a continuación.</p>
             </div>
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl">
+            <div className="mt-8 grid grid-cols-1 gap-3 w-full max-w-lg">
                 {examplePrompts.map((prompt, index) => (
-                    <div key={index} className="p-4 border rounded-lg bg-background hover:bg-muted cursor-pointer transition-colors">
-                        <div className="flex items-center gap-3">
+                    <Button 
+                        key={index} 
+                        variant="outline" 
+                        className="h-auto w-full justify-start text-left"
+                        onClick={() => onPromptClick(prompt.text)}
+                    >
+                        <div className="flex items-start gap-3 p-2">
                            {prompt.icon}
-                           <p className="text-sm text-left">{prompt.text}</p>
+                           <p className="text-sm font-normal whitespace-normal">{prompt.text}</p>
                         </div>
-                    </div>
+                    </Button>
                 ))}
             </div>
         </div>

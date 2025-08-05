@@ -5,6 +5,7 @@ import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { DataProvider } from '@/context/data-context';
 import { findUserByUsername } from '@/services/user-service';
+import { ChatWidget } from '@/components/soporte/chat-widget';
 
 export const metadata: Metadata = {
     title: {
@@ -40,6 +41,7 @@ export default async function AppLayout({
                             {children}
                         </AppShell>
                     </SidebarProvider>
+                    <ChatWidget />
                 </div>
             </DataProvider>
         </ThemeProvider>

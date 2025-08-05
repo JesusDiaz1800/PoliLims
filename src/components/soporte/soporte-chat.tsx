@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useRef, useState, useTransition } from 'react';
 import { getSoporteSuggestion } from '@/app/(app)/soporte/actions';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from '../ui/scroll-area';
@@ -21,7 +21,11 @@ export function SoporteChat() {
     const [state, formAction] = useActionState(getSoporteSuggestion, initialState);
     const { toast } = useToast();
     const [history, setHistory] = useState<ChatMessage[]>([]);
+    const [input, setInput] = useState('');
+    const [isPending, startTransition] = useTransition();
+
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (state.message === "Failed to get suggestion from AI.") {
@@ -40,12 +44,20 @@ export function SoporteChat() {
     const handleFormAction = (formData: FormData) => {
         const prompt = formData.get('prompt') as string;
         if (prompt) {
-            setHistory(prev => [...prev, { role: 'user', content: prompt }]);
-            formAction(formData);
-            // Reset the form manually after submitting
-            const form = document.querySelector('form');
-            form?.reset();
+            startTransition(() => {
+                setHistory(prev => [...prev, { role: 'user', content: prompt }]);
+                formAction(formData);
+            });
+            setInput('');
         }
+    };
+
+    const handlePromptClick = (promptText: string) => {
+        setInput(promptText);
+        // Focus the textarea after setting the value
+        setTimeout(() => {
+            formRef.current?.querySelector('textarea')?.focus();
+        }, 0);
     };
     
     // Scroll to bottom when history changes
@@ -59,10 +71,14 @@ export function SoporteChat() {
     }, [history]);
 
     return (
-        <div className="flex flex-col flex-grow border rounded-lg bg-card">
+        <div className="flex flex-col flex-grow bg-card h-full">
+            <div className="p-4 border-b">
+                 <h2 className="text-xl font-bold font-headline">Asistente de Soporte</h2>
+                <p className="text-muted-foreground text-sm">Resuelve dudas y diagnostica problemas.</p>
+            </div>
             <ScrollArea className="flex-grow p-4 space-y-4" ref={scrollAreaRef}>
                 {history.length === 0 ? (
-                    <WelcomeMessage />
+                    <WelcomeMessage onPromptClick={handlePromptClick} />
                 ) : (
                     <div className="space-y-6">
                         {history.map((msg, index) => (
@@ -71,7 +87,14 @@ export function SoporteChat() {
                     </div>
                 )}
             </ScrollArea>
-            <ChatInputForm formAction={handleFormAction} history={history} />
+            <ChatInputForm 
+                formRef={formRef}
+                formAction={handleFormAction} 
+                history={history}
+                input={input}
+                onInputChange={setInput}
+                isPending={isPending}
+            />
         </div>
     );
 }

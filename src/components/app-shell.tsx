@@ -53,7 +53,8 @@ import {
     Library,
     Rocket,
     CalendarCheck,
-    UploadCloud
+    UploadCloud,
+    MessageSquarePlus
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -107,11 +108,6 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
-const soporteSubMenu = [
-    { href: '/soporte', label: 'Asistente de Laboratorio', icon: Bot },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
-];
-
 
 const menuItems = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -143,12 +139,8 @@ const menuItems = [
         href: '/biblioteca',
     },
     { type: 'separator' },
-    { 
-        label: 'Soporte Técnico', 
-        icon: Unplug,
-        subMenu: soporteSubMenu,
-        href: '/soporte',
-    },
+    { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus },
+    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
     { type: 'separator' },
     {
         label: 'Administración',
