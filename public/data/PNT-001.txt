@@ -1,0 +1,70 @@
+Procedimiento Normalizado de Trabajo
+Código: PNT-001
+Título: Determinación del Índice de Fluidez (Melt Index) para Materiales Termoplásticos
+Versión: 3.0
+Fecha de Vigencia: 01-01-2025
+
+1. OBJETIVO
+Estandarizar el procedimiento para la determinación del índice de fluidez (Melt Flow Index, MFI) de materiales termoplásticos, asegurando la consistencia y fiabilidad de los resultados obtenidos en el laboratorio de calidad de Polifusión S.A.
+
+2. ALCANCE
+Este procedimiento aplica a todos los materiales termoplásticos (polietileno, polipropileno, etc.), tanto en estado de materia prima como de producto terminado (reprocesado, tuberías), que se analizan en el laboratorio.
+
+3. REFERENCIAS
+- Norma ASTM D1238: "Standard Test Method for Melt Flow Rates of Thermoplastics by Extrusion Plastometer".
+- Norma ISO 1133: "Plastics - Determination of the melt mass-flow rate (MFR) and melt volume-flow rate (MVR) of thermoplastics".
+
+4. EQUIPOS Y MATERIALES
+- Plastómetro de Extrusión (MFI), con control de temperatura y peso muerto. (Ej: EQ-04)
+- Balanza analítica con precisión de 0.1 mg. (Ej: EQ-05)
+- Cronómetro.
+- Herramientas de corte (cuchilla o similar).
+- Material de limpieza (paños de algodón, espátula de latón).
+- Embudo para carga de material.
+- Material a ensayar (granulado o trozos pequeños).
+
+5. CONDICIONES DE ENSAYO
+Las condiciones de temperatura y peso dependen del tipo de material. A continuación se detallan las más comunes en Polifusión S.A.:
+
+5.1. Polietileno (PE) y compuestos de PE (HDPE):
+- Temperatura del horno: 190 °C ± 0.5 °C
+- Peso muerto: 2.16 kg (Condición 190/2.16)
+- Tiempo de precalentamiento: 6 - 8 minutos.
+- Longitud de corte del extruido: 10 - 20 mm.
+
+5.2. Polipropileno (PP) y compuestos de PP (PPR, PP-RCT):
+- Temperatura del horno: 230 °C ± 0.5 °C
+- Peso muerto: 2.16 kg (Condición 230/2.16)
+- Tiempo de precalentamiento: 5 - 7 minutos.
+- Longitud de corte del extruido: 10 - 20 mm.
+
+5.3. Materiales con Fibra de Vidrio (PP-RCT/FV):
+- Temperatura del horno: 230 °C ± 0.5 °C
+- Peso muerto: 5.00 kg (Condición 230/5.00)
+- Tiempo de precalentamiento: 5 - 7 minutos.
+
+6. PROCEDIMIENTO
+1. Asegurarse de que el equipo (plastómetro) esté limpio, nivelado y a la temperatura correcta según la sección 5.
+2. Pesar entre 3 y 8 gramos de la muestra a analizar. La cantidad exacta dependerá de la fluidez esperada del material.
+3. Cargar el material en el cilindro del plastómetro utilizando el embudo. Compactar ligeramente con el pistón.
+4. Iniciar el cronómetro para el tiempo de precalentamiento.
+5. Transcurrido el tiempo de precalentamiento, colocar el peso muerto correspondiente sobre el pistón.
+6. Descartar el primer extruido que sale de la boquilla.
+7. Realizar cortes del extruido a intervalos regulares de tiempo (ej: cada 30 o 60 segundos), recogiendo al menos 5 segmentos.
+8. Pesar cada uno de los segmentos en la balanza analítica, registrando los valores con una precisión de 0.001 g.
+9. Anotar todos los pesos obtenidos.
+
+7. CÁLCULOS
+El índice de fluidez se expresa en gramos por 10 minutos (g/10 min).
+
+MFI (g/10 min) = (Masa promedio de los segmentos [g] / Tiempo de corte [s]) * 600
+
+Ejemplo:
+- Masa promedio de los segmentos: 0.150 g
+- Tiempo de corte entre segmentos: 30 s
+- MFI = (0.150 / 30) * 600 = 3.0 g/10 min
+
+8. CRITERIOS DE ACEPTACIÓN
+Consultar la ficha técnica de la materia prima o la especificación del producto para determinar el rango aceptable de MFI. Generalmente, una variación superior al +/- 30% respecto al valor nominal de la materia prima puede ser motivo de rechazo para producto terminado.
+
+--- FIN DEL DOCUMENTO ---
