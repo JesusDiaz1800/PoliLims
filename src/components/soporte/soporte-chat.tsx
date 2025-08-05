@@ -72,10 +72,6 @@ export function SoporteChat() {
 
     return (
         <div className="flex flex-col flex-grow bg-card h-full">
-            <div className="p-4 border-b">
-                 <h2 className="text-xl font-bold font-headline">Asistente de Soporte</h2>
-                <p className="text-muted-foreground text-sm">Resuelve dudas y diagnostica problemas.</p>
-            </div>
             <ScrollArea className="flex-grow p-4 space-y-4" ref={scrollAreaRef}>
                 {history.length === 0 ? (
                     <WelcomeMessage onPromptClick={handlePromptClick} />

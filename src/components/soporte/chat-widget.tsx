@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MessageSquarePlus } from "lucide-react";
@@ -23,7 +26,13 @@ export function ChatWidget() {
             <span className="sr-only">Abrir Chat de Soporte</span>
          </Button>
       </SheetTrigger>
-      <SheetContent className="w-[440px] sm:w-[540px] p-0 border-none">
+      <SheetContent className="w-[440px] sm:w-[540px] p-0 flex flex-col h-full">
+        <SheetHeader className="p-4 border-b text-left">
+          <SheetTitle>Asistente de Soporte</SheetTitle>
+          <SheetDescription>
+            Resuelve dudas sobre procedimientos y diagnostica problemas del laboratorio.
+          </SheetDescription>
+        </SheetHeader>
         <SoporteChat />
       </SheetContent>
     </Sheet>
