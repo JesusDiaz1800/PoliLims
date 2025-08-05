@@ -121,15 +121,18 @@ const soporteLaboratorioFlow = ai.defineFlow(
         knowledgeBase,
     });
 
-    const toolResponse = result.toolRequest?.toolResponse;
-
-    if (toolResponse && toolResponse.name === 'navigate' && toolResponse.output) {
+    const toolRequest = result.toolRequest;
+    
+    if (toolRequest?.toolResponse && toolRequest.toolResponse.name === 'navigate' && toolRequest.toolResponse.output) {
       return {
         response: result.output?.response || "Navegando...",
-        navigation: toolResponse.output as string
+        navigation: toolRequest.toolResponse.output as string
       };
     }
     
-    return result.output!;
+    return {
+      response: result.output!.response,
+      navigation: undefined,
+    };
   }
 );
