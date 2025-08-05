@@ -56,7 +56,11 @@ export async function soporteLaboratorio(input: SoporteInput): Promise<SoporteOu
 
 const prompt = ai.definePrompt({
   name: 'soporteLaboratorioPrompt',
-  input: {schema: SoporteInputSchema},
+  input: {schema: z.object({
+      history: SoporteInputSchema.shape.history,
+      prompt: SoporteInputSchema.shape.prompt,
+      knowledgeBase: z.string(),
+  })},
   output: {schema: SoporteOutputSchema},
   tools: [navigateTool],
   prompt: `Eres un asistente experto para el laboratorio de calidad de Polifusión S.A. Tu objetivo es responder las preguntas, solucionar problemas y ayudar a navegar la aplicación para el personal del laboratorio. Debes ser siempre preciso y hablar en español.
@@ -114,9 +118,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
     const result = await prompt({
         history,
         prompt: userPrompt,
-        context: {
-            knowledgeBase
-        }
+        knowledgeBase,
     });
 
     const toolResponse = result.toolRequest?.toolResponse;
