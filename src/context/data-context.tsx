@@ -164,42 +164,52 @@ const DynamicDataContext = createContext<DynamicDataContextType | undefined>(und
 // --- PROVIDER COMPONENT ---
 interface DataProviderProps {
   children: ReactNode;
-  initialData: InitialData;
 }
 
-export const DataProvider = ({ children, initialData }: DataProviderProps) => {
+export const DataProvider = ({ children }: DataProviderProps) => {
   // Static data state
   const [productMatrix, setProductMatrix] = useState<TipoProducto[]>([]);
   const [sapProducts, setSapProducts] = useState<SapProduct[]>([]);
-  const [isStaticLoaded, setIsStaticLoaded] = useState(false);
-
-  // Dynamic data state (initialized with server-side data)
-  const [ensayos, setEnsayos] = useState<Ensayo[]>(initialData.ensayos);
-  const [registros, setRegistros] = useState<Registro[]>(initialData.registros);
-  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>(initialData.recentActivity);
-  const [equipos, setEquipos] = useState<Equipo[]>(initialData.equipos);
-  const [controles, setControles] = useState<ControlEvento[]>(initialData.controles);
-  const [noConformidades, setNoConformidades] = useState<NoConformidad[]>(initialData.noConformidades);
-  const [importaciones, setImportaciones] = useState<Importacion[]>(initialData.importaciones);
+  
+  // Dynamic data state (initialized with empty arrays)
+  const [ensayos, setEnsayos] = useState<Ensayo[]>([]);
+  const [registros, setRegistros] = useState<Registro[]>([]);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+  const [equipos, setEquipos] = useState<Equipo[]>([]);
+  const [controles, setControles] = useState<ControlEvento[]>([]);
+  const [noConformidades, setNoConformidades] = useState<NoConformidad[]>([]);
+  const [importaciones, setImportaciones] = useState<Importacion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load static data once on the client
+  // Load all data once on the client
   useEffect(() => {
-    const loadStaticData = async () => {
+    const loadAllData = async () => {
       setIsLoading(true);
       try {
-        const matrix = await getMatrizProductos();
+        const [matrix, products, initialData] = await Promise.all([
+            getMatrizProductos(),
+            getProductsFromSap(),
+            dataService.getInitialData()
+        ]);
+        
         setProductMatrix(matrix);
-        const products = await getProductsFromSap();
         setSapProducts(products);
+
+        setEnsayos(initialData.ensayos);
+        setRegistros(initialData.registros);
+        setRecentActivity(initialData.recentActivity);
+        setEquipos(initialData.equipos);
+        setControles(initialData.controles);
+        setNoConformidades(initialData.noConformidades);
+        setImportaciones(initialData.importaciones);
+        
       } catch (error) {
-        console.error("Failed to load initial static data", error);
+        console.error("Failed to load initial data", error);
       } finally {
         setIsLoading(false);
-        setIsStaticLoaded(true);
       }
     };
-    loadStaticData();
+    loadAllData();
   }, []);
 
   const addEnsayo = useCallback(async (ensayoData: Omit<Ensayo, 'id'>) => {
@@ -325,9 +335,9 @@ export const DataProvider = ({ children, initialData }: DataProviderProps) => {
     updateImportacion,
     deleteImportacion,
     addRecentActivity,
-    isLoading: isLoading || !isStaticLoaded,
+    isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading, isStaticLoaded,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
     addRecentActivity
@@ -336,8 +346,8 @@ export const DataProvider = ({ children, initialData }: DataProviderProps) => {
   const staticContextValue = useMemo(() => ({
     productMatrix,
     sapProducts,
-    isLoaded: isStaticLoaded
-  }), [productMatrix, sapProducts, isStaticLoaded]);
+    isLoaded: !isLoading
+  }), [productMatrix, sapProducts, isLoading]);
 
   return (
     <StaticDataContext.Provider value={staticContextValue}>

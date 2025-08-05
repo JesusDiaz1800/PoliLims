@@ -5,7 +5,6 @@ import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { DataProvider } from '@/context/data-context';
 import { findUserByUsername } from '@/services/user-service';
-import { getInitialData } from '@/services/data-service';
 
 export const metadata: Metadata = {
     title: {
@@ -27,9 +26,6 @@ export default async function AppLayout({
     const username = (searchParams?.user as string) || 'jdiaz';
     const user = await findUserByUsername(username);
 
-    // Fetch initial data on the server
-    const initialData = await getInitialData();
-
     return (
         <ThemeProvider
             attribute="class"
@@ -37,7 +33,7 @@ export default async function AppLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider initialData={initialData}>
+            <DataProvider>
                 <div className="bg-background">
                     <SidebarProvider>
                         <AppShell user={user}>
