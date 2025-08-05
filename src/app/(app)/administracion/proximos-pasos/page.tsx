@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Cloud, Database, KeyRound, Network, Users, GitBranch, HandCoins } from "lucide-react";
+import { CheckCircle, Cloud, Database, KeyRound, Network, Users, GitBranch } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -57,11 +57,6 @@ export default function ProximosPasosPage() {
             icon={KeyRound}
             title="Gestión de Secretos y API Keys"
             description="La clave de la API de Gemini y otras credenciales deben ser gestionadas de forma segura a través de un sistema de 'secretos'. El equipo de TI tiene las herramientas para manejar esto y evitar exponer información sensible en el código."
-        />
-         <StepCard 
-            icon={HandCoins}
-            title="Estrategia de Costos de IA"
-            description="El asistente utiliza 'gemini-1.5-flash', el modelo de IA más eficiente de Google. Este modelo tiene un amplio nivel de uso gratuito. Para el volumen de consultas de un laboratorio, es muy poco probable que se superen los límites gratuitos y se generen costos."
         />
         <StepCard 
             icon={Network}
