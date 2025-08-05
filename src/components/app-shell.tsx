@@ -23,7 +23,6 @@ import {
     GitBranch,
     Users,
     FileText,
-    Bot,
     FlaskConical,
     Beaker,
     Database,
@@ -37,13 +36,9 @@ import {
     Droplets,
     ClipboardCheck,
     ChevronDown,
-    Layers2,
     Layers3,
     SlidersHorizontal,
     Construction,
-    Unplug,
-    Info,
-    LogOut,
     Cylinder,
     Code2,
     AlertOctagon,
@@ -61,6 +56,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import type { User } from '@/services/user-service';
 import { Logo } from './logo';
+import { ChatWidget, useChatWidget } from './soporte/chat-widget';
 
 
 const ensayosSubMenu = [
@@ -106,48 +102,6 @@ const equiposSubMenu = [
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
-];
-
-
-const menuItems = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    {
-        label: 'Ensayos',
-        icon: SlidersHorizontal,
-        subMenu: ensayosSubMenu,
-        href: '/ensayos'
-    },
-    { 
-        label: 'Gestión de Equipos', 
-        icon: Beaker,
-        subMenu: equiposSubMenu,
-        href: '/equipos',
-    },
-    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
-    {
-        label: 'Operaciones',
-        icon: Layers3,
-        subMenu: operacionesSubMenu,
-        href: '/operaciones'
-    },
-    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
-    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { 
-        label: 'Biblioteca', 
-        icon: Library,
-        subMenu: bibliotecaSubMenu,
-        href: '/biblioteca',
-    },
-    { type: 'separator' },
-    { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
-    { type: 'separator' },
-    {
-        label: 'Administración',
-        icon: Settings,
-        subMenu: administracionSubMenu,
-        href: '/administracion'
-    },
 ];
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
@@ -230,7 +184,6 @@ const pageTitles: Record<string, string> = {
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/assistant': 'Asistente de Código',
     '/soporte': 'Soporte de Laboratorio',
-    '/troubleshooting': 'Solución de Problemas',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
@@ -238,11 +191,52 @@ const pageTitles: Record<string, string> = {
     '/biblioteca/upload': 'Cargar Documento',
 };
 
+const menuItems = (toggleChat: () => void) => [
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    {
+        label: 'Ensayos',
+        icon: SlidersHorizontal,
+        subMenu: ensayosSubMenu,
+        href: '/ensayos'
+    },
+    { 
+        label: 'Gestión de Equipos', 
+        icon: Beaker,
+        subMenu: equiposSubMenu,
+        href: '/equipos',
+    },
+    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
+    {
+        label: 'Operaciones',
+        icon: Layers3,
+        subMenu: operacionesSubMenu,
+        href: '/operaciones'
+    },
+    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
+    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
+    { 
+        label: 'Biblioteca', 
+        icon: Library,
+        subMenu: bibliotecaSubMenu,
+        href: '/biblioteca',
+    },
+    { type: 'separator' },
+    { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
+    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
+    { type: 'separator' },
+    {
+        label: 'Administración',
+        icon: Settings,
+        subMenu: administracionSubMenu,
+        href: '/administracion'
+    },
+];
 
 export function AppShell({ children, user }: { children: React.ReactNode, user: User }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { isMobile } = useSidebar();
+    const { setIsOpen } = useChatWidget();
     const isInspectorView = user?.role === 'Inspector de Calidad';
 
     const userQuery = searchParams.toString();
@@ -251,12 +245,21 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         const title = pageTitles[pathname];
         if (title) return title;
 
-        for (const item of menuItems) {
+        // Fallback for dynamic menu items - simplistic approach
+        // A more robust solution might involve a mapping or context
+        for (const item of menuItems(() => {})) { // Pass dummy function
             if (item.href && pathname === item.href) return item.label;
         }
 
         return 'Dashboard';
     }, [pathname]);
+
+    const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
+        if(onClick) {
+            e.preventDefault();
+            onClick();
+        }
+    }
 
     return (
         <div className="flex min-h-screen w-full">
@@ -277,7 +280,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </Alert>
                     )}
                     <SidebarMenu>
-                        {menuItems.map((item, index) => {
+                        {menuItems(() => setIsOpen(true)).map((item, index) => {
                             const isDisabled = isInspectorView && !['/dashboard', '/ensayos/control-rutinario'].some(p => item.href?.startsWith(p));
 
                             if (item.type === 'separator') {
@@ -298,7 +301,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                                         disabled={isDisabled}
                                         aria-disabled={isDisabled}
                                     >
-                                        <Link href={`${item.href}?${userQuery}`}>
+                                        <Link href={`${item.href}?${userQuery}`} onClick={(e) => handleMenuClick(e, item.onClick)}>
                                             <item.icon className="size-5" />
                                             <span>{item.label}</span>
                                         </Link>
