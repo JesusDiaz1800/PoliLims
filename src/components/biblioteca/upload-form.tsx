@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { uploadDocument } from '@/app/(app)/biblioteca/upload/actions';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, Info } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { CheckCircle } from 'lucide-react';
 
@@ -81,9 +81,16 @@ export function UploadForm() {
             </div>
             
              <Alert>
-                <AlertTitle>Recomendación</AlertTitle>
+                <Info className="h-4 w-4" />
+                <AlertTitle>Para archivos PDF o Word</AlertTitle>
                 <AlertDescription>
-                    Para mejores resultados, asegúrese de que sus archivos de texto tengan una estructura clara. Utilice títulos, subtítulos, listas y párrafos bien definidos para facilitar la búsqueda de información.
+                   El sistema está optimizado para archivos de texto plano (.txt). Si su documento está en otro formato, simplemente copie el texto del archivo original y péguelo en un nuevo archivo .txt antes de subirlo.
+                </AlertDescription>
+            </Alert>
+             <Alert>
+                <AlertTitle>Recomendación de Estructura</AlertTitle>
+                <AlertDescription>
+                    Para mejores resultados, asegúrese de que sus archivos de texto tengan una estructura clara. Utilice títulos, subtítulos, listas y párrafos bien definidos para facilitar la búsqueda de información al asistente.
                 </AlertDescription>
             </Alert>
         </form>
