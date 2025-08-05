@@ -49,7 +49,9 @@ import {
     Rocket,
     CalendarCheck,
     UploadCloud,
-    MessageSquarePlus
+    MessageSquarePlus,
+    LogOut,
+    Info,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -183,7 +185,6 @@ const pageTitles: Record<string, string> = {
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/assistant': 'Asistente de Código',
-    '/soporte': 'Soporte de Laboratorio',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
@@ -257,7 +258,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
         if(onClick) {
             e.preventDefault();
-            onClick();
+            setIsOpen(true);
         }
     }
 
