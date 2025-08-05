@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Cloud, Database, KeyRound, Network, Users } from "lucide-react";
+import { CheckCircle, Cloud, Database, KeyRound, Network, Users, GitBranch } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -37,6 +37,11 @@ export default function ProximosPasosPage() {
             icon={Cloud}
             title="Despliegue en la Nube"
             description="La aplicación debe ser 'desplegada' en un servicio de hosting (como Firebase Hosting o Vercel). Esto le dará una URL accesible para todos y garantizará que esté siempre disponible y actualizada."
+        />
+         <StepCard 
+            icon={GitBranch}
+            title="Estrategia de Despliegue (CI/CD)"
+            description="La práctica recomendada es no desplegar manualmente desde un PC. TI debe conectar el repositorio de código (ej. GitHub) a Firebase App Hosting para crear un flujo de Despliegue Continuo (CI/CD). Así, cada nueva versión aprobada se despliega automáticamente, garantizando seguridad y trazabilidad."
         />
         <StepCard 
             icon={Users}
