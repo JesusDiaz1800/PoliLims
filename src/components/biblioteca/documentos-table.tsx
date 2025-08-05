@@ -4,7 +4,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Library, ServerCrash } from "lucide-react";
-import type { KnowledgeBaseFile } from "@/services/data-service";
+import type { KnowledgeBaseFile } from "@/services/server-data-service";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
