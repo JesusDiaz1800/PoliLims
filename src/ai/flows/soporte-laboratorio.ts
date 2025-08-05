@@ -134,7 +134,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
     
     return {
       response: result.output!.response,
-      navigation: result.output!.navigation || undefined,
+      navigation: result.output!.navigation,
     };
   }
 );
