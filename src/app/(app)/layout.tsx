@@ -36,14 +36,12 @@ export default async function AppLayout({
         >
             <DataProvider>
                 <ChatWidgetProvider>
-                    <div className="bg-background">
-                        <SidebarProvider>
-                            <AppShell user={user}>
-                                {children}
-                            </AppShell>
-                        </SidebarProvider>
-                        <ChatWidget />
-                    </div>
+                    <SidebarProvider>
+                        <AppShell user={user}>
+                            {children}
+                        </AppShell>
+                    </SidebarProvider>
+                    <ChatWidget />
                 </ChatWidgetProvider>
             </DataProvider>
         </ThemeProvider>

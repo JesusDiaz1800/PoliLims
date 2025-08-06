@@ -264,8 +264,8 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     }
 
     return (
-        <div className="flex min-h-screen w-full">
-            <Sidebar variant="sidebar" collapsible="icon" className="bg-primary text-primary-foreground">
+        <div className="flex min-h-screen w-full bg-background">
+            <Sidebar>
                 <SidebarHeader>
                     <div className="flex items-center justify-center h-16 text-primary-foreground w-48 group-data-[collapsible=icon]:w-10 transition-[width] duration-300 ease-in-out">
                        <Logo />
