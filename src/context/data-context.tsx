@@ -32,6 +32,7 @@ export type Ensayo = {
   maquina?: string;
   fvTotalPorcentaje?: number;
   fvIntermediaPorcentaje?: number;
+  comentarios_aprobacion?: string;
   [key: string]: any; 
 }
 

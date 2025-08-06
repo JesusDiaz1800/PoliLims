@@ -1,9 +1,10 @@
+
 "use client"
 
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save, ShieldCheck } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/lib/utils"
@@ -13,6 +14,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -34,8 +36,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import type { User } from "@/services/user-service";
 
 
 interface Option {
@@ -47,6 +50,8 @@ interface ReprocesadoFormProps {
   analistas: Option[];
   ensayoToEdit: Ensayo | null;
   onFormSubmit: () => void;
+  equipos: Equipo[];
+  user: User;
 }
 
 const defaultFormValues = {
@@ -69,9 +74,11 @@ const defaultFormValues = {
   tio_temperatura: "",
   tio_metodo: "",
   tio_tiempo: "",
+  estado: "En Análisis",
+  comentarios_aprobacion: "",
 };
 
-export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: ReprocesadoFormProps) {
+export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos, user }: ReprocesadoFormProps) {
   const { toast } = useToast();
   const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -82,6 +89,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
   const { control, getValues, register, handleSubmit, reset, watch } = form;
 
   const isEditing = Boolean(ensayoToEdit);
+  const canApprove = user.role === 'Jefe de Calidad' || user.role === 'Ing. Analista de Calidad';
   
   const watchedFields = watch();
 
@@ -197,12 +205,14 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         cenizasCalculado,
         cenizasCorregido,
         producto: `Reprocesado Lote ${data.lote}`,
+        estado: data.estado,
+        comentarios_aprobacion: data.comentarios_aprobacion,
     };
 
     try {
         if (isEditing && ensayoToEdit?.id) {
             await updateEnsayo(ensayoToEdit.id, ensayoData as Partial<Ensayo>);
-            await addRecentActivity({ user: data.analista, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
+            await addRecentActivity({ user: user.fullName, action: `actualizó el ensayo de reprocesado para ${ensayoToEdit.id}`});
             toast({
                 title: "Ensayo Actualizado",
                 description: `El ensayo ${ensayoToEdit.id} ha sido actualizado correctamente.`,
@@ -211,10 +221,10 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
             const newEnsayo: Omit<Ensayo, 'id'> = {
                 ...(ensayoData as any),
                 tipo: 'Reprocesado',
-                estado: 'Pendiente de Revisión',
+                estado: 'En Análisis',
             };
             await addEnsayo(newEnsayo);
-            await addRecentActivity({ user: data.analista, action: `registró un nuevo ensayo de reprocesado para el lote ${data.lote}`});
+            await addRecentActivity({ user: user.fullName, action: `registró un nuevo ensayo de reprocesado para el lote ${data.lote}`});
             toast({
                 title: "Ensayo Registrado",
                 description: `El nuevo ensayo de reprocesado ha sido añadido a seguimiento.`,
@@ -544,7 +554,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
       {/* SECCIÓN DE OBSERVACIONES */}
       <Card>
         <CardHeader>
-            <CardTitle>Observaciones</CardTitle>
+            <CardTitle>Observaciones Generales</CardTitle>
         </CardHeader>
         <CardContent>
             <div className="space-y-2">
@@ -553,12 +563,60 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit }: Repro
         </CardContent>
       </Card>
 
-      <div className="flex justify-end pt-4 sticky bottom-0 bg-background/95">
+      {/* SECCIÓN DE APROBACIÓN */}
+       {canApprove && isEditing && (
+         <Card>
+            <CardHeader>
+                <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-6 w-6 text-primary" />
+                    <CardTitle>Aprobación de Ensayo</CardTitle>
+                </div>
+                <CardDescription>Esta sección solo es visible para roles de Jefatura y Analistas de Calidad.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <FormField
+                    control={control}
+                    name="estado"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Decisión Final</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccione un estado" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="En Análisis">Dejar En Análisis</SelectItem>
+                                <SelectItem value="Aprobado">Aprobar Ensayo</SelectItem>
+                                <SelectItem value="Rechazado">Rechazar Ensayo</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </FormItem>
+                 )}
+                />
+                 <FormField
+                    control={control}
+                    name="comentarios_aprobacion"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Comentarios de Aprobación/Rechazo</FormLabel>
+                        <FormControl>
+                            <Textarea placeholder="Ej: Resultados consistentes con especificación del proveedor." {...field} />
+                        </FormControl>
+                    </FormItem>
+                 )}
+                />
+            </CardContent>
+         </Card>
+       )}
+
+      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
         <Button type="submit">
           {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
           {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
         </Button>
-      </div>
+      </CardFooter>
     </Form>
   );
 }

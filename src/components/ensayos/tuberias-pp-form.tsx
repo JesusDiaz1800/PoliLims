@@ -1,9 +1,10 @@
+
 "use client"
 
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Trash2, PlusCircle, ShieldCheck } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 
@@ -14,6 +15,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -37,6 +39,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import type { User } from "@/services/user-service";
 
 interface Option {
   value: string;
@@ -48,6 +51,7 @@ interface TuberiasPpFormProps {
   ensayo: Ensayo;
   onFormSubmit: () => void;
   equipos: Equipo[];
+  user: User;
 }
 
 const defaultFormValues = {
@@ -71,12 +75,15 @@ const defaultFormValues = {
   equipo_mi: "",
   equipo_densidad: "",
   equipo_fv: "",
+  estado: "En Análisis",
+  comentarios_aprobacion: "",
 };
 
 
-export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos }: TuberiasPpFormProps) {
+export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user }: TuberiasPpFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
+  const canApprove = user.role === 'Jefe de Calidad' || user.role === 'Ing. Analista de Calidad';
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -228,11 +235,12 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos }: Tub
         densidadCalculada,
         fvTotalPorcentaje,
         fvIntermediaPorcentaje,
-        estado: 'En Análisis',
+        estado: data.estado,
+        comentarios_aprobacion: data.comentarios_aprobacion,
     };
     
     await updateEnsayo(ensayo.id, ensayoData);
-    await addRecentActivity({ user: data.analista, action: `ingresó resultados para el ensayo de Tubería PP: ${ensayo.id}`});
+    await addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería PP: ${ensayo.id}`});
     toast({
         title: "Resultados Guardados",
         description: `Los resultados para el ensayo ${ensayo.id} han sido guardados.`,
@@ -562,7 +570,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos }: Tub
       {/* SECCIÓN DE OBSERVACIONES */}
       <Card>
         <CardHeader>
-            <CardTitle>Observaciones</CardTitle>
+            <CardTitle>Observaciones Generales</CardTitle>
         </CardHeader>
         <CardContent>
             <div className="space-y-2">
@@ -571,12 +579,60 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos }: Tub
         </CardContent>
       </Card>
 
-      <div className="flex justify-end pt-4">
+      {/* SECCIÓN DE APROBACIÓN */}
+      {canApprove && (
+         <Card>
+            <CardHeader>
+                <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-6 w-6 text-primary" />
+                    <CardTitle>Aprobación de Ensayo</CardTitle>
+                </div>
+                <CardDescription>Esta sección solo es visible para roles de Jefatura y Analistas de Calidad.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <FormField
+                    control={control}
+                    name="estado"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Decisión Final</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Seleccione un estado" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value="En Análisis">Dejar En Análisis</SelectItem>
+                                <SelectItem value="Aprobado">Aprobar Ensayo</SelectItem>
+                                <SelectItem value="Rechazado">Rechazar Ensayo</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </FormItem>
+                 )}
+                />
+                 <FormField
+                    control={control}
+                    name="comentarios_aprobacion"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Comentarios de Aprobación/Rechazo</FormLabel>
+                        <FormControl>
+                            <Textarea placeholder="Ej: Resultados dentro de los rangos esperados para el producto." {...field} />
+                        </FormControl>
+                    </FormItem>
+                 )}
+                />
+            </CardContent>
+         </Card>
+       )}
+
+      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
         <Button type="submit">
           <Save className="mr-2 h-4 w-4" />
           Guardar Resultados
         </Button>
-      </div>
+      </CardFooter>
     </Form>
   );
 }

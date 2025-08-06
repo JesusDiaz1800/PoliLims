@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { MateriaPrimaForm } from "./materia-prima-form";
 import type { Ensayo } from "@/context/data-context";
 import { ScrollArea } from "../ui/scroll-area";
+import type { User } from "@/services/user-service";
 
 interface Option {
   value: string;
@@ -17,9 +18,10 @@ interface MateriaPrimaDialogProps {
   onClose: () => void;
   ensayo: Ensayo | null;
   analistas: Option[];
+  user: User;
 }
 
-export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: MateriaPrimaDialogProps) {
+export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, user }: MateriaPrimaDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[90vw] h-[90vh] flex flex-col p-0">
@@ -37,6 +39,7 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: Mater
                     analistas={analistas}
                     ensayoToEdit={ensayo}
                     onFormSubmit={onClose}
+                    user={user}
                 />
             </ScrollArea>
         </div>

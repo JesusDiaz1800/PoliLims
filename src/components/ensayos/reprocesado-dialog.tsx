@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { ReprocesadoForm } from "./reprocesado-form";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { ScrollArea } from "../ui/scroll-area";
+import type { User } from "@/services/user-service";
 
 interface Option {
   value: string;
@@ -17,9 +18,10 @@ interface ReprocesadoDialogProps {
   onClose: () => void;
   ensayo: Ensayo | null;
   analistas: Option[];
+  user: User;
 }
 
-export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: ReprocesadoDialogProps) {
+export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, user }: ReprocesadoDialogProps) {
   const { equipos } = useDynamicData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -39,6 +41,7 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
                   ensayoToEdit={ensayo}
                   onFormSubmit={onClose}
                   equipos={equipos}
+                  user={user}
               />
             </ScrollArea>
         </div>

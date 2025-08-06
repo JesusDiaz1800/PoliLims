@@ -7,11 +7,25 @@ import Loading from '@/app/(app)/loading';
 import { ReprocesadoTable } from '@/components/ensayos/reprocesado-table';
 import { ReprocesadoDialog } from '@/components/ensayos/reprocesado-dialog';
 import type { Ensayo } from '@/context/data-context';
+import type { User } from '@/services/user-service';
+import { useSearchParams } from 'next/navigation';
+import { findUserByUsername } from '@/services/user-service';
 
 export default function ReprocesadoPage() {
   const { ensayos, isLoading } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [user, setUser] = React.useState<User | null>(null);
+  const searchParams = useSearchParams();
+
+   React.useEffect(() => {
+    const username = searchParams.get('user') || 'jdiaz';
+    async function loadUser() {
+      const userData = await findUserByUsername(username);
+      setUser(userData);
+    }
+    loadUser();
+  }, [searchParams]);
 
   const handleOpenDialog = (ensayo?: Ensayo) => {
     setSelectedEnsayo(ensayo || null);
@@ -23,7 +37,7 @@ export default function ReprocesadoPage() {
     setIsDialogOpen(false);
   };
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return <Loading />;
   }
 
@@ -49,6 +63,7 @@ export default function ReprocesadoPage() {
         onClose={handleCloseDialog}
         ensayo={selectedEnsayo}
         analistas={analistas}
+        user={user}
       />
     </div>
   );
