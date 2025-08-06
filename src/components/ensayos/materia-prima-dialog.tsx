@@ -18,10 +18,9 @@ interface MateriaPrimaDialogProps {
   onClose: () => void;
   ensayo: Ensayo | null;
   analistas: Option[];
-  user: User;
 }
 
-export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, user }: MateriaPrimaDialogProps) {
+export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas }: MateriaPrimaDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[90vw] h-[90vh] flex flex-col p-0">
@@ -39,7 +38,6 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, user }:
                     analistas={analistas}
                     ensayoToEdit={ensayo}
                     onFormSubmit={onClose}
-                    user={user}
                 />
             </ScrollArea>
         </div>

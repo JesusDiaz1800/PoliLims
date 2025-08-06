@@ -6,6 +6,7 @@ import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
+import { ApprovalDialog } from '@/components/ensayos/approval-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
@@ -13,7 +14,8 @@ import { findUserByUsername } from '@/services/user-service';
 
 export default function MateriaPrimaPage() {
   const { ensayos, isLoading } = useDynamicData();
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
+  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
@@ -27,15 +29,25 @@ export default function MateriaPrimaPage() {
     loadUser();
   }, [searchParams]);
 
-  const handleOpenDialog = (ensayo?: Ensayo) => {
+  const handleOpenFormDialog = (ensayo?: Ensayo) => {
     setSelectedEnsayo(ensayo || null);
-    setIsDialogOpen(true);
+    setIsFormDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseFormDialog = () => {
     setSelectedEnsayo(null);
-    setIsDialogOpen(false);
+    setIsFormDialogOpen(false);
   };
+
+  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsApprovalDialogOpen(true);
+  }
+
+  const handleCloseApprovalDialog = () => {
+    setSelectedEnsayo(null);
+    setIsApprovalDialogOpen(false);
+  }
 
   if (isLoading || !user) {
     return <Loading />;
@@ -55,16 +67,25 @@ export default function MateriaPrimaPage() {
     <div className="space-y-6">
       <MateriaPrimaTable
         ensayos={materiaPrimaEnsayos}
-        onAddNew={() => handleOpenDialog()}
-        onEdit={handleOpenDialog}
-      />
-      <MateriaPrimaDialog
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
-        ensayo={selectedEnsayo}
-        analistas={analistas}
+        onAddNew={() => handleOpenFormDialog()}
+        onEdit={handleOpenFormDialog}
+        onApprove={handleOpenApprovalDialog}
         user={user}
       />
+      <MateriaPrimaDialog
+        isOpen={isFormDialogOpen}
+        onClose={handleCloseFormDialog}
+        ensayo={selectedEnsayo}
+        analistas={analistas}
+      />
+       {selectedEnsayo && user && (
+        <ApprovalDialog
+          isOpen={isApprovalDialogOpen}
+          onClose={handleCloseApprovalDialog}
+          ensayo={selectedEnsayo}
+          user={user}
+        />
+      )}
     </div>
   );
 }

@@ -83,7 +83,6 @@ const defaultFormValues = {
 export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user }: TuberiasPpFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
-  const canApprove = user.role === 'Jefe de Calidad' || user.role === 'Ing. Analista de Calidad';
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -578,54 +577,6 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user 
             </div>
         </CardContent>
       </Card>
-
-      {/* SECCIÓN DE APROBACIÓN */}
-      {canApprove && (
-         <Card>
-            <CardHeader>
-                <div className="flex items-center gap-2">
-                    <ShieldCheck className="h-6 w-6 text-primary" />
-                    <CardTitle>Aprobación de Ensayo</CardTitle>
-                </div>
-                <CardDescription>Esta sección solo es visible para roles de Jefatura y Analistas de Calidad.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                 <FormField
-                    control={control}
-                    name="estado"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Decisión Final</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Seleccione un estado" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                <SelectItem value="En Análisis">Dejar En Análisis</SelectItem>
-                                <SelectItem value="Aprobado">Aprobar Ensayo</SelectItem>
-                                <SelectItem value="Rechazado">Rechazar Ensayo</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </FormItem>
-                 )}
-                />
-                 <FormField
-                    control={control}
-                    name="comentarios_aprobacion"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Comentarios de Aprobación/Rechazo</FormLabel>
-                        <FormControl>
-                            <Textarea placeholder="Ej: Resultados dentro de los rangos esperados para el producto." {...field} />
-                        </FormControl>
-                    </FormItem>
-                 )}
-                />
-            </CardContent>
-         </Card>
-       )}
 
       <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
         <Button type="submit">

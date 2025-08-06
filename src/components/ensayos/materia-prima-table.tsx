@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FilePlus2, Edit, Filter, Trash2, MoreHorizontal } from 'lucide-react';
+import { Search, FilePlus2, Edit, Filter, Trash2, MoreHorizontal, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -16,11 +16,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useDynamicData } from '@/context/data-context';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import type { User } from '@/services/user-service';
 
 interface MateriaPrimaTableProps {
   ensayos: Ensayo[];
   onAddNew: () => void;
   onEdit: (ensayo: Ensayo) => void;
+  onApprove: (ensayo: Ensayo) => void;
+  user: User | null;
 }
 
 function getStatusVariant(status: string) {
@@ -40,11 +43,12 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit }: MateriaPrimaTableProps) => {
+const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }: MateriaPrimaTableProps) => {
   const { deleteEnsayo } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() =>
     ensayos.filter(ensayo =>
@@ -327,6 +331,12 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit }: MateriaPrimaTa
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar / Ingresar Datos
                                 </DropdownMenuItem>
+                                {canApprove && (
+                                <DropdownMenuItem onSelect={() => onApprove(ensayo)}>
+                                    <ShieldCheck className="mr-2 h-4 w-4" />
+                                    Aprobar / Revisar
+                                </DropdownMenuItem>
+                                )}
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>

@@ -18,10 +18,9 @@ interface ReprocesadoDialogProps {
   onClose: () => void;
   ensayo: Ensayo | null;
   analistas: Option[];
-  user: User;
 }
 
-export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, user }: ReprocesadoDialogProps) {
+export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: ReprocesadoDialogProps) {
   const { equipos } = useDynamicData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -41,7 +40,6 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, user }: 
                   ensayoToEdit={ensayo}
                   onFormSubmit={onClose}
                   equipos={equipos}
-                  user={user}
               />
             </ScrollArea>
         </div>

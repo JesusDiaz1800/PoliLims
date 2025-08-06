@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, FilePlus2, Edit, Trash2, MoreHorizontal, Filter } from 'lucide-react';
+import { Search, FilePlus2, Edit, Trash2, MoreHorizontal, Filter, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
@@ -16,11 +16,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import type { User } from '@/services/user-service';
 
 interface ReprocesadoTableProps {
   ensayos: Ensayo[];
   onAddNew: () => void;
   onEdit: (ensayo: Ensayo) => void;
+  onApprove: (ensayo: Ensayo) => void;
+  user: User | null;
 }
 
 function getStatusVariant(status: string) {
@@ -40,11 +43,12 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit }: ReprocesadoTableProps) => {
+const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }: ReprocesadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
   const { deleteEnsayo } = useDynamicData();
   const { toast } = useToast();
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() => 
     ensayos.filter(ensayo =>
@@ -287,6 +291,12 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit }: ReprocesadoTabl
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar / Ingresar Datos
                                 </DropdownMenuItem>
+                                {canApprove && (
+                                <DropdownMenuItem onSelect={() => onApprove(ensayo)}>
+                                    <ShieldCheck className="mr-2 h-4 w-4" />
+                                    Aprobar / Revisar
+                                </DropdownMenuItem>
+                                )}
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>

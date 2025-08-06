@@ -7,16 +7,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Edit, MoreHorizontal, Filter } from 'lucide-react';
+import { Search, Edit, MoreHorizontal, Filter, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { User } from '@/services/user-service';
 
 interface EnsayosProductoTerminadoTableProps {
   ensayos: Ensayo[];
   tipoEnsayo: 'HDPE' | 'PP';
   onOpenDialog: (ensayo: Ensayo) => void;
+  onApprove: (ensayo: Ensayo) => void;
+  user: User | null;
 }
 
 function getStatusVariant(status: Ensayo['estado']) {
@@ -41,9 +44,10 @@ const formatValue = (value: any, decimals: number = 2) => {
 };
 
 
-const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog }: EnsayosProductoTerminadoTableProps) => {
+const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog, onApprove, user }: EnsayosProductoTerminadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() =>
     ensayos.filter(ensayo =>
@@ -287,6 +291,12 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
                               <Edit className="mr-2 h-4 w-4" />
                               Editar / Ingresar Datos
                           </DropdownMenuItem>
+                           {canApprove && (
+                            <DropdownMenuItem onSelect={() => onApprove(ensayo)}>
+                                <ShieldCheck className="mr-2 h-4 w-4" />
+                                Aprobar / Revisar
+                            </DropdownMenuItem>
+                          )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
