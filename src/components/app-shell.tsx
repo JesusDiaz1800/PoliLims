@@ -246,9 +246,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         const title = pageTitles[pathname];
         if (title) return title;
 
-        // Fallback for dynamic menu items - simplistic approach
-        // A more robust solution might involve a mapping or context
-        for (const item of menuItems(() => {})) { // Pass dummy function
+        for (const item of menuItems(() => {})) {
             if (item.href && pathname === item.href) return item.label;
         }
 
@@ -267,7 +265,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center justify-center h-16 text-primary-foreground w-48 group-data-[state=collapsed]/sidebar-wrapper:w-10 transition-[width] duration-300 ease-in-out">
+                    <div className="flex items-center justify-center h-16 w-48 group-data-[state=collapsed]/sidebar-wrapper:w-10 transition-[width] duration-300 ease-in-out">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -337,7 +335,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     </div>
                 </SidebarFooter>
             </Sidebar>
-            <SidebarInset>
+            <div className='flex flex-col flex-1 overflow-hidden'>
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
@@ -346,10 +344,10 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+                <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">
                     {children}
                 </main>
-            </SidebarInset>
+            </div>
         </div>
     );
 }
