@@ -96,7 +96,7 @@ const operacionesSubMenu = [
 ];
 
 const equiposSubMenu = [
-    { href: '/equipos', label: 'Inventario de Equipos', icon: BookCheck },
+    { href: '/equipos', label: 'Inventario de Equipos', icon: ClipboardList },
     { href: '/equipos/control', label: 'Control de Equipos', icon: History },
     { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
 ];
@@ -202,7 +202,7 @@ const menuItems = (toggleChat: () => void) => [
     },
     { 
         label: 'Gestión de Equipos', 
-        icon: Beaker,
+        icon: BookCheck,
         subMenu: equiposSubMenu,
         href: '/equipos',
     },
@@ -267,7 +267,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center justify-center h-16 text-primary-foreground w-48 group-data-[collapsible=icon]:w-10 transition-[width] duration-300 ease-in-out">
+                    <div className="flex items-center justify-center h-16 text-primary-foreground w-48 group-data-[state=collapsed]/sidebar-wrapper:w-10 transition-[width] duration-300 ease-in-out">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -325,12 +325,12 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </SidebarMenuItem>
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
-                    <div className="flex items-center gap-3 p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:py-2">
+                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2">
                         <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col text-sm overflow-hidden group-data-[collapsible=icon]:hidden">
+                        <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
                             <span className="font-semibold truncate">{user.fullName}</span>
                             <span className="text-primary-foreground/70 text-xs truncate">{user.role}</span>
                         </div>
