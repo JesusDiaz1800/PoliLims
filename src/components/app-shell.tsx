@@ -123,9 +123,9 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
             disabled={disabled}
             aria-disabled={disabled}
           >
-            <div className='flex items-center gap-3'>
-              <item.icon className="size-5" />
-              <span>{item.label}</span>
+            <div className='flex items-center gap-3 flex-1'>
+              <item.icon className="size-5 shrink-0" />
+              <span className="truncate">{item.label}</span>
             </div>
             <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
           </SidebarMenuButton>
