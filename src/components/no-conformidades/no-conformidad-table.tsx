@@ -70,7 +70,7 @@ function getStatusVariant(status: NoConformidad["estado"]) {
   }
 }
 
-export function NoConformidadTable({ incidencias, onAddNew, onEdit }: NoConformidadTableProps) {
+const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit }: NoConformidadTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { deleteIncidencia } = useDynamicData();
   const { toast } = useToast();
@@ -217,3 +217,5 @@ export function NoConformidadTable({ incidencias, onAddNew, onEdit }: NoConformi
     </>
   );
 }
+
+export const NoConformidadTable = React.memo(NoConformidadTableInternal);

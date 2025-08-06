@@ -1,4 +1,6 @@
 
+"use client";
+
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
@@ -10,7 +12,7 @@ type StatsCardProps = {
     icon: LucideIcon;
 };
 
-export function StatsCard({ title, value, description, icon: Icon }: StatsCardProps) {
+const StatsCardInternal = ({ title, value, description, icon: Icon }: StatsCardProps) => {
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -24,3 +26,5 @@ export function StatsCard({ title, value, description, icon: Icon }: StatsCardPr
         </Card>
     );
 }
+
+export const StatsCard = React.memo(StatsCardInternal);

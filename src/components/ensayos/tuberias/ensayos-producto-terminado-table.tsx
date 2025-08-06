@@ -45,11 +45,12 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
 
-  const filteredEnsayos = ensayos.filter(ensayo =>
-    (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredEnsayos = React.useMemo(() =>
+    ensayos.filter(ensayo =>
+        (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [ensayos, searchTerm]);
 
   const ensayoFiltersHdpe = [
     { value: 'all', label: 'Vista General' },

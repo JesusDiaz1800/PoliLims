@@ -85,19 +85,20 @@ function getCalibrationStatus(dateString: string): { message: string, color: str
     return null;
 }
 
-export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
+const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { deleteEquipo } = useDynamicData();
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
 
-  const filteredEquipos = equipos.filter(
-    (equipo) =>
-      equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      equipo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (equipo.marca && equipo.marca.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (equipo.modelo && equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredEquipos = React.useMemo(() => 
+    equipos.filter(
+      (equipo) =>
+        equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        equipo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (equipo.marca && equipo.marca.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (equipo.modelo && equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [equipos, searchTerm]);
   
   const handleDelete = async (equipoId: string) => {
     try {
@@ -275,3 +276,5 @@ export function EquiposTable({ equipos, onAddNew, onEdit }: EquiposTableProps) {
     </TooltipProvider>
   );
 }
+
+export const EquiposTable = React.memo(EquiposTableInternal);

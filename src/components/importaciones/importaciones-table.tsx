@@ -64,7 +64,7 @@ function getStatusVariant(status?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO') {
   }
 }
 
-export function ImportacionesTable({ importaciones, onAddNew, onEdit }: ImportacionesTableProps) {
+const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: ImportacionesTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { deleteImportacion } = useDynamicData();
   const { toast } = useToast();
@@ -212,3 +212,5 @@ export function ImportacionesTable({ importaciones, onAddNew, onEdit }: Importac
     </>
   );
 }
+
+export const ImportacionesTable = React.memo(ImportacionesTableInternal);
