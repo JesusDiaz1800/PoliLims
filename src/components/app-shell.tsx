@@ -178,7 +178,7 @@ const pageTitles: Record<string, string> = {
     '/ensayos/control-accesorios': 'Control de Accesorios',
     '/ensayos/control-agua': 'Control de Agua',
     '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
-    '/ensayos/seguimiento': 'Seguimiento de Ensayos',
+    '/ensayos/seguimiento': 'Seguimiento General de Ensayos',
     '/administracion/usuarios': 'Gestión de Usuarios',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
