@@ -246,7 +246,7 @@ const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-grow overflow-y-auto overflow-x-hidden p-2",
+        "flex-grow overflow-y-auto overflow-x-hidden p-2 custom-scrollbar",
         className
       )}
       {...props}
@@ -312,7 +312,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-2 group-data-[state=collapsed]/sidebar-wrapper:w-10 [&>span]:truncate group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
+  "peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-2 group-data-[state=collapsed]/sidebar-wrapper:w-10 group-data-[state=collapsed]/sidebar-wrapper:gap-0 [&>span]:truncate group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
   {
     variants: {
       variant: {
