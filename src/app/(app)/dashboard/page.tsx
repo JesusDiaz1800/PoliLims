@@ -166,8 +166,8 @@ export default function DashboardPage() {
       </div>
       
       <div className="grid grid-cols-12 gap-6">
-         <div className="col-span-12 lg:col-span-8">
-           <AssaysByMonthChart data={ensayos} />
+        <div className="col-span-12 lg:col-span-8">
+          <AssaysByMonthChart data={ensayos} />
         </div>
         <div className="col-span-12 lg:col-span-4">
             <RecentActivityList initialActivity={recentActivity}/>
@@ -178,16 +178,19 @@ export default function DashboardPage() {
         <div className="col-span-12 lg:col-span-8">
             <ThroughputTrendChart data={filteredEnsayos} />
         </div>
-         <div className="col-span-12 lg:col-span-4">
-             <EquipmentAlertsCard equipos={equipos} />
+        <div className="col-span-12 lg:col-span-4">
+            <EquipmentAlertsCard equipos={equipos} />
         </div>
+      </div>
+      
+      <div className="grid grid-cols-12 gap-6">
         <div className="col-span-12 md:col-span-6 lg:col-span-4">
             <AssaysByTypeChart data={filteredEnsayos} />
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-4">
           <SampleStatusChart data={filteredEnsayos} />
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-4">
+        <div className="col-span-12 md:col-span-12 lg:col-span-4">
           <WorkloadDistributionChart data={filteredEnsayos} />
         </div>
       </div>

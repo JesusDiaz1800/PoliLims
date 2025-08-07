@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -38,12 +39,12 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
 
 
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Registros por Analista</CardTitle>
         <CardDescription>Número de ensayos registrados por analista en el período seleccionado.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
