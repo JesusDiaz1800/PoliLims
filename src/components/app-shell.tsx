@@ -263,8 +263,8 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     return (
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
-                <SidebarHeader>
-                    <div className="flex items-center h-16 w-48">
+                <SidebarHeader className="h-16 flex items-center px-4 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:px-0">
+                    <div className="flex items-center w-48 group-data-[state=collapsed]/sidebar-wrapper:w-auto">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -322,7 +322,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </SidebarMenuItem>
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
-                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2">
+                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2">
                         <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>

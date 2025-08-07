@@ -23,7 +23,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3.5rem"
+const SIDEBAR_WIDTH_ICON = "3.25rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
@@ -312,7 +312,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
+  "peer/menu-button flex items-center gap-3 overflow-hidden rounded-md text-left outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:gap-0 group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
   {
     variants: {
       variant: {
@@ -320,9 +320,9 @@ const sidebarMenuButtonVariants = cva(
         ghost: "hover:bg-primary-foreground/10 data-[active=true]:bg-primary-foreground/10",
       },
       size: {
-        default: "h-10 text-sm",
-        sm: "h-9 text-sm",
-        lg: "h-12 text-base",
+        default: "h-10 px-2 text-sm font-medium",
+        sm: "h-9 px-2 text-sm",
+        lg: "h-12 px-2 text-base",
       },
     },
     defaultVariants: {
@@ -356,7 +356,7 @@ const SidebarMenuButton = React.forwardRef<
     ref
   ) => {
     const Comp = asChild ? Slot : "button"
-    const { isMobile } = useSidebar()
+    const { state, isMobile } = useSidebar()
     const { content: tooltipContent, ...tooltipProps } = typeof tooltip === "object" ? tooltip : { content: tooltip };
 
     const button = (
@@ -383,6 +383,7 @@ const SidebarMenuButton = React.forwardRef<
           side="right"
           align="center"
           sideOffset={10}
+          hidden={state !== "collapsed" || isMobile}
           {...tooltipProps}
         >
           {tooltipContent}
