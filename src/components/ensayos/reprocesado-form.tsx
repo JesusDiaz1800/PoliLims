@@ -252,8 +252,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         {/* SECCIÓN GENERAL */}
         <Card>
           <CardHeader>
@@ -571,7 +570,6 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
             {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
           </Button>
         </CardFooter>
-      </form>
     </Form>
   );
 }

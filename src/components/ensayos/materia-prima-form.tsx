@@ -262,8 +262,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         {/* SECCIÓN GENERAL */}
         <Card>
           <CardHeader>
@@ -628,7 +627,6 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
               {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
           </Button>
         </CardFooter>
-      </form>
     </Form>
   )
 }

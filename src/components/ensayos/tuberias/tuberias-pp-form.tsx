@@ -264,8 +264,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         {/* SECCIÓN GENERAL */}
         <Card>
           <CardHeader>
@@ -588,7 +587,6 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
             Guardar Resultados
           </Button>
         </CardFooter>
-      </form>
     </Form>
   );
 }
