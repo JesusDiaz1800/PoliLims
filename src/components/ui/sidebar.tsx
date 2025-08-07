@@ -200,7 +200,7 @@ const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
 >(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, isMobile } = useSidebar()
 
   return (
     <Button
@@ -208,7 +208,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8 md:flex", className)}
+      className={cn("h-8 w-8", !isMobile && 'hidden md:flex', className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -246,7 +246,7 @@ const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-grow overflow-y-auto overflow-x-hidden p-2 custom-scrollbar",
+        "flex-grow overflow-y-auto overflow-x-hidden p-2",
         className
       )}
       {...props}
@@ -312,7 +312,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-2 group-data-[state=collapsed]/sidebar-wrapper:w-10 [&>span]:truncate [&>svg]:size-5 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-sidebar-ring transition-[width,height,padding] focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-2 group-data-[state=collapsed]/sidebar-wrapper:w-10 [&>span]:truncate group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
   {
     variants: {
       variant: {
@@ -360,12 +360,6 @@ const SidebarMenuButton = React.forwardRef<
     
     const { content: tooltipContent, ...tooltipProps } = typeof tooltip === "object" ? tooltip : { content: tooltip };
 
-    const buttonContent = (
-      <>
-        {children}
-      </>
-    );
-
     const button = (
         <Comp
           ref={ref}
@@ -375,7 +369,7 @@ const SidebarMenuButton = React.forwardRef<
           className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
           {...props}
         >
-          {buttonContent}
+          {children}
         </Comp>
     );
 
