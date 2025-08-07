@@ -4,7 +4,7 @@
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save, Check, X, ShieldCheck } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save, ShieldCheck } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/lib/utils"
@@ -37,7 +37,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo } from "@/context/data-context";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
 
 

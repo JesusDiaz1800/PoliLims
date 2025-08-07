@@ -31,7 +31,7 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, default
             {ensayo
               ? `Editando los resultados para el ensayo ${ensayo.id}.`
               : "Complete el formulario para registrar un nuevo ensayo de materia prima."}
-          </Description>
+          </DialogDescription>
         </DialogHeader>
         <div className="flex-grow overflow-hidden">
             <ScrollArea className="h-full px-6 pb-6">
