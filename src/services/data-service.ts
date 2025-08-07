@@ -3,6 +3,7 @@
 
 
 
+
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion } from "@/context/data-context";
 import { isPast, parse } from 'date-fns';
 
