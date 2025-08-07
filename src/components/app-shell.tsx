@@ -264,9 +264,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader className="h-16 flex items-center p-2">
-                    <div className="w-48">
-                       <Logo />
-                    </div>
+                    <Logo className="w-40" />
                 </SidebarHeader>
                 <SidebarContent>
                     {isInspectorView && (
