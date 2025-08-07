@@ -265,328 +265,328 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
-        {/* SECCIÓN GENERAL */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Información General del Ensayo</CardTitle>
-            <CardDescription>Datos principales de identificación y trazabilidad del producto.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <FormField
+      {/* SECCIÓN GENERAL */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Información General del Ensayo</CardTitle>
+          <CardDescription>Datos principales de identificación y trazabilidad del producto.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <FormField
+            control={control}
+            name="fecha_ingreso"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel>Fecha de Ingreso</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                      disabled
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
+                    </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+              name="analista"
               control={control}
-              name="fecha_ingreso"
               render={({ field }) => (
                 <FormItem className="space-y-2">
-                  <FormLabel>Fecha de Ingreso</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                        disabled
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
-                      </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                        locale={es}
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <FormLabel>Analista</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger id="analista">
+                          <SelectValue placeholder="Seleccione un analista" />
+                      </SelectTrigger>
+                    </FormControl>
+                      <SelectContent>
+                          {analistas.map(analista => (
+                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                          ))}
+                      </SelectContent>
+                  </Select>
                 </FormItem>
               )}
             />
+          
+           <div className="space-y-2">
+              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
+              <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
+          </div>
 
-            <FormField
-                name="analista"
-                control={control}
-                render={({ field }) => (
-                  <FormItem className="space-y-2">
-                    <FormLabel>Analista</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger id="analista">
-                            <SelectValue placeholder="Seleccione un analista" />
-                        </SelectTrigger>
-                      </FormControl>
-                        <SelectContent>
-                            {analistas.map(analista => (
-                              <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-            
-            <div className="space-y-2">
-                <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
-                <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
-            </div>
+          <div className="space-y-2">
+              <FormLabel htmlFor="producto">Producto</FormLabel>
+              <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
+          </div>
 
-            <div className="space-y-2">
-                <FormLabel htmlFor="producto">Producto</FormLabel>
-                <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
-            </div>
+          <div className="space-y-2">
+              <FormLabel htmlFor="lote">Lote</FormLabel>
+              <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* SECCIÓN DE ENSAYOS */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Resultados de Ensayos</CardTitle>
+          <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
+        </CardHeader>
+        <CardContent>
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
+            <ScrollArea>
+              <TabsList className="flex w-max">
+                 {ensayoTabs.map(ensayo => (
+                    <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
+                 ))}
+              </TabsList>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
 
-            <div className="space-y-2">
-                <FormLabel htmlFor="lote">Lote</FormLabel>
-                <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* SECCIÓN DE ENSAYOS */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Resultados de Ensayos</CardTitle>
-            <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue={currentDefaultTab} className="w-full">
-              <ScrollArea>
-                <TabsList className="flex w-max">
-                  {ensayoTabs.map(ensayo => (
-                      <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
-                  ))}
-                </TabsList>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+              {/* Pestaña Melt Index */}
+              <TabsContent value="melt_index" className="mt-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
+                    <CardDescription>
+                      Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                     <FormField control={control} name="equipo_mi" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                    <div className="space-y-4 p-4 border rounded-md">
+                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex items-center gap-2">
+                          <Input
+                            {...register(`meltIndexMediciones.${index}.value` as const)}
+                            type="number"
+                            step="any"
+                            placeholder={`Medición #${index + 1}`}
+                            onChange={calculateMeltIndex}
+                            className="flex-1"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => {
+                                remove(index);
+                                setTimeout(calculateMeltIndex, 0);
+                            }}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ value: '' })}
+                      >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Añadir Medición
+                      </Button>
+                    </div>
 
-                {/* Pestaña Melt Index */}
-                <TabsContent value="melt_index" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                      <CardDescription>
-                        Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_mi" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="space-y-4 p-4 border rounded-md">
-                        <FormLabel>Mediciones de extrusionado [g]</FormLabel>
-                        {fields.map((field, index) => (
-                          <div key={field.id} className="flex items-center gap-2">
-                            <Input
-                              {...register(`meltIndexMediciones.${index}.value` as const)}
-                              type="number"
-                              step="any"
-                              placeholder={`Medición #${index + 1}`}
-                              onChange={calculateMeltIndex}
-                              className="flex-1"
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => {
-                                  remove(index);
-                                  setTimeout(calculateMeltIndex, 0);
-                              }}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => append({ value: '' })}
-                        >
-                          <PlusCircle className="mr-2 h-4 w-4" />
-                          Añadir Medición
-                        </Button>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                          <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {meltIndexCalculado.toFixed(4)}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Porcentaje de variación [%]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {meltIndexVariacion.toFixed(2)}%
-                          </div>
-                        </div>
+                       <div className="space-y-2">
+                         <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {meltIndexCalculado.toFixed(4)}
+                         </div>
+                       </div>
+                       <div className="space-y-2">
+                         <FormLabel>Porcentaje de variación [%]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {meltIndexVariacion.toFixed(2)}%
+                         </div>
+                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Pestaña Densidad */}
+              <TabsContent value="densidad" className="mt-4">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Densidad</CardTitle>
+                    <CardDescription>
+                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                     <FormField control={control} name="equipo_densidad" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Pestaña Densidad */}
-                <TabsContent value="densidad" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ensayo: Densidad</CardTitle>
-                      <CardDescription>
-                        Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <FormField control={control} name="equipo_densidad" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                          <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                          <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                          <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {densidadCalculada.toFixed(4)}
-                          </div>
-                        </div>
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Pestaña Fibra de Vidrio */}
-                <TabsContent value="fibra_vidrio" className="mt-4">
-                  <div className="space-y-6">
-                      <Card>
-                          <CardHeader>
-                              <CardTitle>Fibra de vidrio Total</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-6">
-                              <FormField control={control} name="equipo_fv" render={({ field }) => (
-                                  <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                                  <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                                  <SelectContent>{getEquiposPorEnsayo('fibra_vidrio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                                  </Select></FormItem>
-                              )}/>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                                  <div className="space-y-2">
-                                      <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
-                                      <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
-                                  </div>
-                                  <div className="space-y-2">
-                                      <FormLabel htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
-                                      <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
-                                  </div>
-                                  <div className="space-y-2">
-                                      <FormLabel htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
-                                      <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
-                                  </div>
-                                  <div className="space-y-2">
-                                      <FormLabel>Masa Muestra [g]</FormLabel>
-                                      <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                          {fvTotalMasaMuestra.toFixed(4)}
-                                      </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                      <FormLabel>Masa Ceniza [g]</FormLabel>
-                                      <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                          {fvTotalMasaCeniza.toFixed(4)}
-                                      </div>
-                                  </div>
-                                  <div className="space-y-2">
-                                      <FormLabel>Porcentaje FV Total [%]</FormLabel>
-                                      <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                          {fvTotalPorcentaje.toFixed(2)}%
-                                      </div>
-                                  </div>
-                              </div>
-                          </CardContent>
-                      </Card>
-                      <Card>
-                          <CardHeader>
-                              <CardTitle>Fibra de vidrio Capa Intermedia</CardTitle>
-                          </CardHeader>
-                          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                              <div className="space-y-2">
-                                  <FormLabel htmlFor="fv_intermedia_m1">M1: Masa de Crisol [g]</FormLabel>
-                                  <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_intermedia_m1")} />
-                              </div>
-                              <div className="space-y-2">
-                                  <FormLabel htmlFor="fv_intermedia_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
-                                  <Input id="fv_intermedia_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_intermedia_m2")} />
-                              </div>
-                              <div className="space-y-2">
-                                  <FormLabel htmlFor="fv_intermedia_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
-                                  <Input id="fv_intermedia_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_intermedia_m3")} />
-                              </div>
-                              <div className="space-y-2">
-                                  <FormLabel>Masa Muestra [g]</FormLabel>
-                                  <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                      {fvIntermediaMasaMuestra.toFixed(4)}
-                                  </div>
-                              </div>
-                              <div className="space-y-2">
-                                  <FormLabel>Masa Ceniza [g]</FormLabel>
-                                  <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                      {fvIntermediaMasaCeniza.toFixed(4)}
-                                  </div>
-                              </div>
-                              <div className="space-y-2">
-                                  <FormLabel>Porcentaje FV Capa Intermedia [%]</FormLabel>
-                                  <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                                      {fvIntermediaPorcentaje.toFixed(2)}%
-                                  </div>
-                              </div>
-                          </CardContent>
-                      </Card>
-                  </div>
-                </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-        
-        {/* SECCIÓN DE OBSERVACIONES */}
-        <Card>
-          <CardHeader>
-              <CardTitle>Observaciones Generales</CardTitle>
-          </CardHeader>
-          <CardContent>
-              <div className="space-y-2">
-                  <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
-              </div>
-          </CardContent>
-        </Card>
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
+                      </div>
+                       <div className="space-y-2">
+                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {densidadCalculada.toFixed(4)}
+                         </div>
+                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Pestaña Fibra de Vidrio */}
+              <TabsContent value="fibra_vidrio" className="mt-4">
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Fibra de vidrio Total</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <FormField control={control} name="equipo_fv" render={({ field }) => (
+                                <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                                <SelectContent>{getEquiposPorEnsayo('fibra_vidrio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                                </Select></FormItem>
+                            )}/>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
+                                    <Input id="fv_total_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_total_m1")} />
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
+                                    <Input id="fv_total_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_total_m2")} />
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel htmlFor="fv_total_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
+                                    <Input id="fv_total_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_total_m3")} />
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Masa Muestra [g]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalMasaMuestra.toFixed(4)}
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Masa Ceniza [g]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalMasaCeniza.toFixed(4)}
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <FormLabel>Porcentaje FV Total [%]</FormLabel>
+                                    <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                        {fvTotalPorcentaje.toFixed(2)}%
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Fibra de vidrio Capa Intermedia</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="fv_intermedia_m1">M1: Masa de Crisol [g]</FormLabel>
+                                <Input id="fv_intermedia_m1" type="number" step="any" placeholder="Masa del crisol" {...register("fv_intermedia_m1")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="fv_intermedia_m2">M2: Masa de Crisol + Muestra [g]</FormLabel>
+                                <Input id="fv_intermedia_m2" type="number" step="any" placeholder="Crisol + muestra" {...register("fv_intermedia_m2")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="fv_intermedia_m3">M3: Masa de Crisol + Ceniza [g]</FormLabel>
+                                <Input id="fv_intermedia_m3" type="number" step="any" placeholder="Crisol + cenizas" {...register("fv_intermedia_m3")} />
+                            </div>
+                             <div className="space-y-2">
+                                <FormLabel>Masa Muestra [g]</FormLabel>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaMasaMuestra.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel>Masa Ceniza [g]</FormLabel>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaMasaCeniza.toFixed(4)}
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel>Porcentaje FV Capa Intermedia [%]</FormLabel>
+                                <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                                    {fvIntermediaPorcentaje.toFixed(2)}%
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+              </TabsContent>
+           </Tabs>
+        </CardContent>
+      </Card>
+      
+      {/* SECCIÓN DE OBSERVACIONES */}
+      <Card>
+        <CardHeader>
+            <CardTitle>Observaciones Generales</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="space-y-2">
+                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
+            </div>
+        </CardContent>
+      </Card>
 
-        <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
-          <Button type="submit">
-            <Save className="mr-2 h-4 w-4" />
-            Guardar Resultados
-          </Button>
-        </CardFooter>
+      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
+        <Button type="submit">
+          <Save className="mr-2 h-4 w-4" />
+          Guardar Resultados
+        </Button>
+      </CardFooter>
     </Form>
   );
 }

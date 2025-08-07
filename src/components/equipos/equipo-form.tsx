@@ -40,12 +40,13 @@ const ensayosDisponibles = [
   { id: 'melt_index', label: 'Melt Index' },
   { id: 'densidad', label: 'Densidad' },
   { id: 'traccion', label: 'Tracción y Elongación' },
-  { id: 'negro_humo', label: 'Porcentaje de Negro de Humo' },
+  { id: 'negro_humo', label: '% Negro de Humo' },
   { id: 'dispersion_nh', label: 'Dispersión de Negro de Humo' },
   { id: 'tio', label: 'Tiempo de Inducción a la Oxidación (TIO)' },
   { id: 'fibra_vidrio', label: 'Porcentaje de Fibra de Vidrio' },
   { id: 'dsc', label: 'DSC (Calorimetría Diferencial de Barrido)' },
   { id: 'humedad', label: 'Porcentaje de Humedad' },
+  { id: 'cenizas', label: 'Porcentaje de Cenizas'},
 ];
 
 const formSchema = z.object({
@@ -167,7 +168,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   };
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="space-y-4 pr-3">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField control={form.control} name="id" render={({ field }) => (<FormItem><FormLabel>ID de Activo</FormLabel><FormControl><Input placeholder="Ej: EQ-FTIR-01" {...field} disabled={isEditing}/></FormControl><FormMessage /></FormItem>)}/>

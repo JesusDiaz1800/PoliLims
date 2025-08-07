@@ -36,7 +36,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
 
@@ -84,12 +84,19 @@ const defaultFormValues = {
   orden_compra: "",
   estado: "En Análisis",
   comentarios_aprobacion: "",
+  equipo_mi: "",
+  equipo_densidad: "",
+  equipo_nh: "",
+  equipo_cenizas: "",
+  equipo_dsc: "",
+  equipo_tio: "",
+  equipo_humedad: "",
 };
 
 
 export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaultTab = 'all' }: MateriaPrimaFormProps) {
   const { toast } = useToast();
-  const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
+  const { addEnsayo, updateEnsayo, addRecentActivity, equipos } = useDynamicData();
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -260,6 +267,12 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
   ];
 
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
+  
+  const getEquiposPorEnsayo = (ensayoId: string) => {
+      return equipos
+        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
@@ -381,6 +394,12 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                      <FormField control={control} name="equipo_mi" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                       <div className="space-y-4 p-4 border rounded-md">
                         <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                         {fields.map((field, index) => (
@@ -445,6 +464,12 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
+                      <FormField control={control} name="equipo_densidad" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                         <div className="space-y-2">
                           <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -478,7 +503,13 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                         Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                        <FormField control={control} name="equipo_nh" render={({ field }) => (
+                            <FormItem className="md:col-span-5"><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                            <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select></FormItem>
+                        )}/>
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                           <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
@@ -495,7 +526,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                           <FormLabel htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</FormLabel>
                           <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
                         </div>
-                        <div className="space-y-2 md:col-start-1">
+                        <div className="space-y-2">
                           <FormLabel>% Negro de Humo</FormLabel>
                           <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                               {negroHumoCalculado.toFixed(2)}%
@@ -512,7 +543,13 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                         Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                         <FormField control={control} name="equipo_cenizas" render={({ field }) => (
+                            <FormItem className="md:col-span-4"><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                            <SelectContent>{getEquiposPorEnsayo('cenizas').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select></FormItem>
+                        )}/>
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                           <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
@@ -545,26 +582,34 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                       <CardHeader>
                           <CardTitle>Ensayo: Calorimetría Diferencial de Barrido (DSC)</CardTitle>
                       </CardHeader>
-                      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div className="space-y-2">
-                              <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
-                              <Input id="dsc_temp_max" type="number" step="any" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
-                          </div>
-                          <div className="space-y-2">
-                              <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
-                              <Input id="dsc_temp_inicio" type="number" step="any" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
-                          </div>
-                          <div className="space-y-2">
-                              <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
-                              <Input id="dsc_temp_final" type="number" step="any" placeholder="Temp. final" {...register("dsc_temp_final")} />
-                          </div>
-                          <div className="space-y-2">
-                              <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
-                              <Input id="dsc_punto_fusion" type="number" step="any" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
-                          </div>
-                          <div className="space-y-2">
-                              <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
-                              <Input id="dsc_punto_fusion_opcional" type="number" step="any" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
+                      <CardContent className="space-y-6">
+                           <FormField control={control} name="equipo_dsc" render={({ field }) => (
+                            <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                            <SelectContent>{getEquiposPorEnsayo('dsc').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select></FormItem>
+                        )}/>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
+                                <Input id="dsc_temp_max" type="number" step="any" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
+                                <Input id="dsc_temp_inicio" type="number" step="any" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
+                                <Input id="dsc_temp_final" type="number" step="any" placeholder="Temp. final" {...register("dsc_temp_final")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
+                                <Input id="dsc_punto_fusion" type="number" step="any" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
+                            </div>
+                            <div className="space-y-2">
+                                <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
+                                <Input id="dsc_punto_fusion_opcional" type="number" step="any" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
+                            </div>
                           </div>
                       </CardContent>
                   </Card>
@@ -575,6 +620,12 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                       <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                           <FormField control={control} name="equipo_tio" render={({ field }) => (
+                            <FormItem className="md:col-span-3"><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                            <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select></FormItem>
+                        )}/>
                           <div className="space-y-2">
                               <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
                               <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />

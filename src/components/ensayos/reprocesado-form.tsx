@@ -76,6 +76,11 @@ const defaultFormValues = {
   tio_tiempo: "",
   estado: "En Análisis",
   comentarios_aprobacion: "",
+  equipo_mi: "",
+  equipo_densidad: "",
+  equipo_nh: "",
+  equipo_cenizas: "",
+  equipo_tio: "",
 };
 
 export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos, defaultTab = 'all' }: ReprocesadoFormProps) {
@@ -251,6 +256,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
 
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
+  const getEquiposPorEnsayo = (ensayoId: string) => {
+      return equipos
+        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }
+
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         {/* SECCIÓN GENERAL */}
@@ -356,6 +367,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                      <FormField control={control} name="equipo_mi" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                       <div className="space-y-4 p-4 border rounded-md">
                         <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                         {fields.map((field, index) => (
@@ -420,6 +437,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
+                      <FormField control={control} name="equipo_densidad" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                         <div className="space-y-2">
                           <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -454,7 +477,13 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                      <FormField control={control} name="equipo_nh" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
+                      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                           <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
@@ -471,7 +500,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                           <FormLabel htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</FormLabel>
                           <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
                         </div>
-                        <div className="space-y-2 md:col-start-1">
+                        <div className="space-y-2">
                           <FormLabel>% Negro de Humo</FormLabel>
                           <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
                               {negroHumoCalculado.toFixed(2)}%
@@ -489,7 +518,13 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                         Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                    <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                      <FormField control={control} name="equipo_cenizas" render={({ field }) => (
+                          <FormItem className="md:col-span-4"><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('cenizas').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                           <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
@@ -523,6 +558,12 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                       <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                      <FormField control={control} name="equipo_tio" render={({ field }) => (
+                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                          <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                          </Select></FormItem>
+                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>

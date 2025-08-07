@@ -229,373 +229,373 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
-        {/* SECCIÓN GENERAL */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Información General del Ensayo</CardTitle>
-            <CardDescription>Datos principales de identificación y trazabilidad del producto.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            
-            <FormField
-              control={control}
-              name="fecha_ingreso"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel>Fecha de Ingreso</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
-                      </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                        locale={es}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="analista"
-              render={({ field }) => (
-                <FormItem className="space-y-2">
-                  <FormLabel>Analista</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+      {/* SECCIÓN GENERAL */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Información General del Ensayo</CardTitle>
+          <CardDescription>Datos principales de identificación y trazabilidad del producto.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          
+          <FormField
+            control={control}
+            name="fecha_ingreso"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel>Fecha de Ingreso</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <FormControl>
-                      <SelectTrigger id="analista">
-                          <SelectValue placeholder="Seleccione un analista" />
-                      </SelectTrigger>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
+                    </Button>
                     </FormControl>
-                      <SelectContent>
-                          {analistas.map(analista => (
-                            <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
-                          ))}
-                      </SelectContent>
-                  </Select>
-                </FormItem>
-              )}
-            />
-            
-            <div className="space-y-2">
-                <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
-                <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
-            </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
 
-            <div className="space-y-2">
-                <FormLabel htmlFor="producto">Producto</FormLabel>
-                <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
-            </div>
-
-            <div className="space-y-2">
-                <FormLabel htmlFor="lote">Lote</FormLabel>
-                <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* SECCIÓN DE ENSAYOS */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Resultados de Ensayos</CardTitle>
-            <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue={currentDefaultTab} className="w-full">
-              <ScrollArea>
-                <TabsList className="flex w-max">
-                  {ensayoTabs.map(ensayo => (
-                      <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
-                  ))}
-                </TabsList>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-
-                {/* Pestaña Melt Index */}
-                <TabsContent value="melt_index" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                      <CardDescription>
-                        Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_mi" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="space-y-4 p-4 border rounded-md">
-                        <FormLabel>Mediciones de extrusionado [g]</FormLabel>
-                        {fields.map((field, index) => (
-                          <div key={field.id} className="flex items-center gap-2">
-                            <Input
-                              {...register(`meltIndexMediciones.${index}.value` as const)}
-                              type="number"
-                              step="any"
-                              placeholder={`Medición #${index + 1}`}
-                              onChange={calculateMeltIndex}
-                              className="flex-1"
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => {
-                                  remove(index);
-                                  setTimeout(calculateMeltIndex, 0);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+          <FormField
+            control={control}
+            name="analista"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                 <FormLabel>Analista</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger id="analista">
+                        <SelectValue placeholder="Seleccione un analista" />
+                    </SelectTrigger>
+                  </FormControl>
+                    <SelectContent>
+                        {analistas.map(analista => (
+                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
                         ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => append({ value: '' })}
-                        >
-                          <PlusCircle className="mr-2 h-4 w-4" />
-                          Añadir Medición
-                        </Button>
-                      </div>
+                    </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          
+           <div className="space-y-2">
+              <FormLabel htmlFor="id_muestra">ID Muestra</FormLabel>
+              <Input id="id_muestra" placeholder="ID del ensayo" {...register("id_muestra")} readOnly className="bg-muted" />
+          </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                          <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {meltIndexCalculado.toFixed(4)}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Porcentaje de variación [%]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {meltIndexVariacion.toFixed(2)}%
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Pestaña Densidad */}
-                <TabsContent value="densidad" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ensayo: Densidad</CardTitle>
-                      <CardDescription>
-                        Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <FormField control={control} name="equipo_densidad" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                          <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                          <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                          <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {densidadCalculada.toFixed(4)}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Pestaña Tracción y Elongación */}
-                <TabsContent value="traccion" className="mt-4">
-                  <Card>
-                      <CardHeader>
-                          <CardTitle>Ensayo: Tracción y Elongación</CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-6">
-                          <FormField control={control} name="equipo_traccion" render={({ field }) => (
-                              <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                              <SelectContent>{getEquiposPorEnsayo('traccion').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                              </Select></FormItem>
-                          )}/>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
-                                <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...register("resistencia_traccion")} />
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</FormLabel>
-                                <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...register("limite_fluencia")} />
-                            </div>
-                            <div className="space-y-2">
-                                <FormLabel htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</FormLabel>
-                                <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...register("elongacion_rotura")} />
-                            </div>
-                          </div>
-                      </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                {/* Pestaña Negro de Humo */}
-                <TabsContent value="negro_humo" className="mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
-                      <CardDescription>
-                        Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_nh" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
-                          <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
-                          <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumo} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</FormLabel>
-                          <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumo} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel htmlFor="nh_m4">m4: Cápsula con ceniza [g]</FormLabel>
-                          <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumo} />
-                        </div>
-                        <div className="space-y-2">
-                          <FormLabel>% Negro de Humo</FormLabel>
-                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                              {negroHumoCalculado.toFixed(2)}%
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+          <div className="space-y-2">
+              <FormLabel htmlFor="producto">Producto</FormLabel>
+              <Input id="producto" placeholder="Nombre del producto" {...register("producto")} readOnly className="bg-muted"/>
+          </div>
 
-                {/* Pestaña Dispersion Negro de Humo */}
-                <TabsContent value="dispersion_nh" className="mt-4">
-                  <Card>
-                    <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
-                    <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_nh" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('dispersion_nh').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
+          <div className="space-y-2">
+              <FormLabel htmlFor="lote">Lote</FormLabel>
+              <Input id="lote" placeholder="Número de lote" {...register("lote")} readOnly className="bg-muted"/>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* SECCIÓN DE ENSAYOS */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Resultados de Ensayos</CardTitle>
+          <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
+        </CardHeader>
+        <CardContent>
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
+            <ScrollArea>
+              <TabsList className="flex w-max">
+                 {ensayoTabs.map(ensayo => (
+                    <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
+                 ))}
+              </TabsList>
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+
+              {/* Pestaña Melt Index */}
+              <TabsContent value="melt_index" className="mt-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
+                    <CardDescription>
+                      Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <FormField control={control} name="equipo_mi" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                    <div className="space-y-4 p-4 border rounded-md">
+                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
+                      {fields.map((field, index) => (
+                        <div key={field.id} className="flex items-center gap-2">
+                          <Input
+                            {...register(`meltIndexMediciones.${index}.value` as const)}
+                            type="number"
+                            step="any"
+                            placeholder={`Medición #${index + 1}`}
+                            onChange={calculateMeltIndex}
+                            className="flex-1"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => {
+                                remove(index);
+                                setTimeout(calculateMeltIndex, 0);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ value: '' })}
+                      >
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Añadir Medición
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
-                          <FormLabel htmlFor="dispersion_nh">Grado de Dispersión</FormLabel>
-                          <Input id="dispersion_nh" placeholder="Ej: Grado A1" {...register("dispersion_nh")} />
+                        <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                {/* Pestaña TIO */}
-                <TabsContent value="tio" className="mt-4">
-                  <Card>
+                       <div className="space-y-2">
+                         <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {meltIndexCalculado.toFixed(4)}
+                         </div>
+                       </div>
+                       <div className="space-y-2">
+                         <FormLabel>Porcentaje de variación [%]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {meltIndexVariacion.toFixed(2)}%
+                         </div>
+                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Pestaña Densidad */}
+              <TabsContent value="densidad" className="mt-4">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Densidad</CardTitle>
+                    <CardDescription>
+                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <FormField control={control} name="equipo_densidad" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
+                      </div>
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
+                      </div>
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
+                      </div>
+                       <div className="space-y-2">
+                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {densidadCalculada.toFixed(4)}
+                         </div>
+                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              
+              {/* Pestaña Tracción y Elongación */}
+              <TabsContent value="traccion" className="mt-4">
+                 <Card>
                     <CardHeader>
-                      <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
+                        <CardTitle>Ensayo: Tracción y Elongación</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_tio" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
-                            <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
+                        <FormField control={control} name="equipo_traccion" render={({ field }) => (
+                            <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                            <SelectContent>{getEquiposPorEnsayo('traccion').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                            </Select></FormItem>
+                        )}/>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
+                              <Input id="resistencia_traccion" type="number" step="any" placeholder="Resultado en MPa" {...register("resistencia_traccion")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="limite_fluencia">Limite de fluencia Promedio [Mpa]</FormLabel>
+                              <Input id="limite_fluencia" type="number" step="any" placeholder="Resultado en MPa" {...register("limite_fluencia")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="elongacion_rotura">Elongación de ruptura promedio [%]</FormLabel>
+                              <Input id="elongacion_rotura" type="number" step="any" placeholder="Resultado en %" {...register("elongacion_rotura")} />
+                          </div>
                         </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
-                            <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
-                        </div>
+                    </CardContent>
+                 </Card>
+              </TabsContent>
+              
+              {/* Pestaña Negro de Humo */}
+              <TabsContent value="negro_humo" className="mt-4">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
+                    <CardDescription>
+                      Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <FormField control={control} name="equipo_nh" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                      <div className="space-y-2">
+                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
+                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
                       </div>
-                      </CardContent>
-                  </Card>
-                </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-        
-        {/* SECCIÓN DE OBSERVACIONES */}
-        <Card>
-          <CardHeader>
-              <CardTitle>Observaciones Generales</CardTitle>
-          </CardHeader>
-          <CardContent>
-              <div className="space-y-2">
-                  <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
-              </div>
-          </CardContent>
-        </Card>
+                       <div className="space-y-2">
+                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
+                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumo} />
+                      </div>
+                       <div className="space-y-2">
+                        <FormLabel htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</FormLabel>
+                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumo} />
+                      </div>
+                       <div className="space-y-2">
+                        <FormLabel htmlFor="nh_m4">m4: Cápsula con ceniza [g]</FormLabel>
+                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumo} />
+                      </div>
+                       <div className="space-y-2">
+                         <FormLabel>% Negro de Humo</FormLabel>
+                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                            {negroHumoCalculado.toFixed(2)}%
+                         </div>
+                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
 
-        <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
-          <Button type="submit">
-              <Save className="mr-2 h-4 w-4" />
-              Guardar Resultados
-          </Button>
-        </CardFooter>
+              {/* Pestaña Dispersion Negro de Humo */}
+              <TabsContent value="dispersion_nh" className="mt-4">
+                 <Card>
+                  <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
+                  <CardContent className="space-y-6">
+                    <FormField control={control} name="equipo_nh" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('dispersion_nh').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                    <div className="space-y-2">
+                        <FormLabel htmlFor="dispersion_nh">Grado de Dispersión</FormLabel>
+                        <Input id="dispersion_nh" placeholder="Ej: Grado A1" {...register("dispersion_nh")} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Pestaña TIO */}
+              <TabsContent value="tio" className="mt-4">
+                 <Card>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <FormField control={control} name="equipo_tio" render={({ field }) => (
+                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
+                        <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
+                        </Select></FormItem>
+                    )}/>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
+                          <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
+                          <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
+                          <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
+                          <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
+                      </div>
+                      <div className="space-y-2">
+                          <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
+                          <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                      </div>
+                    </div>
+                    </CardContent>
+                </Card>
+              </TabsContent>
+           </Tabs>
+        </CardContent>
+      </Card>
+      
+      {/* SECCIÓN DE OBSERVACIONES */}
+      <Card>
+        <CardHeader>
+            <CardTitle>Observaciones Generales</CardTitle>
+        </CardHeader>
+        <CardContent>
+            <div className="space-y-2">
+                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
+            </div>
+        </CardContent>
+      </Card>
+
+      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
+        <Button type="submit">
+            <Save className="mr-2 h-4 w-4" />
+            Guardar Resultados
+        </Button>
+      </CardFooter>
     </Form>
   );
 }
