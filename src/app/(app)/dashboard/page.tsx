@@ -174,7 +174,7 @@ export default function DashboardPage() {
         </div>
       </div>
       
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 lg:items-start">
         <div className="col-span-12 lg:col-span-8">
             <ThroughputTrendChart data={filteredEnsayos} />
         </div>
