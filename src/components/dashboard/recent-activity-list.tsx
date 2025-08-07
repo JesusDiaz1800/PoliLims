@@ -53,7 +53,7 @@ export function RecentActivityList({ initialActivity }: RecentActivityListProps)
                 <CardDescription>Un registro de las acciones más recientes.</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col">
-                <ScrollArea className="h-[300px] flex-grow pr-4">
+                <ScrollArea className="h-[210px] flex-grow pr-4">
                     <div className="space-y-6">
                         {activityList.length > 0 ? activityList.map((activity) => {
                             const avatar = getAvatarInfo(activity.user);
