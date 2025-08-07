@@ -91,7 +91,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
     defaultValues: defaultFormValues
   });
 
-  const { control, getValues, register, handleSubmit, reset, watch } = form;
+  const { control, getValues, register, handleSubmit, reset, watch, setValue } = form;
 
   const isEditing = Boolean(ensayoToEdit);
   
@@ -108,6 +108,23 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
   const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
   const [cenizasCalculado, setCenizasCalculado] = React.useState(0);
   const [cenizasCorregido, setCenizasCorregido] = React.useState(0);
+
+  const getEquiposPorEnsayo = React.useCallback((ensayoId: string) => {
+    return equipos
+      .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+      .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }, [equipos]);
+
+  // Auto-set equipment if only one option is available
+  React.useEffect(() => {
+    const ensayoTipos = ['melt_index', 'densidad', 'negro_humo', 'cenizas', 'tio'];
+    ensayoTipos.forEach(tipo => {
+        const equiposDisponibles = getEquiposPorEnsayo(tipo);
+        if (equiposDisponibles.length === 1) {
+            setValue(`equipo_${tipo.replace('%', '')}` as any, equiposDisponibles[0].value);
+        }
+    });
+  }, [getEquiposPorEnsayo, setValue]);
 
   React.useEffect(() => {
     if (isEditing && ensayoToEdit) {
@@ -255,12 +272,31 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
   ];
 
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
-
-  const getEquiposPorEnsayo = (ensayoId: string) => {
-      return equipos
-        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
-        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
-  }
+  
+  const EquipoSelector = ({ name, ensayoId }: { name: any, ensayoId: string }) => {
+    const equiposDisponibles = getEquiposPorEnsayo(ensayoId);
+    if (equiposDisponibles.length <= 1) {
+        return <Input value={equiposDisponibles[0]?.label || 'No asignado'} disabled className="bg-muted"/>;
+    }
+    return (
+        <FormField
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccione equipo..." />
+                        </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {equiposDisponibles.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )}
+        />
+    );
+};
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
@@ -362,17 +398,18 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                   <Card>
                     <CardHeader>
                       <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                      <CardDescription>
-                        Fórmula: PROMEDIO(mediciones) * 2
-                      </CardDescription>
+                       <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_mi" ensayoId="melt_index" />
+                            </div>
+                            <div className="flex-1">
+                                <FormLabel>Fórmula</FormLabel>
+                                <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">PROMEDIO(mediciones) * 2</div>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_mi" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
                       <div className="space-y-4 p-4 border rounded-md">
                         <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                         {fields.map((field, index) => (
@@ -432,17 +469,18 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                   <Card>
                     <CardHeader>
                       <CardTitle>Ensayo: Densidad</CardTitle>
-                      <CardDescription>
-                        Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                      </CardDescription>
+                      <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_densidad" ensayoId="densidad" />
+                            </div>
+                            <div className="flex-1">
+                                <FormLabel>Fórmula</FormLabel>
+                                <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))</div>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <FormField control={control} name="equipo_densidad" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                         <div className="space-y-2">
                           <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -472,17 +510,18 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                   <Card>
                     <CardHeader>
                       <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
-                      <CardDescription>
-                        Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
-                      </CardDescription>
+                      <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_nh" ensayoId="negro_humo" />
+                            </div>
+                            <div className="flex-1">
+                                <FormLabel>Fórmula</FormLabel>
+                                <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">%NH = ((m3 - m4) / (m2 - m1)) * 100</div>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_nh" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
@@ -514,17 +553,18 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                   <Card>
                     <CardHeader>
                       <CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle>
-                      <CardDescription>
-                        Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
-                      </CardDescription>
+                      <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_cenizas" ensayoId="cenizas" />
+                            </div>
+                            <div className="flex-1">
+                                <FormLabel>Fórmula</FormLabel>
+                                <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">%Cenizas = ((m3 - m1) / (m2 - m1)) * 100</div>
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                      <FormField control={control} name="equipo_cenizas" render={({ field }) => (
-                          <FormItem className="md:col-span-4"><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('cenizas').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
                         <div className="space-y-2">
                           <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
                           <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
@@ -556,14 +596,14 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
                   <Card>
                     <CardHeader>
                       <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
+                      <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_tio" ensayoId="tio" />
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                      <FormField control={control} name="equipo_tio" render={({ field }) => (
-                          <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                          <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                          </Select></FormItem>
-                      )}/>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                             <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>

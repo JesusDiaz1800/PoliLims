@@ -89,7 +89,24 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
     defaultValues: defaultFormValues,
   });
   
-  const { control, getValues, register, watch, handleSubmit, reset } = form;
+  const { control, getValues, register, watch, handleSubmit, reset, setValue } = form;
+
+  const getEquiposPorEnsayo = React.useCallback((ensayoId: string) => {
+    return equipos
+      .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+      .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }, [equipos]);
+
+  // Auto-set equipment if only one option is available
+  React.useEffect(() => {
+    const ensayoTipos = ['melt_index', 'densidad', 'fibra_vidrio'];
+    ensayoTipos.forEach(tipo => {
+        const equiposDisponibles = getEquiposPorEnsayo(tipo);
+        if (equiposDisponibles.length === 1) {
+            setValue(`equipo_${tipo}` as any, equiposDisponibles[0].value);
+        }
+    });
+  }, [getEquiposPorEnsayo, setValue]);
 
   React.useEffect(() => {
     if (ensayo) {
@@ -255,11 +272,30 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
     { value: "fibra_vidrio", label: "Fibra de Vidrio" },
   ];
   
-  const getEquiposPorEnsayo = (ensayoId: string) => {
-      return equipos
-        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
-        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
-  }
+  const EquipoSelector = ({ name, ensayoId }: { name: any, ensayoId: string }) => {
+    const equiposDisponibles = getEquiposPorEnsayo(ensayoId);
+    if (equiposDisponibles.length <= 1) {
+        return <Input value={equiposDisponibles[0]?.label || 'No asignado'} disabled className="bg-muted"/>;
+    }
+    return (
+        <FormField
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccione equipo..." />
+                        </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {equiposDisponibles.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )}
+        />
+    );
+};
 
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
@@ -369,17 +405,18 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                 <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                    <CardDescription>
-                      Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
-                    </CardDescription>
+                    <div className="flex items-end gap-4 pt-2">
+                        <div className="flex-1">
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <EquipoSelector name="equipo_mi" ensayoId="melt_index" />
+                        </div>
+                        <div className="flex-1">
+                            <FormLabel>Fórmula</FormLabel>
+                            <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">PROMEDIO(mediciones) * 2</div>
+                        </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                     <FormField control={control} name="equipo_mi" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                     <div className="space-y-4 p-4 border rounded-md">
                       <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
@@ -443,17 +480,18 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Densidad</CardTitle>
-                    <CardDescription>
-                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                    </CardDescription>
+                    <div className="flex items-end gap-4 pt-2">
+                        <div className="flex-1">
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <EquipoSelector name="equipo_densidad" ensayoId="densidad" />
+                        </div>
+                        <div className="flex-1">
+                            <FormLabel>Fórmula</FormLabel>
+                            <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))</div>
+                        </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                     <FormField control={control} name="equipo_densidad" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -484,14 +522,12 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                     <Card>
                         <CardHeader>
                             <CardTitle>Fibra de vidrio Total</CardTitle>
+                            <div className="pt-2">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_fv" ensayoId="fibra_vidrio" />
+                            </div>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <FormField control={control} name="equipo_fv" render={({ field }) => (
-                                <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                                <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                                <SelectContent>{getEquiposPorEnsayo('fibra_vidrio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                                </Select></FormItem>
-                            )}/>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                                 <div className="space-y-2">
                                     <FormLabel htmlFor="fv_total_m1">M1: Masa de Crisol [g]</FormLabel>
