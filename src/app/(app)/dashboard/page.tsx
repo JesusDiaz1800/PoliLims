@@ -165,7 +165,7 @@ export default function DashboardPage() {
         <StatsCard title="Equipos Operativos" value={`${operationalEquipment} / ${totalEquipment}`} description="Equipos calibrados y activos" icon={Beaker} />
       </div>
       
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 lg:grid-rows-1">
         <div className="col-span-12 lg:col-span-8">
           <AssaysByMonthChart data={ensayos} />
         </div>

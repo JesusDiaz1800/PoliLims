@@ -47,7 +47,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
       <CardContent className="flex-grow">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 40 }}>
                 <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 
