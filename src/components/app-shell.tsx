@@ -263,8 +263,8 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     return (
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
-                <SidebarHeader className="h-16 flex items-center group-data-[state=collapsed]/sidebar-wrapper:justify-center">
-                    <div className="flex items-center w-48 px-4 group-data-[state=collapsed]/sidebar-wrapper:w-auto group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:px-0">
+                <SidebarHeader className="h-16 flex items-center">
+                    <div className="flex items-center w-48 group-data-[state=collapsed]/sidebar-wrapper:w-auto group-data-[state=collapsed]/sidebar-wrapper:justify-center px-4">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -301,8 +301,10 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                                         aria-disabled={isDisabled}
                                     >
                                         <Link href={`${item.href}?${userQuery}`} onClick={(e) => handleMenuClick(e, item.onClick)}>
-                                            <item.icon className="size-5" />
-                                            <span>{item.label}</span>
+                                            <div className='flex items-center gap-3'>
+                                                <item.icon className="size-5 shrink-0" />
+                                                <span className="truncate">{item.label}</span>
+                                            </div>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
@@ -315,8 +317,10 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         <SidebarMenuItem>
                            <SidebarMenuButton asChild variant="ghost" tooltip={{content: "Cerrar Sesión", side: "right", align: "center"}}>
                                 <Link href="/login">
-                                    <LogOut className="size-5" />
-                                    <span>Cerrar Sesión</span>
+                                    <div className='flex items-center gap-3'>
+                                        <LogOut className="size-5 shrink-0" />
+                                        <span className="truncate">Cerrar Sesión</span>
+                                    </div>
                                 </Link>
                            </SidebarMenuButton>
                         </SidebarMenuItem>
