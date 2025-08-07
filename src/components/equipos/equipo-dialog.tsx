@@ -25,12 +25,12 @@ export function EquipoDialog({ isOpen, onClose, equipo }: EquipoDialogProps) {
               : "Complete el formulario para añadir un nuevo equipo al inventario."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="pr-2">
+        <div className="flex-grow overflow-y-auto pr-3 -mr-2 custom-scrollbar">
           <EquipoForm
               equipoToEdit={equipo}
               onFormSubmit={onClose}
           />
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

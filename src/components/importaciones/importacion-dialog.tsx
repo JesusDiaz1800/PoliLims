@@ -25,12 +25,12 @@ export function ImportacionDialog({ isOpen, onClose, importacion }: ImportacionD
               : "Complete el formulario para añadir un nuevo registro de importación."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="pr-6 -mr-6">
+        <div className="flex-grow overflow-y-auto pr-6 -mr-6 custom-scrollbar">
             <ImportacionForm
                 importacionToEdit={importacion}
                 onFormSubmit={onClose}
             />
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

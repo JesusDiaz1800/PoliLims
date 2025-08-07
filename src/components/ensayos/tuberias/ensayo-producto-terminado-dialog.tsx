@@ -38,13 +38,13 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo, u
             Complete los campos con los resultados obtenidos en el laboratorio para la muestra <span className="font-mono font-bold text-foreground">{ensayo.id}</span>.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[70vh] pr-6 -mr-2">
+        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-4 -mr-4">
           {tipo === 'HDPE' ? (
             <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} defaultTab={defaultTab} />
           ) : (
             <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} defaultTab={defaultTab}/>
           )}
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

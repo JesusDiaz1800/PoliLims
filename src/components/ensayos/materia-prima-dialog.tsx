@@ -34,14 +34,14 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, default
           </DialogDescription>
         </DialogHeader>
         <div className="flex-grow overflow-hidden">
-            <ScrollArea className="h-full px-6 pb-6">
+            <div className="h-full overflow-y-auto custom-scrollbar px-6 pb-6">
                 <MateriaPrimaForm
                     analistas={analistas}
                     ensayoToEdit={ensayo}
                     onFormSubmit={onClose}
                     defaultTab={defaultTab}
                 />
-            </ScrollArea>
+            </div>
         </div>
       </DialogContent>
     </Dialog>

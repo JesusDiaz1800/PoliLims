@@ -40,7 +40,7 @@ export function NoConformidadDialog({
               : "Complete el formulario para registrar una nueva incidencia o no conformidad."}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[70vh] p-1">
+        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar px-1">
             <NoConformidadForm
                 incidenciaToEdit={incidencia}
                 onFormSubmit={onClose}
@@ -48,7 +48,7 @@ export function NoConformidadDialog({
                 productosAfectados={productosAfectados}
                 equiposImplicados={equiposImplicados}
             />
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

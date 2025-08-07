@@ -78,7 +78,7 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
           </DialogDescription>
         </DialogHeader>
         <div className="flex-grow overflow-hidden">
-          <ScrollArea className="h-full pr-6">
+          <div className="h-full overflow-y-auto pr-6 custom-scrollbar">
             <ControlRutinarioForm
               inspectores={inspectores}
               maquinistas={maquinistas}
@@ -88,7 +88,7 @@ export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProdu
               matrizProductos={matrizProductos}
               onFormSubmit={onClose}
             />
-          </ScrollArea>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

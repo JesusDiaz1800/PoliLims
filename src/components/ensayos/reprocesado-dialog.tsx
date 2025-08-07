@@ -35,7 +35,7 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultT
           </DialogDescription>
         </DialogHeader>
         <div className="flex-grow overflow-hidden">
-           <ScrollArea className="h-full px-6 pb-6">
+           <div className="h-full overflow-y-auto custom-scrollbar px-6 pb-6">
               <ReprocesadoForm
                   analistas={analistas}
                   ensayoToEdit={ensayo}
@@ -43,7 +43,7 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultT
                   equipos={equipos}
                   defaultTab={defaultTab}
               />
-            </ScrollArea>
+            </div>
         </div>
       </DialogContent>
     </Dialog>
