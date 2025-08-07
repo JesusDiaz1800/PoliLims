@@ -264,7 +264,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center h-16 w-48 group-data-[state=collapsed]/sidebar-wrapper:w-10 group-data-[state=collapsed]/sidebar-wrapper:justify-center transition-[width] duration-300 ease-in-out">
+                    <div className="flex items-center h-16 w-48 group-data-[state=collapsed]/sidebar-wrapper:w-full group-data-[state=collapsed]/sidebar-wrapper:justify-center transition-[width] duration-300 ease-in-out">
                        <Logo />
                     </div>
                 </SidebarHeader>
