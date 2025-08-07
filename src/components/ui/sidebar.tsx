@@ -225,8 +225,7 @@ SidebarTrigger.displayName = "SidebarTrigger"
 const SidebarHeader = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
-  return (
+>(({ className, ...props }, ref) => (
     <div
       ref={ref}
       data-sidebar="header"
@@ -234,7 +233,7 @@ const SidebarHeader = React.forwardRef<
       {...props}
     />
   )
-})
+)
 SidebarHeader.displayName = "SidebarHeader"
 
 const SidebarContent = React.forwardRef<
