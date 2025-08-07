@@ -264,7 +264,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader className="h-16 flex items-center px-4 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:px-0">
-                    <div className="flex items-center w-48 group-data-[state=collapsed]/sidebar-wrapper:w-auto">
+                    <div className="flex items-center w-48 group-data-[state=collapsed]/sidebar-wrapper:w-auto group-data-[state=collapsed]/sidebar-wrapper:justify-center">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -343,7 +343,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-auto p-4 sm:p-6">
+                <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">
                     {children}
                 </main>
             </div>

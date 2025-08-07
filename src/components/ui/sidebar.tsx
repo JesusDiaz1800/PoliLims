@@ -246,7 +246,7 @@ const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-grow overflow-y-auto overflow-x-hidden p-2",
+        "flex-grow overflow-y-auto overflow-x-hidden p-2 custom-scrollbar",
         className
       )}
       {...props}
@@ -312,7 +312,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex items-center gap-3 overflow-hidden rounded-md text-left outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:gap-0 group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
+  "peer/menu-button flex items-center overflow-hidden rounded-md text-left outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-primary-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-primary-foreground/20 data-[state=open]:bg-primary-foreground/10 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:gap-0 group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&>span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden",
   {
     variants: {
       variant: {
@@ -320,9 +320,9 @@ const sidebarMenuButtonVariants = cva(
         ghost: "hover:bg-primary-foreground/10 data-[active=true]:bg-primary-foreground/10",
       },
       size: {
-        default: "h-10 px-2 text-sm font-medium",
-        sm: "h-9 px-2 text-sm",
-        lg: "h-12 px-2 text-base",
+        default: "h-10 px-2 text-sm font-medium gap-3",
+        sm: "h-9 px-2 text-sm gap-2",
+        lg: "h-12 px-2 text-base gap-4",
       },
     },
     defaultVariants: {
