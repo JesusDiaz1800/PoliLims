@@ -3,8 +3,8 @@
 
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { TuberiasHdpeForm } from "@/components/ensayos/tuberias-hdpe-form";
-import { TuberiasPpForm } from "@/components/ensayos/tuberias-pp-form";
+import { TuberiasHdpeForm } from "@/components/ensayos/tuberias/tuberias-hdpe-form";
+import { TuberiasPpForm } from "@/components/ensayos/tuberias/tuberias-pp-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import type { User } from "@/services/user-service";

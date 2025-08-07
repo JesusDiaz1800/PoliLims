@@ -87,7 +87,7 @@ const defaultFormValues = {
 };
 
 
-export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaultTab = 'melt_index' }: MateriaPrimaFormProps) {
+export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaultTab = 'all' }: MateriaPrimaFormProps) {
   const { toast } = useToast();
   const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -262,371 +262,373 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
-      {/* SECCIÓN GENERAL */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Información General de la Muestra</CardTitle>
-          <CardDescription>Datos principales de identificación y trazabilidad del material.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <FormField
-            control={control}
-            name="fecha_ingreso"
-            render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Ingreso</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !field.value && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
-                  </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                    locale={es}
-                  />
-                </PopoverContent>
-              </Popover>
-            </FormItem>
-            )}
-            />
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* SECCIÓN GENERAL */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Información General de la Muestra</CardTitle>
+            <CardDescription>Datos principales de identificación y trazabilidad del material.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <FormField
+              control={control}
+              name="fecha_ingreso"
+              render={({ field }) => (
+              <FormItem>
+                <FormLabel>Fecha de Ingreso</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
+                    </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                      locale={es}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+              )}
+              />
 
-          <FormField
-            control={control}
-            name="analista"
-            render={({ field }) => (
-            <FormItem>
-              <FormLabel>Analista</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                  <SelectTrigger id="analista">
-                      <SelectValue placeholder="Seleccione un analista" />
-                  </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                      {analistas.map(analista => (
-                        <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
-                      ))}
-                  </SelectContent>
-              </Select>
-            </FormItem>
-            )}
-            />
+            <FormField
+              control={control}
+              name="analista"
+              render={({ field }) => (
+              <FormItem>
+                <FormLabel>Analista</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                    <SelectTrigger id="analista">
+                        <SelectValue placeholder="Seleccione un analista" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {analistas.map(analista => (
+                          <SelectItem key={analista.value} value={analista.label}>{analista.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+              </FormItem>
+              )}
+              />
 
-          <div className="space-y-2">
-              <FormLabel htmlFor="tipo_material">Tipo de Material</FormLabel>
-              <Input id="tipo_material" placeholder="Ej: Polietileno de Alta Densidad" {...register("tipo_material")}/>
-          </div>
+            <div className="space-y-2">
+                <FormLabel htmlFor="tipo_material">Tipo de Material</FormLabel>
+                <Input id="tipo_material" placeholder="Ej: Polietileno de Alta Densidad" {...register("tipo_material")}/>
+            </div>
 
-          <div className="space-y-2">
-              <FormLabel htmlFor="proveedor">Proveedor</FormLabel>
-              <Input id="proveedor" placeholder="Nombre del proveedor" {...register("proveedor")}/>
-          </div>
+            <div className="space-y-2">
+                <FormLabel htmlFor="proveedor">Proveedor</FormLabel>
+                <Input id="proveedor" placeholder="Nombre del proveedor" {...register("proveedor")}/>
+            </div>
 
-          <div className="space-y-2">
-              <FormLabel htmlFor="producto">Producto</FormLabel>
-              <Input id="producto" placeholder="Nombre del producto" {...register("producto")} />
-          </div>
+            <div className="space-y-2">
+                <FormLabel htmlFor="producto">Producto</FormLabel>
+                <Input id="producto" placeholder="Nombre del producto" {...register("producto")} />
+            </div>
 
-          <div className="space-y-2">
-              <FormLabel htmlFor="orden_compra">Orden de Compra</FormLabel>
-              <Input id="orden_compra" placeholder="Número de orden de compra" {...register("orden_compra")}/>
-          </div>
+            <div className="space-y-2">
+                <FormLabel htmlFor="orden_compra">Orden de Compra</FormLabel>
+                <Input id="orden_compra" placeholder="Número de orden de compra" {...register("orden_compra")}/>
+            </div>
 
-          <div className="space-y-2">
-              <FormLabel htmlFor="lote">Lote</FormLabel>
-              <Input id="lote" placeholder="Número de lote" {...register("lote")} />
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* SECCIÓN DE ENSAYOS */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Resultados de Ensayos</CardTitle>
-          <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
-        </CardHeader>
-        <CardContent>
-           <Tabs defaultValue={currentDefaultTab} className="w-full">
-            <ScrollArea>
-              <TabsList className="flex w-max">
-                 {ensayoTabs.map(ensayo => (
-                    <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
-                 ))}
-              </TabsList>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+            <div className="space-y-2">
+                <FormLabel htmlFor="lote">Lote</FormLabel>
+                <Input id="lote" placeholder="Número de lote" {...register("lote")} />
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* SECCIÓN DE ENSAYOS */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Resultados de Ensayos</CardTitle>
+            <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue={currentDefaultTab} className="w-full">
+              <ScrollArea>
+                <TabsList className="flex w-max">
+                  {ensayoTabs.map(ensayo => (
+                      <TabsTrigger key={ensayo.value} value={ensayo.value}>{ensayo.label}</TabsTrigger>
+                  ))}
+                </TabsList>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
 
-              {/* Pestaña Melt Index */}
-              <TabsContent value="melt_index" className="mt-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                    <CardDescription>
-                      Fórmula: PROMEDIO(mediciones) * 2
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="space-y-4 p-4 border rounded-md">
-                      <FormLabel>Mediciones de extrusionado [g]</FormLabel>
-                      {fields.map((field, index) => (
-                        <div key={field.id} className="flex items-center gap-2">
-                          <Input
-                            {...register(`meltIndexMediciones.${index}.value` as const)}
-                            type="number"
-                            step="any"
-                            placeholder={`Medición #${index + 1}`}
-                            className="flex-1"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            onClick={() => remove(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => append({ value: '' })}
-                      >
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Añadir Medición
-                      </Button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</FormLabel>
-                        <Input id="melt_index_reportado" type="number" step="any" placeholder="Valor del proveedor" {...register("melt_index_reportado")} />
-                      </div>
-                       <div className="space-y-2">
-                         <FormLabel>Índice de fluidez ensayado [g/10min]</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {meltIndexCalculado.toFixed(4)}
-                         </div>
-                       </div>
-                       <div className="space-y-2">
-                         <FormLabel>Variación</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {meltIndexVariacion.toFixed(2)}%
-                         </div>
-                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Pestaña Densidad */}
-              <TabsContent value="densidad" className="mt-4">
-                 <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Densidad</CardTitle>
-                    <CardDescription>
-                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
-                      </div>
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
-                      </div>
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
-                      </div>
-                       <div className="space-y-2">
-                         <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {densidadCalculada.toFixed(4)}
-                         </div>
-                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              {/* Pestaña Negro de Humo */}
-              <TabsContent value="porcentaje_negro_humo" className="mt-4">
-                 <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
-                    <CardDescription>
-                      Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
-                      </div>
-                       <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
-                      </div>
-                       <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</FormLabel>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
-                      </div>
-                       <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</FormLabel>
-                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
-                      </div>
-                       <div className="space-y-2 md:col-start-1">
-                         <FormLabel>% Negro de Humo</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {negroHumoCalculado.toFixed(2)}%
-                         </div>
-                       </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="cenizas" className="mt-4">
-                 <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle>
-                    <CardDescription>
-                      Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
-                    </CardDescription>
-                  </CardHeader>
-                   <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                      <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
-                      </div>
-                       <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
-                      </div>
-                       <div className="space-y-2">
-                        <FormLabel htmlFor="nh_m3">m3: Cápsula procesada [g]</FormLabel>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
-                      </div>
-                       <div className="space-y-2 md:col-start-1">
-                         <FormLabel>% Cenizas</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {cenizasCalculado.toFixed(2)}%
-                         </div>
-                       </div>
-                       <div className="space-y-2">
-                         <FormLabel>% Cenizas Corregido</FormLabel>
-                         <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                            {cenizasCorregido.toFixed(2)}%
-                         </div>
-                       </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-               <TabsContent value="dsc" className="mt-4">
-                 <Card>
+                {/* Pestaña Melt Index */}
+                <TabsContent value="melt_index" className="mt-4">
+                  <Card>
                     <CardHeader>
-                        <CardTitle>Ensayo: Calorimetría Diferencial de Barrido (DSC)</CardTitle>
+                      <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
+                      <CardDescription>
+                        Fórmula: PROMEDIO(mediciones) * 2
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="space-y-4 p-4 border rounded-md">
+                        <FormLabel>Mediciones de extrusionado [g]</FormLabel>
+                        {fields.map((field, index) => (
+                          <div key={field.id} className="flex items-center gap-2">
+                            <Input
+                              {...register(`meltIndexMediciones.${index}.value` as const)}
+                              type="number"
+                              step="any"
+                              placeholder={`Medición #${index + 1}`}
+                              className="flex-1"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => remove(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => append({ value: '' })}
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Añadir Medición
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="melt_index_reportado">Índice de fluidez reportado [g/10min]</FormLabel>
+                          <Input id="melt_index_reportado" type="number" step="any" placeholder="Valor del proveedor" {...register("melt_index_reportado")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel>Índice de fluidez ensayado [g/10min]</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {meltIndexCalculado.toFixed(4)}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel>Variación</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {meltIndexVariacion.toFixed(2)}%
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
+                {/* Pestaña Densidad */}
+                <TabsContent value="densidad" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Ensayo: Densidad</CardTitle>
+                      <CardDescription>
+                        Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
+                          <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
+                          <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
+                          <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {densidadCalculada.toFixed(4)}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Pestaña Negro de Humo */}
+                <TabsContent value="porcentaje_negro_humo" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
+                      <CardDescription>
+                        Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
+                          <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
+                          <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m3">m3: Cápsula procesada (1) [g]</FormLabel>
+                          <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m4">m4: Cápsula procesada (2) [g]</FormLabel>
+                          <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
+                        </div>
+                        <div className="space-y-2 md:col-start-1">
+                          <FormLabel>% Negro de Humo</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {negroHumoCalculado.toFixed(2)}%
+                          </div>
+                        </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="cenizas" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Ensayo: Porcentaje de Cenizas</CardTitle>
+                      <CardDescription>
+                        Fórmula: %Cenizas = ((m3 - m1) / (m2 - m1)) * 100
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
+                          <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
+                          <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel htmlFor="nh_m3">m3: Cápsula procesada [g]</FormLabel>
+                          <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
+                        </div>
+                        <div className="space-y-2 md:col-start-1">
+                          <FormLabel>% Cenizas</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {cenizasCalculado.toFixed(2)}%
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <FormLabel>% Cenizas Corregido</FormLabel>
+                          <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                              {cenizasCorregido.toFixed(2)}%
+                          </div>
+                        </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="dsc" className="mt-4">
+                  <Card>
+                      <CardHeader>
+                          <CardTitle>Ensayo: Calorimetría Diferencial de Barrido (DSC)</CardTitle>
+                      </CardHeader>
+                      <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
+                              <Input id="dsc_temp_max" type="number" step="any" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
+                              <Input id="dsc_temp_inicio" type="number" step="any" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
+                              <Input id="dsc_temp_final" type="number" step="any" placeholder="Temp. final" {...register("dsc_temp_final")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
+                              <Input id="dsc_punto_fusion" type="number" step="any" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
+                              <Input id="dsc_punto_fusion_opcional" type="number" step="any" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
+                          </div>
+                      </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="tio" className="mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
                     </CardHeader>
                     <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="dsc_temp_max">Máxima temperatura configurada [°C]</FormLabel>
-                            <Input id="dsc_temp_max" type="number" step="any" placeholder="Temp. máxima" {...register("dsc_temp_max")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="dsc_temp_inicio">Temperatura inicio de fusión [°C]</FormLabel>
-                            <Input id="dsc_temp_inicio" type="number" step="any" placeholder="Temp. inicio" {...register("dsc_temp_inicio")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="dsc_temp_final">Temperatura final de fusión [°C]</FormLabel>
-                            <Input id="dsc_temp_final" type="number" step="any" placeholder="Temp. final" {...register("dsc_temp_final")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="dsc_punto_fusion">Punto de fusión [°C]</FormLabel>
-                            <Input id="dsc_punto_fusion" type="number" step="any" placeholder="Punto de fusión" {...register("dsc_punto_fusion")} />
-                        </div>
-                         <div className="space-y-2">
-                            <FormLabel htmlFor="dsc_punto_fusion_opcional">Punto de fusión (Opcional PPRCT) [°C]</FormLabel>
-                            <Input id="dsc_punto_fusion_opcional" type="number" step="any" placeholder="Punto de fusión opcional" {...register("dsc_punto_fusion_opcional")} />
-                        </div>
-                    </CardContent>
-                 </Card>
-              </TabsContent>
-              <TabsContent value="tio" className="mt-4">
-                 <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
-                  </CardHeader>
-                  <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
-                            <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
-                            <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
-                            <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
-                            <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
-                        </div>
-                        <div className="space-y-2">
-                            <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
-                            <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
-                        </div>
-                    </CardContent>
-                </Card>
-              </TabsContent>
-               <TabsContent value="humedad" className="mt-4">
-                 <Card>
-                  <CardHeader><CardTitle>Ensayo: Porcentaje de Humedad</CardTitle></CardHeader>
-                  <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
-                </Card>
-              </TabsContent>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
+                              <Input id="tio_gas" placeholder="Ej: Nitrógeno y Oxígeno" {...register("tio_gas")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="tio_flujo">Flujo de gas [L/min]</FormLabel>
+                              <Input id="tio_flujo" type="number" step="any" placeholder="Ej: 50" {...register("tio_flujo")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="tio_temperatura">Temperatura de ensayo [°C]</FormLabel>
+                              <Input id="tio_temperatura" type="number" step="any" placeholder="Ej: 200" {...register("tio_temperatura")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="tio_metodo">Método utilizado</FormLabel>
+                              <Input id="tio_metodo" placeholder="Ej: Tangente" {...register("tio_metodo")} />
+                          </div>
+                          <div className="space-y-2">
+                              <FormLabel htmlFor="tio_tiempo">Tiempo de inducción a la oxidación [min]</FormLabel>
+                              <Input id="tio_tiempo" type="number" step="any" placeholder="Ej: 45" {...register("tio_tiempo")} />
+                          </div>
+                      </CardContent>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="humedad" className="mt-4">
+                  <Card>
+                    <CardHeader><CardTitle>Ensayo: Porcentaje de Humedad</CardTitle></CardHeader>
+                    <CardContent className="text-center"><p className="text-muted-foreground p-8">Formulario próximamente.</p></CardContent>
+                  </Card>
+                </TabsContent>
 
-           </Tabs>
-        </CardContent>
-      </Card>
-      
-      {/* SECCIÓN DE OBSERVACIONES */}
-      <Card>
-        <CardHeader>
-            <CardTitle>Observaciones Generales</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <div className="space-y-2">
-                <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
-            </div>
-        </CardContent>
-      </Card>
+            </Tabs>
+          </CardContent>
+        </Card>
+        
+        {/* SECCIÓN DE OBSERVACIONES */}
+        <Card>
+          <CardHeader>
+              <CardTitle>Observaciones Generales</CardTitle>
+          </CardHeader>
+          <CardContent>
+              <div className="space-y-2">
+                  <Textarea id="observaciones" placeholder="Añada cualquier nota relevante sobre la muestra o los ensayos..." {...register("observaciones")} />
+              </div>
+          </CardContent>
+        </Card>
 
-      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
-        <Button type="submit">
-            {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
-            {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
-        </Button>
-      </CardFooter>
+        <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
+          <Button type="submit">
+              {isEditing ? <Save className="mr-2 h-4 w-4" /> : <FilePlus2 className="mr-2 h-4 w-4" />}
+              {isEditing ? 'Guardar Cambios' : 'Registrar Ensayo'}
+          </Button>
+        </CardFooter>
+      </form>
     </Form>
   )
 }
