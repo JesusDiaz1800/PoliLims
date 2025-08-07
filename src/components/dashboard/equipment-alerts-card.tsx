@@ -70,7 +70,7 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
 
   return (
     <>
-    <Card className="h-full">
+    <Card>
       <CardHeader>
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-6 w-6 text-destructive" />
