@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React from 'react';
@@ -7,7 +6,6 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
     Sidebar,
-    SidebarHeader,
     SidebarContent,
     SidebarMenu,
     SidebarMenuItem,
@@ -265,7 +263,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
-                        <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-0" />
+                        <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-0" />
                     </div>
                     {isInspectorView && (
                         <Alert className="m-2 border-primary/30 bg-primary/10">
