@@ -11,7 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
@@ -171,6 +171,7 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
           >
+            <SheetTitle className="sr-only">Menú de Navegación</SheetTitle>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
@@ -207,7 +208,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8", className)}
+      className={cn("h-8 w-8 md:flex", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -229,7 +230,7 @@ const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col p-3", className)}
+      className={cn("flex flex-col", className)}
       {...props}
     />
   )
@@ -245,7 +246,7 @@ const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-grow overflow-y-auto overflow-x-hidden p-2 group-data-[state=collapsed]/sidebar-wrapper:overflow-hidden custom-scrollbar",
+        "flex-grow overflow-y-auto overflow-x-hidden p-2 custom-scrollbar",
         className
       )}
       {...props}
@@ -337,6 +338,7 @@ const SidebarMenuButton = React.forwardRef<
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
+    hasSubmenu?: boolean
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
   (
@@ -347,6 +349,8 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      hasSubmenu = false,
+      children,
       ...props
     },
     ref
@@ -356,16 +360,24 @@ const SidebarMenuButton = React.forwardRef<
     
     const { content: tooltipContent, ...tooltipProps } = typeof tooltip === "object" ? tooltip : { content: tooltip };
 
+    const buttonContent = (
+      <>
+        {children}
+      </>
+    );
+
     const button = (
-      <Comp
-        ref={ref}
-        data-sidebar="menu-button"
-        data-size={size}
-        data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-        {...props}
-      />
-    )
+        <Comp
+          ref={ref}
+          data-sidebar="menu-button"
+          data-size={size}
+          data-active={isActive}
+          className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+          {...props}
+        >
+          {buttonContent}
+        </Comp>
+    );
 
     if (!tooltipContent) {
       return button
