@@ -326,7 +326,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </SidebarMenuItem>
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
-                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2 group-data-[state=collapsed]/sidebar-wrapper:px-0">
+                    <div className="flex items-center gap-3 px-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2 group-data-[state=collapsed]/sidebar-wrapper:px-0">
                         <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
