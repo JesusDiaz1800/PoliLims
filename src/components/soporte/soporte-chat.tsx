@@ -81,7 +81,7 @@ export function SoporteChat() {
 
     return (
         <div className="flex flex-col flex-grow bg-card h-full">
-            <ScrollArea className="flex-grow p-4 space-y-4" ref={scrollAreaRef}>
+            <ScrollArea className="flex-grow p-4 space-y-4 custom-scrollbar" ref={scrollAreaRef}>
                 {history.length === 0 ? (
                     <WelcomeMessage onPromptClick={handlePromptClick} />
                 ) : (
