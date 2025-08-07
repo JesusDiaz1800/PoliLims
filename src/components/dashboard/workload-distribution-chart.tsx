@@ -45,7 +45,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
       </CardHeader>
       <CardContent>
         {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 20 }}>
                 <XAxis 
                     dataKey="name" 
@@ -72,7 +72,7 @@ export function WorkloadDistributionChart({ data: allData }: WorkloadDistributio
             </BarChart>
           </ResponsiveContainer>
         ) : (
-           <div className="flex items-center justify-center h-[250px]">
+           <div className="flex items-center justify-center h-full">
              <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar con los filtros actuales.</p>
            </div>
         )}
