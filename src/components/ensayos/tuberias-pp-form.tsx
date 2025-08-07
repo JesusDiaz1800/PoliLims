@@ -52,6 +52,7 @@ interface TuberiasPpFormProps {
   onFormSubmit: () => void;
   equipos: Equipo[];
   user: User;
+  defaultTab?: string;
 }
 
 const defaultFormValues = {
@@ -80,7 +81,7 @@ const defaultFormValues = {
 };
 
 
-export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user }: TuberiasPpFormProps) {
+export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasPpFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -260,6 +261,8 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user 
         .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
   }
 
+  const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
+
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
       {/* SECCIÓN GENERAL */}
@@ -351,7 +354,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user 
           <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
-           <Tabs defaultValue="melt_index" className="w-full">
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
                  {ensayoTabs.map(ensayo => (

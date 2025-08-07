@@ -21,7 +21,7 @@ import type { User } from '@/services/user-service';
 interface ReprocesadoTableProps {
   ensayos: Ensayo[];
   onAddNew: () => void;
-  onEdit: (ensayo: Ensayo) => void;
+  onEdit: (ensayo: Ensayo, filterType: string) => void;
   onApprove: (ensayo: Ensayo) => void;
   user: User | null;
 }
@@ -105,7 +105,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }
                     <TableHead>Estado</TableHead>
                 </>
             );
-        case 'negro_humo':
+        case 'porcentaje_negro_humo':
              return (
                 <>
                     <TableHead>Fecha</TableHead>
@@ -174,7 +174,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }
                     <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                  </>
             );
-        case 'negro_humo':
+        case 'porcentaje_negro_humo':
             return (
                  <>
                     <TableCell>{ensayo.fecha}</TableCell>
@@ -287,7 +287,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                <DropdownMenuItem onSelect={() => onEdit(ensayo)}>
+                                <DropdownMenuItem onSelect={() => onEdit(ensayo, filterType)}>
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar / Ingresar Datos
                                 </DropdownMenuItem>

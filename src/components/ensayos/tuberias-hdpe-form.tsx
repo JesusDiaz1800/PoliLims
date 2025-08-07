@@ -53,6 +53,7 @@ interface TuberiasHdpeFormProps {
   onFormSubmit: () => void;
   equipos: Equipo[];
   user: User;
+  defaultTab?: string;
 }
 
 const defaultFormValues = {
@@ -89,7 +90,7 @@ const defaultFormValues = {
   comentarios_aprobacion: "",
 };
 
-export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, user }: TuberiasHdpeFormProps) {
+export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
   const { updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -213,10 +214,12 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
     { value: "melt_index", label: "Melt Index" },
     { value: "densidad", label: "Densidad" },
     { value: "traccion", label: "Tracción y Elongación" },
-    { value: "porcentaje_negro_humo", label: "% Negro de Humo" },
-    { value: "dispersion_negro_humo", label: "Dispersión Negro de Humo" },
+    { value: "negro_humo", label: "% Negro de Humo" },
+    { value: "dispersion_nh", label: "Dispersión Negro de Humo" },
     { value: "tio", label: "TIO" },
   ];
+
+  const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
   
   const getEquiposPorEnsayo = (ensayoId: string) => {
       return equipos
@@ -315,7 +318,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
           <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
-           <Tabs defaultValue="melt_index" className="w-full">
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
                  {ensayoTabs.map(ensayo => (
@@ -471,7 +474,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
               </TabsContent>
               
               {/* Pestaña Negro de Humo */}
-              <TabsContent value="porcentaje_negro_humo" className="mt-4">
+              <TabsContent value="negro_humo" className="mt-4">
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
@@ -515,7 +518,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
               </TabsContent>
 
               {/* Pestaña Dispersion Negro de Humo */}
-              <TabsContent value="dispersion_negro_humo" className="mt-4">
+              <TabsContent value="dispersion_nh" className="mt-4">
                  <Card>
                   <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
                   <CardContent className="space-y-6">

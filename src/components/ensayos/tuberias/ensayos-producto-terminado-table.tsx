@@ -17,7 +17,7 @@ import type { User } from '@/services/user-service';
 interface EnsayosProductoTerminadoTableProps {
   ensayos: Ensayo[];
   tipoEnsayo: 'HDPE' | 'PP';
-  onOpenDialog: (ensayo: Ensayo) => void;
+  onOpenDialog: (ensayo: Ensayo, filterType: string) => void;
   onApprove: (ensayo: Ensayo) => void;
   user: User | null;
 }
@@ -287,7 +287,7 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuItem onSelect={() => onOpenDialog(ensayo)}>
+                          <DropdownMenuItem onSelect={() => onOpenDialog(ensayo, filterType)}>
                               <Edit className="mr-2 h-4 w-4" />
                               Editar / Ingresar Datos
                           </DropdownMenuItem>

@@ -50,6 +50,7 @@ interface MateriaPrimaFormProps {
   analistas: Option[];
   ensayoToEdit: Ensayo | null;
   onFormSubmit: () => void;
+  defaultTab?: string;
 }
 
 // Define the shape of the form's default values
@@ -86,7 +87,7 @@ const defaultFormValues = {
 };
 
 
-export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: MateriaPrimaFormProps) {
+export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaultTab = 'melt_index' }: MateriaPrimaFormProps) {
   const { toast } = useToast();
   const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -251,12 +252,14 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
   const ensayoTabs = [
     { value: "melt_index", label: "Melt Index" },
     { value: "densidad", label: "Densidad" },
-    { value: "porcentaje_negro_humo", label: "Porcentaje de Negro de Humo" },
+    { value: "porcentaje_negro_humo", label: "% Negro de Humo" },
     { value: "cenizas", label: "Porcentaje de Cenizas" },
     { value: "dsc", label: "DSC" },
-    { value: "tio", label: "Tiempo de Inducción a la Oxidación (TIO)" },
+    { value: "tio", label: "TIO" },
     { value: "humedad", label: "Porcentaje de Humedad" },
   ];
+
+  const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
@@ -358,7 +361,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit }: Mate
           <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
-           <Tabs defaultValue="melt_index" className="w-full">
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
                  {ensayoTabs.map(ensayo => (

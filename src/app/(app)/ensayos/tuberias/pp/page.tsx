@@ -19,6 +19,7 @@ export default function TuberiasPpPage() {
   const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = React.useState('all');
 
   React.useEffect(() => {
     const username = searchParams.get('user') || 'jdiaz';
@@ -29,8 +30,9 @@ export default function TuberiasPpPage() {
     loadUser();
   }, [searchParams]);
 
-  const handleOpenFormDialog = (ensayo: Ensayo) => {
+  const handleOpenFormDialog = (ensayo: Ensayo, filterType: string = 'all') => {
     setSelectedEnsayo(ensayo);
+    setActiveTab(filterType);
     setIsFormDialogOpen(true);
   };
 
@@ -71,6 +73,7 @@ export default function TuberiasPpPage() {
           ensayo={selectedEnsayo}
           tipo="PP"
           user={user}
+          defaultTab={activeTab}
         />
       )}
        {selectedEnsayo && user && (

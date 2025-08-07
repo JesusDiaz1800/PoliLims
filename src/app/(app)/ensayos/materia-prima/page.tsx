@@ -19,6 +19,7 @@ export default function MateriaPrimaPage() {
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = React.useState('all');
 
   React.useEffect(() => {
     const username = searchParams.get('user') || 'jdiaz';
@@ -29,8 +30,9 @@ export default function MateriaPrimaPage() {
     loadUser();
   }, [searchParams]);
 
-  const handleOpenFormDialog = (ensayo?: Ensayo) => {
+  const handleOpenFormDialog = (ensayo?: Ensayo, filterType: string = 'all') => {
     setSelectedEnsayo(ensayo || null);
+    setActiveTab(filterType);
     setIsFormDialogOpen(true);
   };
 
@@ -77,6 +79,7 @@ export default function MateriaPrimaPage() {
         onClose={handleCloseFormDialog}
         ensayo={selectedEnsayo}
         analistas={analistas}
+        defaultTab={activeTab}
       />
        {selectedEnsayo && user && (
         <ApprovalDialog

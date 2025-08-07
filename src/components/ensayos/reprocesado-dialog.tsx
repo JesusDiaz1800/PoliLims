@@ -18,9 +18,10 @@ interface ReprocesadoDialogProps {
   onClose: () => void;
   ensayo: Ensayo | null;
   analistas: Option[];
+  defaultTab?: string;
 }
 
-export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: ReprocesadoDialogProps) {
+export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultTab = 'all' }: ReprocesadoDialogProps) {
   const { equipos } = useDynamicData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -40,6 +41,7 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas }: Reproc
                   ensayoToEdit={ensayo}
                   onFormSubmit={onClose}
                   equipos={equipos}
+                  defaultTab={defaultTab}
               />
             </ScrollArea>
         </div>

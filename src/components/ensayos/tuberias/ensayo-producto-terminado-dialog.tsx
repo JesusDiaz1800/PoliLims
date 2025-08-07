@@ -15,9 +15,10 @@ interface EnsayoProductoTerminadoDialogProps {
   ensayo: Ensayo;
   tipo: "HDPE" | "PP";
   user: User;
+  defaultTab?: string;
 }
 
-export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo, user }: EnsayoProductoTerminadoDialogProps) {
+export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo, user, defaultTab = 'all' }: EnsayoProductoTerminadoDialogProps) {
   const { equipos } = useDynamicData();
 
   const analistas = [
@@ -39,9 +40,9 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo, u
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-6 -mr-2">
           {tipo === 'HDPE' ? (
-            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} />
+            <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} defaultTab={defaultTab} />
           ) : (
-            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user}/>
+            <TuberiasPpForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} defaultTab={defaultTab}/>
           )}
         </ScrollArea>
       </DialogContent>

@@ -51,6 +51,7 @@ interface ReprocesadoFormProps {
   ensayoToEdit: Ensayo | null;
   onFormSubmit: () => void;
   equipos: Equipo[];
+  defaultTab?: string;
 }
 
 const defaultFormValues = {
@@ -77,7 +78,7 @@ const defaultFormValues = {
   comentarios_aprobacion: "",
 };
 
-export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos }: ReprocesadoFormProps) {
+export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos, defaultTab = 'all' }: ReprocesadoFormProps) {
   const { toast } = useToast();
   const { addEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
 
@@ -245,8 +246,10 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
     { value: "densidad", label: "Densidad" },
     { value: "porcentaje_negro_humo", label: "Porcentaje de Negro de Humo" },
     { value: "cenizas", label: "Porcentaje de Cenizas" },
-    { value: "tio", label: "Tiempo de Inducción a la Oxidación (TIO)" },
+    { value: "tio", label: "TIO" },
   ];
+
+  const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
@@ -333,7 +336,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
           <CardDescription>Seleccione el ensayo y registre los resultados obtenidos en el laboratorio.</CardDescription>
         </CardHeader>
         <CardContent>
-           <Tabs defaultValue="melt_index" className="w-full">
+           <Tabs defaultValue={currentDefaultTab} className="w-full">
             <ScrollArea>
               <TabsList className="flex w-max">
                  {ensayoTabs.map(ensayo => (
