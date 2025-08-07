@@ -264,7 +264,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-background">
             <Sidebar>
                 <SidebarHeader>
-                    <div className="flex items-center h-16 w-48 group-data-[state=collapsed]/sidebar-wrapper:w-full group-data-[state=collapsed]/sidebar-wrapper:justify-center transition-[width] duration-300 ease-in-out">
+                    <div className="flex items-center h-16 w-48">
                        <Logo />
                     </div>
                 </SidebarHeader>
@@ -322,7 +322,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </SidebarMenuItem>
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
-                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2">
+                    <div className="flex items-center gap-3 p-2 group-data-[state=collapsed]/sidebar-wrapper:p-0 group-data-[state=collapsed]/sidebar-wrapper:py-2">
                         <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
@@ -343,7 +343,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">
+                <main className="flex-1 overflow-auto p-4 sm:p-6">
                     {children}
                 </main>
             </div>
