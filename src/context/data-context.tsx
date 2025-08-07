@@ -7,7 +7,6 @@ import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
 
-
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
   productMatrix: TipoProducto[];
@@ -132,6 +131,43 @@ export interface Importacion {
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
+// --- API Client ---
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+
+const apiClient = {
+  get: async <T>(endpoint: string): Promise<T> => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`);
+    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+    return response.json();
+  },
+  post: async <T, U>(endpoint: string, body: U): Promise<T> => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+    return response.json();
+  },
+  put: async <T, U>(endpoint: string, body: U): Promise<T> => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+    return response.json();
+  },
+  delete: async <T>(endpoint: string): Promise<T> => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+    return response.json();
+  },
+};
+
+
 interface DynamicDataContextType {
   ensayos: Ensayo[];
   registros: Registro[];
@@ -187,22 +223,45 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     const loadAllData = async () => {
       setIsLoading(true);
       try {
-        const [matrix, products, initialData] = await Promise.all([
-            getMatrizProductos(),
-            getProductsFromSap(),
-            dataService.getInitialData()
-        ]);
-        
-        setProductMatrix(matrix);
-        setSapProducts(products);
-
-        setEnsayos(initialData.ensayos);
-        setRegistros(initialData.registros);
-        setRecentActivity(initialData.recentActivity);
-        setEquipos(initialData.equipos);
-        setControles(initialData.controles);
-        setNoConformidades(initialData.noConformidades);
-        setImportaciones(initialData.importaciones);
+        if (API_BASE_URL) {
+           console.log(`Connecting to backend at: ${API_BASE_URL}`);
+           const [matrix, products, apiEnsayos, apiRegistros, apiActivity, apiEquipos, apiControles, apiNoConformidades, apiImportaciones] = await Promise.all([
+             getMatrizProductos(),
+             getProductsFromSap(),
+             apiClient.get<Ensayo[]>('/ensayos/'),
+             apiClient.get<Registro[]>('/registros/'),
+             apiClient.get<RecentActivity[]>('/activity/'),
+             apiClient.get<Equipo[]>('/equipos/'),
+             apiClient.get<ControlEvento[]>('/controles/'),
+             apiClient.get<NoConformidad[]>('/no-conformidades/'),
+             apiClient.get<Importacion[]>('/importaciones/'),
+           ]);
+           setEnsayos(apiEnsayos);
+           setRegistros(apiRegistros);
+           setRecentActivity(apiActivity);
+           setEquipos(apiEquipos);
+           setControles(apiControles);
+           setNoConformidades(apiNoConformidades);
+           setImportaciones(apiImportaciones);
+           setProductMatrix(matrix);
+           setSapProducts(products);
+        } else {
+            console.log("Using local demo data. Set NEXT_PUBLIC_API_URL to connect to a backend.");
+            const [matrix, products, initialData] = await Promise.all([
+                getMatrizProductos(),
+                getProductsFromSap(),
+                dataService.getInitialData()
+            ]);
+            setProductMatrix(matrix);
+            setSapProducts(products);
+            setEnsayos(initialData.ensayos);
+            setRegistros(initialData.registros);
+            setRecentActivity(initialData.recentActivity);
+            setEquipos(initialData.equipos);
+            setControles(initialData.controles);
+            setNoConformidades(initialData.noConformidades);
+            setImportaciones(initialData.importaciones);
+        }
         
       } catch (error) {
         console.error("Failed to load initial data", error);
@@ -214,102 +273,91 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   }, []);
 
   const addEnsayo = useCallback(async (ensayoData: Omit<Ensayo, 'id'>) => {
-    const newId = `LAB-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    const newEnsayo = { ...ensayoData, id: newId };
+    const newEnsayo = await apiClient.post<Ensayo, Omit<Ensayo, 'id'>>('/ensayos/', ensayoData);
     setEnsayos(prev => [newEnsayo, ...prev]);
-    console.log("Demo Mode: Added Ensayo", newEnsayo);
     return newEnsayo;
   }, []);
 
   const updateEnsayo = useCallback(async (id: string, updatedEnsayoData: Partial<Ensayo>) => {
+    await apiClient.put(`/ensayos/${id}/`, updatedEnsayoData);
     setEnsayos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEnsayoData } : e));
-    console.log("Demo Mode: Updated Ensayo", id, updatedEnsayoData);
   }, []);
 
   const deleteEnsayo = useCallback(async (id: string) => {
+    await apiClient.delete(`/ensayos/${id}/`);
     setEnsayos(prev => prev.filter(e => e.id !== id));
-    console.log("Demo Mode: Deleted Ensayo", id);
   }, []);
 
   const addRegistro = useCallback(async (registroData: Omit<Registro, 'id'>) => {
-    const newId = `CTRL-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    const newRegistro = { ...registroData, id: newId };
+    const newRegistro = await apiClient.post<Registro, Omit<Registro, 'id'>>('/registros/', registroData);
     setRegistros(prev => [newRegistro, ...prev]);
-    console.log("Demo Mode: Added Registro", newRegistro);
     return newRegistro;
   }, []);
 
   const deleteRegistro = useCallback(async (registroId: string) => {
+    await apiClient.delete(`/registros/${registroId}/`);
     setRegistros(prev => prev.filter(r => r.id !== registroId));
-    console.log("Demo Mode: Deleted Registro", registroId);
   }, []);
   
   const addEquipo = useCallback(async (equipoData: Omit<Equipo, 'id'>) => {
-    const newEquipo = { ...equipoData, id: equipoData.id };
+    const newEquipo = await apiClient.post<Equipo,  Omit<Equipo, 'id'>>('/equipos/', equipoData);
     setEquipos(prev => [newEquipo, ...prev].sort((a, b) => a.nombre.localeCompare(b.nombre)));
-    console.log("Demo Mode: Added Equipo", newEquipo);
     return newEquipo;
   }, []);
 
   const updateEquipo = useCallback(async (id: string, updatedEquipoData: Partial<Equipo>) => {
+      await apiClient.put(`/equipos/${id}/`, updatedEquipoData);
       setEquipos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEquipoData } : e).sort((a, b) => a.nombre.localeCompare(b.nombre)));
-      console.log("Demo Mode: Updated Equipo", id, updatedEquipoData);
   }, []);
   
   const deleteEquipo = useCallback(async (id: string) => {
+      await apiClient.delete(`/equipos/${id}/`);
       setEquipos(prev => prev.filter(e => e.id !== id));
-      console.log("Demo Mode: Deleted Equipo", id);
   }, []);
 
   const addControlEvento = useCallback(async (eventoData: Omit<ControlEvento, 'id'>) => {
-    const newId = `CE-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    const newEvento = { ...eventoData, id: newId };
+    const newEvento = await apiClient.post<ControlEvento, Omit<ControlEvento, 'id'>>('/controles/', eventoData);
     setControles(prev => [newEvento, ...prev]);
-    console.log("Demo Mode: Added Control Evento", newEvento);
     return newEvento;
   }, []);
 
   const addIncidencia = useCallback(async (incidenciaData: Omit<NoConformidad, 'id'>) => {
-    const newId = `NC-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    const newIncidencia = { ...incidenciaData, id: newId };
+    const newIncidencia = await apiClient.post<NoConformidad, Omit<NoConformidad, 'id'>>('/no-conformidades/', incidenciaData);
     setNoConformidades(prev => [newIncidencia, ...prev]);
-    console.log("Demo Mode: Added Incidencia", newIncidencia);
     return newIncidencia;
   }, []);
 
   const updateIncidencia = useCallback(async (id: string, updatedIncidenciaData: Partial<NoConformidad>) => {
+      await apiClient.put(`/no-conformidades/${id}/`, updatedIncidenciaData);
       setNoConformidades(prev => prev.map(nc => nc.id === id ? { ...nc, ...updatedIncidenciaData } : nc));
-      console.log("Demo Mode: Updated Incidencia", id, updatedIncidenciaData);
   }, []);
 
   const deleteIncidencia = useCallback(async (id: string) => {
+      await apiClient.delete(`/no-conformidades/${id}/`);
       setNoConformidades(prev => prev.filter(nc => nc.id !== id));
-      console.log("Demo Mode: Deleted Incidencia", id);
   }, []);
 
   const addImportacion = useCallback(async (importacionData: Omit<Importacion, 'id'>) => {
-    const newId = `IMP-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-    const newImportacion = { ...importacionData, id: newId };
+    const newImportacion = await apiClient.post<Importacion, Omit<Importacion, 'id'>>('/importaciones/', importacionData);
     setImportaciones(prev => [newImportacion, ...prev]);
     return newImportacion;
   }, []);
 
   const updateImportacion = useCallback(async (id: string, updatedImportacionData: Partial<Importacion>) => {
+      await apiClient.put(`/importaciones/${id}/`, updatedImportacionData);
       setImportaciones(prev => prev.map(imp => imp.id === id ? { ...imp, ...updatedImportacionData } : imp));
   }, []);
 
   const deleteImportacion = useCallback(async (id: string) => {
+      await apiClient.delete(`/importaciones/${id}/`);
       setImportaciones(prev => prev.filter(imp => imp.id !== id));
   }, []);
 
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
-     const newActivity = {
-        ...activity,
-        id: `ACT-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-        timestamp: new Date().toISOString()
-    };
-    setRecentActivity(prev => [newActivity, ...prev]);
-    console.log("Demo Mode: Added Activity", newActivity);
+     await apiClient.post('/activity/', activity);
+     // Note: In a real app, the backend should return the full activity object
+     const fullActivity = { ...activity, id: `ACT-${Date.now()}`, timestamp: new Date().toISOString() };
+     setRecentActivity(prev => [fullActivity, ...prev].slice(0, 10)); // Keep the list tidy
   }, []);
 
   const dynamicContextValue = useMemo(() => ({
