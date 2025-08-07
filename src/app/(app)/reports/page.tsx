@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -86,7 +87,7 @@ export default function ReportsPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={handleGenerateReport} className="w-full sm:w-auto">
+            <Button onClick={handleGenerateReport} className="w-full sm:w-auto" variant="primary">
               <Search className="mr-2 h-4 w-4" />
               Generar Vista Previa
             </Button>
