@@ -19,7 +19,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-28">
+        <div className="w-24">
             <LogoAlt />
         </div>
     </div>
@@ -158,18 +158,18 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
         `}</style>
       <div className="report-container">
         <ReportHeader />
-        <h1 className="text-2xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
+        <h1 className="text-2xl font-bold text-center my-4 font-headline uppercase">Informe de Resultados - {data.tipo}</h1>
 
         <div className="grid grid-cols-2 gap-x-12 mt-4 text-sm">
             <div>
-                <SectionTitle title="Trazabilidad del Producto" className="report-section-title"/>
+                <SectionTitle title="Trazabilidad del Producto"/>
                 <DetailRow label="PRODUCTO" value={<span className="font-bold">{data.producto || '---'}</span>} />
                 <DetailRow label="LOTE" value={<span className="font-mono font-bold">{data.lote || '---'}</span>} />
                 <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
                 <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
             </div>
             <div>
-                <SectionTitle title="Información del Ensayo" className="report-section-title"/>
+                <SectionTitle title="Información del Ensayo"/>
                 <DetailRow label="Fecha de Emisión" value={fechaEmision} />
                 <DetailRow label="Fecha de Muestra" value={data.fecha_ingreso || '---'} />
                 <DetailRow label="Fecha de Análisis" value={data.fecha || '---'} />
@@ -178,7 +178,7 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
             </div>
         </div>
         
-        <SectionTitle title="Resultados de Ensayos" className="report-section-title"/>
+        <SectionTitle title="Resultados de Ensayos"/>
         <div className="border rounded-lg overflow-hidden results-table">
             <ResultsTable results={results} />
             <div className={cn("flex justify-between font-bold text-lg p-4 bg-muted final-verdict", data.estado === 'Aprobado' ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30")}>
