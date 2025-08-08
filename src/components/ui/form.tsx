@@ -23,10 +23,38 @@ interface FormProps<TFieldValues extends FieldValues> extends Omit<React.Compone
 
 const Form = <TFieldValues extends FieldValues>({ form, onSubmit, children, className, ...props }: FormProps<TFieldValues>) => {
   
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === 'Enter') {
+      const target = event.target as HTMLElement;
+      
+      // Don't interfere with textareas or buttons
+      if (target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON') {
+        return;
+      }
+      
+      const form = event.currentTarget;
+      const focusable = Array.from(
+        form.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter(
+        (el) => !el.hasAttribute('disabled') && !el.hasAttribute('data-disabled')
+      );
+
+      const index = focusable.indexOf(target);
+      
+      if (index > -1 && index < focusable.length - 1) {
+        event.preventDefault();
+        focusable[index + 1].focus();
+      }
+    }
+  };
+
   return (
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        onKeyDown={handleKeyDown}
         className={cn("space-y-6", className)}
         {...props}
       >
