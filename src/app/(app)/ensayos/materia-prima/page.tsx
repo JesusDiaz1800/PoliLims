@@ -6,7 +6,6 @@ import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
-import { ApprovalDialog } from '@/components/ensayos/approval-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
@@ -39,12 +38,15 @@ export default function MateriaPrimaPage() {
     setSelectedEnsayo(null);
     setIsFormDialogOpen(false);
   };
+  
+  const materiaPrimaEnsayos = React.useMemo(() => 
+    ensayos.filter(e => e.tipo === 'Materia Prima'), 
+  [ensayos]);
+
 
   if (isLoading || !user) {
     return <Loading />;
   }
-
-  const materiaPrimaEnsayos = ensayos.filter(e => e.tipo === 'Materia Prima');
   
   const analistas = [
       { value: "jesus.diaz", label: "Jesus Diaz" },

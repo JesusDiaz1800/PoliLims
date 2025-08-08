@@ -35,6 +35,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format } from "date-fns";
+import { parseISO } from "date-fns";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
@@ -181,16 +182,21 @@ export default function SeguimientoEnsayosPage() {
     loadUser();
   }, [searchParams]);
 
-  const ensayoTypes = ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))];
+  const ensayoTypes = React.useMemo(() => 
+    ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
+  [ensayos]);
 
-  const filteredEnsayos = ensayos
-    .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
-    .filter(ensayo => 
-      ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+  const filteredEnsayos = React.useMemo(() =>
+    ensayos
+      .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
+      .filter(ensayo =>
+        ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (ensayo.producto && ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (ensayo.analista && ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+      .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime()),
+  [ensayos, filterType, searchTerm]);
   
   const handleRedirectToRegister = () => {
     router.push('/ensayos/control-rutinario');

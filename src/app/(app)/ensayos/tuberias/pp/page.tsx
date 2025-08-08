@@ -6,7 +6,6 @@ import { EnsayosProductoTerminadoTable } from '@/components/ensayos/tuberias/ens
 import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { EnsayoProductoTerminadoDialog } from '@/components/ensayos/tuberias/ensayo-producto-terminado-dialog';
-import { ApprovalDialog } from '@/components/ensayos/approval-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
@@ -40,11 +39,13 @@ export default function TuberiasPpPage() {
     setIsFormDialogOpen(false);
   };
 
+  const ppEnsayos = React.useMemo(() =>
+    ensayos.filter(e => e.tipo === 'Tubería PP'),
+  [ensayos]);
+
   if (isLoading || !user) {
     return <Loading />;
   }
-
-  const ppEnsayos = ensayos.filter(e => e.tipo === 'Tubería PP');
 
   return (
     <div className="space-y-6">

@@ -6,7 +6,6 @@ import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { ReprocesadoTable } from '@/components/ensayos/reprocesado-table';
 import { ReprocesadoDialog } from '@/components/ensayos/reprocesado-dialog';
-import { ApprovalDialog } from '@/components/ensayos/approval-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
@@ -40,12 +39,13 @@ export default function ReprocesadoPage() {
     setIsFormDialogOpen(false);
   };
   
+  const reprocesadoEnsayos = React.useMemo(() => 
+    ensayos.filter(e => e.tipo === 'Reprocesado'),
+  [ensayos]);
 
   if (isLoading || !user) {
     return <Loading />;
   }
-
-  const reprocesadoEnsayos = ensayos.filter(e => e.tipo === 'Reprocesado');
   
   const analistas = [
       { value: "jesus.diaz", label: "Jesus Diaz" },
