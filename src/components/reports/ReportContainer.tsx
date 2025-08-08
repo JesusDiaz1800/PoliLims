@@ -17,7 +17,7 @@ export const ReportContainer = ({ reportData }: ReportContainerProps) => {
     return <CoAReport data={reportData.ensayos[0]} />;
   }
   
-  const reportTitle = `Informe de Resumen - ${filterType}`;
+  const reportTitle = `Informe de Resultados - ${filterType}`;
   return (
     <SummaryReport
       reportData={reportData}
