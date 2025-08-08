@@ -83,29 +83,37 @@ export default function GeneradorInformesPage() {
 
   const handlePrint = () => {
     const printContents = document.getElementById("printable-report")?.innerHTML;
-    if (printContents) {
-      const originalContents = document.body.innerHTML;
-      const styles = Array.from(document.styleSheets)
-        .map(styleSheet => {
-            try {
-                return Array.from(styleSheet.cssRules)
-                    .map(rule => rule.cssText)
-                    .join('');
-            } catch (e) {
-                console.warn('Could not read stylesheet rules', e);
-                return '';
-            }
-        }).join('\n');
+    if (!printContents || !state.reportData) return;
 
-      const printWindow = window.open('', '', 'height=800,width=800');
-      printWindow?.document.write('<html><head><title>Imprimir Informe</title>');
-      printWindow?.document.write('<style>');
-      printWindow?.document.write(styles);
-      printWindow?.document.write('</style></head><body>');
-      printWindow?.document.write(printContents);
-      printWindow?.document.write('</body></html>');
-      printWindow?.document.close();
-      printWindow?.print();
+    const reportTitle = `Informe de Resultados: ${state.reportData.producto} - Lote(s) ${state.reportData.lotes.join(', ')}`;
+    
+    // Create a new window to print
+    const printWindow = window.open('', '_blank', 'height=800,width=800');
+    
+    if (printWindow) {
+        printWindow.document.write('<html><head>');
+        printWindow.document.write(`<title>${reportTitle}</title>`);
+
+        // Copy styles from the main document to the print window
+        Array.from(document.styleSheets).forEach(styleSheet => {
+            try {
+                const cssRules = styleSheet.cssRules ? Array.from(styleSheet.cssRules).map(rule => rule.cssText).join('') : '';
+                if (cssRules) {
+                    const style = printWindow.document.createElement('style');
+                    style.appendChild(document.createTextNode(cssRules));
+                    printWindow.document.head.appendChild(style);
+                }
+            } catch (e) {
+                console.warn("Could not read stylesheet rules", e);
+            }
+        });
+        
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
     }
   }
 
