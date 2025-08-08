@@ -30,6 +30,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
 import { findUserByUsername } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
@@ -50,6 +51,105 @@ function getStatusLabel(status: string): string {
   }
   return status;
 }
+
+const formatValue = (value: any, decimals: number = 2) => {
+    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
+    return Number(value).toFixed(decimals);
+};
+
+const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditClick: (ensayo: Ensayo) => void, handleOpenApprovalDialog: (ensayo: Ensayo) => void, canApprove: boolean) => {
+  
+  const renderActions = (ensayo: Ensayo) => (
+      <TableCell className="text-right">
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+              <Button aria-haspopup="true" size="icon" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Toggle menu</span>
+              </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleEditClick(ensayo)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Editar / Ingresar Datos
+              </DropdownMenuItem>
+              {canApprove && (
+                  <DropdownMenuItem onSelect={() => handleOpenApprovalDialog(ensayo)}>
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Aprobar / Revisar
+                  </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
+          </DropdownMenuContent>
+          </DropdownMenu>
+      </TableCell>
+  );
+
+  let headers, renderRow;
+
+  switch (filterType) {
+    case 'Materia Prima':
+      headers = (<>
+        <TableHead>Producto</TableHead><TableHead>Lote</TableHead><TableHead>Fecha</TableHead><TableHead>Analista</TableHead><TableHead>Estado</TableHead><TableHead className="text-right">M.I. Ensayado</TableHead><TableHead className="text-right">% Var. MI</TableHead><TableHead className="text-right">Densidad</TableHead><TableHead className="text-right">% Negro Humo</TableHead><TableHead className="text-right">Punto Fusión</TableHead><TableHead className="text-right">TIO [min]</TableHead>
+      </>);
+      renderRow = (ensayo: Ensayo) => (<>
+        <TableCell className="font-medium">{ensayo.producto}</TableCell><TableCell>{ensayo.lote}</TableCell><TableCell>{ensayo.fecha}</TableCell><TableCell>{ensayo.analista}</TableCell><TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.dsc_punto_fusion, 2)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)}</TableCell>
+      </>);
+      break;
+    case 'Reprocesado':
+        headers = (<>
+            <TableHead>Lote</TableHead><TableHead>Fecha</TableHead><TableHead>Analista</TableHead><TableHead>Estado</TableHead><TableHead className="text-right">M.I. Ensayado</TableHead><TableHead className="text-right">% Var. MI</TableHead><TableHead className="text-right">Densidad</TableHead><TableHead className="text-right">% Negro Humo</TableHead><TableHead className="text-right">TIO [min]</TableHead>
+        </>);
+        renderRow = (ensayo: Ensayo) => (<>
+            <TableCell className="font-medium">{ensayo.lote}</TableCell><TableCell>{ensayo.fecha}</TableCell><TableCell>{ensayo.analista}</TableCell><TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)}</TableCell>
+        </>);
+        break;
+    case 'Tubería HDPE':
+        headers = (<>
+            <TableHead>Producto</TableHead><TableHead>Lote</TableHead><TableHead>Estado</TableHead><TableHead className="text-right">M.I. Ensayado</TableHead><TableHead className="text-right">% Var. MI</TableHead><TableHead className="text-right">Densidad</TableHead><TableHead className="text-right">% NH</TableHead><TableHead className="text-right">Dispersión NH</TableHead><TableHead className="text-right">Res. Tracción</TableHead><TableHead className="text-right">Elong. Rotura</TableHead><TableHead className="text-right">TIO</TableHead>
+        </>);
+         renderRow = (ensayo: Ensayo) => (<>
+            <TableCell className="font-medium">{ensayo.producto}</TableCell><TableCell>{ensayo.lote}</TableCell><TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell><TableCell className="text-right">{ensayo.dispersion_nh || 'N/A'}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.resistencia_traccion, 2)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.elongacion_rotura, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)}</TableCell>
+        </>);
+        break;
+    case 'Tubería PP':
+        headers = (<>
+             <TableHead>Producto</TableHead><TableHead>Lote</TableHead><TableHead>Estado</TableHead><TableHead className="text-right">M.I. Ensayado</TableHead><TableHead className="text-right">% Var. MI</TableHead><TableHead className="text-right">Densidad</TableHead><TableHead className="text-right">% FV Total</TableHead><TableHead className="text-right">% FV Capa Intermedia</TableHead>
+        </>);
+        renderRow = (ensayo: Ensayo) => (<>
+            <TableCell className="font-medium">{ensayo.producto}</TableCell><TableCell>{ensayo.lote}</TableCell><TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.fvTotalPorcentaje, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.fvIntermediaPorcentaje, 2)}%</TableCell>
+        </>);
+        break;
+    default: // ALL
+        headers = (<>
+            <TableHead>Producto / ID</TableHead><TableHead>Lote</TableHead><TableHead>Analista</TableHead><TableHead className="text-right">Melt Index</TableHead><TableHead className="text-right">% Var. MI</TableHead><TableHead className="text-right">Densidad</TableHead><TableHead className="text-right">% Negro Humo</TableHead><TableHead className="text-center">Estado</TableHead>
+        </>);
+        renderRow = (ensayo: Ensayo) => (<>
+            <TableCell><div className="flex flex-col"><span className="font-medium">{ensayo.producto}</span><span className="text-xs text-muted-foreground font-mono">{ensayo.id}</span></div></TableCell><TableCell>{ensayo.lote || 'N/A'}</TableCell><TableCell>{ensayo.analista}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell><TableCell className="text-center"><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{getStatusLabel(ensayo.estado)}</Badge></TableCell>
+        </>);
+        break;
+  }
+  
+  return (
+    <ScrollArea>
+        <Table>
+            <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
+            <TableBody>
+                {ensayos.map((ensayo) => (
+                    <TableRow key={ensayo.id}>
+                        {renderRow(ensayo)}
+                        {renderActions(ensayo)}
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+        <ScrollBar orientation="horizontal" />
+    </ScrollArea>
+  )
+};
+
 
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
@@ -121,11 +221,6 @@ export default function SeguimientoEnsayosPage() {
     setIsApprovalDialogOpen(false);
   }
 
-  const formatValue = (value: any, decimals: number = 2) => {
-    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
-    return Number(value).toFixed(decimals);
-  }
-
   return (
     <>
     <Card>
@@ -164,71 +259,9 @@ export default function SeguimientoEnsayosPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Producto / ID</TableHead>
-              <TableHead>Lote</TableHead>
-              <TableHead>Analista</TableHead>
-              <TableHead className="text-right">Melt Index</TableHead>
-              <TableHead className="text-right">% Var. MI</TableHead>
-              <TableHead className="text-right">Densidad</TableHead>
-              <TableHead className="text-right">% Negro Humo</TableHead>
-              <TableHead className="text-center">Estado</TableHead>
-              <TableHead><span className="sr-only">Acciones</span></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredEnsayos.map((ensayo) => (
-                <TableRow key={ensayo.id}>
-                    <TableCell>
-                        <div className="flex flex-col">
-                            <span className="font-medium">{ensayo.producto}</span>
-                            <span className="text-xs text-muted-foreground font-mono">{ensayo.id}</span>
-                        </div>
-                    </TableCell>
-                    <TableCell>{ensayo.lote || 'N/A'}</TableCell>
-                    <TableCell>{ensayo.analista}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
-                    <TableCell className="text-center">
-                        <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
-                            {getStatusLabel(ensayo.estado)}
-                        </Badge>
-                    </TableCell>
-                    <TableCell>
-                        <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem>Ver Detalles</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleEditClick(ensayo)}>
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Editar / Ingresar Datos
-                            </DropdownMenuItem>
-                            {canApprove && (
-                                <DropdownMenuItem onSelect={() => handleOpenApprovalDialog(ensayo)}>
-                                    <ShieldCheck className="mr-2 h-4 w-4" />
-                                    Aprobar / Revisar
-                                </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
-                        </DropdownMenuContent>
-                        </DropdownMenu>
-                    </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-         {filteredEnsayos.length === 0 && (
+         {filteredEnsayos.length > 0 ? (
+           renderDynamicTable(filteredEnsayos, filterType, handleEditClick, handleOpenApprovalDialog, canApprove || false)
+         ) : (
             <div className="text-center py-16 text-muted-foreground">
                 <Search className="mx-auto h-12 w-12 mb-4" />
                 <h3 className="text-xl font-semibold">No se encontraron resultados</h3>
