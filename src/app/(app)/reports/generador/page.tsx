@@ -80,6 +80,7 @@ export default function GeneradorInformesPage() {
         const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
         const cc = "afigueroa@polifusion.cl; cmunizaga@polifusion.cl; vlutz@polifusion.cl; mgallardo@polifusion.cl; ccalidad4@polifusion.cl; rcruz@polifusion.cl";
         const body = state.emailBody;
+        // Encode the body for the mailto link to handle special characters and line breaks
         const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(state.emailSubject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     }
@@ -89,17 +90,16 @@ export default function GeneradorInformesPage() {
     const printContent = document.getElementById("printable-report");
     if (!printContent) return;
 
-    const printWindow = window.open('', '_blank', 'height=800,width=800');
+    const printWindow = window.open('', '', 'height=800,width=800');
     if (!printWindow) {
       alert("Por favor, habilite las ventanas emergentes para imprimir el informe.");
       return;
     }
+    
+    const allStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
 
     printWindow.document.write('<html><head><title>Informe de Resultados</title>');
-
-    // Copiar todos los estilos de la página principal a la ventana de impresión
-    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
-    styles.forEach(style => {
+    allStyles.forEach(style => {
       printWindow.document.head.appendChild(style.cloneNode(true));
     });
 
@@ -107,12 +107,12 @@ export default function GeneradorInformesPage() {
     printWindow.document.write(printContent.innerHTML);
     printWindow.document.write('</body></html>');
     
-    // Esperar a que el contenido y los estilos se carguen completamente
     printWindow.document.close();
     printWindow.focus();
+
     setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
+      printWindow.print();
+      printWindow.close();
     }, 250);
   };
 

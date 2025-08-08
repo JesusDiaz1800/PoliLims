@@ -5,9 +5,7 @@ import { z } from "zod";
 import type { Ensayo, GeneratedReport } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
 import { format } from "date-fns";
-import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
-import { generateEmailContent, type EmailContentInput } from "@/ai/flows/email-report-flow";
-
+import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export interface ReportData {
   lotes: string[];
@@ -36,6 +34,69 @@ type FormState = {
   error?: string | null;
   emailError?: string | null;
 };
+
+// --- Mapeos para los nombres de parámetros y unidades ---
+const parameterNameMapping: { [key: string]: string } = {
+  meltIndexCalculado: 'Melt Index',
+  densidadCalculada: 'Densidad',
+  dsc_punto_fusion: 'DSC',
+  negroHumoCalculado: '% Negro de Humo',
+  tio_tiempo: 'TIO',
+  cenizasCalculado: '% de Cenizas',
+  fvTotalPorcentaje: '% de Fibra de Vidrio (Total)',
+  fvIntermediaPorcentaje: '% de Fibra de Vidrio (Capa Intermedia)',
+  meltIndexVariacion: '% Var. MI'
+};
+
+const unitMapping: { [key: string]: string } = {
+  meltIndexCalculado: 'g/10min',
+  densidadCalculada: 'g/cm³',
+  dsc_punto_fusion: '°C',
+  negroHumoCalculado: '%',
+  tio_tiempo: 'min',
+  cenizasCalculado: '%',
+  fvTotalPorcentaje: '%',
+  fvIntermediaPorcentaje: '%',
+  meltIndexVariacion: '%'
+};
+
+// --- Función para generar correo desde una plantilla de texto plano ---
+function generateEmailFromTemplate(data: ReportData) {
+    const lotesStr = data.lotes.join(', ');
+    
+    const resultsText = Object.entries(data.promedios)
+        .map(([key, value]) => {
+            const name = parameterNameMapping[key] || key;
+            const unit = unitMapping[key] || '';
+            const formattedValue = parseFloat(value).toFixed(2);
+            // Solo incluir resultados que tienen un nombre legible y un valor numérico válido
+            if (name && !isNaN(parseFloat(formattedValue))) {
+                return `- ${name}: ${formattedValue} ${unit}`;
+            }
+            return null;
+        })
+        .filter(Boolean) // Eliminar entradas nulas
+        .join('\n');
+
+    const subject = `Informe de Resultados: ${data.filterType} - Lote(s): ${lotesStr}`;
+
+    const body = `Estimados,
+
+Junto con saludar, se adjuntan los resultados de laboratorio correspondientes a ${data.filterType.toUpperCase()} de ${data.producto}, para el/los lote(s): ${lotesStr}.
+
+A continuación, el resumen de los resultados promedio:
+${resultsText}
+
+Sin otro particular, se despide atentamente,
+
+Maximiliano Miranda Valdés
+Ing. Analista de Control de Calidad
+Polifusión S.A.
+`;
+
+    return { subject, body };
+}
+
 
 function calculateAverages(ensayos: Ensayo[]) {
   const result: { [key: string]: { sum: number; count: number } } = {};
@@ -126,35 +187,16 @@ export async function generateReportAction(
   
   const savedReport = await dataService.addGeneratedReport(newReport);
   
-  const emailInput: EmailContentInput = {
-    reportType: reportData.filterType,
-    material: reportData.material,
-    product: reportData.producto,
-    lots: reportData.lotes,
-    averageResults: Object.entries(reportData.promedios)
-      .map(([key, value]) => ({ parameter: key, value: String(value) }))
-  };
-
-  try {
-    const { subject, body } = await generateEmailContent(emailInput);
+  // Generar correo usando la plantilla local
+  const { subject, body } = generateEmailFromTemplate(reportData);
     
-    return {
-        reportData,
-        emailBody: body,
-        emailSubject: subject,
-        newReportId: savedReport.id,
-        error: null,
-        emailError: null,
-    };
-  } catch (err: any) {
-    console.error("AI Email Generation Error:", err);
-     return {
+  return {
       reportData,
-      emailBody: null,
-      emailSubject: null,
+      emailBody: body,
+      emailSubject: subject,
       newReportId: savedReport.id,
       error: null,
-      emailError: "No se pudo generar el borrador del correo debido a que se ha excedido la cuota de la API. Puede imprimir el informe y reintentar la generación del correo más tarde.",
-    };
-  }
+      emailError: null,
+  };
 }
+
