@@ -18,7 +18,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-28">
+        <div className="w-24">
             <LogoAlt />
         </div>
     </div>
