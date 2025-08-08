@@ -7,7 +7,7 @@ import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Printer, Mail, Loader2, AlertTriangle, FileText } from 'lucide-react';
-import { useActionState } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
 import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
 import { generateMateriaPrimaReportAction } from './actions';
@@ -17,27 +17,11 @@ import { useToast } from '@/hooks/use-toast';
 const initialState = { message: '', data: null, error: null };
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
-  const [isPending, setIsPending] = React.useState(false);
-
-  // This is a bit of a hack to get the pending state from the form
-  React.useEffect(() => {
-    const form = document.querySelector('form');
-    if (form) {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.attributeName === 'data-pending') {
-            setIsPending(form.hasAttribute('data-pending'));
-          }
-        });
-      });
-      observer.observe(form, { attributes: true });
-      return () => observer.disconnect();
-    }
-  }, []);
+  const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={disabled || isPending}>
-      {isPending ? (
+    <Button type="submit" disabled={disabled || pending}>
+      {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           Generando...
@@ -55,7 +39,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function MateriaPrimaBatchReportPage() {
   const { ensayos, isLoading } = useDynamicData();
-  const [state, formAction] = useActionState(generateMateriaPrimaReportAction, initialState);
+  const [state, formAction] = useFormState(generateMateriaPrimaReportAction, initialState);
   const { toast } = useToast();
   
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState(new Set<string>());
@@ -139,7 +123,7 @@ export default function MateriaPrimaBatchReportPage() {
                 <CardHeader>
                     <CardTitle>Informe Generado</CardTitle>
                     <CardDescription>
-                        A continuación se muestra el informe de resumen. Puede imprimirlo o generar un correo electrónico.
+                        A continuación se muestra el informe de resumen. Puede imprimirlo o generar un borrador de correo electrónico.
                     </CardDescription>
                 </CardHeader>
                 <CardContent id="printable-report">

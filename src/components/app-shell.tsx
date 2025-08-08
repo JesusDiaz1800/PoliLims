@@ -104,6 +104,11 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
+const reportesSubMenu = [
+    { href: '/reports/materia-prima', label: 'Materia Prima', icon: TestTube },
+];
+
+
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
 
@@ -188,6 +193,7 @@ const pageTitles: Record<string, string> = {
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
+    '/reports/materia-prima': 'Informe de Materia Prima',
 };
 
 const menuItems = (toggleChat: () => void) => [
@@ -212,6 +218,12 @@ const menuItems = (toggleChat: () => void) => [
         href: '/operaciones'
     },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
+    { 
+        label: 'Informes', 
+        icon: FileText,
+        subMenu: reportesSubMenu,
+        href: '/reports',
+    },
     { 
         label: 'Biblioteca', 
         icon: Library,
