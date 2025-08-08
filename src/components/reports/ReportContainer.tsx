@@ -9,12 +9,12 @@ interface ReportContainerProps {
 }
 
 export const ReportContainer = ({ reportData }: ReportContainerProps) => {
-  const { filterType } = reportData;
+  const { filterType, ensayos, fechaGeneracion } = reportData;
 
-  const isSingleProductReport = (filterType === 'Tubería HDPE' || filterType === 'Tubería PP') && reportData.ensayos.length === 1;
+  const isSingleProductReport = (filterType === 'Tubería HDPE' || filterType === 'Tubería PP') && ensayos.length === 1;
 
   if (isSingleProductReport) {
-    return <CoAReport data={reportData.ensayos[0]} />;
+    return <CoAReport data={ensayos[0]} fechaEmision={fechaGeneracion} />;
   }
   
   const reportTitle = `Informe de Resultados - ${filterType}`;

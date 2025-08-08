@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 
 interface CoAReportProps {
   data: Ensayo & { productoInfo?: any };
+  fechaEmision: string;
 }
 
 const ReportHeader = () => (
@@ -18,7 +19,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-28">
+        <div className="w-32">
             <LogoAlt />
         </div>
     </div>
@@ -29,7 +30,7 @@ const SectionTitle = ({ title }: { title: string }) => (
 );
 
 const DetailRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
-    <div className="flex justify-between py-1 border-b border-dotted">
+    <div className="flex justify-between py-1 border-b border-dotted detail-row">
         <span className="font-semibold text-muted-foreground">{label}:</span>
         <span className="text-right">{value || '---'}</span>
     </div>
@@ -80,7 +81,7 @@ const ResultsTable = ({ results }: { results: ResultRow[] }) => (
 );
 
 
-export const CoAReport = ({ data }: CoAReportProps) => {
+export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
 
   const results: ResultRow[] = [];
 
@@ -106,49 +107,49 @@ export const CoAReport = ({ data }: CoAReportProps) => {
   return (
     <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
-            @media print {
+           @media print {
                 body, html {
-                    margin: 0;
-                    padding: 0;
+                    margin: 0 !important;
+                    padding: 0 !important;
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
                 }
-                @page {
-                    size: A4;
-                    margin: 10mm;
-                }
                 .report-container {
-                    width: 100%;
-                    border: none;
-                    box-shadow: none;
-                    margin: 0;
-                    padding: 0;
+                    width: 100% !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
                     page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 0.8rem !important;
-                    margin-bottom: 0.4rem !important;
-                    padding-bottom: 0.2rem !important;
+                    margin-top: 0.5rem !important;
+                    margin-bottom: 0.25rem !important;
+                    padding-bottom: 0.1rem !important;
                 }
                 .results-table {
-                    margin-top: 0.8rem !important;
+                    margin-top: 0.5rem !important;
                     page-break-inside: avoid;
                 }
                 .final-verdict {
-                    padding: 0.5rem !important;
+                    padding: 0.25rem !important;
                 }
                  .signature-section {
-                    margin-top: 1.5rem !important;
-                    padding-top: 0.8rem !important;
+                    margin-top: 1rem !important;
+                    padding-top: 0.5rem !important;
                     page-break-before: auto;
                     page-break-inside: avoid;
                 }
-                h1 {
-                    margin-top: 0.8rem !important;
-                    margin-bottom: 0.8rem !important;
+                 h1 {
+                    margin-top: 0.5rem !important;
+                    margin-bottom: 0.5rem !important;
                 }
-                td, th {
-                    padding: 2px 6px !important;
+                 td, th {
+                    padding: 1px 4px !important;
+                }
+                .detail-row {
+                    padding-top: 1px !important;
+                    padding-bottom: 1px !important;
                 }
             }
         `}</style>
@@ -158,16 +159,19 @@ export const CoAReport = ({ data }: CoAReportProps) => {
 
         <div className="grid grid-cols-2 gap-x-12 mt-4 text-sm">
             <div>
-                <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
-                <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
-                <DetailRow label="Inspector de Línea" value={data.inspector || '---'} />
-                <DetailRow label="Analista de Laboratorio" value={data.analista || '---'} />
-            </div>
-            <div>
+                <SectionTitle title="Trazabilidad del Producto" className="report-section-title"/>
                 <DetailRow label="PRODUCTO" value={<span className="font-bold">{data.producto || '---'}</span>} />
                 <DetailRow label="LOTE" value={<span className="font-mono font-bold">{data.lote || '---'}</span>} />
-                <DetailRow label="FECHA MUESTRA" value={data.fecha_ingreso || data.fecha || '---'} />
-                <DetailRow label="FECHA ANÁLISIS" value={data.fecha || '---'} />
+                <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
+                <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
+            </div>
+            <div>
+                <SectionTitle title="Información del Ensayo" className="report-section-title"/>
+                <DetailRow label="Fecha de Emisión" value={fechaEmision} />
+                <DetailRow label="Fecha de Muestra" value={data.fecha_ingreso || '---'} />
+                <DetailRow label="Fecha de Análisis" value={data.fecha || '---'} />
+                <DetailRow label="Inspector de Línea" value={data.inspector || '---'} />
+                <DetailRow label="Analista de Laboratorio" value={data.analista || '---'} />
             </div>
         </div>
         

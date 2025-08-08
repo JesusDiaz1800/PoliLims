@@ -18,7 +18,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-28">
+        <div className="w-32">
             <LogoAlt />
         </div>
     </div>
@@ -29,7 +29,7 @@ const SectionTitle = ({ title, className }: { title: string, className?: string 
 );
 
 const DetailRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
-    <div className="flex justify-between py-1.5 px-2 rounded-md transition-colors hover:bg-muted/50">
+    <div className="flex justify-between py-1.5 px-2 rounded-md transition-colors hover:bg-muted/50 detail-row">
         <span className="font-semibold text-muted-foreground">{label}:</span>
         <span className="text-right font-medium">{value || '---'}</span>
     </div>
@@ -58,49 +58,46 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
         <style>{`
            @media print {
                 body, html {
-                    margin: 0;
-                    padding: 0;
+                    margin: 0 !important;
+                    padding: 0 !important;
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
                 }
-                @page {
-                    size: A4;
-                    margin: 10mm;
-                }
                 .report-container {
-                    width: 100%;
-                    border: none;
-                    box-shadow: none;
-                    margin: 0;
-                    padding: 0;
+                    width: 100% !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
                     page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 0.8rem !important;
-                    margin-bottom: 0.4rem !important;
-                    padding-bottom: 0.2rem !important;
+                    margin-top: 0.5rem !important;
+                    margin-bottom: 0.25rem !important;
+                    padding-bottom: 0.1rem !important;
                 }
                  .signature-section {
-                    margin-top: 1.5rem !important;
-                    padding-top: 0.8rem !important;
+                    margin-top: 1rem !important;
+                    padding-top: 0.5rem !important;
                     page-break-before: auto;
                     page-break-inside: avoid;
                 }
                  h1 {
-                    margin-top: 0.8rem !important;
-                    margin-bottom: 0.8rem !important;
+                    margin-top: 0.5rem !important;
+                    margin-bottom: 0.5rem !important;
                 }
                  td, th {
-                    padding: 2px 6px !important;
+                    padding: 1px 4px !important;
                 }
                 .results-grid {
-                    gap: 0.4rem !important;
+                    gap: 0.25rem !important;
                 }
                 .results-card {
-                    padding: 0.4rem !important;
+                    padding: 0.25rem !important;
                 }
                 .detail-row {
-                    padding: 2px !important;
+                    padding-top: 1px !important;
+                    padding-bottom: 1px !important;
                 }
             }
         `}</style>
@@ -108,19 +105,14 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             <ReportHeader />
             <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">{title}</h1>
 
-            <div className="grid grid-cols-2 gap-x-12 mt-6">
-                <div>
-                <SectionTitle title="Datos Generales del Informe" className="report-section-title" />
+            <div>
+                <SectionTitle title="Información General" className="report-section-title" />
+                <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
                 <DetailRow label="Material" value={material} />
                 <DetailRow label="Producto" value={producto} />
                 <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
-                </div>
-                <div>
-                <SectionTitle title="Información de Trazabilidad" className="report-section-title"/>
-                <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
                 <DetailRow label="Generado por" value={inspector} />
                 <DetailRow label="Corroborado por" value={corroborador} />
-                </div>
             </div>
 
             <SectionTitle title="Resultados Promedio de Laboratorio" className="report-section-title"/>
