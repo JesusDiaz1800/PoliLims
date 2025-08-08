@@ -1,0 +1,139 @@
+
+"use server";
+
+import { z } from "zod";
+import { generateEmailContent } from "@/ai/flows/email-report-flow";
+import type { Ensayo } from "@/context/data-context";
+import * as dataService from "@/services/data-service";
+
+export interface ReportData {
+  lotes: string[];
+  material: string;
+  producto: string;
+  fechaGeneracion: string;
+  inspector: string;
+  corroborador: string;
+  ensayos: Ensayo[];
+  promedios: {
+    meltIndex: number;
+    densidad: number;
+    dsc: number;
+    negroHumo: number;
+    tio: number;
+    cenizas: number;
+  };
+}
+
+const formSchema = z.object({
+  selectedIds: z.string().transform((str) => JSON.parse(str)),
+  filterType: z.string(),
+});
+
+type FormState = {
+  reportData: ReportData | null;
+  emailBody: string | null;
+  emailSubject: string | null;
+  error?: string | null;
+};
+
+function calculateAverages(ensayos: Ensayo[]) {
+  const result = {
+    meltIndex: 0,
+    densidad: 0,
+    dsc: 0,
+    negroHumo: 0,
+    tio: 0,
+    cenizas: 0,
+  };
+  let count = 0;
+
+  for (const ensayo of ensayos) {
+    if (ensayo.meltIndexCalculado) result.meltIndex += Number(ensayo.meltIndexCalculado);
+    if (ensayo.densidadCalculada) result.densidad += Number(ensayo.densidadCalculada);
+    if (ensayo.dsc_punto_fusion) result.dsc += Number(ensayo.dsc_punto_fusion);
+    if (ensayo.negroHumoCalculado) result.negroHumo += Number(ensayo.negroHumoCalculado);
+    if (ensayo.tio_tiempo) result.tio += Number(ensayo.tio_tiempo);
+    if (ensayo.cenizasCalculado) result.cenizas += Number(ensayo.cenizasCalculado);
+    count++;
+  }
+
+  if (count > 0) {
+    result.meltIndex /= count;
+    result.densidad /= count;
+    result.dsc /= count;
+    result.negroHumo /= count;
+    result.tio /= count;
+    result.cenizas /= count;
+  }
+
+  return result;
+}
+
+export async function generateMateriaPrimaReportAction(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const parsed = formSchema.safeParse({
+    selectedIds: formData.get("selectedIds"),
+    filterType: formData.get("filterType"),
+  });
+
+  if (!parsed.success) {
+    return { ...prevState, error: "Invalid form data." };
+  }
+  
+  const { selectedIds } = parsed.data;
+
+  if (!selectedIds || selectedIds.length === 0) {
+      return { ...prevState, error: "Debe seleccionar al menos un ensayo para generar el informe." };
+  }
+  
+  const { ensayos } = await dataService.getInitialData();
+  const selectedEnsayos = ensayos.filter(e => selectedIds.includes(e.id));
+  
+  if(selectedEnsayos.length === 0) {
+      return { ...prevState, error: "No se encontraron los ensayos seleccionados." };
+  }
+
+  const firstEnsayo = selectedEnsayos[0];
+  const promedios = calculateAverages(selectedEnsayos);
+  
+  const reportData: ReportData = {
+      lotes: selectedEnsayos.map(e => e.lote || 'N/A'),
+      material: firstEnsayo.tipo_material || firstEnsayo.tipo,
+      producto: firstEnsayo.producto,
+      fechaGeneracion: new Date().toLocaleDateString('es-ES'),
+      inspector: firstEnsayo.analista || 'N/A',
+      corroborador: "Maximiliano Miranda Valdés",
+      ensayos: selectedEnsayos,
+      promedios,
+  };
+
+  try {
+      const emailInput = {
+        Material: reportData.material,
+        Producto: reportData.producto,
+        Lotes: reportData.lotes.join(', '),
+        Averages: {
+          melt_index: promedios.meltIndex.toFixed(3),
+          densidad: promedios.densidad.toFixed(3),
+          dsc: promedios.dsc.toFixed(2),
+          negro_humo: promedios.negroHumo.toFixed(2),
+          tio: promedios.tio.toFixed(2),
+          cenizas: promedios.cenizas.toFixed(2),
+        }
+    };
+    const emailResult = await generateEmailContent(emailInput);
+
+    return {
+        reportData,
+        emailBody: emailResult.htmlBody,
+        emailSubject: emailResult.subject,
+        error: null,
+    }
+
+  } catch(error) {
+      console.error("Error generating email:", error);
+      return { ...prevState, error: "Error al generar el correo. El informe se ha creado, pero no se pudo preparar el email."}
+  }
+}
