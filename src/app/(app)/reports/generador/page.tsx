@@ -172,7 +172,7 @@ export default function GeneradorInformesPage() {
                     <div className="flex gap-2">
                          <Button onClick={handleOpenEmail} variant="outline">
                             <Mail className="mr-2 h-4 w-4" />
-                            Abrir Borrador de Correo
+                            Enviar por Correo
                         </Button>
                         <Button onClick={handlePrint}>
                             <FileText className="mr-2 h-4 w-4" />
