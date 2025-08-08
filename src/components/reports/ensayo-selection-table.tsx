@@ -7,13 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '../ui/scroll-area';
 
-interface MateriaPrimaSelectionTableProps {
+interface EnsayoSelectionTableProps {
   ensayos: Ensayo[];
   selectedIds: Set<string>;
   onSelectionChange: (ids: Set<string>) => void;
 }
 
-export function MateriaPrimaSelectionTable({ ensayos, selectedIds, onSelectionChange }: MateriaPrimaSelectionTableProps) {
+export function EnsayoSelectionTable({ ensayos, selectedIds, onSelectionChange }: EnsayoSelectionTableProps) {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       onSelectionChange(new Set(ensayos.map(e => e.id)));

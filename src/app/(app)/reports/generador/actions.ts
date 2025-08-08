@@ -4,7 +4,7 @@
 import { z } from "zod";
 import type { Ensayo, GeneratedReport } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
 export interface ReportData {
@@ -18,21 +18,35 @@ export interface ReportData {
   promedios: {
     [key: string]: any;
   };
+  estadisticas?: {
+      [key: string]: {
+          promedio: number;
+          min: number;
+          max: number;
+          desvEst: number;
+      };
+  };
+  tendencias?: {
+    [key: string]: {
+      fecha: string;
+      valor: number;
+    }[]
+  };
   filterType: string;
 }
 
-const formSchema = z.object({
+const reportFormSchema = z.object({
   selectedIds: z.string().transform((str) => JSON.parse(str)),
   filterType: z.string(),
 });
 
+const certificateFormSchema = z.object({
+  producto: z.string().nonempty("Debe seleccionar un producto."),
+});
+
 type FormState = {
   reportData: ReportData | null;
-  emailBody: string | null;
-  emailSubject: string | null;
-  newReportId?: string;
   error?: string | null;
-  emailError?: string | null;
 };
 
 // --- Mapeos para los nombres de parámetros y unidades ---
@@ -59,43 +73,6 @@ const unitMapping: { [key: string]: string } = {
   fvIntermediaPorcentaje: '%',
   meltIndexVariacion: '%'
 };
-
-// --- Función para generar correo desde una plantilla de texto plano ---
-function generateEmailFromTemplate(data: ReportData) {
-    const lotesStr = data.lotes.join(', ');
-    
-    const resultsText = Object.entries(data.promedios)
-        .map(([key, value]) => {
-            const name = parameterNameMapping[key] || key;
-            const unit = unitMapping[key] || '';
-            const formattedValue = parseFloat(value).toFixed(2);
-            // Solo incluir resultados que tienen un nombre legible y un valor numérico válido
-            if (name && !isNaN(parseFloat(formattedValue))) {
-                return `- ${name}: ${formattedValue} ${unit}`;
-            }
-            return null;
-        })
-        .filter(Boolean) // Eliminar entradas nulas
-        .join('\n');
-
-    const subject = `Informe de Resultados: ${data.filterType} - Lote(s): ${lotesStr}`;
-
-    const body = `Estimados,
-
-Junto con saludar, se adjuntan los resultados de laboratorio correspondientes a ${data.filterType.toUpperCase()} de ${data.producto}, para el/los lote(s): ${lotesStr}.
-
-A continuación, el resumen de los resultados promedio:
-${resultsText}
-
-Sin otro particular, se despide atentamente,
-
-Maximiliano Miranda Valdés
-Ing. Analista de Control de Calidad
-Polifusión S.A.
-`;
-
-    return { subject, body };
-}
 
 
 function calculateAverages(ensayos: Ensayo[]) {
@@ -124,38 +101,34 @@ function calculateAverages(ensayos: Ensayo[]) {
   return averages;
 }
 
-
+// --- Report Generation for Multiple Lots ---
 export async function generateReportAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const parsed = formSchema.safeParse({
+  const parsed = reportFormSchema.safeParse({
     selectedIds: formData.get("selectedIds"),
     filterType: formData.get("filterType"),
   });
 
   if (!parsed.success) {
-    return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Datos de formulario inválidos." };
+    return { reportData: null, error: "Datos de formulario inválidos." };
   }
   
   const { selectedIds, filterType } = parsed.data;
 
   if (!selectedIds || selectedIds.length === 0) {
-      return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Debe seleccionar al menos un ensayo para generar el informe." };
+      return { reportData: null, error: "Debe seleccionar al menos un ensayo para generar el informe." };
   }
   
   const { ensayos } = await dataService.getInitialData();
-  const matriz = await getMatrizProductos();
 
   const selectedEnsayos = ensayos
     .filter(e => selectedIds.includes(e.id))
-    .map(e => ({
-        ...e,
-        productoInfo: matriz.find(p => p.producto === e.producto)
-    }));
+    .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime());
 
   if(selectedEnsayos.length === 0) {
-      return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "No se encontraron los ensayos seleccionados." };
+      return { reportData: null, error: "No se encontraron los ensayos seleccionados." };
   }
 
   const firstEnsayo = selectedEnsayos[0];
@@ -172,31 +145,84 @@ export async function generateReportAction(
       promedios,
       filterType,
   };
-  
-  const lotesString = reportData.lotes.length > 2 
-    ? `${reportData.lotes[0]} al ${reportData.lotes[reportData.lotes.length - 1]}` 
-    : reportData.lotes.join(', ');
-
-  const newReport: Omit<GeneratedReport, 'id'> = {
-      nombre: `${format(new Date(), 'yyyy-MM-dd')} - ${reportData.producto} - ${lotesString}.pdf`,
-      tipo: filterType,
-      fecha_creacion: format(new Date(), 'dd-MM-yyyy'),
-      ensayoIds: selectedIds,
-      path: `/informes/${filterType.toLowerCase().replace(/\s+/g, '-')}/${format(new Date(), 'yyyy-MM-dd')}-${reportData.producto}-${lotesString}.pdf`
-  }
-  
-  const savedReport = await dataService.addGeneratedReport(newReport);
-  
-  // Generar correo usando la plantilla local
-  const { subject, body } = generateEmailFromTemplate(reportData);
     
   return {
       reportData,
-      emailBody: body,
-      emailSubject: subject,
-      newReportId: savedReport.id,
       error: null,
-      emailError: null,
   };
 }
 
+// --- Certificate Generation for a Single Product ---
+function calculateStats(data: number[]) {
+    if (data.length === 0) return { promedio: 0, min: 0, max: 0, desvEst: 0 };
+    const sum = data.reduce((a, b) => a + b, 0);
+    const promedio = sum / data.length;
+    const min = Math.min(...data);
+    const max = Math.max(...data);
+    const squaredDiffs = data.map(val => (val - promedio) ** 2);
+    const avgSquaredDiff = squaredDiffs.reduce((a, b) => a + b, 0) / data.length;
+    const desvEst = Math.sqrt(avgSquaredDiff);
+    return { promedio, min, max, desvEst };
+}
+
+export async function generateProductCertificateAction(
+  prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const parsed = certificateFormSchema.safeParse({
+    producto: formData.get("producto"),
+  });
+
+  if (!parsed.success) {
+    return { reportData: null, error: "Producto inválido." };
+  }
+  
+  const { producto } = parsed.data;
+  
+  const { ensayos } = await dataService.getInitialData();
+
+  const productEnsayos = ensayos
+    .filter(e => e.producto === producto)
+    .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime());
+
+  if(productEnsayos.length === 0) {
+      return { reportData: null, error: `No se encontraron ensayos para el producto: ${producto}` };
+  }
+  
+  const firstEnsayo = productEnsayos[0];
+  const promedios = calculateAverages(productEnsayos);
+
+  const keysToAnalyze = ['meltIndexCalculado', 'densidadCalculada', 'negroHumoCalculado', 'tio_tiempo', 'resistencia_traccion', 'elongacion_rotura'];
+  const estadisticas: ReportData['estadisticas'] = {};
+  const tendencias: ReportData['tendencias'] = {};
+
+  keysToAnalyze.forEach(key => {
+      const values = productEnsayos.map(e => e[key]).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
+      if (values.length > 0) {
+          estadisticas[key] = calculateStats(values);
+          tendencias[key] = productEnsayos
+            .map(e => ({ fecha: e.fecha, valor: e[key] }))
+            .filter(item => typeof item.valor === 'number')
+            .reverse();
+      }
+  });
+  
+  const reportData: ReportData = {
+      lotes: Array.from(new Set(productEnsayos.map(e => e.lote || 'N/A'))),
+      material: firstEnsayo.tipo_material || firstEnsayo.tipo,
+      producto: firstEnsayo.producto,
+      fechaGeneracion: new Date().toLocaleDateString('es-ES'),
+      inspector: 'Sistema',
+      corroborador: "Maximiliano Miranda Valdés",
+      ensayos: productEnsayos,
+      promedios,
+      estadisticas,
+      tendencias,
+      filterType: `Certificado Histórico: ${producto}`,
+  };
+    
+  return {
+      reportData,
+      error: null,
+  };
+}
