@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { navigateTool } from '../tools/navigation-tool';
+import { navigateTool, availableRoutesForNavigation } from '../tools/navigation-tool';
 
 // Helper function to read all documents from the data directory
 async function getKnowledgeBaseContent(): Promise<string> {
@@ -107,6 +107,25 @@ MENSAJE ACTUAL DEL USUARIO:
   `,
 });
 
+const navigationKeywords = [
+    'ir a', 'llévame a', 'muéstrame', 'ver', 'abrir', 'navegar a', 'portal', 'dashboard', 'ensayos', 'equipos', 'administración'
+];
+
+function extractNavigationPath(prompt: string): string | null {
+    const lowerCasePrompt = prompt.toLowerCase();
+    const routes = availableRoutesForNavigation.getValues();
+
+    for (const route of routes) {
+        // Create a user-friendly name from the route path to check against the prompt
+        // e.g., /ensayos/control-rutinario -> control rutinario
+        const routeName = route.split('/').filter(Boolean).pop()?.replace(/-/g, ' ');
+        if (routeName && lowerCasePrompt.includes(routeName)) {
+            return route;
+        }
+    }
+    return null;
+}
+
 const soporteLaboratorioFlow = ai.defineFlow(
   {
     name: 'soporteLaboratorioFlow',
@@ -114,7 +133,20 @@ const soporteLaboratorioFlow = ai.defineFlow(
     outputSchema: SoporteOutputSchema,
   },
   async ({ history, prompt: userPrompt }) => {
+
+    const lowerCasePrompt = userPrompt.toLowerCase();
+    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.startsWith(keyword)) || availableRoutesForNavigation.getValues().some(route => lowerCasePrompt.includes(route));
     
+    if (isNavigationIntent) {
+        const path = extractNavigationPath(userPrompt);
+        if (path) {
+            return {
+                response: `Claro, te llevo a ${path}`,
+                navigation: path,
+            };
+        }
+    }
+
     const knowledgeBase = await getKnowledgeBaseContent();
 
     const result = await prompt({

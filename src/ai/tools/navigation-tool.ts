@@ -9,7 +9,7 @@ import { z } from 'genkit';
 
 // Defines all the valid routes the AI can navigate to.
 // This prevents hallucinations and ensures the AI only navigates to existing pages.
-const availableRoutes = z.enum([
+export const availableRoutesForNavigation = z.enum([
     '/dashboard',
     '/ensayos/control-rutinario',
     '/ensayos/tuberias/hdpe',
@@ -27,6 +27,7 @@ const availableRoutes = z.enum([
     '/biblioteca/upload',
     '/administracion/usuarios',
     '/administracion/configuracion',
+    '/administracion/rutas',
 ]);
 
 export const navigateTool = ai.defineTool(
@@ -34,7 +35,7 @@ export const navigateTool = ai.defineTool(
     name: 'navigate',
     description: 'Navega a una página específica dentro de la aplicación. Utiliza esta herramienta cuando el usuario pida ir a una sección o ver una página.',
     inputSchema: z.object({
-      path: availableRoutes.describe("La ruta a la que se debe navegar. Por ejemplo, '/dashboard' para el panel principal."),
+      path: availableRoutesForNavigation.describe("La ruta a la que se debe navegar. Por ejemplo, '/dashboard' para el panel principal."),
     }),
     outputSchema: z.string(),
   },
