@@ -86,40 +86,45 @@ export default function GeneradorInformesPage() {
   };
   
   const handlePrint = () => {
-    const printContents = document.getElementById('printable-report')?.innerHTML;
-    const originalContents = document.body.innerHTML;
+    const printContent = document.getElementById('printable-report');
+    if (!printContent) return;
 
-    if (printContents) {
-      const allStyles = Array.from(document.styleSheets)
-        .map(styleSheet => {
-          try {
-            return Array.from(styleSheet.cssRules)
-              .map(rule => rule.cssText)
-              .join('');
-          } catch (e) {
-            console.warn("Could not read stylesheet rules.", e);
-            return '';
-          }
-        })
-        .join('\n');
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    
+    document.body.appendChild(iframe);
 
-      document.body.innerHTML = `
-        <html>
-          <head>
-            <title>${document.title}</title>
-            <style>${allStyles}</style>
-          </head>
-          <body>
-            ${printContents}
-          </body>
-        </html>`;
-      
-      window.print();
-      document.body.innerHTML = originalContents;
-      // We need to re-trigger a re-render for react to pick up the changes
-      // This is a bit of a hack, but necessary after replacing document.body.innerHTML
-      window.dispatchEvent(new Event('popstate'));
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write('<html><head><title>Informe de Resultados</title>');
+    
+    // Copy all stylesheets from the main document to the iframe
+    const links = document.getElementsByTagName('link');
+    for (let i = 0; i < links.length; i++) {
+        if (links[i].rel === 'stylesheet') {
+            doc.write(links[i].outerHTML);
+        }
     }
+    const styles = document.getElementsByTagName('style');
+    for (let i = 0; i < styles.length; i++) {
+        doc.write(styles[i].outerHTML);
+    }
+
+    doc.write('</head><body>');
+    doc.write(printContent.innerHTML);
+    doc.write('</body></html>');
+    doc.close();
+
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        document.body.removeChild(iframe);
+    }, 500); // Wait for styles to load
   };
 
 
