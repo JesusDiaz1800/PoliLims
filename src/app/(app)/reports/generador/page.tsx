@@ -85,48 +85,46 @@ export default function GeneradorInformesPage() {
     }
   };
   
-  const handlePrint = () => {
+  const handlePrint = async () => {
     const printContent = document.getElementById('printable-report');
     if (!printContent) return;
 
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = '0';
+    const contentToPrint = printContent.innerHTML;
     
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) return;
-
-    doc.open();
-    doc.write('<html><head><title>Informe de Resultados</title>');
-    
-    // Copy all stylesheets from the main document to the iframe
-    const links = document.getElementsByTagName('link');
-    for (let i = 0; i < links.length; i++) {
-        if (links[i].rel === 'stylesheet') {
-            doc.write(links[i].outerHTML);
+    // Get all stylesheets
+    const stylesheets = Array.from(document.styleSheets)
+      .map(sheet => {
+        try {
+          return Array.from(sheet.cssRules)
+            .map(rule => rule.cssText)
+            .join('');
+        } catch (e) {
+          console.warn("Could not read stylesheet rules. This may be due to CORS restrictions.", e);
+          return '';
         }
+      })
+      .join('\n');
+      
+    const printWindow = window.open('', '', 'height=800,width=1000');
+    
+    if (printWindow) {
+      printWindow.document.write('<html><head><title>Informe de Resultados</title>');
+      printWindow.document.write('<style>');
+      printWindow.document.write(stylesheets);
+      printWindow.document.write('</style></head><body>');
+      printWindow.document.write(contentToPrint);
+      printWindow.document.write('</body></html>');
+      
+      printWindow.document.close();
+      
+      // Use a timeout to ensure all content and styles are loaded before printing
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+      }, 500);
     }
-    const styles = document.getElementsByTagName('style');
-    for (let i = 0; i < styles.length; i++) {
-        doc.write(styles[i].outerHTML);
-    }
-
-    doc.write('</head><body>');
-    doc.write(printContent.innerHTML);
-    doc.write('</body></html>');
-    doc.close();
-
-    setTimeout(() => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        document.body.removeChild(iframe);
-    }, 500); // Wait for styles to load
   };
-
 
   if (isLoading) {
     return <Loading />;
