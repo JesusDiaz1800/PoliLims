@@ -51,12 +51,13 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
     const miTrend = tendencias?.meltIndexCalculado;
 
     return (
+        <>
+        <style>{`
+            @media print {
+                body, html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            }
+        `}</style>
         <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
-            <style>{`
-                @media print {
-                    body, html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                }
-            `}</style>
             <ReportHeader title="Certificado de Historial de Calidad" producto={producto} fecha={fechaGeneracion} />
             
             <SectionTitle title="Resumen Estadístico" />
@@ -117,6 +118,6 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
                 </Table>
             </div>
         </div>
-    </div>
-  );
+      </>
+    );
 };
