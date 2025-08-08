@@ -84,53 +84,42 @@ export default function GeneradorInformesPage() {
         window.location.href = mailtoLink;
     }
   };
-
+  
   const handlePrint = () => {
-    const printableElement = document.getElementById("printable-report");
-    if (!printableElement) return;
+    const printContents = document.getElementById('printable-report')?.innerHTML;
+    const originalContents = document.body.innerHTML;
 
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-      toast({
-        variant: "destructive",
-        title: "Error de Impresión",
-        description: "No se pudo abrir la ventana de impresión. Por favor, deshabilite el bloqueador de ventanas emergentes para este sitio.",
-      });
-      return;
+    if (printContents) {
+      const allStyles = Array.from(document.styleSheets)
+        .map(styleSheet => {
+          try {
+            return Array.from(styleSheet.cssRules)
+              .map(rule => rule.cssText)
+              .join('');
+          } catch (e) {
+            console.warn("Could not read stylesheet rules.", e);
+            return '';
+          }
+        })
+        .join('\n');
+
+      document.body.innerHTML = `
+        <html>
+          <head>
+            <title>${document.title}</title>
+            <style>${allStyles}</style>
+          </head>
+          <body>
+            ${printContents}
+          </body>
+        </html>`;
+      
+      window.print();
+      document.body.innerHTML = originalContents;
+      // We need to re-trigger a re-render for react to pick up the changes
+      // This is a bit of a hack, but necessary after replacing document.body.innerHTML
+      window.dispatchEvent(new Event('popstate'));
     }
-
-    const styles = Array.from(document.styleSheets)
-      .map(styleSheet => {
-        try {
-          return Array.from(styleSheet.cssRules)
-            .map(rule => rule.cssText)
-            .join('');
-        } catch (e) {
-          console.warn("No se pudo acceder a las reglas de la hoja de estilo. ", e);
-          return '';
-        }
-      })
-      .join('\n');
-    
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Informe de Resultados</title>
-          <style>${styles}</style>
-        </head>
-        <body>
-          ${printableElement.innerHTML}
-        </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-    
-    setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-    }, 250);
   };
 
 
