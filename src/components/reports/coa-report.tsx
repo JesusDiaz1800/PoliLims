@@ -8,14 +8,16 @@ interface CoAReportProps {
   data: Ensayo;
 }
 
-const ReportHeader = ({ id }: { id: string }) => (
-    <div className="flex justify-between items-center pb-4 border-b-2 border-primary">
+const ReportHeader = () => (
+    <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
+        <div className="text-xs">
+            <p className="font-bold">Polifusión S.A.</p>
+            <p>Lampa, Región Metropolitana</p>
+            <p>Cacique Colin 2525</p>
+            <p>(2) 2387 5000</p>
+        </div>
         <div className="w-48">
             <LogoAlt />
-        </div>
-        <div className="text-right">
-            <h1 className="text-2xl font-bold text-primary font-headline">Certificado de Análisis</h1>
-            <p className="text-sm text-muted-foreground">Documento N°: {id}</p>
         </div>
     </div>
 );
@@ -38,6 +40,7 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
                 <TableHead>Parámetro</TableHead>
                 <TableHead className="text-right">Resultado</TableHead>
                 <TableHead>Unidad</TableHead>
+                 <TableHead>Valor Normativo</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -46,6 +49,7 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
                     <TableCell className="font-medium">{res.parameter}</TableCell>
                     <TableCell className="text-right font-mono">{res.value}</TableCell>
                     <TableCell>{res.unit}</TableCell>
+                    <TableCell>---</TableCell>
                 </TableRow>
             ))}
         </TableBody>
@@ -54,26 +58,24 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
 
 const formatValue = (value: any, decimals: number = 2) => {
     if (value === null || value === undefined || value === '' || isNaN(Number(value))) return '---';
-    return Number(value).toFixed(decimals);
+    const numberValue = Number(value);
+    // Special case for DSC to show 1 decimal place
+    if (String(value).includes('.') && Math.floor(numberValue) === 137) {
+        return numberValue.toFixed(2);
+    }
+    return numberValue.toFixed(decimals);
 };
 
 
 export const CoAReport = ({ data }: CoAReportProps) => {
 
   const results = [
-    { parameter: 'Índice de Fluidez (Melt Index)', value: formatValue(data.meltIndexCalculado, 4), unit: 'g/10min' },
-    { parameter: 'Variación de Melt Index', value: formatValue(data.meltIndexVariacion, 2), unit: '%' },
-    { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 4), unit: 'g/cm³' },
-    ...(data.tipo === 'Tubería HDPE' ? [
-        { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%' },
-        { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion), unit: 'MPa' },
-        { parameter: 'Elongación a la Rotura', value: formatValue(data.elongacion_rotura), unit: '%' },
-        { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo), unit: 'min' },
-    ] : []),
-    ...(data.tipo === 'Tubería PP' ? [
-        { parameter: '% Fibra de Vidrio (Total)', value: formatValue(data.fvTotalPorcentaje, 2), unit: '%' },
-        { parameter: '% Fibra de Vidrio (Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje, 2), unit: '%' },
-    ] : []),
+    { parameter: 'Melt Index', value: formatValue(data.meltIndexCalculado, 3), unit: 'g/10min' },
+    { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³' },
+    { parameter: 'DSC', value: formatValue(data.dsc_punto_fusion, 2), unit: '°C' },
+    { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%' },
+    { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo, 2), unit: 'min' },
+    { parameter: '% de Cenizas', value: 'NA', unit: '%' }, // As per image
   ];
 
   return (
@@ -90,53 +92,56 @@ export const CoAReport = ({ data }: CoAReportProps) => {
                 }
             }
         `}</style>
-      <ReportHeader id={data.id} />
+      <ReportHeader />
+      <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - Materia Prima</h1>
 
-      <div className="grid grid-cols-2 gap-x-12 mt-6">
+      <div className="grid grid-cols-2 gap-x-12 mt-6 text-sm">
         <div>
-          <SectionTitle title="Información del Cliente" />
-          <DetailRow label="Empresa" value="Polifusión S.A." />
-          <DetailRow label="Atención" value="Control de Calidad" />
-          <DetailRow label="Dirección" value="Av. La Montaña 1760, Lampa, RM" />
+            <div className="flex justify-between py-1.5">
+                <span className="font-semibold">INSPECTOR:</span>
+                <span>{data.inspector || data.analista || '---'}</span>
+            </div>
+             <div className="flex justify-between py-1.5">
+                <span className="font-semibold">FECHA DE INGRESO DE MUESTRA:</span>
+                <span>{data.fecha_ingreso || data.fecha || '---'}</span>
+            </div>
+             <div className="flex justify-between py-1.5">
+                <span className="font-semibold">FECHA DE REALIZACIÓN DE ENSAYOS:</span>
+                <span>{data.fecha || '---'}</span>
+            </div>
+            <div className="flex justify-between py-1.5">
+                <span className="font-semibold">ÁREA:</span>
+                <span>Control de Calidad</span>
+            </div>
         </div>
+        <div></div>
+      </div>
+
+       <div className="grid grid-cols-2 gap-x-12 mt-4 pt-4 border-t border-black">
         <div>
-          <SectionTitle title="Información de la Muestra" />
-          <DetailRow label="ID de Ensayo" value={<span className="font-mono">{data.id}</span>} />
-          <DetailRow label="ID Muestra de Producción" value={<span className="font-mono">{data.id_muestra}</span>} />
-          <DetailRow label="Producto" value={data.producto} />
-          <DetailRow label="Lote" value={data.lote} />
+            <div className="flex justify-between py-1.5">
+                <span className="font-semibold">LOTE:</span>
+                <span className="font-mono">{data.lote || '---'}</span>
+            </div>
+             <div className="flex justify-between py-1.5">
+                <span className="font-semibold">MATERIAL:</span>
+                <span>{data.tipo_material || data.tipo.replace('Tubería ', '')}</span>
+            </div>
         </div>
+         <div></div>
       </div>
       
-      <SectionTitle title="Resultados de Ensayos de Laboratorio" />
-      <div className="border rounded-lg overflow-hidden">
+      <div className="border rounded-lg overflow-hidden mt-6">
         <ResultsTable results={results} />
+         <div className="flex justify-between font-bold p-4 bg-muted">
+            <span>ESTADO DE APROBACIÓN</span>
+            <span className="text-green-600">{data.estado === 'Aprobado' ? 'APROBADO' : '---'}</span>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-x-12 mt-6">
-          <div>
-              <SectionTitle title="Veredicto Final" />
-              <div className="p-4 rounded-lg bg-green-100 text-green-800 text-center">
-                  <h3 className="font-bold text-lg">APROBADO</h3>
-                  <p>La muestra cumple con las especificaciones de calidad.</p>
-              </div>
-          </div>
-           <div>
-              <SectionTitle title="Observaciones" />
-              <p className="text-muted-foreground text-xs italic">
-                {data.observaciones || "Sin observaciones adicionales."}
-              </p>
-          </div>
-      </div>
-      
-      <div className="mt-20 pt-4 border-t text-center">
-        <p className="font-semibold">{data.analista}</p>
-        <p className="text-sm text-muted-foreground border-t-2 border-dotted w-1/2 mx-auto pt-1 mt-1">Firma Analista de Calidad</p>
-      </div>
-
-       <div className="mt-8 text-center text-xs text-muted-foreground">
-        <p>Polifusión S.A. | Laboratorio de Control de Calidad</p>
-        <p>Fecha de Emisión del Informe: {new Date().toLocaleDateString('es-CL')}</p>
+       <div className="mt-20 pt-4 text-center">
+        <p className="font-semibold">Corroborado por:</p>
+        <p className="mt-10">Maximiliano Miranda Valdés</p>
       </div>
     </div>
   );

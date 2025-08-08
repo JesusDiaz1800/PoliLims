@@ -23,13 +23,15 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData } from "@/context/data-context";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
 import { findUserByUsername } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
+import { CoAReport } from "@/components/reports/coa-report";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
@@ -57,7 +59,7 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditClick: (ensayo: Ensayo) => void, handleOpenApprovalDialog: (ensayo: Ensayo) => void, canApprove: boolean) => {
+const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditClick: (ensayo: Ensayo) => void, handleOpenApprovalDialog: (ensayo: Ensayo) => void, handleOpenReportDialog: (ensayo: Ensayo) => void, canApprove: boolean) => {
   
   const renderActions = (ensayo: Ensayo) => (
       <TableCell className="text-right">
@@ -81,7 +83,10 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
                   </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleOpenReportDialog(ensayo)}>
+                <Printer className="mr-2 h-4 w-4" />
+                Imprimir Certificado
+              </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
       </TableCell>
@@ -160,7 +165,8 @@ export default function SeguimientoEnsayosPage() {
   const [user, setUser] = React.useState<User | null>(null);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
-  
+  const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
+
   const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   React.useEffect(() => {
@@ -220,6 +226,28 @@ export default function SeguimientoEnsayosPage() {
     setSelectedEnsayo(null);
     setIsApprovalDialogOpen(false);
   }
+  
+  const handleOpenReportDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsReportDialogOpen(true);
+  }
+
+  const handleCloseReportDialog = () => {
+    setSelectedEnsayo(null);
+    setIsReportDialogOpen(false);
+  }
+
+  const handlePrint = () => {
+    const printContents = document.getElementById("printable-coa")?.innerHTML;
+    if (printContents) {
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      // No reload needed if we want the dialog to stay open
+    }
+  }
+
 
   return (
     <>
@@ -260,7 +288,7 @@ export default function SeguimientoEnsayosPage() {
       </CardHeader>
       <CardContent>
          {filteredEnsayos.length > 0 ? (
-           renderDynamicTable(filteredEnsayos, filterType, handleEditClick, handleOpenApprovalDialog, canApprove || false)
+           renderDynamicTable(filteredEnsayos, filterType, handleEditClick, handleOpenApprovalDialog, handleOpenReportDialog, canApprove || false)
          ) : (
             <div className="text-center py-16 text-muted-foreground">
                 <Search className="mx-auto h-12 w-12 mb-4" />
@@ -277,6 +305,29 @@ export default function SeguimientoEnsayosPage() {
             ensayo={selectedEnsayo}
             user={user}
         />
+    )}
+    {selectedEnsayo && (
+       <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
+          <DialogContent className="sm:max-w-4xl">
+            <DialogHeader>
+                <DialogTitle>Certificado de Análisis: {selectedEnsayo.id}</DialogTitle>
+                <DialogDescription>
+                    Vista previa del certificado. Verifique la información antes de imprimir.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-4 -mr-4">
+              <div id="printable-coa">
+                  <CoAReport data={selectedEnsayo} />
+              </div>
+            </div>
+             <div className="flex justify-end pt-4">
+              <Button onClick={handlePrint}>
+                <Printer className="mr-2 h-4 w-4" />
+                Imprimir Certificado
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
     )}
     </>
   );

@@ -104,11 +104,6 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
-const informesSubMenu = [
-    { href: '/reports/producto-terminado', label: 'Producto Terminado (CoA)', icon: FileText },
-    { href: '/reports/materia-prima', label: 'Materia Prima (Lotes)', icon: FileText },
-];
-
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
 
@@ -191,8 +186,6 @@ const pageTitles: Record<string, string> = {
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
-    '/reports/producto-terminado': 'Certificado de Análisis (CoA)',
-    '/reports/materia-prima': 'Informe por Lotes de Materia Prima',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
 };
@@ -217,12 +210,6 @@ const menuItems = (toggleChat: () => void) => [
         icon: Layers3,
         subMenu: operacionesSubMenu,
         href: '/operaciones'
-    },
-    {
-        label: 'Informes y Certificados',
-        icon: FileText,
-        subMenu: informesSubMenu,
-        href: '/reports',
     },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 
