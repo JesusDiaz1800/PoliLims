@@ -6,10 +6,9 @@ import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDynamicData } from "@/context/data-context";
+import type { RecentActivity } from "@/context/data-context";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import type { RecentActivity } from "@/context/data-context";
 
 const getAvatarInfo = (name: string) => {
     const fallback = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -37,14 +36,13 @@ interface RecentActivityListProps {
 }
 
 export function RecentActivityList({ initialActivity }: RecentActivityListProps) {
-    const { recentActivity: dynamicActivity } = useDynamicData();
     const [isClient, setIsClient] = React.useState(false);
 
     React.useEffect(() => {
         setIsClient(true);
     }, []);
 
-    const activityList = dynamicActivity.length > 0 ? dynamicActivity : initialActivity;
+    const activityList = initialActivity;
 
     return (
         <Card className="h-full flex flex-col">

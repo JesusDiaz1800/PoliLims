@@ -44,18 +44,20 @@ interface ControlRutinarioTableProps {
 }
 
 const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) => {
-  const { registros, deleteRegistro, ensayos } = useDynamicData();
+  const { registros, deleteRegistro, ensayos, isLoading } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
 
-  const filteredRegistros = React.useMemo(() => 
-    registros.filter(registro => 
+  const filteredRegistros = React.useMemo(() => {
+    if (isLoading) return [];
+    return registros.filter(registro => 
       registro.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.inspector.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.producto.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [registros, searchTerm]);
+    )
+  }, [registros, searchTerm, isLoading]);
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
     const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
@@ -90,9 +92,9 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
     return Number(value).toFixed(decimals);
   }
   
-  const findLabResults = (registroId: string): Ensayo | undefined => {
+  const findLabResults = React.useCallback((registroId: string): Ensayo | undefined => {
     return ensayos.find(e => e.id_muestra === registroId);
-  }
+  }, [ensayos])
 
 
   return (
@@ -275,5 +277,5 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
       )}
     </>
   );
-}
+};
 export const ControlRutinarioTable = React.memo(ControlRutinarioTableInternal);

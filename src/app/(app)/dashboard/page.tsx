@@ -46,19 +46,22 @@ export default function DashboardPage() {
   const [user, setUser] = React.useState<User | null>(null);
   
   const allAnalysts = React.useMemo(() => {
+    if (isLoading) return [];
     const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
     return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
-  }, [ensayos]);
+  }, [ensayos, isLoading]);
 
   const assayTypes = React.useMemo(() => {
+    if (isLoading) return [];
     const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
     return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
-  }, [ensayos]);
+  }, [ensayos, isLoading]);
   
   const suppliers = React.useMemo(() => {
+      if (isLoading) return [];
       const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
       return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
-  }, [ensayos]);
+  }, [ensayos, isLoading]);
 
 
   React.useEffect(() => {
@@ -80,6 +83,8 @@ export default function DashboardPage() {
     approvalPercentage,
     pendingAssays,
   } = React.useMemo(() => {
+    if (isLoading) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+    
     const now = new Date();
     
     const filtered = ensayos.filter(ensayo => {
@@ -139,7 +144,7 @@ export default function DashboardPage() {
         approvalPercentage: approval,
         pendingAssays: pending,
     }
-  }, [ensayos, month, analyst, status, type, supplier]);
+  }, [ensayos, month, analyst, status, type, supplier, isLoading]);
 
   if (isLoading || !user) {
     return <Loading />;

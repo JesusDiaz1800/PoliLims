@@ -21,6 +21,7 @@ const CustomCursor = (props: any) => {
 
 export function WorkloadDistributionChart({ data: allData }: WorkloadDistributionChartProps) {
   const chartData = React.useMemo(() => {
+    if (!allData) return [];
     const analystCounts = allData.reduce((acc, ensayo) => {
         if (ensayo.analista) {
             acc[ensayo.analista] = (acc[ensayo.analista] || 0) + 1;

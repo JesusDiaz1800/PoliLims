@@ -27,7 +27,7 @@ export default function ProgramaPage() {
     const [isEditOpen, setIsEditOpen] = React.useState(false);
 
     React.useEffect(() => {
-        if (equipos.length > 0) {
+        if (!isLoading && equipos.length > 0) {
             const nuevosEventos = equipos.map(equipo => {
                 if (!equipo.proxima_calibracion) return null;
                 
@@ -45,7 +45,7 @@ export default function ProgramaPage() {
 
             setEventos(nuevosEventos);
         }
-    }, [equipos]);
+    }, [equipos, isLoading]);
 
     const handleEventClick = (eventInfo: any) => {
         const equipoSeleccionado = eventInfo.event.extendedProps.equipo;

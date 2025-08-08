@@ -24,18 +24,20 @@ export default function NoConformidadesPage() {
     setIsDialogOpen(false);
   };
   
-  const analistas = React.useMemo(() => [
-    ...new Set(ensayos.map(e => e.analista).filter(Boolean))
-  ].map(a => ({ value: a, label: a })), [ensayos]);
+  const analistas = React.useMemo(() => {
+    if (isLoading) return [];
+    return [...new Set(ensayos.map(e => e.analista).filter(Boolean))].map(a => ({ value: a, label: a }))
+  }, [ensayos, isLoading]);
   
-  const productosAfectados = React.useMemo(() => [
-    ...new Set(ensayos.map(e => e.producto).filter(Boolean))
-  ].map(p => ({ value: p, label: p })), [ensayos]);
+  const productosAfectados = React.useMemo(() => {
+    if (isLoading) return [];
+    return [...new Set(ensayos.map(e => e.producto).filter(Boolean))].map(p => ({ value: p, label: p }))
+  }, [ensayos, isLoading]);
 
-  const equiposImplicados = React.useMemo(() => 
-    equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})` })),
-    [equipos]
-  );
+  const equiposImplicados = React.useMemo(() => {
+    if (isLoading) return [];
+    return equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})` }))
+  }, [equipos, isLoading]);
 
   if (isLoading) {
     return <Loading />;
@@ -59,4 +61,3 @@ export default function NoConformidadesPage() {
     </div>
   );
 }
-
