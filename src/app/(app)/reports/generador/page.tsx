@@ -22,6 +22,7 @@ const initialState: {
   reportData: ReportData | null;
   emailBody: string | null;
   emailSubject: string | null;
+  newReportId?: string;
   error?: string | null;
   emailError?: string | null;
 } = {
@@ -78,23 +79,51 @@ export default function GeneradorInformesPage() {
     if (state?.emailBody && state?.emailSubject) {
         const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
         const cc = "afigueroa@polifusion.cl; cmunizaga@polifusion.cl; vlutz@polifusion.cl; mgallardo@polifusion.cl; ccalidad4@polifusion.cl; rcruz@polifusion.cl";
-
-        const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(state.emailSubject)}&body=${encodeURIComponent(state.emailBody)}`;
+        const body = state.emailBody;
+        const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(state.emailSubject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     }
   };
 
   const handlePrint = () => {
-    const printContents = document.getElementById("printable-report")?.innerHTML;
-    const originalContents = document.body.innerHTML;
-    
-    if (printContents) {
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        window.location.reload();
-    }
-  }
+    const printContent = document.getElementById("printable-report");
+    if (!printContent) return;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write('<html><head><title>Informe de Resultados</title>');
+    // Copy all stylesheets from the parent document to the iframe
+    Array.from(document.styleSheets).forEach(styleSheet => {
+        if (styleSheet.href) {
+            doc.write(`<link rel="stylesheet" href="${styleSheet.href}">`);
+        } else if (styleSheet.cssRules) {
+            doc.write('<style>');
+            doc.write(Array.from(styleSheet.cssRules).map(rule => rule.cssText).join('\n'));
+            doc.write('</style>');
+        }
+    });
+    doc.write('</head><body>');
+    doc.write(printContent.innerHTML);
+    doc.write('</body></html>');
+    doc.close();
+
+    iframe.contentWindow?.focus();
+
+    // Use a small timeout to ensure content is rendered before printing
+    setTimeout(() => {
+        iframe.contentWindow?.print();
+        document.body.removeChild(iframe);
+    }, 500);
+  };
 
 
   if (isLoading) {
