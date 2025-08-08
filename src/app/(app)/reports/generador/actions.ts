@@ -99,7 +99,7 @@ export async function generateReportAction(
   const promedios = calculateAverages(selectedEnsayos);
   
   const reportData: ReportData = {
-      lotes: selectedEnsayos.map(e => e.lote || 'N/A'),
+      lotes: Array.from(new Set(selectedEnsayos.map(e => e.lote || 'N/A'))),
       material: firstEnsayo.tipo_material || firstEnsayo.tipo,
       producto: firstEnsayo.producto,
       fechaGeneracion: new Date().toLocaleDateString('es-ES'),
@@ -124,15 +124,16 @@ export async function generateReportAction(
   
   const savedReport = await dataService.addGeneratedReport(newReport);
   
-  const formattedAverages = {
-      meltIndex: promedios.meltIndexCalculado,
-      densidad: promedios.densidadCalculada,
-      dsc: promedios.dsc_punto_fusion,
-      negroHumo: promedios.negroHumoCalculado,
-      tio: promedios.tio_tiempo,
-      cenizas: promedios.cenizasCalculado,
-      // Add other relevant averages here, formatted as strings.
-  };
+ const formattedAverages: { [key: string]: string | number } = {};
+  if (promedios.meltIndexCalculado) formattedAverages.meltIndex = promedios.meltIndexCalculado.toFixed(3);
+  if (promedios.densidadCalculada) formattedAverages.densidad = promedios.densidadCalculada.toFixed(3);
+  if (promedios.dsc_punto_fusion) formattedAverages.dsc = promedios.dsc_punto_fusion.toFixed(2);
+  if (promedios.negroHumoCalculado) formattedAverages.negroHumo = promedios.negroHumoCalculado.toFixed(2);
+  if (promedios.tio_tiempo) formattedAverages.tio = promedios.tio_tiempo.toFixed(2);
+  if (promedios.cenizasCalculado) formattedAverages.cenizas = promedios.cenizasCalculado.toFixed(2);
+  if (promedios.fvTotalPorcentaje) formattedAverages.fvTotal = promedios.fvTotalPorcentaje.toFixed(2);
+  if (promedios.fvIntermediaPorcentaje) formattedAverages.fvIntermedia = promedios.fvIntermediaPorcentaje.toFixed(2);
+
 
   const emailInput = {
     Material: reportData.material,

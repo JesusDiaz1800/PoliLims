@@ -70,12 +70,14 @@ const emailPrompt = ai.definePrompt({
       A continuación, el resumen de los resultados promedio:
       <br>
       <ul>
-        {{#if Averages.meltIndex}}<li>Melt Index: <b>{{toFixed Averages.meltIndex 3}} [g/10min]</b></li>{{/if}}
-        {{#if Averages.densidad}}<li>Densidad: <b>{{toFixed Averages.densidad 3}} [g/cm³]</b></li>{{/if}}
-        {{#if Averages.dsc}}<li>DSC: <b>{{toFixed Averages.dsc 2}} [°C]</b></li>{{/if}}
-        {{#if Averages.negroHumo}}<li>Negro de Humo: <b>{{toFixed Averages.negroHumo 2}} %</b></li>{{/if}}
-        {{#if Averages.tio}}<li>TIO: <b>{{toFixed Averages.tio 2}} min</b></li>{{/if}}
-        {{#if Averages.cenizas}}<li>Cenizas: <b>{{toFixed Averages.cenizas 2}} %</b></li>{{/if}}
+        {{#if Averages.meltIndex}}<li>Melt Index: <b>{{Averages.meltIndex}} [g/10min]</b></li>{{/if}}
+        {{#if Averages.densidad}}<li>Densidad: <b>{{Averages.densidad}} [g/cm³]</b></li>{{/if}}
+        {{#if Averages.dsc}}<li>DSC: <b>{{Averages.dsc}} [°C]</b></li>{{/if}}
+        {{#if Averages.negroHumo}}<li>Negro de Humo: <b>{{Averages.negroHumo}} %</b></li>{{/if}}
+        {{#if Averages.tio}}<li>TIO: <b>{{Averages.tio}} min</b></li>{{/if}}
+        {{#if Averages.cenizas}}<li>Cenizas: <b>{{Averages.cenizas}} %</b></li>{{/if}}
+        {{#if Averages.fvTotal}}<li>Fibra de Vidrio (Total): <b>{{Averages.fvTotal}} %</b></li>{{/if}}
+        {{#if Averages.fvIntermedia}}<li>Fibra de Vidrio (Intermedia): <b>{{Averages.fvIntermedia}} %</b></li>{{/if}}
       </ul>
       <br>
       Sin otro particular, se despide atentamente,
