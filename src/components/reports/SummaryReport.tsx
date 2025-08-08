@@ -1,4 +1,5 @@
 
+
 import * as React from 'react';
 import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
@@ -13,7 +14,7 @@ interface SummaryReportProps {
 
 const ReportHeader = () => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
-        <div className="w-28">
+        <div className="w-24">
              <LogoAlt />
         </div>
         <div className="text-xs text-right">
@@ -142,7 +143,6 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                     <SectionTitle title="Datos del Informe" className="report-section-title"/>
                     <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
                     <DetailRow label="Material" value={material} />
-                    <DetailRow label="Producto" value={producto} />
                     <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
                 </div>
                 <div>
@@ -168,8 +168,8 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
+                            <TableHead>Producto</TableHead>
                             <TableHead>Lote</TableHead>
-                            <TableHead>ID Ensayo</TableHead>
                             <TableHead className="text-right">M.I.</TableHead>
                             <TableHead className="text-right">Densidad</TableHead>
                             <TableHead className="text-right">DSC</TableHead>
@@ -182,15 +182,15 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                     <TableBody>
                     {ensayos.map(e => (
                         <TableRow key={e.id} className="hover:bg-muted/50">
-                            <TableCell className="font-mono font-medium">{e.lote}</TableCell>
-                            <TableCell className="font-mono text-muted-foreground">{e.id}</TableCell>
+                            <TableCell className="font-medium">{e.producto}</TableCell>
+                            <TableCell className="font-mono">{e.lote}</TableCell>
                             <TableCell className="text-right font-mono">{formatValue(e.meltIndexCalculado, 3)}</TableCell>
                             <TableCell className="text-right font-mono">{formatValue(e.densidadCalculada, 3)}</TableCell>
-                            <TableCell className="text-right font-mono">{formatValue(e.dsc_punto_fusion, 2)}</TableCell>
-                            <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado, 2)}</TableCell>
-                            <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo, 2)}</TableCell>
-                            <TableCell className="text-right font-mono">{formatValue(e.cenizasCalculado, 2)}</TableCell>
-                            <TableCell className="text-right font-mono">{formatValue(e.fvTotalPorcentaje, 2)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.dsc_punto_fusion)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.cenizasCalculado)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.fvTotalPorcentaje)}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>

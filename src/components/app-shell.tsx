@@ -278,7 +278,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
-                        <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+                        <Logo className="w-36 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
                     </div>
                     {isInspectorView && (
                         <Alert className="m-2 border-primary/30 bg-primary/10">

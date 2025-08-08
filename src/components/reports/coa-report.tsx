@@ -1,4 +1,5 @@
 
+
 import * as React from 'react';
 import type { Ensayo } from '@/context/data-context';
 import { LogoAlt } from '@/components/logo-alt';
@@ -13,7 +14,7 @@ interface CoAReportProps {
 
 const ReportHeader = () => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
-        <div className="w-28">
+        <div className="w-24">
              <LogoAlt />
         </div>
         <div className="text-xs text-right">
