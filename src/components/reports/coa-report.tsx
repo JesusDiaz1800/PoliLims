@@ -13,7 +13,7 @@ interface CoAReportProps {
 
 const ReportHeader = () => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
-        <div className="w-32">
+        <div className="w-28">
              <LogoAlt />
         </div>
         <div className="text-xs text-right">
