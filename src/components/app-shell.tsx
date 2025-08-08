@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from 'react';
@@ -103,6 +104,11 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
+const informesSubMenu = [
+    { href: '/reports/producto-terminado', label: 'Producto Terminado (CoA)', icon: FileText },
+    { href: '/reports/materia-prima', label: 'Materia Prima (Lotes)', icon: FileText },
+];
+
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
 
@@ -185,6 +191,8 @@ const pageTitles: Record<string, string> = {
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
+    '/reports/producto-terminado': 'Certificado de Análisis (CoA)',
+    '/reports/materia-prima': 'Informe por Lotes de Materia Prima',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
 };
@@ -210,7 +218,12 @@ const menuItems = (toggleChat: () => void) => [
         subMenu: operacionesSubMenu,
         href: '/operaciones'
     },
-    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
+    {
+        label: 'Informes y Certificados',
+        icon: FileText,
+        subMenu: informesSubMenu,
+        href: '/reports',
+    },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 
         label: 'Biblioteca', 
@@ -263,7 +276,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
-                        <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-0" />
+                        <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
                     </div>
                     {isInspectorView && (
                         <Alert className="m-2 border-primary/30 bg-primary/10">
