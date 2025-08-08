@@ -6,14 +6,15 @@ import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Printer, Mail, Loader2, AlertTriangle, FileText } from 'lucide-react';
+import { Printer, Mail, Loader2, AlertTriangle, FileText, Search } from 'lucide-react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
 import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
 import { generateMateriaPrimaReportAction } from './actions';
-import { Alert, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
 
 const initialState = { message: '', data: null, error: null };
 
@@ -44,10 +45,19 @@ export default function MateriaPrimaBatchReportPage() {
   const { toast } = useToast();
   
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState(new Set<string>());
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   const materiaPrimaEnsayos = React.useMemo(() => 
     ensayos.filter(e => e.tipo === 'Materia Prima' && e.estado === 'Aprobado')
   , [ensayos]);
+  
+  const filteredEnsayos = React.useMemo(() => {
+    if (!searchTerm) return materiaPrimaEnsayos;
+    return materiaPrimaEnsayos.filter(e => 
+        (e.producto && e.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (e.lote && e.lote.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }, [materiaPrimaEnsayos, searchTerm]);
   
   const selectedEnsayos = React.useMemo(() => 
     materiaPrimaEnsayos.filter(e => selectedEnsayoIds.has(e.id))
@@ -60,7 +70,7 @@ export default function MateriaPrimaBatchReportPage() {
       document.body.innerHTML = printContents;
       window.print();
       document.body.innerHTML = originalContents;
-      window.location.reload(); // Recargar para restaurar la interactividad
+      window.location.reload();
     }
   }
 
@@ -98,17 +108,29 @@ export default function MateriaPrimaBatchReportPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {materiaPrimaEnsayos.length > 0 ? (
+                    <div className="mb-4">
+                        <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                type="search"
+                                placeholder="Buscar por producto o lote..."
+                                className="pl-8 w-full"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    {filteredEnsayos.length > 0 ? (
                         <MateriaPrimaSelectionTable 
-                            ensayos={materiaPrimaEnsayos}
+                            ensayos={filteredEnsayos}
                             selectedIds={selectedEnsayoIds}
                             onSelectionChange={setSelectedEnsayoIds}
                         />
                     ) : (
                         <Alert>
                             <AlertTriangle className="h-4 w-4"/>
-                            <AlertTitle>No hay ensayos disponibles para informar.</AlertTitle>
-                            <CardDescription>No se encontraron ensayos de Materia Prima con estado 'Aprobado'.</CardDescription>
+                            <AlertTitle>No se encontraron ensayos.</AlertTitle>
+                            <AlertDescription>No hay ensayos de materia prima aprobados que coincidan con su búsqueda.</AlertDescription>
                         </Alert>
                     )}
                 </CardContent>
