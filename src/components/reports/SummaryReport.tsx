@@ -23,8 +23,8 @@ const ReportHeader = () => (
     </div>
 );
 
-const SectionTitle = ({ title }: { title: string }) => (
-    <h2 className="text-lg font-semibold text-primary font-headline border-b border-primary/50 pb-1 my-4">{title}</h2>
+const SectionTitle = ({ title, className }: { title: string, className?: string }) => (
+    <h2 className={cn("text-lg font-semibold text-primary font-headline border-b border-primary/50 pb-1 my-4", className)}>{title}</h2>
 );
 
 const DetailRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
@@ -56,77 +56,110 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
     <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
             @media print {
-                body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-                @page { size: A4; margin: 20mm; }
+                 body, html {
+                    margin: 0;
+                    padding: 0;
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+                @page {
+                    size: A4;
+                    margin: 15mm;
+                }
+                .report-container {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    box-shadow: none;
+                    margin: 0;
+                    padding: 0;
+                }
+                 .report-section-title {
+                    margin-top: 1rem;
+                    margin-bottom: 0.5rem;
+                    padding-bottom: 0.25rem;
+                }
+                 .signature-section {
+                    margin-top: 2rem;
+                    padding-top: 1rem;
+                }
+                 h1 {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                }
+                 td, th {
+                    padding: 4px 8px !important;
+                }
             }
         `}</style>
-        <ReportHeader />
-        <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">{title}</h1>
+        <div className="report-container">
+            <ReportHeader />
+            <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">{title}</h1>
 
-        <div className="grid grid-cols-2 gap-x-12 mt-6">
-            <div>
-              <SectionTitle title="Datos Generales del Informe" />
-              <DetailRow label="Material" value={material} />
-              <DetailRow label="Producto" value={producto} />
-              <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
-            </div>
-            <div>
-              <SectionTitle title="Información de Trazabilidad" />
-              <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
-              <DetailRow label="Generado por" value={inspector} />
-              <DetailRow label="Corroborado por" value={corroborador} />
-            </div>
-        </div>
-
-        <SectionTitle title="Resultados Promedio de Laboratorio" />
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {results.filter(r => r.value !== '---').map(res => (
-                 <div key={res.parameter} className="p-3 rounded-lg border bg-muted/30">
-                    <h3 className="text-xs text-muted-foreground">{res.parameter}</h3>
-                    <p className="text-xl font-bold font-headline">{res.value} <span className="text-sm font-normal text-muted-foreground">{res.unit}</span></p>
+            <div className="grid grid-cols-2 gap-x-12 mt-6">
+                <div>
+                <SectionTitle title="Datos Generales del Informe" className="report-section-title" />
+                <DetailRow label="Material" value={material} />
+                <DetailRow label="Producto" value={producto} />
+                <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
                 </div>
-            ))}
-        </div>
-      
-        <SectionTitle title="Detalle por Lote" />
-        <div className="border rounded-lg overflow-hidden">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Lote</TableHead>
-                        <TableHead className="text-right">Melt Index</TableHead>
-                        <TableHead className="text-right">Densidad</TableHead>
-                        <TableHead className="text-right">DSC</TableHead>
-                        <TableHead className="text-right">% NH</TableHead>
-                        <TableHead className="text-right">TIO</TableHead>
-                        <TableHead className="text-right">% Cenizas</TableHead>
-                        <TableHead className="text-right">% FV</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                   {ensayos.map(e => (
-                       <TableRow key={e.id}>
-                           <TableCell className="font-mono font-medium">{e.lote}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.meltIndexCalculado, 3)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.densidadCalculada, 3)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.dsc_punto_fusion, 2)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado, 2)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo, 2)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.cenizasCalculado, 2)}</TableCell>
-                           <TableCell className="text-right font-mono">{formatValue(e.fvTotalPorcentaje, 2)}</TableCell>
-                       </TableRow>
-                   ))}
-                </TableBody>
-            </Table>
-        </div>
+                <div>
+                <SectionTitle title="Información de Trazabilidad" className="report-section-title"/>
+                <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
+                <DetailRow label="Generado por" value={inspector} />
+                <DetailRow label="Corroborado por" value={corroborador} />
+                </div>
+            </div>
 
-       <div className="mt-16 pt-4 border-t text-center">
-        <div className="inline-block">
-            <div className="w-64 h-16"></div>
-            <p className="text-sm border-t-2 border-dotted w-full pt-1 mt-1">Firma y Timbre Calidad</p>
+            <SectionTitle title="Resultados Promedio de Laboratorio" className="report-section-title"/>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {results.filter(r => r.value !== '---').map(res => (
+                    <div key={res.parameter} className="p-3 rounded-lg border bg-muted/30">
+                        <h3 className="text-xs text-muted-foreground">{res.parameter}</h3>
+                        <p className="text-xl font-bold font-headline">{res.value} <span className="text-sm font-normal text-muted-foreground">{res.unit}</span></p>
+                    </div>
+                ))}
+            </div>
+        
+            <SectionTitle title="Detalle por Lote" className="report-section-title"/>
+            <div className="border rounded-lg overflow-hidden">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Lote</TableHead>
+                            <TableHead className="text-right">Melt Index</TableHead>
+                            <TableHead className="text-right">Densidad</TableHead>
+                            <TableHead className="text-right">DSC</TableHead>
+                            <TableHead className="text-right">% NH</TableHead>
+                            <TableHead className="text-right">TIO</TableHead>
+                            <TableHead className="text-right">% Cenizas</TableHead>
+                            <TableHead className="text-right">% FV</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                    {ensayos.map(e => (
+                        <TableRow key={e.id}>
+                            <TableCell className="font-mono font-medium">{e.lote}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.meltIndexCalculado, 3)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.densidadCalculada, 3)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.dsc_punto_fusion, 2)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado, 2)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo, 2)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.cenizasCalculado, 2)}</TableCell>
+                            <TableCell className="text-right font-mono">{formatValue(e.fvTotalPorcentaje, 2)}</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+            </div>
+
+            <div className="mt-16 pt-4 border-t text-center signature-section">
+                <div className="inline-block">
+                    <div className="w-64 h-16"></div>
+                    <p className="text-sm border-t-2 border-dotted w-full pt-1 mt-1">Firma y Timbre Calidad</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
   );
 };
-

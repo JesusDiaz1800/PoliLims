@@ -107,49 +107,83 @@ export const CoAReport = ({ data }: CoAReportProps) => {
     <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
             @media print {
-                body {
+                body, html {
+                    margin: 0;
+                    padding: 0;
                     -webkit-print-color-adjust: exact;
                     print-color-adjust: exact;
                 }
                 @page {
                     size: A4;
-                    margin: 20mm;
+                    margin: 15mm;
+                }
+                .report-container {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    box-shadow: none;
+                    margin: 0;
+                    padding: 0;
+                }
+                 .report-section-title {
+                    margin-top: 1rem;
+                    margin-bottom: 0.5rem;
+                    padding-bottom: 0.25rem;
+                }
+                .results-table {
+                    margin-top: 1rem;
+                }
+                .final-verdict {
+                    padding: 0.75rem;
+                }
+                 .signature-section {
+                    margin-top: 2rem;
+                    padding-top: 1rem;
+                }
+                h1 {
+                    margin-top: 1rem;
+                    margin-bottom: 1rem;
+                }
+                td, th {
+                    padding: 4px 8px !important;
                 }
             }
         `}</style>
-      <ReportHeader />
-      <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
+      <div className="report-container">
+        <ReportHeader />
+        <h1 className="text-2xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
 
-      <div className="grid grid-cols-2 gap-x-12 mt-6 text-sm">
-        <div>
-            <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
-            <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
-            <DetailRow label="Inspector de Línea" value={data.inspector || '---'} />
-            <DetailRow label="Analista de Laboratorio" value={data.analista || '---'} />
+        <div className="grid grid-cols-2 gap-x-12 mt-4 text-sm">
+            <div>
+                <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
+                <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
+                <DetailRow label="Inspector de Línea" value={data.inspector || '---'} />
+                <DetailRow label="Analista de Laboratorio" value={data.analista || '---'} />
+            </div>
+            <div>
+                <DetailRow label="PRODUCTO" value={<span className="font-bold">{data.producto || '---'}</span>} />
+                <DetailRow label="LOTE" value={<span className="font-mono font-bold">{data.lote || '---'}</span>} />
+                <DetailRow label="FECHA MUESTRA" value={data.fecha_ingreso || data.fecha || '---'} />
+                <DetailRow label="FECHA ANÁLISIS" value={data.fecha || '---'} />
+            </div>
         </div>
-        <div>
-             <DetailRow label="PRODUCTO" value={<span className="font-bold">{data.producto || '---'}</span>} />
-             <DetailRow label="LOTE" value={<span className="font-mono font-bold">{data.lote || '---'}</span>} />
-             <DetailRow label="FECHA MUESTRA" value={data.fecha_ingreso || data.fecha || '---'} />
-             <DetailRow label="FECHA ANÁLISIS" value={data.fecha || '---'} />
+        
+        <SectionTitle title="Resultados de Ensayos" className="report-section-title"/>
+        <div className="border rounded-lg overflow-hidden results-table">
+            <ResultsTable results={results} />
+            <div className={cn("flex justify-between font-bold text-lg p-4 bg-muted final-verdict", data.estado === 'Aprobado' ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30")}>
+                <span>VEREDICTO FINAL</span>
+                <span className={cn(data.estado === 'Aprobado' ? "text-green-600 dark:text-green-300" : "text-red-600 dark:text-red-400")}>
+                    {data.estado ? data.estado.toUpperCase() : 'PENDIENTE'}
+                </span>
+            </div>
         </div>
-      </div>
-      
-      <SectionTitle title="Resultados de Ensayos" />
-      <div className="border rounded-lg overflow-hidden mt-6">
-        <ResultsTable results={results} />
-         <div className="flex justify-between font-bold text-lg p-4 bg-muted">
-            <span>VEREDICTO FINAL</span>
-            <span className={cn(data.estado === 'Aprobado' ? "text-green-600" : "text-red-600")}>
-                {data.estado ? data.estado.toUpperCase() : 'PENDIENTE'}
-            </span>
-        </div>
-      </div>
 
-       <div className="mt-12 pt-4 text-center">
-        <p className="font-semibold">Corroborado por:</p>
-        <div className="inline-block mt-12">
-            <p className="border-t-2 border-dotted w-full pt-1">Maximiliano Miranda Valdés</p>
+        <div className="mt-8 pt-4 text-center signature-section">
+            <p className="font-semibold">Corroborado por:</p>
+            <div className="inline-block mt-8">
+                <p className="border-t-2 border-dotted w-full pt-1">Maximiliano Miranda Valdés</p>
+            </div>
         </div>
       </div>
     </div>
