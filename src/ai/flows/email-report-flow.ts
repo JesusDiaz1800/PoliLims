@@ -10,15 +10,9 @@ const EmailContentInputSchema = z.object({
   Material: z.string().describe("The name of the raw material."),
   Producto: z.string().describe("The specific product name."),
   Lotes: z.string().describe("A comma-separated string of all lot numbers included in the summary."),
-  Averages: z.object({
-    melt_index: z.string().describe("The calculated average for Melt Index, formatted to 3 decimal places."),
-    densidad: z.string().describe("The calculated average for Density, formatted to 3 decimal places."),
-    dsc: z.string().describe("The calculated average for DSC, formatted to 2 decimal places."),
-    negro_humo: z.string().describe("The calculated average for Black Smoke percentage, formatted to 2 decimal places."),
-    tio: z.string().describe("The calculated average for TIO, formatted to 2 decimal places."),
-    cenizas: z.string().describe("The calculated average for Ash percentage, formatted to 2 decimal places."),
-  }).describe("An object containing the pre-calculated and formatted averages for all relevant tests."),
-  FilterType: z.string().describe("The type of material being reported (e.g., 'Materia Prima', 'Reprocesado')."),
+  Averages: z.any().describe("An object containing the pre-calculated and formatted averages for all relevant tests."),
+  FilterType: z.string().describe("The type of material being reported (e.g., 'Materia Prima', 'Reprocesado', 'Tubería HDPE')."),
+  Ensayos: z.any().describe("An array of the selected assays. Used for single-item reports like HDPE pipe."),
 });
 type EmailContentInput = z.infer<typeof EmailContentInputSchema>;
 
@@ -33,33 +27,35 @@ const emailPrompt = ai.definePrompt({
     input: { schema: EmailContentInputSchema },
     output: { schema: EmailContentOutputSchema },
     prompt: `
-      You are an assistant that generates laboratory result summary emails.
+      You are an assistant that generates laboratory result summary emails in Spanish.
       Based on the provided data, generate a subject line and an HTML email body.
       The tone must be professional and the format must be precise.
-      The report type is for: {{{FilterType}}}.
 
       **Data Provided:**
+      - Report Type: {{{FilterType}}}
       - Material: {{{Material}}}
       - Product: {{{Producto}}}
       - Lots: {{{Lotes}}}
-      - Averages:
-        - Melt Index: {{{Averages.melt_index}}}
-        - Density: {{{Averages.densidad}}}
-        - DSC: {{{Averages.dsc}}}
-        - Black Smoke: {{{Averages.negro_humo}}}
-        - TIO: {{{Averages.tio}}}
-        - Ash: {{{Averages.cenizas}}}
+      - Averages: {{json Averages}}
+      - Individual Assays (for single reports): {{json Ensayos}}
 
       **Task:**
 
       1.  **Generate the Subject Line:**
-          The subject must be: "Resultados de Laboratorio para {{{FilterType}}} de {{{Material}}} ({{{Producto}}}) Lotes: {{{Lotes}}}"
+          - For 'Materia Prima' or 'Reprocesado': "Resultados de Laboratorio para {{{FilterType}}} de {{{Material}}} ({{{Producto}}}) Lotes: {{{Lotes}}}"
+          - For 'Tubería HDPE': "Resultados de Laboratorio para Tubería {{{Producto}}} ({{{Lotes}}})"
 
       2.  **Generate the HTML Email Body:**
-          The body must follow this HTML structure precisely, substituting the placeholders.
-          Ensure all tags are correctly formatted and closed. Do not include metrics with a value of "0.00" or "0.000".
-
-          "<html><body>Estimados, espero se encuentren bien:<br><br>Les envío los resultados de laboratorio para el/la {{{FilterType}}} de <b>{{{Material}}} ({{{Producto}}})</b>, correspondiente a los lotes: <b>{{{Lotes}}}</b>.<br><br>A continuación, se detallan los resultados promedio:<br><ul>{{#if (ne Averages.melt_index "0.000")}}<li>El Melt Index promedio es <b>{{{Averages.melt_index}}} [g/10min]</b>.</li>{{/if}}{{#if (ne Averages.densidad "0.000")}}<li>La densidad promedio es <b>{{{Averages.densidad}}} [g/cm³]</b>.</li>{{/if}}{{#if (ne Averages.dsc "0.00")}}<li>El DSC promedio es <b>{{{Averages.dsc}}} [°C]</b>.</li>{{/if}}{{#if (ne Averages.negro_humo "0.00")}}<li>El porcentaje de negro de humo promedio es <b>{{{Averages.negro_humo}}} [%]</b>.</li>{{/if}}{{#if (ne Averages.tio "0.00")}}<li>El tiempo de inducción a la oxidación promedio es <b>{{{Averages.tio}}} [min]</b>.</li>{{/if}}{{#if (ne Averages.cenizas "0.00")}}<li>El porcentaje de cenizas promedio es <b>{{{Averages.cenizas}}} [%]</b>.</li>{{/if}}</ul><br>Sin otro particular, me despido.<br><br>Maximiliano Miranda Valdés<br><b>Ing. Analista de Control de Calidad</b><br>Polifusion S.A.</body></html>"
+          - The body must be valid HTML.
+          - The signature must always be "Maximiliano Miranda Valdés".
+          - Do not include metrics with a value of "0.00", "0.000", or if they are not present in the Averages/Ensayos object.
+          
+          **IF FilterType is 'Materia Prima' or 'Reprocesado':**
+          "<html><body>Estimados, espero se encuentren bien:<br><br>Les envío los resultados de laboratorio para el/la {{{FilterType}}} de <b>{{{Material}}} ({{{Producto}}})</b>, correspondiente a los lotes: <b>{{{Lotes}}}</b>.<br><br>A continuación, se detallan los resultados promedio:<br><ul>{{#if Averages.meltIndex}}<li>El Melt Index promedio es <b>{{toFixed Averages.meltIndex 3}} [g/10min]</b>.</li>{{/if}}{{#if Averages.densidad}}<li>La densidad promedio es <b>{{toFixed Averages.densidad 3}} [g/cm³]</b>.</li>{{/if}}{{#if Averages.dsc}}<li>El DSC promedio es <b>{{toFixed Averages.dsc 2}} [°C]</b>.</li>{{/if}}{{#if Averages.negroHumo}}<li>El porcentaje de negro de humo promedio es <b>{{toFixed Averages.negroHumo 2}} [%]</b>.</li>{{/if}}{{#if Averages.tio}}<li>El tiempo de inducción a la oxidación promedio es <b>{{toFixed Averages.tio 2}} [min]</b>.</li>{{/if}}{{#if Averages.cenizas}}<li>El porcentaje de cenizas promedio es <b>{{toFixed Averages.cenizas 2}} [%]</b>.</li>{{/if}}</ul><br>Sin otro particular, me despido.<br><br>Maximiliano Miranda Valdés<br><b>Ing. Analista de Control de Calidad</b><br>Polifusion S.A.</body></html>"
+          
+          **IF FilterType is 'Tubería HDPE':**
+          (Use the first assay from the Ensayos array for the values)
+          "<html><body>Estimados, espero se encuentren bien:<br><br>Les envío los resultados de laboratorio para la tubería <b>{{{Producto}}}</b>.<br><br>En resumen;<br><ul>{{#with (lookup Ensayos 0)}}{{#if meltIndexVariacion}}<li>La variación del Melt Index es <b>{{toFixed meltIndexVariacion 2}}%</b> (Valor normativo < 30%).</li>{{/if}}{{#if densidadCalculada}}<li>La densidad es <b>{{toFixed densidadCalculada 3}} g/cm³</b> (Valor normativo > 0.955 g/cm³).</li>{{/if}}{{#if negroHumoCalculado}}<li>El porcentaje de negro de humo es <b>{{toFixed negroHumoCalculado 2}}%</b> (Valor normativo entre 2.0 - 3.0%).</li>{{/if}}{{#if dispersion_nh}}<li>El grado de dispersión de negro de humo es <b>{{dispersion_nh}}</b> (Valor normativo < 3.0).</li>{{/if}}{{#if elongacion_rotura}}<li>El porcentaje de elongación al quiebre es <b>{{toFixed elongacion_rotura 2}}%</b> (Valor normativo > 500%).</li>{{/if}}{{#if resistencia_traccion}}<li>La resistencia a la traccion es <b>{{toFixed resistencia_traccion 2}} MPa</b> (Valor normativo > 22 MPa).</li>{{/if}}{{#if limite_fluencia}}<li>El límite de fluencia es <b>{{toFixed limite_fluencia 2}} MPa</b> (Valor normativo > 21 MPa).</li>{{/if}}{{#if tio_tiempo}}<li>El tiempo de inducción a la oxidación es <b>{{toFixed tio_tiempo 2}} min</b> (Valor normativo > 20 min).</li>{{/if}}{{/with}}</ul><br>Sin otro particular, me despido.<br><br>Maximiliano Miranda Valdés<br><b>Ing. Analista de Control de Calidad</b><br>Polifusion S.A.</body></html>"
     `,
 });
 

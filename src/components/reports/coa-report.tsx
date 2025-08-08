@@ -59,24 +59,21 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
 
 const formatValue = (value: any, decimals: number = 2) => {
     if (value === null || value === undefined || value === '' || isNaN(Number(value))) return '---';
-    const numberValue = Number(value);
-    // Special case for DSC to show 1 decimal place
-    if (String(value).includes('.') && Math.floor(numberValue) === 137) {
-        return numberValue.toFixed(2);
-    }
-    return numberValue.toFixed(decimals);
+    return Number(value).toFixed(decimals);
 };
 
 
 export const CoAReport = ({ data }: CoAReportProps) => {
 
   const results = [
-    { parameter: 'Melt Index', value: formatValue(data.meltIndexCalculado, 3), unit: 'g/10min' },
+    { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%' },
     { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³' },
-    { parameter: 'DSC', value: formatValue(data.dsc_punto_fusion, 2), unit: '°C' },
     { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%' },
+    { parameter: 'Dispersión de Negro de Humo', value: data.dispersion_nh || '---', unit: 'Grado' },
+    { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion, 2), unit: 'MPa' },
+    { parameter: 'Límite de Fluencia', value: formatValue(data.limite_fluencia, 2), unit: 'MPa' },
+    { parameter: 'Elongación de Ruptura', value: formatValue(data.elongacion_rotura, 2), unit: '%' },
     { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo, 2), unit: 'min' },
-    { parameter: '% de Cenizas', value: 'NA', unit: '%' }, // As per image
   ];
 
   return (
@@ -94,7 +91,7 @@ export const CoAReport = ({ data }: CoAReportProps) => {
             }
         `}</style>
       <ReportHeader />
-      <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - Materia Prima</h1>
+      <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
 
       <div className="grid grid-cols-2 gap-x-12 mt-6 text-sm">
         <div>
@@ -115,11 +112,11 @@ export const CoAReport = ({ data }: CoAReportProps) => {
                 <span>Control de Calidad</span>
             </div>
         </div>
-        <div></div>
-      </div>
-
-       <div className="grid grid-cols-2 gap-x-12 mt-4 pt-4 border-t border-black">
         <div>
+             <div className="flex justify-between py-1.5">
+                <span className="font-semibold">PRODUCTO:</span>
+                <span className="font-mono">{data.producto || '---'}</span>
+            </div>
             <div className="flex justify-between py-1.5">
                 <span className="font-semibold">LOTE:</span>
                 <span className="font-mono">{data.lote || '---'}</span>
@@ -129,7 +126,6 @@ export const CoAReport = ({ data }: CoAReportProps) => {
                 <span>{data.tipo_material || data.tipo.replace('Tubería ', '')}</span>
             </div>
         </div>
-         <div></div>
       </div>
       
       <div className="border rounded-lg overflow-hidden mt-6">
@@ -140,9 +136,11 @@ export const CoAReport = ({ data }: CoAReportProps) => {
         </div>
       </div>
 
-       <div className="mt-20 pt-4 text-center">
+       <div className="mt-12 pt-4 text-center">
         <p className="font-semibold">Corroborado por:</p>
-        <p className="mt-10">Maximiliano Miranda Valdés</p>
+        <div className="inline-block mt-12">
+            <p className="border-t-2 border-dotted w-full pt-1">Maximiliano Miranda Valdés</p>
+        </div>
       </div>
     </div>
   );

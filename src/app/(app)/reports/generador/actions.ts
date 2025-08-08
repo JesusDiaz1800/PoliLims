@@ -22,6 +22,7 @@ export interface ReportData {
     negroHumo: number;
     tio: number;
     cenizas: number;
+    [key: string]: any; // Allow other properties
   };
   filterType: string;
 }
@@ -40,42 +41,28 @@ type FormState = {
 };
 
 function calculateAverages(ensayos: Ensayo[]) {
-  const result = {
+  const result: { [key: string]: number } = {
     meltIndex: 0,
     densidad: 0,
     dsc: 0,
     negroHumo: 0,
     tio: 0,
     cenizas: 0,
+    resistencia_traccion: 0,
+    limite_fluencia: 0,
+    elongacion_rotura: 0,
+    fvTotalPorcentaje: 0,
+    fvIntermediaPorcentaje: 0,
   };
   
-  const validEnsayos = {
-    meltIndex: ensayos.filter(e => e.meltIndexCalculado !== null && e.meltIndexCalculado !== undefined && !isNaN(Number(e.meltIndexCalculado))),
-    densidad: ensayos.filter(e => e.densidadCalculada !== null && e.densidadCalculada !== undefined && !isNaN(Number(e.densidadCalculada))),
-    dsc: ensayos.filter(e => e.dsc_punto_fusion !== null && e.dsc_punto_fusion !== undefined && !isNaN(Number(e.dsc_punto_fusion))),
-    negroHumo: ensayos.filter(e => e.negroHumoCalculado !== null && e.negroHumoCalculado !== undefined && !isNaN(Number(e.negroHumoCalculado))),
-    tio: ensayos.filter(e => e.tio_tiempo !== null && e.tio_tiempo !== undefined && !isNaN(Number(e.tio_tiempo))),
-    cenizas: ensayos.filter(e => e.cenizasCalculado !== null && e.cenizasCalculado !== undefined && !isNaN(Number(e.cenizasCalculado))),
-  }
+  const keysToAverage = Object.keys(result);
 
-  if (validEnsayos.meltIndex.length > 0) {
-    result.meltIndex = validEnsayos.meltIndex.reduce((sum, e) => sum + Number(e.meltIndexCalculado), 0) / validEnsayos.meltIndex.length;
-  }
-  if (validEnsayos.densidad.length > 0) {
-    result.densidad = validEnsayos.densidad.reduce((sum, e) => sum + Number(e.densidadCalculada), 0) / validEnsayos.densidad.length;
-  }
-  if (validEnsayos.dsc.length > 0) {
-      result.dsc = validEnsayos.dsc.reduce((sum, e) => sum + Number(e.dsc_punto_fusion), 0) / validEnsayos.dsc.length;
-  }
-  if (validEnsayos.negroHumo.length > 0) {
-      result.negroHumo = validEnsayos.negroHumo.reduce((sum, e) => sum + Number(e.negroHumoCalculado), 0) / validEnsayos.negroHumo.length;
-  }
-   if (validEnsayos.tio.length > 0) {
-      result.tio = validEnsayos.tio.reduce((sum, e) => sum + Number(e.tio_tiempo), 0) / validEnsayos.tio.length;
-  }
-  if (validEnsayos.cenizas.length > 0) {
-      result.cenizas = validEnsayos.cenizas.reduce((sum, e) => sum + Number(e.cenizasCalculado), 0) / validEnsayos.cenizas.length;
-  }
+  keysToAverage.forEach(key => {
+    const validEnsayos = ensayos.filter(e => e[key] !== null && e[key] !== undefined && !isNaN(Number(e[key])));
+    if (validEnsayos.length > 0) {
+        result[key] = validEnsayos.reduce((sum, e) => sum + Number(e[key]), 0) / validEnsayos.length;
+    }
+  });
 
   return result;
 }
@@ -140,15 +127,9 @@ export async function generateReportAction(
         Material: reportData.material,
         Producto: reportData.producto,
         Lotes: reportData.lotes.join(', '),
-        Averages: {
-          melt_index: promedios.meltIndex.toFixed(3),
-          densidad: promedios.densidad.toFixed(3),
-          dsc: promedios.dsc.toFixed(2),
-          negro_humo: promedios.negroHumo.toFixed(2),
-          tio: promedios.tio.toFixed(2),
-          cenizas: promedios.cenizas.toFixed(2),
-        },
+        Averages: promedios,
         FilterType: filterType,
+        Ensayos: selectedEnsayos, // Pass individual assays for single-item reports
     };
     const emailResult = await generateEmailContent(emailInput);
 
