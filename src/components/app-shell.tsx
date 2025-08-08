@@ -272,7 +272,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     }
 
     return (
-        <div className="flex min-h-screen w-full bg-background">
+        <div className="flex h-screen w-full bg-background">
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
@@ -347,7 +347,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     </div>
                 </SidebarFooter>
             </Sidebar>
-            <div className='flex flex-col flex-1 min-w-0'>
+            <div className='flex flex-col flex-1 h-screen overflow-hidden'>
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
