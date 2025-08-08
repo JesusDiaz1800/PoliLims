@@ -19,7 +19,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-32">
+        <div className="w-28">
             <LogoAlt />
         </div>
     </div>
@@ -123,16 +123,17 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
                     page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 0.5rem !important;
-                    margin-bottom: 0.25rem !important;
-                    padding-bottom: 0.1rem !important;
+                    font-size: 11pt !important;
+                    margin: 8px 0 !important;
+                    padding-bottom: 2px !important;
                 }
                 .results-table {
-                    margin-top: 0.5rem !important;
-                    page-break-inside: avoid;
+                     margin-top: 0.5rem !important;
+                     page-break-inside: avoid;
                 }
                 .final-verdict {
-                    padding: 0.25rem !important;
+                    padding: 0.5rem !important;
+                    font-size: 11pt !important;
                 }
                  .signature-section {
                     margin-top: 1rem !important;
@@ -141,16 +142,18 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
                     page-break-inside: avoid;
                 }
                  h1 {
-                    margin-top: 0.5rem !important;
-                    margin-bottom: 0.5rem !important;
+                    font-size: 14pt !important;
+                    margin: 1rem 0 !important;
                 }
                  td, th {
-                    padding: 1px 4px !important;
+                    padding: 2px 4px !important;
+                    font-size: 9pt !important;
                 }
                 .detail-row {
-                    padding-top: 1px !important;
-                    padding-bottom: 1px !important;
-                }
+                    padding-top: 2px !important;
+                    padding-bottom: 2px !important;
+                    font-size: 9pt !important;
+                 }
             }
         `}</style>
       <div className="report-container">

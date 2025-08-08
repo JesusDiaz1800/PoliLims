@@ -4,6 +4,7 @@ import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+import { parse, format } from 'date-fns';
 
 interface SummaryReportProps {
   reportData: ReportData;
@@ -18,7 +19,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-32">
+        <div className="w-28">
             <LogoAlt />
         </div>
     </div>
@@ -29,9 +30,9 @@ const SectionTitle = ({ title, className }: { title: string, className?: string 
 );
 
 const DetailRow = ({ label, value }: { label: string; value?: React.ReactNode }) => (
-    <div className="flex justify-between py-1.5 px-2 rounded-md transition-colors hover:bg-muted/50 detail-row">
+    <div className="flex justify-between py-1 border-b border-dotted detail-row">
         <span className="font-semibold text-muted-foreground">{label}:</span>
-        <span className="text-right font-medium">{value || '---'}</span>
+        <span className="text-right">{value || '---'}</span>
     </div>
 );
 
@@ -53,6 +54,25 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
     { parameter: '% de Fibra de Vidrio (Total)', value: formatValue(promedios.fvTotalPorcentaje, 2), unit: '%' },
   ];
 
+  const getDateRange = () => {
+    if (!ensayos || ensayos.length === 0) return '---';
+    const dates = ensayos
+        .map(e => parse(e.fecha, 'dd-MM-yyyy', new Date()))
+        .filter(d => !isNaN(d.getTime()));
+    if (dates.length === 0) return '---';
+    
+    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+    
+    if (format(minDate, 'dd-MM-yyyy') === format(maxDate, 'dd-MM-yyyy')) {
+        return format(minDate, 'dd-MM-yyyy');
+    }
+
+    return `${format(minDate, 'dd-MM-yyyy')} al ${format(maxDate, 'dd-MM-yyyy')}`;
+  };
+
+  const dateRange = getDateRange();
+
   return (
     <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
@@ -72,32 +92,44 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                     page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 0.5rem !important;
-                    margin-bottom: 0.25rem !important;
-                    padding-bottom: 0.1rem !important;
+                    font-size: 11pt !important;
+                    margin: 8px 0 !important;
+                    padding-bottom: 2px !important;
                 }
-                 .signature-section {
+                 .detail-row {
+                    padding-top: 2px !important;
+                    padding-bottom: 2px !important;
+                    font-size: 9pt !important;
+                 }
+                 .results-grid {
+                    gap: 0.5rem !important;
+                 }
+                .results-card {
+                    padding: 0.5rem !important;
+                }
+                .results-card h3 {
+                    font-size: 8pt !important;
+                }
+                .results-card p {
+                    font-size: 14pt !important;
+                }
+                .results-table {
+                     margin-top: 0.5rem !important;
+                     page-break-inside: avoid;
+                }
+                .signature-section {
                     margin-top: 1rem !important;
                     padding-top: 0.5rem !important;
                     page-break-before: auto;
                     page-break-inside: avoid;
                 }
                  h1 {
-                    margin-top: 0.5rem !important;
-                    margin-bottom: 0.5rem !important;
+                    font-size: 14pt !important;
+                    margin: 1rem 0 !important;
                 }
                  td, th {
-                    padding: 1px 4px !important;
-                }
-                .results-grid {
-                    gap: 0.25rem !important;
-                }
-                .results-card {
-                    padding: 0.25rem !important;
-                }
-                .detail-row {
-                    padding-top: 1px !important;
-                    padding-bottom: 1px !important;
+                    padding: 2px 4px !important;
+                    font-size: 9pt !important;
                 }
             }
         `}</style>
@@ -105,14 +137,20 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             <ReportHeader />
             <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">{title}</h1>
 
-            <div>
-                <SectionTitle title="Información General" className="report-section-title" />
-                <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
-                <DetailRow label="Material" value={material} />
-                <DetailRow label="Producto" value={producto} />
-                <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
-                <DetailRow label="Generado por" value={inspector} />
-                <DetailRow label="Corroborado por" value={corroborador} />
+            <div className="grid grid-cols-2 gap-x-12 mt-4 text-sm">
+                 <div>
+                    <SectionTitle title="Datos del Informe" className="report-section-title"/>
+                    <DetailRow label="Fecha de Emisión" value={fechaGeneracion} />
+                    <DetailRow label="Material" value={material} />
+                    <DetailRow label="Producto" value={producto} />
+                    <DetailRow label="Lotes Incluidos" value={lotes.join(', ')} />
+                </div>
+                <div>
+                    <SectionTitle title="Trazabilidad" className="report-section-title"/>
+                    <DetailRow label="Rango de Fechas de Ensayo" value={dateRange} />
+                    <DetailRow label="Generado por" value={inspector} />
+                    <DetailRow label="Corroborado por" value={corroborador} />
+                </div>
             </div>
 
             <SectionTitle title="Resultados Promedio de Laboratorio" className="report-section-title"/>
@@ -126,7 +164,7 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             </div>
         
             <SectionTitle title="Detalle por Lote" className="report-section-title"/>
-            <div className="border rounded-lg overflow-hidden">
+            <div className="border rounded-lg overflow-hidden results-table">
                 <Table>
                     <TableHeader>
                         <TableRow>
