@@ -5,8 +5,9 @@ import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-interface MateriaPrimaSummaryReportProps {
+interface SummaryReportProps {
   reportData: ReportData;
+  title: string;
 }
 
 const ReportHeader = () => (
@@ -35,11 +36,11 @@ const DetailRow = ({ label, value }: { label: string; value?: React.ReactNode })
 );
 
 const formatValue = (value: any, decimals: number = 2) => {
-    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return '---';
+    if (value === null || value === undefined || value === '' || isNaN(Number(value)) || value === 0) return '---';
     return Number(value).toFixed(decimals);
 };
 
-export const MateriaPrimaSummaryReport = ({ reportData }: MateriaPrimaSummaryReportProps) => {
+export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
   const { lotes, material, producto, fechaGeneracion, inspector, corroborador, ensayos, promedios } = reportData;
 
   const results = [
@@ -60,7 +61,7 @@ export const MateriaPrimaSummaryReport = ({ reportData }: MateriaPrimaSummaryRep
             }
         `}</style>
         <ReportHeader />
-        <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">Informe de Resultados - Materia Prima</h1>
+        <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">{title}</h1>
 
         <div className="grid grid-cols-2 gap-x-12 mt-6">
             <div>
@@ -79,7 +80,7 @@ export const MateriaPrimaSummaryReport = ({ reportData }: MateriaPrimaSummaryRep
 
         <SectionTitle title="Resultados Promedio de Laboratorio" />
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {results.filter(r => r.value !== '---' && r.value !== '0.00' && r.value !== '0.000').map(res => (
+            {results.filter(r => r.value !== '---').map(res => (
                  <div key={res.parameter} className="p-3 rounded-lg border bg-muted/30">
                     <h3 className="text-xs text-muted-foreground">{res.parameter}</h3>
                     <p className="text-xl font-bold font-headline">{res.value} <span className="text-sm font-normal text-muted-foreground">{res.unit}</span></p>

@@ -12,8 +12,8 @@ import { Search, Mail, FileText, Loader2, Info } from 'lucide-react';
 import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
-import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
-import { generateMateriaPrimaReportAction } from './actions';
+import { ReportContainer } from '@/components/reports/ReportContainer';
+import { generateReportAction } from './actions';
 import type { ReportData } from './actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -49,7 +49,7 @@ function SubmitButton() {
 
 export default function GeneradorInformesPage() {
   const { ensayos, isLoading } = useDynamicData();
-  const [state, formAction] = useActionState(generateMateriaPrimaReportAction, initialState);
+  const [state, formAction] = useActionState(generateReportAction, initialState);
   
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Materia Prima");
@@ -183,7 +183,7 @@ export default function GeneradorInformesPage() {
             </CardHeader>
             <CardContent>
                 <div id="printable-report">
-                    <MateriaPrimaSummaryReport reportData={state.reportData}/>
+                    <ReportContainer reportData={state.reportData}/>
                 </div>
             </CardContent>
         </Card>

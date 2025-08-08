@@ -23,6 +23,7 @@ export interface ReportData {
     tio: number;
     cenizas: number;
   };
+  filterType: string;
 }
 
 const formSchema = z.object({
@@ -79,7 +80,7 @@ function calculateAverages(ensayos: Ensayo[]) {
   return result;
 }
 
-export async function generateMateriaPrimaReportAction(
+export async function generateReportAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
@@ -117,6 +118,7 @@ export async function generateMateriaPrimaReportAction(
       corroborador: "Maximiliano Miranda Valdés",
       ensayos: selectedEnsayos,
       promedios,
+      filterType,
   };
   
   const lotesString = reportData.lotes.length > 2 
@@ -145,7 +147,8 @@ export async function generateMateriaPrimaReportAction(
           negro_humo: promedios.negroHumo.toFixed(2),
           tio: promedios.tio.toFixed(2),
           cenizas: promedios.cenizas.toFixed(2),
-        }
+        },
+        FilterType: filterType,
     };
     const emailResult = await generateEmailContent(emailInput);
 
