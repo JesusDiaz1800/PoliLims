@@ -43,10 +43,6 @@ export default function ReprocesadoPage() {
     ensayos.filter(e => e.tipo === 'Reprocesado'),
   [ensayos]);
 
-  if (isLoading || !user) {
-    return <Loading />;
-  }
-  
   const analistas = React.useMemo(() => [
       { value: "jesus.diaz", label: "Jesus Diaz" },
       { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
@@ -55,6 +51,10 @@ export default function ReprocesadoPage() {
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
   ], []);
 
+  if (isLoading || !user) {
+    return <Loading />;
+  }
+  
   return (
     <div className="space-y-6">
       <ReprocesadoTable
