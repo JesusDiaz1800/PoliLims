@@ -118,7 +118,7 @@ export const CoAReport = ({ data }: CoAReportProps) => {
             }
         `}</style>
       <ReportHeader />
-      <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
+      <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
 
       <div className="grid grid-cols-2 gap-x-12 mt-6 text-sm">
         <div>

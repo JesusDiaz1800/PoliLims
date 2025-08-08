@@ -61,7 +61,7 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             }
         `}</style>
         <ReportHeader />
-        <h1 className="text-xl font-bold text-center my-4 font-headline uppercase">{title}</h1>
+        <h1 className="text-2xl font-bold text-center my-6 font-headline uppercase">{title}</h1>
 
         <div className="grid grid-cols-2 gap-x-12 mt-6">
             <div>
@@ -129,3 +129,4 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
     </div>
   );
 };
+
