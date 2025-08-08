@@ -54,8 +54,8 @@ const emailPrompt = ai.definePrompt({
           The subject must be exactly: "Resultados de Laboratorio para la Materia Prima de {{{Material}}} ({{{Producto}}}) Lotes: {{{Lotes}}}"
 
       2.  **Generate the HTML Email Body:**
-          The body must be exactly this HTML structure, substituting the placeholders with the provided data:
-          "<html><body>Estimados, espero se encuentren bien:<br><br>Les envío los resultados de laboratorio para la materia prima de <b>{{{Material}}} ({{{Producto}}}) Lotes: {{{Lotes}}}</b><br><br><ul><li>El Melt Index promedio es <b>{{{Averages.melt_index}}} [g/10min]</b></li><li>La densidad promedio es <b>{{{Averages.densidad}}} [g/cm³]</b></li><li>El DSC promedio es <b>{{{Averages.dsc}}} [°C]</b></li><li>El porcentaje de negro de humo promedio es <b>{{{Averages.negro_humo}}} [%]</b></li><li>El tiempo de inducción a la oxidación promedio es <b>{{{Averages.tio}}} [min]</b></li><li>El porcentaje de cenizas promedio es <b>{{{Averages.cenizas}}} [%]</b></li></ul><br>Sin otro particular, me despido.<br><br>Maximiliano Miranda Valdés<br><b>Ing. Analista de Control de Calidad</b><br>Polifusion S.A.</body></html>"
+          The body must be exactly this HTML structure, substituting the placeholders with the provided data. Ensure all tags are correctly formatted and closed.
+          "<html><body>Estimados, espero se encuentren bien:<br><br>Les envío los resultados de laboratorio para la materia prima de <b>{{{Material}}} ({{{Producto}}}) Lotes: {{{Lotes}}}</b>.<br><br><ul><li>El Melt Index promedio es <b>{{{Averages.melt_index}}} [g/10min]</b>.</li><li>La densidad promedio es <b>{{{Averages.densidad}}} [g/cm³]</b>.</li><li>El DSC promedio es <b>{{{Averages.dsc}}} [°C]</b>.</li><li>El porcentaje de negro de humo promedio es <b>{{{Averages.negro_humo}}} [%]</b>.</li><li>El tiempo de inducción a la oxidación promedio es <b>{{{Averages.tio}}} [min]</b>.</li><li>El porcentaje de cenizas promedio es <b>{{{Averages.cenizas}}} [%]</b>.</li></ul><br>Sin otro particular, me despido.<br><br>Maximiliano Miranda Valdés<br><b>Ing. Analista de Control de Calidad</b><br>Polifusion S.A.</body></html>"
     `,
 });
 
