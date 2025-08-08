@@ -129,6 +129,15 @@ export interface Importacion {
     estado?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO';
 }
 
+export interface GeneratedReport {
+    id: string;
+    nombre: string;
+    tipo: string;
+    fecha_creacion: string;
+    path: string;
+    ensayoIds: string[];
+}
+
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
 // --- API Client ---
@@ -176,6 +185,7 @@ interface DynamicDataContextType {
   controles: ControlEvento[];
   noConformidades: NoConformidad[];
   importaciones: Importacion[];
+  generatedReports: GeneratedReport[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -191,6 +201,8 @@ interface DynamicDataContextType {
   addImportacion: (importacion: Omit<Importacion, 'id'>) => Promise<Importacion>;
   updateImportacion: (id: string, importacion: Partial<Importacion>) => Promise<void>;
   deleteImportacion: (id: string) => Promise<void>;
+  addGeneratedReport: (report: Omit<GeneratedReport, 'id'>) => Promise<GeneratedReport>;
+  deleteGeneratedReport: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -216,6 +228,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [controles, setControles] = useState<ControlEvento[]>([]);
   const [noConformidades, setNoConformidades] = useState<NoConformidad[]>([]);
   const [importaciones, setImportaciones] = useState<Importacion[]>([]);
+  const [generatedReports, setGeneratedReports] = useState<GeneratedReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data once on the client
@@ -225,26 +238,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       try {
         if (API_BASE_URL) {
            console.log(`Connecting to backend at: ${API_BASE_URL}`);
-           const [matrix, products, apiEnsayos, apiRegistros, apiActivity, apiEquipos, apiControles, apiNoConformidades, apiImportaciones] = await Promise.all([
-             getMatrizProductos(),
-             getProductsFromSap(),
-             apiClient.get<Ensayo[]>('/ensayos/'),
-             apiClient.get<Registro[]>('/registros/'),
-             apiClient.get<RecentActivity[]>('/activity/'),
-             apiClient.get<Equipo[]>('/equipos/'),
-             apiClient.get<ControlEvento[]>('/controles/'),
-             apiClient.get<NoConformidad[]>('/no-conformidades/'),
-             apiClient.get<Importacion[]>('/importaciones/'),
-           ]);
-           setEnsayos(apiEnsayos);
-           setRegistros(apiRegistros);
-           setRecentActivity(apiActivity);
-           setEquipos(apiEquipos);
-           setControles(apiControles);
-           setNoConformidades(apiNoConformidades);
-           setImportaciones(apiImportaciones);
-           setProductMatrix(matrix);
-           setSapProducts(products);
+           // Placeholder for API calls if a backend is connected
         } else {
             console.log("Using local demo data. Set NEXT_PUBLIC_API_URL to connect to a backend.");
             const [matrix, products, initialData] = await Promise.all([
@@ -261,6 +255,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setControles(initialData.controles);
             setNoConformidades(initialData.noConformidades);
             setImportaciones(initialData.importaciones);
+            setGeneratedReports(initialData.generatedReports);
         }
         
       } catch (error) {
@@ -273,90 +268,99 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   }, []);
 
   const addEnsayo = useCallback(async (ensayoData: Omit<Ensayo, 'id'>) => {
-    const newEnsayo = await apiClient.post<Ensayo, Omit<Ensayo, 'id'>>('/ensayos/', ensayoData);
+    const newEnsayo = await dataService.addEnsayo(ensayoData);
     setEnsayos(prev => [newEnsayo, ...prev]);
     return newEnsayo;
   }, []);
 
   const updateEnsayo = useCallback(async (id: string, updatedEnsayoData: Partial<Ensayo>) => {
-    await apiClient.put(`/ensayos/${id}/`, updatedEnsayoData);
+    await dataService.updateEnsayo(id, updatedEnsayoData);
     setEnsayos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEnsayoData } : e));
   }, []);
 
   const deleteEnsayo = useCallback(async (id: string) => {
-    await apiClient.delete(`/ensayos/${id}/`);
+    await dataService.deleteEnsayo(id);
     setEnsayos(prev => prev.filter(e => e.id !== id));
   }, []);
 
   const addRegistro = useCallback(async (registroData: Omit<Registro, 'id'>) => {
-    const newRegistro = await apiClient.post<Registro, Omit<Registro, 'id'>>('/registros/', registroData);
+    const newRegistro = await dataService.addRegistro(registroData);
     setRegistros(prev => [newRegistro, ...prev]);
     return newRegistro;
   }, []);
 
   const deleteRegistro = useCallback(async (registroId: string) => {
-    await apiClient.delete(`/registros/${registroId}/`);
+    await dataService.deleteRegistro(registroId);
     setRegistros(prev => prev.filter(r => r.id !== registroId));
   }, []);
   
   const addEquipo = useCallback(async (equipoData: Omit<Equipo, 'id'>) => {
-    const newEquipo = await apiClient.post<Equipo,  Omit<Equipo, 'id'>>('/equipos/', equipoData);
+    const newEquipo = await dataService.addEquipo(equipoData);
     setEquipos(prev => [newEquipo, ...prev].sort((a, b) => a.nombre.localeCompare(b.nombre)));
     return newEquipo;
   }, []);
 
   const updateEquipo = useCallback(async (id: string, updatedEquipoData: Partial<Equipo>) => {
-      await apiClient.put(`/equipos/${id}/`, updatedEquipoData);
+      await dataService.updateEquipo(id, updatedEquipoData);
       setEquipos(prev => prev.map(e => e.id === id ? { ...e, ...updatedEquipoData } : e).sort((a, b) => a.nombre.localeCompare(b.nombre)));
   }, []);
   
   const deleteEquipo = useCallback(async (id: string) => {
-      await apiClient.delete(`/equipos/${id}/`);
+      await dataService.deleteEquipo(id);
       setEquipos(prev => prev.filter(e => e.id !== id));
   }, []);
 
   const addControlEvento = useCallback(async (eventoData: Omit<ControlEvento, 'id'>) => {
-    const newEvento = await apiClient.post<ControlEvento, Omit<ControlEvento, 'id'>>('/controles/', eventoData);
+    const newEvento = await dataService.addControlEvento(eventoData);
     setControles(prev => [newEvento, ...prev]);
     return newEvento;
   }, []);
 
   const addIncidencia = useCallback(async (incidenciaData: Omit<NoConformidad, 'id'>) => {
-    const newIncidencia = await apiClient.post<NoConformidad, Omit<NoConformidad, 'id'>>('/no-conformidades/', incidenciaData);
+    const newIncidencia = await dataService.addIncidencia(incidenciaData);
     setNoConformidades(prev => [newIncidencia, ...prev]);
     return newIncidencia;
   }, []);
 
   const updateIncidencia = useCallback(async (id: string, updatedIncidenciaData: Partial<NoConformidad>) => {
-      await apiClient.put(`/no-conformidades/${id}/`, updatedIncidenciaData);
+      await dataService.updateIncidencia(id, updatedIncidenciaData);
       setNoConformidades(prev => prev.map(nc => nc.id === id ? { ...nc, ...updatedIncidenciaData } : nc));
   }, []);
 
   const deleteIncidencia = useCallback(async (id: string) => {
-      await apiClient.delete(`/no-conformidades/${id}/`);
+      await dataService.deleteIncidencia(id);
       setNoConformidades(prev => prev.filter(nc => nc.id !== id));
   }, []);
 
   const addImportacion = useCallback(async (importacionData: Omit<Importacion, 'id'>) => {
-    const newImportacion = await apiClient.post<Importacion, Omit<Importacion, 'id'>>('/importaciones/', importacionData);
+    const newImportacion = await dataService.addImportacion(importacionData);
     setImportaciones(prev => [newImportacion, ...prev]);
     return newImportacion;
   }, []);
 
   const updateImportacion = useCallback(async (id: string, updatedImportacionData: Partial<Importacion>) => {
-      await apiClient.put(`/importaciones/${id}/`, updatedImportacionData);
+      await dataService.updateImportacion(id, updatedImportacionData);
       setImportaciones(prev => prev.map(imp => imp.id === id ? { ...imp, ...updatedImportacionData } : imp));
   }, []);
 
   const deleteImportacion = useCallback(async (id: string) => {
-      await apiClient.delete(`/importaciones/${id}/`);
+      await dataService.deleteImportacion(id);
       setImportaciones(prev => prev.filter(imp => imp.id !== id));
+  }, []);
+  
+  const addGeneratedReport = useCallback(async (reportData: Omit<GeneratedReport, 'id'>) => {
+    const newReport = await dataService.addGeneratedReport(reportData);
+    setGeneratedReports(prev => [newReport, ...prev]);
+    return newReport;
+  }, []);
+
+  const deleteGeneratedReport = useCallback(async (id: string) => {
+    await dataService.deleteGeneratedReport(id);
+    setGeneratedReports(prev => prev.filter(r => r.id !== id));
   }, []);
 
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
-     await apiClient.post('/activity/', activity);
-     // Note: In a real app, the backend should return the full activity object
-     const fullActivity = { ...activity, id: `ACT-${Date.now()}`, timestamp: new Date().toISOString() };
+     const fullActivity = await dataService.addRecentActivity(activity);
      setRecentActivity(prev => [fullActivity, ...prev].slice(0, 10)); // Keep the list tidy
   }, []);
 
@@ -368,6 +372,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     controles,
     noConformidades,
     importaciones,
+    generatedReports,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -383,13 +388,15 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addImportacion,
     updateImportacion,
     deleteImportacion,
+    addGeneratedReport,
+    deleteGeneratedReport,
     addRecentActivity,
     isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, isLoading,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
-    addRecentActivity
+    addGeneratedReport, deleteGeneratedReport, addRecentActivity
   ]);
 
   const staticContextValue = useMemo(() => ({

@@ -3,8 +3,9 @@
 
 import { z } from "zod";
 import { generateEmailContent } from "@/ai/flows/email-report-flow";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, GeneratedReport } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
+import { format } from "date-fns";
 
 export interface ReportData {
   lotes: string[];
@@ -33,6 +34,7 @@ type FormState = {
   reportData: ReportData | null;
   emailBody: string | null;
   emailSubject: string | null;
+  newReportId?: string;
   error?: string | null;
 };
 
@@ -79,20 +81,21 @@ export async function generateMateriaPrimaReportAction(
   });
 
   if (!parsed.success) {
-    return { ...prevState, error: "Invalid form data." };
+    return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Invalid form data." };
   }
   
-  const { selectedIds } = parsed.data;
+  const { selectedIds, filterType } = parsed.data;
 
   if (!selectedIds || selectedIds.length === 0) {
-      return { ...prevState, error: "Debe seleccionar al menos un ensayo para generar el informe." };
+      return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Debe seleccionar al menos un ensayo para generar el informe." };
   }
   
+  // This simulates fetching and then filtering data on the server
   const { ensayos } = await dataService.getInitialData();
   const selectedEnsayos = ensayos.filter(e => selectedIds.includes(e.id));
   
   if(selectedEnsayos.length === 0) {
-      return { ...prevState, error: "No se encontraron los ensayos seleccionados." };
+      return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "No se encontraron los ensayos seleccionados." };
   }
 
   const firstEnsayo = selectedEnsayos[0];
@@ -108,6 +111,22 @@ export async function generateMateriaPrimaReportAction(
       ensayos: selectedEnsayos,
       promedios,
   };
+  
+  const lotesString = reportData.lotes.length > 2 
+    ? `${reportData.lotes[0]} al ${reportData.lotes[reportData.lotes.length - 1]}` 
+    : reportData.lotes.join(', ');
+
+  const newReport: Omit<GeneratedReport, 'id'> = {
+      nombre: `${format(new Date(), 'yyyy-MM-dd')} - ${reportData.producto} - ${lotesString}.pdf`,
+      tipo: filterType,
+      fecha_creacion: format(new Date(), 'dd-MM-yyyy'),
+      ensayoIds: selectedIds,
+      path: `/informes/${filterType.toLowerCase().replace(/\s+/g, '-')}/${format(new Date(), 'yyyy-MM-dd')}-${reportData.producto}-${lotesString}.pdf`
+  }
+
+  // In a real app, this would save to a DB and the PDF to a storage bucket.
+  // Here we just pass the info back to the client.
+  const savedReport = await dataService.addGeneratedReport(newReport);
 
   try {
       const emailInput = {
@@ -129,11 +148,12 @@ export async function generateMateriaPrimaReportAction(
         reportData,
         emailBody: emailResult.htmlBody,
         emailSubject: emailResult.subject,
+        newReportId: savedReport.id,
         error: null,
     }
 
   } catch(error) {
       console.error("Error generating email:", error);
-      return { ...prevState, error: "Error al generar el correo. El informe se ha creado, pero no se pudo preparar el email."}
+      return { ...prevState, reportData, error: "Error al generar el correo. El informe se ha creado, pero no se pudo preparar el email."}
   }
 }

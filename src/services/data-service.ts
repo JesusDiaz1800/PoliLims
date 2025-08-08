@@ -1,10 +1,6 @@
 
 
-
-
-
-
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport } from "@/context/data-context";
 import { isPast, parse } from 'date-fns';
 
 
@@ -152,6 +148,63 @@ const demoImportaciones: Importacion[] = [
     { id: 'IMP-003', bl: 'NBO210082100', fecha_embarque: '24-12-2021', sca: '65793', fecha_emision_cert: '21-03-2022', di: '2400302578-7', etiqueta_rango_inicio: '7821908', etiqueta_rango_fin: '7822908', operacion: '170412', proveedor: 'AOLONG', fecha_solicitada: '17-02-2022', fecha_entrega_calidad: '22-02-2022', cantidad_lote: 7202, fecha_devolucion: '21-03-2022', fecha_liberacion: '21-03-2022', ingresado_siss: true, estado: 'CADUCADO' },
 ];
 
+const demoGeneratedReports: GeneratedReport[] = [
+    { id: 'REP-001', nombre: '2025-07-23 - HE3490LS - Lote 1325115.pdf', tipo: 'Materia Prima', fecha_creacion: '23-07-2025', path: '/informes/materia-prima/2025-07-23-HE3490LS-1325115.pdf', ensayoIds: ['LAB-07-03'] },
+    { id: 'REP-002', nombre: '2025-07-21 - R202P - Lote 500312.pdf', tipo: 'Materia Prima', fecha_creacion: '21-07-2025', path: '/informes/materia-prima/2025-07-21-R202P-500312.pdf', ensayoIds: ['LAB-07-07'] },
+];
+
+let generatedReports = [...demoGeneratedReports];
+
+export async function addGeneratedReport(report: Omit<GeneratedReport, 'id'>): Promise<GeneratedReport> {
+    const newReport = { ...report, id: `REP-${String(generatedReports.length + 1).padStart(3, '0')}` };
+    generatedReports.unshift(newReport);
+    return newReport;
+}
+
+export async function deleteGeneratedReport(id: string): Promise<void> {
+    generatedReports = generatedReports.filter(r => r.id !== id);
+}
+
+// Dummy add/update/delete functions to simulate API calls
+export async function addEnsayo(ensayo: Omit<Ensayo, 'id'>) {
+    const newEnsayo = { ...ensayo, id: `LAB-NEW-${Math.random().toString(16).slice(2)}` };
+    // demoEnsayos.unshift(newEnsayo);
+    return newEnsayo;
+}
+export async function updateEnsayo(id: string, updatedData: Partial<Ensayo>) { return; }
+export async function deleteEnsayo(id: string) { return; }
+export async function addRegistro(registro: Omit<Registro, 'id'>) { 
+    const newRegistro = { ...registro, id: `CTRL-NEW-${Math.random().toString(16).slice(2)}` };
+    return newRegistro;
+}
+export async function deleteRegistro(id: string) { return; }
+export async function addEquipo(equipo: Omit<Equipo, 'id'>) {
+    const newEquipo = { ...equipo, id: `EQ-NEW-${Math.random().toString(16).slice(2)}` };
+    return newEquipo;
+}
+export async function updateEquipo(id: string, updatedData: Partial<Equipo>) { return; }
+export async function deleteEquipo(id: string) { return; }
+export async function addControlEvento(evento: Omit<ControlEvento, 'id'>) { 
+    const newEvento = { ...evento, id: `CE-NEW-${Math.random().toString(16).slice(2)}` };
+    return newEvento;
+}
+export async function addIncidencia(incidencia: Omit<NoConformidad, 'id'>) { 
+    const newIncidencia = { ...incidencia, id: `NC-NEW-${Math.random().toString(16).slice(2)}` };
+    return newIncidencia;
+}
+export async function updateIncidencia(id: string, updatedData: Partial<NoConformidad>) { return; }
+export async function deleteIncidencia(id: string) { return; }
+export async function addImportacion(importacion: Omit<Importacion, 'id'>) {
+    const newImportacion = { ...importacion, id: `IMP-NEW-${Math.random().toString(16).slice(2)}` };
+    return newImportacion;
+ }
+export async function updateImportacion(id: string, updatedData: Partial<Importacion>) { return; }
+export async function deleteImportacion(id: string) { return; }
+export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>) { 
+     const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
+    return newActivity;
+}
+
 export async function getInitialData() {
     const today = new Date();
     const updatedEquipos = demoEquipos.map(equipo => {
@@ -168,6 +221,7 @@ export async function getInitialData() {
         equipos: updatedEquipos,
         controles: demoControles,
         noConformidades: demoNoConformidades,
-        importaciones: demoImportaciones
+        importaciones: demoImportaciones,
+        generatedReports: generatedReports,
     };
 }
