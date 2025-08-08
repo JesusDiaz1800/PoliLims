@@ -18,7 +18,6 @@ interface EnsayosProductoTerminadoTableProps {
   ensayos: Ensayo[];
   tipoEnsayo: 'HDPE' | 'PP';
   onOpenDialog: (ensayo: Ensayo, filterType: string) => void;
-  onApprove: (ensayo: Ensayo) => void;
   user: User | null;
 }
 
@@ -44,7 +43,7 @@ const formatValue = (value: any, decimals: number = 2) => {
 };
 
 
-const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog, onApprove, user }: EnsayosProductoTerminadoTableProps) => {
+const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog, user }: EnsayosProductoTerminadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
   const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
@@ -291,12 +290,6 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
                               <Edit className="mr-2 h-4 w-4" />
                               Editar / Ingresar Datos
                           </DropdownMenuItem>
-                           {canApprove && (
-                            <DropdownMenuItem onSelect={() => onApprove(ensayo)}>
-                                <ShieldCheck className="mr-2 h-4 w-4" />
-                                Aprobar / Revisar
-                            </DropdownMenuItem>
-                          )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

@@ -16,7 +16,6 @@ export default function TuberiasPpPage() {
   const { ensayos, isLoading } = useDynamicData();
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
-  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = React.useState('all');
@@ -41,16 +40,6 @@ export default function TuberiasPpPage() {
     setIsFormDialogOpen(false);
   };
 
-  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
-    setSelectedEnsayo(ensayo);
-    setIsApprovalDialogOpen(true);
-  }
-
-  const handleCloseApprovalDialog = () => {
-    setSelectedEnsayo(null);
-    setIsApprovalDialogOpen(false);
-  }
-
   if (isLoading || !user) {
     return <Loading />;
   }
@@ -63,7 +52,6 @@ export default function TuberiasPpPage() {
         ensayos={ppEnsayos}
         tipoEnsayo="PP"
         onOpenDialog={handleOpenFormDialog}
-        onApprove={handleOpenApprovalDialog}
         user={user}
       />
       {selectedEnsayo && user && (
@@ -74,14 +62,6 @@ export default function TuberiasPpPage() {
           tipo="PP"
           user={user}
           defaultTab={activeTab}
-        />
-      )}
-       {selectedEnsayo && user && (
-        <ApprovalDialog
-          isOpen={isApprovalDialogOpen}
-          onClose={handleCloseApprovalDialog}
-          ensayo={selectedEnsayo}
-          user={user}
         />
       )}
     </div>

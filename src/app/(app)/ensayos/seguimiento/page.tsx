@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -22,11 +23,13 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter, Pencil } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData } from "@/context/data-context";
 import { useRouter, useSearchParams } from "next/navigation";
-
+import type { User } from "@/services/user-service";
+import { findUserByUsername } from "@/services/user-service";
+import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
@@ -54,7 +57,21 @@ export default function SeguimientoEnsayosPage() {
   const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
+  const [user, setUser] = React.useState<User | null>(null);
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
+
+  React.useEffect(() => {
+    const username = searchParams.get('user') || 'jdiaz';
+    async function loadUser() {
+      const userData = await findUserByUsername(username);
+      setUser(userData);
+    }
+    loadUser();
+  }, [searchParams]);
+
   const ensayoTypes = ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))];
 
   const filteredEnsayos = ensayos
@@ -93,6 +110,16 @@ export default function SeguimientoEnsayosPage() {
     }
     router.push(`${path}?id=${ensayo.id}&${userQuery}`);
   };
+
+  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsApprovalDialogOpen(true);
+  }
+
+  const handleCloseApprovalDialog = () => {
+    setSelectedEnsayo(null);
+    setIsApprovalDialogOpen(false);
+  }
 
   const formatValue = (value: any, decimals: number = 2) => {
     if (value === null || value === undefined || value === '' || isNaN(Number(value))) return 'N/A';
@@ -186,6 +213,13 @@ export default function SeguimientoEnsayosPage() {
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar / Ingresar Datos
                             </DropdownMenuItem>
+                            {canApprove && (
+                                <DropdownMenuItem onSelect={() => handleOpenApprovalDialog(ensayo)}>
+                                    <ShieldCheck className="mr-2 h-4 w-4" />
+                                    Aprobar / Revisar
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem>Imprimir Certificado</DropdownMenuItem>
                         </DropdownMenuContent>
                         </DropdownMenu>
@@ -203,6 +237,14 @@ export default function SeguimientoEnsayosPage() {
         )}
       </CardContent>
     </Card>
+    {selectedEnsayo && user && (
+        <ApprovalDialog
+            isOpen={isApprovalDialogOpen}
+            onClose={handleCloseApprovalDialog}
+            ensayo={selectedEnsayo}
+            user={user}
+        />
+    )}
     </>
   );
 }

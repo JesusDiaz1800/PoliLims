@@ -15,7 +15,6 @@ import { findUserByUsername } from '@/services/user-service';
 export default function MateriaPrimaPage() {
   const { ensayos, isLoading } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
-  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
@@ -41,16 +40,6 @@ export default function MateriaPrimaPage() {
     setIsFormDialogOpen(false);
   };
 
-  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
-    setSelectedEnsayo(ensayo);
-    setIsApprovalDialogOpen(true);
-  }
-
-  const handleCloseApprovalDialog = () => {
-    setSelectedEnsayo(null);
-    setIsApprovalDialogOpen(false);
-  }
-
   if (isLoading || !user) {
     return <Loading />;
   }
@@ -71,7 +60,6 @@ export default function MateriaPrimaPage() {
         ensayos={materiaPrimaEnsayos}
         onAddNew={() => handleOpenFormDialog()}
         onEdit={handleOpenFormDialog}
-        onApprove={handleOpenApprovalDialog}
         user={user}
       />
       <MateriaPrimaDialog
@@ -81,14 +69,6 @@ export default function MateriaPrimaPage() {
         analistas={analistas}
         defaultTab={activeTab}
       />
-       {selectedEnsayo && user && (
-        <ApprovalDialog
-          isOpen={isApprovalDialogOpen}
-          onClose={handleCloseApprovalDialog}
-          ensayo={selectedEnsayo}
-          user={user}
-        />
-      )}
     </div>
   );
 }

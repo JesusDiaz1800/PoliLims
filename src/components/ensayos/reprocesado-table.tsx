@@ -22,7 +22,6 @@ interface ReprocesadoTableProps {
   ensayos: Ensayo[];
   onAddNew: () => void;
   onEdit: (ensayo: Ensayo, filterType: string) => void;
-  onApprove: (ensayo: Ensayo) => void;
   user: User | null;
 }
 
@@ -43,7 +42,7 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }: ReprocesadoTableProps) => {
+const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: ReprocesadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
   const { deleteEnsayo } = useDynamicData();
@@ -291,12 +290,6 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, onApprove, user }
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar / Ingresar Datos
                                 </DropdownMenuItem>
-                                {canApprove && (
-                                <DropdownMenuItem onSelect={() => onApprove(ensayo)}>
-                                    <ShieldCheck className="mr-2 h-4 w-4" />
-                                    Aprobar / Revisar
-                                </DropdownMenuItem>
-                                )}
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
