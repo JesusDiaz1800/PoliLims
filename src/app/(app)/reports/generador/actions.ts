@@ -6,6 +6,8 @@ import type { Ensayo, GeneratedReport } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
 import { format } from "date-fns";
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
+import { generateEmailContent, type EmailContentInput } from "@/ai/flows/email-report-flow";
+
 
 export interface ReportData {
   lotes: string[];
@@ -59,43 +61,6 @@ function calculateAverages(ensayos: Ensayo[]) {
   });
 
   return averages;
-}
-
-function generateEmailFromTemplate(reportData: ReportData): { subject: string, body: string } {
-    const { filterType, material, producto, lotes, promedios } = reportData;
-
-    const subject = `Informe de Resultados de Laboratorio: ${filterType} ${material} - Lotes ${lotes.join(', ')}`;
-    
-    const formattedAverages: [string, string][] = [];
-    if (promedios.meltIndexCalculado) formattedAverages.push(['Melt Index', `${promedios.meltIndexCalculado.toFixed(3)} g/10min`]);
-    if (promedios.densidadCalculada) formattedAverages.push(['Densidad', `${promedios.densidadCalculada.toFixed(3)} g/cm³`]);
-    if (promedios.dsc_punto_fusion) formattedAverages.push(['DSC', `${promedios.dsc_punto_fusion.toFixed(2)} °C`]);
-    if (promedios.negroHumoCalculado) formattedAverages.push(['Negro de Humo', `${promedios.negroHumoCalculado.toFixed(2)} %`]);
-    if (promedios.tio_tiempo) formattedAverages.push(['TIO', `${promedios.tio_tiempo.toFixed(2)} min`]);
-    if (promedios.cenizasCalculado) formattedAverages.push(['Cenizas', `${promedios.cenizasCalculado.toFixed(2)} %`]);
-    if (promedios.fvTotalPorcentaje) formattedAverages.push(['Fibra de Vidrio (Total)', `${promedios.fvTotalPorcentaje.toFixed(2)} %`]);
-    if (promedios.fvIntermediaPorcentaje) formattedAverages.push(['Fibra de Vidrio (Intermedia)', `${promedios.fvIntermediaPorcentaje.toFixed(2)} %`]);
-    
-    const resultsList = formattedAverages
-        .map(([key, value]) => `- ${key}: ${value}`)
-        .join('\n');
-
-    const body = `
-Estimados,
-
-Junto con saludar, adjunto los resultados de laboratorio correspondientes a *${filterType} de ${material} (${producto})*, para los lotes: *${lotes.join(', ')}*.
-
-A continuación, el resumen de los resultados promedio:
-${resultsList}
-
-Sin otro particular, se despide atentamente,
-
-Maximiliano Miranda Valdés
-Ing. Analista de Control de Calidad
-Polifusión S.A.
-    `.trim();
-
-    return { subject, body };
 }
 
 
@@ -160,15 +125,36 @@ export async function generateReportAction(
   }
   
   const savedReport = await dataService.addGeneratedReport(newReport);
-
-  const { subject, body } = generateEmailFromTemplate(reportData);
   
-  return {
+  const emailInput: EmailContentInput = {
+    reportType: reportData.filterType,
+    material: reportData.material,
+    product: reportData.producto,
+    lots: reportData.lotes,
+    averageResults: Object.entries(reportData.promedios)
+      .map(([key, value]) => ({ parameter: key, value: String(value) }))
+  };
+
+  try {
+    const { subject, body } = await generateEmailContent(emailInput);
+    
+    return {
+        reportData,
+        emailBody: body,
+        emailSubject: subject,
+        newReportId: savedReport.id,
+        error: null,
+        emailError: null,
+    };
+  } catch (err: any) {
+    console.error("AI Email Generation Error:", err);
+     return {
       reportData,
-      emailBody: body,
-      emailSubject: subject,
+      emailBody: null,
+      emailSubject: null,
       newReportId: savedReport.id,
       error: null,
-      emailError: null,
+      emailError: "No se pudo generar el borrador del correo debido a que se ha excedido la cuota de la API. Puede imprimir el informe y reintentar la generación del correo más tarde.",
+    };
   }
 }
