@@ -23,46 +23,10 @@ interface FormProps<TFieldValues extends FieldValues> extends Omit<React.Compone
 
 const Form = <TFieldValues extends FieldValues>({ form, onSubmit, children, className, ...props }: FormProps<TFieldValues>) => {
   
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter') {
-      const target = event.target as HTMLElement;
-      // No navegar si el Enter es en un Textarea
-      if (target.tagName.toLowerCase() === 'textarea') {
-        return;
-      }
-      // No navegar si es un botón para no interferir con el submit
-      if (target.tagName.toLowerCase() === 'button') {
-        return;
-      }
-
-      event.preventDefault();
-      
-      const formElement = event.currentTarget;
-      const focusableElements = Array.from(
-        formElement.querySelectorAll(
-          'input, button[role="combobox"], textarea, button[type="submit"], .radix-select-trigger'
-        )
-      ).filter(
-        (el): el is HTMLElement => el instanceof HTMLElement && el.offsetParent !== null && !el.hasAttribute('disabled')
-      );
-      
-      const currentIndex = focusableElements.indexOf(target);
-      const nextIndex = (currentIndex + 1) % focusableElements.length;
-      
-      if (currentIndex !== -1 && nextIndex < focusableElements.length) {
-         const nextElement = focusableElements[nextIndex];
-         if (nextElement) {
-            nextElement.focus();
-         }
-      }
-    }
-  };
-
   return (
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        onKeyDown={handleKeyDown}
         className={cn("space-y-6", className)}
         {...props}
       >
