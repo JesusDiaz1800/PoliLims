@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 
 interface SummaryReportProps {
   reportData: ReportData;
@@ -75,20 +76,26 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                     padding: 0;
                 }
                  .report-section-title {
-                    margin-top: 1rem;
-                    margin-bottom: 0.5rem;
-                    padding-bottom: 0.25rem;
+                    margin-top: 1rem !important;
+                    margin-bottom: 0.5rem !important;
+                    padding-bottom: 0.25rem !important;
                 }
                  .signature-section {
-                    margin-top: 2rem;
-                    padding-top: 1rem;
+                    margin-top: 2rem !important;
+                    padding-top: 1rem !important;
                 }
                  h1 {
-                    margin-top: 1rem;
-                    margin-bottom: 1rem;
+                    margin-top: 1rem !important;
+                    margin-bottom: 1rem !important;
                 }
                  td, th {
                     padding: 4px 8px !important;
+                }
+                .results-grid {
+                    gap: 0.5rem !important;
+                }
+                .results-card {
+                    padding: 0.5rem !important;
                 }
             }
         `}</style>
@@ -112,9 +119,9 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             </div>
 
             <SectionTitle title="Resultados Promedio de Laboratorio" className="report-section-title"/>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 results-grid">
                 {results.filter(r => r.value !== '---').map(res => (
-                    <div key={res.parameter} className="p-3 rounded-lg border bg-muted/30">
+                    <div key={res.parameter} className="p-3 rounded-lg border bg-muted/30 results-card">
                         <h3 className="text-xs text-muted-foreground">{res.parameter}</h3>
                         <p className="text-xl font-bold font-headline">{res.value} <span className="text-sm font-normal text-muted-foreground">{res.unit}</span></p>
                     </div>
