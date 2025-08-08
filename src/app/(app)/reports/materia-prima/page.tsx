@@ -7,7 +7,7 @@ import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Printer, Mail, Loader2, AlertTriangle, FileText } from 'lucide-react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
 import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
 import { generateMateriaPrimaReportAction } from './actions';
@@ -39,7 +39,7 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
 
 export default function MateriaPrimaBatchReportPage() {
   const { ensayos, isLoading } = useDynamicData();
-  const [state, formAction] = useFormState(generateMateriaPrimaReportAction, initialState);
+  const [state, formAction] = useActionState(generateMateriaPrimaReportAction, initialState);
   const { toast } = useToast();
   
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState(new Set<string>());
@@ -121,7 +121,7 @@ export default function MateriaPrimaBatchReportPage() {
         {state.data?.report && (
              <Card>
                 <CardHeader>
-                    <CardTitle>Informe Generado</CardTitle>
+                    <CardTitle>Informe de Resultados Generado</CardTitle>
                     <CardDescription>
                         A continuación se muestra el informe de resumen. Puede imprimirlo o generar un borrador de correo electrónico.
                     </CardDescription>
