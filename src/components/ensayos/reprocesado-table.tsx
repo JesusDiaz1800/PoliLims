@@ -263,7 +263,6 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
         </div>
       </CardHeader>
       <CardContent>
-        <div className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -320,7 +319,6 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
                 ))}
             </TableBody>
           </Table>
-        </div>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />

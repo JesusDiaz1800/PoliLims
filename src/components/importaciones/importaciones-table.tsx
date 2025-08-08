@@ -123,7 +123,6 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
         </div>
       </CardHeader>
       <CardContent>
-        <div className="w-full whitespace-nowrap rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -198,7 +197,6 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
             ))}
           </TableBody>
         </Table>
-        </div>
         {filteredImportaciones.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />

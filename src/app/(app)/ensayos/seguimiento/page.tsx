@@ -140,19 +140,17 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
   }
   
   return (
-    <div className="w-full whitespace-nowrap rounded-md border">
-        <Table>
-            <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
-            <TableBody>
-                {ensayos.map((ensayo) => (
-                    <TableRow key={ensayo.id}>
-                        {renderRow(ensayo)}
-                        {renderActions(ensayo)}
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
+    <Table>
+        <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
+        <TableBody>
+            {ensayos.map((ensayo) => (
+                <TableRow key={ensayo.id}>
+                    {renderRow(ensayo)}
+                    {renderActions(ensayo)}
+                </TableRow>
+            ))}
+        </TableBody>
+    </Table>
   )
 };
 
