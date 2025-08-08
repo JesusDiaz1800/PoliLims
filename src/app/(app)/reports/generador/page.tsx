@@ -16,8 +16,9 @@ import { EnsayoSelectionTable } from '@/components/reports/ensayo-selection-tabl
 import { ReportContainer } from '@/components/reports/ReportContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Combobox } from "@/components/ui/combobox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const initialState: {
@@ -58,10 +59,11 @@ const parameterOptions = [
 
 export default function GeneradorInformesPage() {
   const { ensayos, isLoading } = useDynamicData();
+  const { toast } = useToast();
   const [loteSelectionState, loteSelectionAction] = useActionState(generateReportAction, initialState);
   const [productCertState, productCertAction] = useActionState(generateProductCertificateAction, initialState);
 
-  const [filterType, setFilterType] = React.useState("Materia Prima");
+  const [filterType, setFilterType] = React.useState("Tubería HDPE");
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState(new Set<string>());
   const [selectedProduct, setSelectedProduct] = React.useState("");
   const [selectedParameter, setSelectedParameter] = React.useState("meltIndexCalculado");
@@ -76,10 +78,10 @@ export default function GeneradorInformesPage() {
   }, [ensayos, filterType]);
   
   const ensayoTypes = React.useMemo(() => [
+      'Tubería HDPE',
+      'Tubería PP',
       'Materia Prima',
       'Reprocesado',
-      'Tubería HDPE',
-      'Tubería PP'
   ], []);
 
   const productOptions = React.useMemo(() => {
@@ -87,6 +89,12 @@ export default function GeneradorInformesPage() {
     return uniqueProducts.map(p => ({ value: p, label: p }));
   }, [ensayos]);
 
+  const handleSendEmail = () => {
+    toast({
+      title: "Función no implementada",
+      description: "La opción de enviar por correo electrónico estará disponible próximamente.",
+    });
+  };
 
   const handlePrint = async () => {
     const printContent = document.getElementById('printable-report');
@@ -162,9 +170,13 @@ export default function GeneradorInformesPage() {
                     <div className="flex justify-between items-center">
                         <div>
                             <CardTitle>Vista Previa del Documento</CardTitle>
-                            <CardDescription>Revise el documento generado antes de imprimir.</CardDescription>
+                            <CardDescription>Revise el documento generado antes de imprimir o enviar.</CardDescription>
                         </div>
                         <div className="flex gap-2">
+                             <Button variant="outline" onClick={handleSendEmail}>
+                                <Mail className="mr-2 h-4 w-4" />
+                                Enviar por Correo
+                            </Button>
                             <Button onClick={handlePrint}>
                                 <FileText className="mr-2 h-4 w-4" />
                                 Imprimir Documento
