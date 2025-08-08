@@ -167,9 +167,10 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             <div className="border rounded-lg overflow-hidden results-table">
                 <Table>
                     <TableHeader>
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent">
                             <TableHead>Lote</TableHead>
-                            <TableHead className="text-right">Melt Index</TableHead>
+                            <TableHead>ID Ensayo</TableHead>
+                            <TableHead className="text-right">M.I.</TableHead>
                             <TableHead className="text-right">Densidad</TableHead>
                             <TableHead className="text-right">DSC</TableHead>
                             <TableHead className="text-right">% NH</TableHead>
@@ -180,8 +181,9 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                     </TableHeader>
                     <TableBody>
                     {ensayos.map(e => (
-                        <TableRow key={e.id}>
+                        <TableRow key={e.id} className="hover:bg-muted/50">
                             <TableCell className="font-mono font-medium">{e.lote}</TableCell>
+                            <TableCell className="font-mono text-muted-foreground">{e.id}</TableCell>
                             <TableCell className="text-right font-mono">{formatValue(e.meltIndexCalculado, 3)}</TableCell>
                             <TableCell className="text-right font-mono">{formatValue(e.densidadCalculada, 3)}</TableCell>
                             <TableCell className="text-right font-mono">{formatValue(e.dsc_punto_fusion, 2)}</TableCell>
