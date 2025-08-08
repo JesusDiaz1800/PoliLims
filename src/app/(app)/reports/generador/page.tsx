@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Mail, FileText, Loader2, Info } from 'lucide-react';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
 import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
@@ -49,7 +49,7 @@ function SubmitButton() {
 
 export default function GeneradorInformesPage() {
   const { ensayos, isLoading } = useDynamicData();
-  const [reportState, formAction] = useActionState(generateMateriaPrimaReportAction, initialState);
+  const [state, formAction] = useActionState(generateMateriaPrimaReportAction, initialState);
   
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Materia Prima");
@@ -72,11 +72,11 @@ export default function GeneradorInformesPage() {
   ], []);
 
   const handleOpenEmail = () => {
-    if (reportState?.emailBody && reportState?.emailSubject) {
+    if (state?.emailBody && state?.emailSubject) {
         const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
         const cc = "afigueroa@polifusion.cl; cmunizaga@polifusion.cl; vlutz@polifusion.cl; mgallardo@polifusion.cl; ccalidad4@polifusion.cl; rcruz@polifusion.cl";
 
-        const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(reportState.emailSubject)}&body=${encodeURIComponent(reportState.emailBody)}`;
+        const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(state.emailSubject)}&body=${encodeURIComponent(state.emailBody)}`;
         window.location.href = mailtoLink;
     }
   };
@@ -161,7 +161,7 @@ export default function GeneradorInformesPage() {
         </CardContent>
       </Card>
 
-      {reportState?.reportData && (
+      {state?.reportData && (
         <Card>
             <CardHeader>
                 <div className="flex justify-between items-center">
@@ -183,18 +183,18 @@ export default function GeneradorInformesPage() {
             </CardHeader>
             <CardContent>
                 <div id="printable-report">
-                    <MateriaPrimaSummaryReport reportData={reportState.reportData}/>
+                    <MateriaPrimaSummaryReport reportData={state.reportData}/>
                 </div>
             </CardContent>
         </Card>
       )}
 
-      {reportState?.error && (
+      {state?.error && (
         <Alert variant="destructive">
             <Info className="h-4 w-4" />
             <AlertTitle>Error al Generar</AlertTitle>
             <AlertDescription>
-                {reportState.error}
+                {state.error}
             </AlertDescription>
         </Alert>
       )}
