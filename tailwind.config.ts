@@ -90,12 +90,23 @@ export default {
             opacity: '1',
             transform: 'translateY(0)'
           },
+        },
+        'spin-slow': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+        orbit: {
+          '0%': { transform: 'rotate(0deg) translateX(40px) rotate(0deg)', opacity: 1 },
+          '50%': { transform: 'rotate(180deg) translateX(40px) rotate(-180deg)', opacity: 0.7 },
+          '100%': { transform: 'rotate(360deg) translateX(40px) rotate(-360deg)', opacity: 1 },
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
+        'spin-slow': 'spin-slow 3s linear infinite',
+        'orbit': 'orbit 2s linear infinite',
       },
     },
   },
