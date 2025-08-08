@@ -1,10 +1,29 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Link, Map } from "lucide-react";
-import { availableRoutesForNavigation } from "@/ai/tools/navigation-tool";
+
+const rutas = [
+    '/dashboard',
+    '/ensayos/control-rutinario',
+    '/ensayos/tuberias/hdpe',
+    '/ensayos/tuberias/pp',
+    '/ensayos/materia-prima',
+    '/ensayos/reprocesado',
+    '/ensayos/seguimiento',
+    '/equipos',
+    '/equipos/control',
+    '/equipos/programa',
+    '/no-conformidades',
+    '/importaciones',
+    '/reports',
+    '/biblioteca/documentos',
+    '/biblioteca/upload',
+    '/administracion/usuarios',
+    '/administracion/configuracion',
+    '/administracion/rutas',
+];
 
 export default function RutasPage() {
-  const rutas = availableRoutesForNavigation.getValues();
 
   return (
     <Card>

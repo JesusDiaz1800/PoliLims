@@ -9,7 +9,7 @@ import { z } from 'genkit';
 
 // Defines all the valid routes the AI can navigate to.
 // This prevents hallucinations and ensures the AI only navigates to existing pages.
-export const availableRoutesForNavigation = z.enum([
+const availableRoutesForNavigation = z.enum([
     '/dashboard',
     '/ensayos/control-rutinario',
     '/ensayos/tuberias/hdpe',

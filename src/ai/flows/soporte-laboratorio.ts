@@ -12,7 +12,30 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { navigateTool, availableRoutesForNavigation } from '../tools/navigation-tool';
+import { navigateTool } from '../tools/navigation-tool';
+
+// Defines all the valid routes the AI can navigate to.
+// This prevents hallucinations and ensures the AI only navigates to existing pages.
+const availableRoutesForNavigation = z.enum([
+    '/dashboard',
+    '/ensayos/control-rutinario',
+    '/ensayos/tuberias/hdpe',
+    '/ensayos/tuberias/pp',
+    '/ensayos/materia-prima',
+    '/ensayos/reprocesado',
+    '/ensayos/seguimiento',
+    '/equipos',
+    '/equipos/control',
+    '/equipos/programa',
+    '/no-conformidades',
+    '/importaciones',
+    '/reports',
+    '/biblioteca/documentos',
+    '/biblioteca/upload',
+    '/administracion/usuarios',
+    '/administracion/configuracion',
+    '/administracion/rutas',
+]);
 
 // Helper function to read all documents from the data directory
 async function getKnowledgeBaseContent(): Promise<string> {
