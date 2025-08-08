@@ -18,7 +18,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-24">
+        <div className="w-28">
             <LogoAlt />
         </div>
     </div>
@@ -56,8 +56,8 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
   return (
     <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
-            @media print {
-                 body, html {
+           @media print {
+                body, html {
                     margin: 0;
                     padding: 0;
                     -webkit-print-color-adjust: exact;
@@ -65,37 +65,42 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                 }
                 @page {
                     size: A4;
-                    margin: 15mm;
+                    margin: 10mm;
                 }
                 .report-container {
                     width: 100%;
-                    height: 100%;
                     border: none;
                     box-shadow: none;
                     margin: 0;
                     padding: 0;
+                    page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 1rem !important;
-                    margin-bottom: 0.5rem !important;
-                    padding-bottom: 0.25rem !important;
+                    margin-top: 0.8rem !important;
+                    margin-bottom: 0.4rem !important;
+                    padding-bottom: 0.2rem !important;
                 }
                  .signature-section {
-                    margin-top: 2rem !important;
-                    padding-top: 1rem !important;
+                    margin-top: 1.5rem !important;
+                    padding-top: 0.8rem !important;
+                    page-break-before: auto;
+                    page-break-inside: avoid;
                 }
                  h1 {
-                    margin-top: 1rem !important;
-                    margin-bottom: 1rem !important;
+                    margin-top: 0.8rem !important;
+                    margin-bottom: 0.8rem !important;
                 }
                  td, th {
-                    padding: 4px 8px !important;
+                    padding: 2px 6px !important;
                 }
                 .results-grid {
-                    gap: 0.5rem !important;
+                    gap: 0.4rem !important;
                 }
                 .results-card {
-                    padding: 0.5rem !important;
+                    padding: 0.4rem !important;
+                }
+                .detail-row {
+                    padding: 2px !important;
                 }
             }
         `}</style>

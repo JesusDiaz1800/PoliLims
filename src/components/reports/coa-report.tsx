@@ -18,7 +18,7 @@ const ReportHeader = () => (
             <p>Cacique Colin 2525</p>
             <p>(2) 2387 5000</p>
         </div>
-        <div className="w-24">
+        <div className="w-28">
             <LogoAlt />
         </div>
     </div>
@@ -115,37 +115,40 @@ export const CoAReport = ({ data }: CoAReportProps) => {
                 }
                 @page {
                     size: A4;
-                    margin: 15mm;
+                    margin: 10mm;
                 }
                 .report-container {
                     width: 100%;
-                    height: 100%;
                     border: none;
                     box-shadow: none;
                     margin: 0;
                     padding: 0;
+                    page-break-inside: avoid;
                 }
                  .report-section-title {
-                    margin-top: 1rem;
-                    margin-bottom: 0.5rem;
-                    padding-bottom: 0.25rem;
+                    margin-top: 0.8rem !important;
+                    margin-bottom: 0.4rem !important;
+                    padding-bottom: 0.2rem !important;
                 }
                 .results-table {
-                    margin-top: 1rem;
+                    margin-top: 0.8rem !important;
+                    page-break-inside: avoid;
                 }
                 .final-verdict {
-                    padding: 0.75rem;
+                    padding: 0.5rem !important;
                 }
                  .signature-section {
-                    margin-top: 2rem;
-                    padding-top: 1rem;
+                    margin-top: 1.5rem !important;
+                    padding-top: 0.8rem !important;
+                    page-break-before: auto;
+                    page-break-inside: avoid;
                 }
                 h1 {
-                    margin-top: 1rem;
-                    margin-bottom: 1rem;
+                    margin-top: 0.8rem !important;
+                    margin-bottom: 0.8rem !important;
                 }
                 td, th {
-                    padding: 4px 8px !important;
+                    padding: 2px 6px !important;
                 }
             }
         `}</style>
