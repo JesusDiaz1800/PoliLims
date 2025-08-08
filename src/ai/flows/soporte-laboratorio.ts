@@ -164,16 +164,18 @@ const soporteLaboratorioFlow = ai.defineFlow(
     const lowerCasePrompt = userPrompt.toLowerCase();
     const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.includes(keyword));
     
+    // Bypass LLM for clear navigation intents
     if (isNavigationIntent) {
         const path = extractNavigationPath(userPrompt);
         if (path) {
             return {
-                response: `Claro, te llevo a ${path}`,
+                response: `Claro, te llevo a ${path}.`,
                 navigation: path,
             };
         }
     }
 
+    // If not a clear navigation intent, proceed with LLM
     const knowledgeBase = await getKnowledgeBaseContent();
 
     const result = await prompt({
@@ -184,6 +186,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
 
     const toolRequest = result.toolRequest;
     
+    // Handle navigation requests identified by the LLM via tools
     if (toolRequest?.toolResponse && toolRequest.toolResponse.name === 'navigate' && toolRequest.toolResponse.output) {
       return {
         response: result.output?.response || "Navegando...",
@@ -191,6 +194,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
       };
     }
     
+    // Handle standard text response from LLM
     return {
       response: result.output!.response,
       navigation: result.output!.navigation,
