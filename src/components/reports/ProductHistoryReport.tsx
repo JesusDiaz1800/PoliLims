@@ -4,7 +4,7 @@ import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { cn } from '@/lib/utils';
 import { TrendingUp, ArrowDownWideNarrow, ArrowUpWideNarrow, Sigma } from 'lucide-react';
 
@@ -45,10 +45,27 @@ const formatValue = (value: any, decimals: number = 2) => {
 };
 
 export const ProductHistoryReport = ({ reportData }: { reportData: ReportData }) => {
-    const { producto, fechaGeneracion, ensayos, estadisticas, tendencias } = reportData;
+    const { producto, fechaGeneracion, ensayos, estadisticas, tendencias, selectedParameter, parameterLabel } = reportData;
 
-    const miStats = estadisticas?.meltIndexCalculado;
-    const miTrend = tendencias?.meltIndexCalculado;
+    const stats = selectedParameter ? estadisticas?.[selectedParameter] : undefined;
+    const trendData = selectedParameter ? tendencias?.[selectedParameter] : undefined;
+    
+    const unit = selectedParameter ? (reportData.promedios[selectedParameter] ? '%' : 'units') : ''; // Basic unit logic
+
+    const getUnitForParameter = (param: string): string => {
+        const units: { [key: string]: string } = {
+            meltIndexCalculado: 'g/10min',
+            meltIndexVariacion: '%',
+            densidadCalculada: 'g/cm³',
+            negroHumoCalculado: '%',
+            resistencia_traccion: 'MPa',
+            elongacion_rotura: '%',
+            tio_tiempo: 'min',
+        };
+        return units[param] || '';
+    };
+
+    const parameterUnit = selectedParameter ? getUnitForParameter(selectedParameter) : '';
 
     return (
         <>
@@ -60,27 +77,28 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
         <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
             <ReportHeader title="Certificado de Historial de Calidad" producto={producto} fecha={fechaGeneracion} />
             
-            <SectionTitle title="Resumen Estadístico" />
-            {miStats ? (
+            <SectionTitle title={`Resumen Estadístico: ${parameterLabel || 'Parámetro'}`} />
+            {stats ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <StatCard title="Promedio MI" value={formatValue(miStats.promedio, 3)} unit="g/10min" icon={<Sigma size={14}/>} />
-                    <StatCard title="Valor Máximo" value={formatValue(miStats.max, 3)} unit="g/10min" icon={<ArrowUpWideNarrow size={14}/>} className="border-green-500/30 bg-green-500/5"/>
-                    <StatCard title="Valor Mínimo" value={formatValue(miStats.min, 3)} unit="g/10min" icon={<ArrowDownWideNarrow size={14}/>} className="border-red-500/30 bg-red-500/5"/>
-                    <StatCard title="Desv. Estándar" value={formatValue(miStats.desvEst, 3)} unit="g/10min" icon={<TrendingUp size={14}/>} />
+                    <StatCard title="Promedio" value={formatValue(stats.promedio, 3)} unit={parameterUnit} icon={<Sigma size={14}/>} />
+                    <StatCard title="Valor Máximo" value={formatValue(stats.max, 3)} unit={parameterUnit} icon={<ArrowUpWideNarrow size={14}/>} className="border-green-500/30 bg-green-500/5"/>
+                    <StatCard title="Valor Mínimo" value={formatValue(stats.min, 3)} unit={parameterUnit} icon={<ArrowDownWideNarrow size={14}/>} className="border-red-500/30 bg-red-500/5"/>
+                    <StatCard title="Desv. Estándar" value={formatValue(stats.desvEst, 3)} unit={parameterUnit} icon={<TrendingUp size={14}/>} />
                 </div>
             ) : <p className="text-muted-foreground">No hay suficientes datos para estadísticas.</p>}
 
-            <SectionTitle title="Tendencia del Melt Index" />
-            {miTrend && miTrend.length > 1 ? (
+            <SectionTitle title={`Tendencia de ${parameterLabel || 'Parámetro'}`} />
+            {trendData && trendData.length > 1 ? (
                  <Card>
                     <CardContent className="pt-6">
                         <ResponsiveContainer width="100%" height={250}>
-                             <LineChart data={miTrend} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                             <LineChart data={trendData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                                 <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - 0.05', 'dataMax + 0.05']} tickFormatter={(v) => v.toFixed(2)}/>
+                                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - (dataMax-dataMin)*0.1', 'dataMax + (dataMax-dataMin)*0.1']} tickFormatter={(v) => typeof v === 'number' ? v.toFixed(2) : v}/>
                                 <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}/>
-                                <Line type="monotone" dataKey="valor" name="Melt Index" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                                <Legend verticalAlign="top" height={36} formatter={() => parameterLabel || ''} />
+                                <Line type="monotone" dataKey="valor" name={parameterLabel} stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </CardContent>
@@ -103,15 +121,15 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
                     </TableRow></TableHeader>
                     <TableBody>
                         {ensayos.map(e => (
-                            <TableRow key={e.id}>
+                            <TableRow key={e.id} className={cn(selectedParameter && e[selectedParameter!] !== null && e[selectedParameter!] !== undefined && 'bg-primary/5')}>
                                 <TableCell>{e.fecha}</TableCell>
                                 <TableCell className="font-mono">{e.lote}</TableCell>
                                 <TableCell className="font-mono">{e.id}</TableCell>
-                                <TableCell className="text-right font-mono">{formatValue(e.meltIndexCalculado, 3)}</TableCell>
-                                <TableCell className="text-right font-mono">{formatValue(e.densidadCalculada, 3)}</TableCell>
-                                <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado)}</TableCell>
-                                <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo)}</TableCell>
-                                <TableCell className="text-right font-mono">{formatValue(e.resistencia_traccion)}</TableCell>
+                                <TableCell className={cn("text-right font-mono", selectedParameter === 'meltIndexCalculado' && 'font-bold')}>{formatValue(e.meltIndexCalculado, 3)}</TableCell>
+                                <TableCell className={cn("text-right font-mono", selectedParameter === 'densidadCalculada' && 'font-bold')}>{formatValue(e.densidadCalculada, 3)}</TableCell>
+                                <TableCell className={cn("text-right font-mono", selectedParameter === 'negroHumoCalculado' && 'font-bold')}>{formatValue(e.negroHumoCalculado)}</TableCell>
+                                <TableCell className={cn("text-right font-mono", selectedParameter === 'tio_tiempo' && 'font-bold')}>{formatValue(e.tio_tiempo)}</TableCell>
+                                <TableCell className={cn("text-right font-mono", selectedParameter === 'resistencia_traccion' && 'font-bold')}>{formatValue(e.resistencia_traccion)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

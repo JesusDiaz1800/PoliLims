@@ -33,6 +33,8 @@ export interface ReportData {
     }[]
   };
   filterType: string;
+  selectedParameter?: string;
+  parameterLabel?: string;
 }
 
 const reportFormSchema = z.object({
@@ -42,6 +44,7 @@ const reportFormSchema = z.object({
 
 const certificateFormSchema = z.object({
   producto: z.string().nonempty("Debe seleccionar un producto."),
+  parameter: z.string().nonempty("Debe seleccionar un parámetro para analizar."),
 });
 
 type FormState = {
@@ -59,7 +62,9 @@ const parameterNameMapping: { [key: string]: string } = {
   cenizasCalculado: '% de Cenizas',
   fvTotalPorcentaje: '% de Fibra de Vidrio (Total)',
   fvIntermediaPorcentaje: '% de Fibra de Vidrio (Capa Intermedia)',
-  meltIndexVariacion: '% Var. MI'
+  meltIndexVariacion: '% Var. MI',
+  resistencia_traccion: 'Resistencia a la Tracción',
+  elongacion_rotura: 'Elongación de Ruptura',
 };
 
 const unitMapping: { [key: string]: string } = {
@@ -71,7 +76,9 @@ const unitMapping: { [key: string]: string } = {
   cenizasCalculado: '%',
   fvTotalPorcentaje: '%',
   fvIntermediaPorcentaje: '%',
-  meltIndexVariacion: '%'
+  meltIndexVariacion: '%',
+  resistencia_traccion: 'MPa',
+  elongacion_rotura: '%',
 };
 
 
@@ -171,41 +178,39 @@ export async function generateProductCertificateAction(
 ): Promise<FormState> {
   const parsed = certificateFormSchema.safeParse({
     producto: formData.get("producto"),
+    parameter: formData.get("parameter"),
   });
 
   if (!parsed.success) {
-    return { reportData: null, error: "Producto inválido." };
+    return { reportData: null, error: "Producto o parámetro inválido." };
   }
   
-  const { producto } = parsed.data;
+  const { producto, parameter } = parsed.data;
   
   const { ensayos } = await dataService.getInitialData();
 
   const productEnsayos = ensayos
-    .filter(e => e.producto === producto)
+    .filter(e => e.producto === producto && e[parameter] !== null && e[parameter] !== undefined)
     .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime());
 
   if(productEnsayos.length === 0) {
-      return { reportData: null, error: `No se encontraron ensayos para el producto: ${producto}` };
+      return { reportData: null, error: `No se encontraron ensayos para el producto: ${producto} con el parámetro seleccionado.` };
   }
   
   const firstEnsayo = productEnsayos[0];
   const promedios = calculateAverages(productEnsayos);
 
-  const keysToAnalyze = ['meltIndexCalculado', 'densidadCalculada', 'negroHumoCalculado', 'tio_tiempo', 'resistencia_traccion', 'elongacion_rotura'];
   const estadisticas: ReportData['estadisticas'] = {};
   const tendencias: ReportData['tendencias'] = {};
 
-  keysToAnalyze.forEach(key => {
-      const values = productEnsayos.map(e => e[key]).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
-      if (values.length > 0) {
-          estadisticas[key] = calculateStats(values);
-          tendencias[key] = productEnsayos
-            .map(e => ({ fecha: e.fecha, valor: e[key] }))
-            .filter(item => typeof item.valor === 'number')
-            .reverse();
-      }
-  });
+  const values = productEnsayos.map(e => e[parameter]).filter(v => typeof v === 'number' && !isNaN(v)) as number[];
+  if (values.length > 0) {
+      estadisticas[parameter] = calculateStats(values);
+      tendencias[parameter] = productEnsayos
+        .map(e => ({ fecha: e.fecha, valor: e[parameter] }))
+        .filter(item => typeof item.valor === 'number')
+        .reverse();
+  }
   
   const reportData: ReportData = {
       lotes: Array.from(new Set(productEnsayos.map(e => e.lote || 'N/A'))),
@@ -219,6 +224,8 @@ export async function generateProductCertificateAction(
       estadisticas,
       tendencias,
       filterType: `Certificado Histórico: ${producto}`,
+      selectedParameter: parameter,
+      parameterLabel: parameterNameMapping[parameter] || parameter,
   };
     
   return {

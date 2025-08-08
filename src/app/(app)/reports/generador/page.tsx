@@ -17,6 +17,7 @@ import { ReportContainer } from '@/components/reports/ReportContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Combobox } from "@/components/ui/combobox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 
 const initialState: {
@@ -45,6 +46,16 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
     );
 }
 
+const parameterOptions = [
+    { value: 'meltIndexCalculado', label: 'Melt Index (Producto Terminado)' },
+    { value: 'meltIndexVariacion', label: 'Variación de Melt Index (%)' },
+    { value: 'densidadCalculada', label: 'Densidad' },
+    { value: 'negroHumoCalculado', label: '% Negro de Humo' },
+    { value: 'resistencia_traccion', label: 'Resistencia a la Tracción' },
+    { value: 'elongacion_rotura', label: 'Elongación de Ruptura' },
+    { value: 'tio_tiempo', label: 'Tiempo de Inducción a la Oxidación (TIO)' },
+];
+
 export default function GeneradorInformesPage() {
   const { ensayos, isLoading } = useDynamicData();
   const [loteSelectionState, loteSelectionAction] = useActionState(generateReportAction, initialState);
@@ -53,6 +64,8 @@ export default function GeneradorInformesPage() {
   const [filterType, setFilterType] = React.useState("Materia Prima");
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState(new Set<string>());
   const [selectedProduct, setSelectedProduct] = React.useState("");
+  const [selectedParameter, setSelectedParameter] = React.useState("meltIndexCalculado");
+
 
   const filteredEnsayos = React.useMemo(() => {
     return ensayos.filter(e => {
@@ -129,7 +142,7 @@ export default function GeneradorInformesPage() {
     return <Loading />;
   }
 
-  const ReportPreview = ({ reportData, error, state }: { reportData: ReportData | null; error?: string | null, state: any }) => {
+  const ReportPreview = ({ reportData, error }: { reportData: ReportData | null; error?: string | null }) => {
     if (!reportData && !error) return null;
     
     if (error) {
@@ -223,7 +236,7 @@ export default function GeneradorInformesPage() {
                             </CardFooter>
                         </Card>
                     </form>
-                     <ReportPreview reportData={loteSelectionState.reportData} error={loteSelectionState.error} state={loteSelectionState}/>
+                    <ReportPreview reportData={loteSelectionState.reportData} error={loteSelectionState.error} />
                 </TabsContent>
 
                 <TabsContent value="historico" className="pt-4">
@@ -231,17 +244,35 @@ export default function GeneradorInformesPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Generar Certificado Histórico</CardTitle>
-                                <CardDescription>Seleccione un producto para generar un certificado con el historial completo de sus ensayos, estadísticas y tendencias.</CardDescription>
+                                <CardDescription>Seleccione un producto y un parámetro para generar un certificado con el historial completo de sus ensayos, estadísticas y tendencias.</CardDescription>
                             </CardHeader>
-                            <CardContent>
-                                <Combobox
-                                    options={productOptions}
-                                    value={selectedProduct}
-                                    onChange={setSelectedProduct}
-                                    placeholder="Buscar producto..."
-                                    notFoundText="No se encontró el producto."
-                                />
-                                <input type="hidden" name="producto" value={selectedProduct} />
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Producto</Label>
+                                        <Combobox
+                                            options={productOptions}
+                                            value={selectedProduct}
+                                            onChange={setSelectedProduct}
+                                            placeholder="Buscar producto..."
+                                            notFoundText="No se encontró el producto."
+                                        />
+                                        <input type="hidden" name="producto" value={selectedProduct} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Parámetro a Analizar</Label>
+                                        <Select name="parameter" value={selectedParameter} onValueChange={setSelectedParameter}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Seleccione un parámetro" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {parameterOptions.map(option => (
+                                                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
                             </CardContent>
                             <CardFooter>
                                 <SubmitButton>
@@ -251,7 +282,7 @@ export default function GeneradorInformesPage() {
                             </CardFooter>
                         </Card>
                     </form>
-                    <ReportPreview reportData={productCertState.reportData} error={productCertState.error} state={productCertState}/>
+                    <ReportPreview reportData={productCertState.reportData} error={productCertState.error}/>
                 </TabsContent>
             </Tabs>
         </CardContent>
