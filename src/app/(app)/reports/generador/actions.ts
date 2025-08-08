@@ -116,11 +116,21 @@ export async function generateReportAction(
   
   const savedReport = await dataService.addGeneratedReport(newReport);
   
+  const formattedAverages = {
+      meltIndex: promedios.meltIndexCalculado?.toFixed(3) || '0.000',
+      densidad: promedios.densidadCalculada?.toFixed(3) || '0.000',
+      dsc: promedios.dsc_punto_fusion?.toFixed(2) || '0.00',
+      negroHumo: promedios.negroHumoCalculado?.toFixed(2) || '0.00',
+      tio: promedios.tio_tiempo?.toFixed(2) || '0.00',
+      cenizas: promedios.cenizasCalculado?.toFixed(2) || '0.00',
+      // Add other relevant averages here, formatted as strings.
+  };
+
   const emailInput = {
     Material: reportData.material,
     Producto: reportData.producto,
     Lotes: reportData.lotes.join(', '),
-    Averages: promedios,
+    Averages: formattedAverages,
     FilterType: filterType,
     Ensayos: selectedEnsayos,
   };
