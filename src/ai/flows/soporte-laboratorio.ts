@@ -136,7 +136,7 @@ const navigationKeywords = [
 
 function extractNavigationPath(prompt: string): string | null {
     const lowerCasePrompt = prompt.toLowerCase();
-    const routes = availableRoutesForNavigation.getValues();
+    const routes = availableRoutesForNavigation.options;
 
     for (const route of routes) {
         // Create a user-friendly name from the route path to check against the prompt
@@ -158,7 +158,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
   async ({ history, prompt: userPrompt }) => {
 
     const lowerCasePrompt = userPrompt.toLowerCase();
-    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.startsWith(keyword)) || availableRoutesForNavigation.getValues().some(route => lowerCasePrompt.includes(route));
+    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.startsWith(keyword)) || availableRoutesForNavigation.options.some(route => lowerCasePrompt.includes(route));
     
     if (isNavigationIntent) {
         const path = extractNavigationPath(userPrompt);
