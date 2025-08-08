@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Cloud, Database, KeyRound, Network, Users, GitBranch } from "lucide-react";
+import { CheckCircle, Cloud, Database, KeyRound, Network, Users, GitBranch, FolderSync } from "lucide-react";
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function ProximosPasosPage() {
         <StepCard 
             icon={Cloud}
             title="Despliegue en la Nube"
-            description="La aplicación debe ser 'desplegada' en un servicio de hosting (como Firebase Hosting o Vercel). Esto le dará una URL accesible para todos y garantizará que esté siempre disponible y actualizada."
+            description="La aplicación debe ser 'desplegada' en un servicio de hosting (como Firebase App Hosting o Vercel). Esto le dará una URL accesible para todos y garantizará que esté siempre disponible y actualizada."
         />
          <StepCard 
             icon={GitBranch}
@@ -52,6 +52,11 @@ export default function ProximosPasosPage() {
             icon={Database}
             title="Configurar una Base de Datos Central"
             description="Los datos actuales son de prueba. Dado que su empresa ya usa SQL, la opción ideal es que el equipo de TI cree un esquema para esta aplicación en su base de datos existente. Como alternativa inicial y gratuita, pueden configurar una base de datos Firestore (de Firebase), cuyo nivel gratuito es muy amplio."
+        />
+         <StepCard 
+            icon={FolderSync}
+            title="Almacenamiento de Archivos (PDFs)"
+            description="Una aplicación web no puede guardar archivos directamente en una red local (Ej: unidad Y:\) por seguridad. La solución estándar es usar un servicio de almacenamiento en la nube como Firebase Storage. El equipo de TI puede configurar esto para que los informes generados se guarden de forma segura y centralizada."
         />
          <StepCard 
             icon={KeyRound}
