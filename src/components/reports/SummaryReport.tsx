@@ -13,14 +13,14 @@ interface SummaryReportProps {
 
 const ReportHeader = () => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
-        <div className="text-xs">
+        <div className="w-32">
+             <LogoAlt />
+        </div>
+        <div className="text-xs text-right">
             <p className="font-bold">Polifusión S.A.</p>
             <p>Lampa, Región Metropolitana</p>
             <p>Cacique Colin 2525</p>
-            <p>(2) 2387 5000</p>
-        </div>
-        <div className="w-24">
-            <LogoAlt />
+            <p>Fono: (2) 2387 5000 | www.polifusion.cl</p>
         </div>
     </div>
 );
@@ -196,9 +196,13 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
             </div>
 
             <div className="mt-16 pt-4 border-t text-center signature-section">
-                <div className="inline-block">
+                 <div className="inline-block">
                     <div className="w-64 h-16"></div>
-                    <p className="text-sm border-t-2 border-dotted w-full pt-1 mt-1">Firma y Timbre Calidad</p>
+                    <div className="border-t-2 border-dotted w-full pt-1 mt-1 text-center">
+                        <p className="font-semibold">Maximiliano Miranda Valdés</p>
+                        <p className="text-xs text-muted-foreground">Ing. Analista de Control de Calidad</p>
+                        <p className="text-xs text-muted-foreground">Polifusión S.A.</p>
+                    </div>
                 </div>
             </div>
         </div>

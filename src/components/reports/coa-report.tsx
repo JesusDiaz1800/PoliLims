@@ -13,14 +13,14 @@ interface CoAReportProps {
 
 const ReportHeader = () => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
-        <div className="text-xs">
+        <div className="w-32">
+             <LogoAlt />
+        </div>
+        <div className="text-xs text-right">
             <p className="font-bold">Polifusión S.A.</p>
             <p>Lampa, Región Metropolitana</p>
             <p>Cacique Colin 2525</p>
-            <p>(2) 2387 5000</p>
-        </div>
-        <div className="w-24">
-            <LogoAlt />
+            <p>Fono: (2) 2387 5000 | www.polifusion.cl</p>
         </div>
     </div>
 );
@@ -189,10 +189,14 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
             </div>
         </div>
 
-        <div className="mt-8 pt-4 text-center signature-section">
-            <p className="font-semibold">Corroborado por:</p>
-            <div className="inline-block mt-8">
-                <p className="border-t-2 border-dotted w-full pt-1">Maximiliano Miranda Valdés</p>
+        <div className="mt-16 pt-4 border-t text-center signature-section">
+            <div className="inline-block">
+                <div className="w-64 h-16"></div>
+                <div className="border-t-2 border-dotted w-full pt-1 mt-1 text-center">
+                    <p className="font-semibold">Maximiliano Miranda Valdés</p>
+                    <p className="text-xs text-muted-foreground">Ing. Analista de Control de Calidad</p>
+                    <p className="text-xs text-muted-foreground">Polifusión S.A.</p>
+                </div>
             </div>
         </div>
       </div>
