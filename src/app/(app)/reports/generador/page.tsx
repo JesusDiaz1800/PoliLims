@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Mail, FileText, Loader2, Info } from 'lucide-react';
+import { Search, Mail, FileText, Loader2, Info, AlertTriangle } from 'lucide-react';
 import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
@@ -16,12 +16,14 @@ import { ReportContainer } from '@/components/reports/ReportContainer';
 import { generateReportAction } from './actions';
 import type { ReportData } from './actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { useToast } from '@/hooks/use-toast';
 
 const initialState: {
   reportData: ReportData | null;
   emailBody: string | null;
   emailSubject: string | null;
   error?: string | null;
+  emailError?: string | null;
 } = {
   reportData: null,
   emailBody: null,
@@ -50,6 +52,7 @@ function SubmitButton() {
 export default function GeneradorInformesPage() {
   const { ensayos, isLoading } = useDynamicData();
   const [state, formAction] = useActionState(generateReportAction, initialState);
+  const { toast } = useToast();
   
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Materia Prima");
@@ -71,6 +74,16 @@ export default function GeneradorInformesPage() {
       'Tubería PP'
   ], []);
 
+  React.useEffect(() => {
+    if (state.emailError) {
+      toast({
+        variant: "default",
+        title: "Aviso de Generación de Correo",
+        description: state.emailError,
+      })
+    }
+  }, [state.emailError, toast]);
+
   const handleOpenEmail = () => {
     if (state?.emailBody && state?.emailSubject) {
         const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
@@ -87,7 +100,6 @@ export default function GeneradorInformesPage() {
 
     const reportTitle = `Informe de Resultados: ${state.reportData.producto} - Lote(s) ${state.reportData.lotes.join(', ')}`;
     
-    // Create a new window to print
     const printWindow = window.open('', '_blank', 'height=800,width=800');
     
     if (printWindow) {
@@ -113,7 +125,12 @@ export default function GeneradorInformesPage() {
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.focus();
-        printWindow.print();
+        
+        // Use a timeout to ensure content is loaded before printing
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 250);
     }
   }
 
@@ -190,6 +207,15 @@ export default function GeneradorInformesPage() {
                 </div>
             </CardHeader>
             <CardContent>
+                {state.emailError && (
+                    <Alert variant="default" className="mb-4 bg-yellow-500/10 border-yellow-500/30 text-yellow-800 dark:text-yellow-200 [&>svg]:text-yellow-600">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Aviso sobre Correo</AlertTitle>
+                        <AlertDescription>
+                            {state.emailError}
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <div id="printable-report">
                     <ReportContainer reportData={state.reportData}/>
                 </div>

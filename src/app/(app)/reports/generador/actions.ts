@@ -33,6 +33,7 @@ type FormState = {
   emailSubject: string | null;
   newReportId?: string;
   error?: string | null;
+  emailError?: string | null;
 };
 
 function calculateAverages(ensayos: Ensayo[]) {
@@ -144,13 +145,29 @@ export async function generateReportAction(
     Ensayos: selectedEnsayos,
   };
   
-  const emailResult = await generateEmailContent(emailInput);
-
-  return {
-      reportData,
-      emailBody: emailResult.htmlBody,
-      emailSubject: emailResult.subject,
-      newReportId: savedReport.id,
-      error: null,
+  try {
+    const emailResult = await generateEmailContent(emailInput);
+    return {
+        reportData,
+        emailBody: emailResult.htmlBody,
+        emailSubject: emailResult.subject,
+        newReportId: savedReport.id,
+        error: null,
+    }
+  } catch (error) {
+    console.error("AI Email Generation Error:", error);
+    const errorMessage = (error as Error).message;
+    let userFriendlyError = "No se pudo generar el borrador del correo. Puede imprimir el informe de todas formas.";
+    if (errorMessage.includes("429 Too Many Requests")) {
+        userFriendlyError = "No se pudo generar el borrador del correo debido a que se ha excedido la cuota de la API. Puede imprimir el informe y reintentar la generación del correo más tarde.";
+    }
+    return {
+        reportData,
+        emailBody: null,
+        emailSubject: null,
+        newReportId: savedReport.id,
+        error: null,
+        emailError: userFriendlyError,
+    }
   }
 }
