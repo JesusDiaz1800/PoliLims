@@ -4,9 +4,9 @@
  * @fileOverview Flow to generate an email summary for raw material lab reports.
  */
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 
-export const EmailContentInputSchema = z.object({
+const EmailContentInputSchema = z.object({
   Material: z.string().describe("The name of the raw material."),
   Producto: z.string().describe("The specific product name."),
   Lotes: z.string().describe("A comma-separated string of all lot numbers included in the summary."),
@@ -19,9 +19,9 @@ export const EmailContentInputSchema = z.object({
     cenizas: z.string().describe("The calculated average for Ash percentage, formatted to 2 decimal places."),
   }).describe("An object containing the pre-calculated and formatted averages for all relevant tests."),
 });
-export type EmailContentInput = z.infer<typeof EmailContentInputSchema>;
+type EmailContentInput = z.infer<typeof EmailContentInputSchema>;
 
-export const EmailContentOutputSchema = z.object({
+const EmailContentOutputSchema = z.object({
   subject: z.string().describe("The subject line for the email."),
   htmlBody: z.string().describe("The full HTML content for the email body."),
 });

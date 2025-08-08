@@ -8,14 +8,14 @@ interface CoAReportProps {
   data: Ensayo;
 }
 
-const ReportHeader = () => (
+const ReportHeader = ({ id }: { id: string }) => (
     <div className="flex justify-between items-center pb-4 border-b-2 border-primary">
         <div className="w-48">
             <LogoAlt />
         </div>
         <div className="text-right">
             <h1 className="text-2xl font-bold text-primary font-headline">Certificado de Análisis</h1>
-            <p className="text-sm text-muted-foreground">Documento N°: {`COA-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`}</p>
+            <p className="text-sm text-muted-foreground">Documento N°: {id}</p>
         </div>
     </div>
 );
@@ -41,7 +41,7 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
             </TableRow>
         </TableHeader>
         <TableBody>
-            {results.map(res => (
+            {results.filter(r => r.value !== '---').map(res => (
                 <TableRow key={res.parameter}>
                     <TableCell className="font-medium">{res.parameter}</TableCell>
                     <TableCell className="text-right font-mono">{res.value}</TableCell>
@@ -90,7 +90,7 @@ export const CoAReport = ({ data }: CoAReportProps) => {
                 }
             }
         `}</style>
-      <ReportHeader />
+      <ReportHeader id={data.id} />
 
       <div className="grid grid-cols-2 gap-x-12 mt-6">
         <div>

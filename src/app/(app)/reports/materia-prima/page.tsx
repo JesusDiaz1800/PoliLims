@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { MateriaPrimaSelectionTable } from '@/components/reports/materia-prima-selection';
 import { MateriaPrimaSummaryReport } from '@/components/reports/materia-prima-report';
-import { generateReportAndEmailAction, type ReportState } from './actions';
+import { generateMateriaPrimaReportAction, type ReportState } from './actions';
 import { Loader2, Mail, Send, FileText, Printer } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Loading from '../../loading';
@@ -23,7 +23,7 @@ export default function MateriaPrimaBatchReportPage() {
   const { ensayos, isLoading } = useDynamicData();
   const { toast } = useToast();
   const [selectedEnsayoIds, setSelectedEnsayoIds] = React.useState<Set<string>>(new Set());
-  const [state, formAction, isPending] = useActionState(generateReportAndEmailAction, initialState);
+  const [state, formAction, isPending] = useActionState(generateMateriaPrimaReportAction, initialState);
 
   React.useEffect(() => {
     if (state.error) {
@@ -40,7 +40,7 @@ export default function MateriaPrimaBatchReportPage() {
   , [ensayos]);
   
   const selectedEnsayos = React.useMemo(() => 
-    materiaPrimaEnsayos.filter(e => selectedEnsayoIds.has(e.id))
+    materiaPrimaEnsayos.filter(e => selectedIds.has(e.id))
   , [materiaPrimaEnsayos, selectedEnsayoIds]);
 
   const handlePrint = () => {

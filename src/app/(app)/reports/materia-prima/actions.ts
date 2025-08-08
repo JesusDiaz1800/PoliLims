@@ -41,7 +41,7 @@ const formSchema = z.object({
   ensayos: z.string().transform((str) => JSON.parse(str)),
 });
 
-export async function generateReportAndEmailAction(prevState: ReportState, formData: FormData): Promise<ReportState> {
+export async function generateMateriaPrimaReportAction(prevState: ReportState, formData: FormData): Promise<ReportState> {
   const parsed = formSchema.safeParse({
     ensayos: formData.get("ensayos"),
   });
