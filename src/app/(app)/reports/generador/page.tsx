@@ -89,30 +89,48 @@ export default function GeneradorInformesPage() {
     const printableElement = document.getElementById("printable-report");
     if (!printableElement) return;
 
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) {
-        document.body.removeChild(iframe);
-        return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast({
+        variant: "destructive",
+        title: "Error de Impresión",
+        description: "No se pudo abrir la ventana de impresión. Por favor, deshabilite el bloqueador de ventanas emergentes para este sitio.",
+      });
+      return;
     }
 
-    // Copy all style tags and link tags from the parent document to the iframe
-    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
-    styles.forEach(style => {
-        doc.head.appendChild(style.cloneNode(true));
-    });
-
-    doc.body.innerHTML = printableElement.innerHTML;
+    const styles = Array.from(document.styleSheets)
+      .map(styleSheet => {
+        try {
+          return Array.from(styleSheet.cssRules)
+            .map(rule => rule.cssText)
+            .join('');
+        } catch (e) {
+          console.warn("No se pudo acceder a las reglas de la hoja de estilo. ", e);
+          return '';
+        }
+      })
+      .join('\n');
     
-    // Use a small timeout to ensure styles are applied before printing
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Informe de Resultados</title>
+          <style>${styles}</style>
+        </head>
+        <body>
+          ${printableElement.innerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    
     setTimeout(() => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        document.body.removeChild(iframe);
-    }, 500);
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }, 250);
   };
 
 
