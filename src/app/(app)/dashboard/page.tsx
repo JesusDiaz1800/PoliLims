@@ -44,32 +44,32 @@ export default function DashboardPage() {
   const username = searchParams.get('user') || 'jdiaz';
 
   const [user, setUser] = React.useState<User | null>(null);
-  const [allAnalysts, setAllAnalysts] = React.useState<{value: string, label: string}[]>([]);
-  const [assayTypes, setAssayTypes] = React.useState<{value: string, label: string}[]>([]);
-  const [suppliers, setSuppliers] = React.useState<{value: string, label: string}[]>([]);
+  
+  const allAnalysts = React.useMemo(() => {
+    const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
+    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+  }, [ensayos]);
+
+  const assayTypes = React.useMemo(() => {
+    const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
+    return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
+  }, [ensayos]);
+  
+  const suppliers = React.useMemo(() => {
+      const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
+      return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
+  }, [ensayos]);
 
 
   React.useEffect(() => {
     async function loadUserAndFilters() {
         const userData = await findUserByUsername(username);
         setUser(userData);
-        
-        const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
-        const analystOptions = [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
-        setAllAnalysts(analystOptions);
-
-        const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
-        const typeOptions = [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
-        setAssayTypes(typeOptions);
-
-        const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
-        const supplierOptions = [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
-        setSuppliers(supplierOptions);
     }
-    if (username && ensayos.length > 0) {
+    if (username) {
       loadUserAndFilters();
     }
-  }, [username, ensayos]);
+  }, [username]);
   
   const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 

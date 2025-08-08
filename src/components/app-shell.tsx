@@ -50,7 +50,6 @@ import {
     MessageSquarePlus,
     LogOut,
     Info,
-    FileSearch,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -104,12 +103,6 @@ const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
-
-const reportesSubMenu = [
-    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
-    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
-];
-
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
@@ -195,8 +188,6 @@ const pageTitles: Record<string, string> = {
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
-    '/reports/generador': 'Generador de Informes',
-    '/reports/biblioteca': 'Biblioteca de Informes',
 };
 
 const menuItems = (toggleChat: () => void) => [
@@ -220,13 +211,8 @@ const menuItems = (toggleChat: () => void) => [
         subMenu: operacionesSubMenu,
         href: '/operaciones'
     },
+    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { 
-        label: 'Informes', 
-        icon: FileText,
-        subMenu: reportesSubMenu,
-        href: '/reports',
-    },
     { 
         label: 'Biblioteca', 
         icon: Library,
@@ -278,7 +264,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
-                        <Logo className="w-36 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+                        <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
                     </div>
                     {isInspectorView && (
                         <Alert className="m-2 border-primary/30 bg-primary/10">

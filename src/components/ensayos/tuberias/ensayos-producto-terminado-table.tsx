@@ -308,6 +308,6 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
       </CardContent>
     </Card>
   );
-}
+};
 
 export const EnsayosProductoTerminadoTable = React.memo(EnsayosProductoTerminadoTableInternal);

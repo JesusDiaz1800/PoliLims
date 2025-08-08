@@ -48,13 +48,13 @@ export default function MateriaPrimaPage() {
     return <Loading />;
   }
   
-  const analistas = [
+  const analistas = React.useMemo(() => [
       { value: "jesus.diaz", label: "Jesus Diaz" },
       { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
       { value: "antonia.figueroa", label: "Antonia Figueroa" },
       { value: "robinson.cordova", label: "Robinson Córdova" },
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
-  ];
+  ], []);
 
   return (
     <div className="space-y-6">

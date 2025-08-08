@@ -275,6 +275,6 @@ const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) 
       )}
     </TooltipProvider>
   );
-}
+};
 
 export const EquiposTable = React.memo(EquiposTableInternal);
