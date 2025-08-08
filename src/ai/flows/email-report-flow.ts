@@ -70,9 +70,9 @@ const emailPrompt = ai.definePrompt({
       A continuación, el resumen de los resultados promedio:
       <br>
       <ul>
-        {{#if Averages.meltIndex}}<li>Melt Index: <b>{{Averages.meltIndex}} [g/10min]</b></li>{{/if}}
-        {{#if Averages.densidad}}<li>Densidad: <b>{{Averages.densidad}} [g/cm³]</b></li>{{/if}}
-        {{#if Averages.dsc}}<li>DSC: <b>{{Averages.dsc}} [°C]</b></li>{{/if}}
+        {{#if Averages.meltIndex}}<li>Melt Index: <b>{{Averages.meltIndex}} g/10min</b></li>{{/if}}
+        {{#if Averages.densidad}}<li>Densidad: <b>{{Averages.densidad}} g/cm³</b></li>{{/if}}
+        {{#if Averages.dsc}}<li>DSC: <b>{{Averages.dsc}} °C</b></li>{{/if}}
         {{#if Averages.negroHumo}}<li>Negro de Humo: <b>{{Averages.negroHumo}} %</b></li>{{/if}}
         {{#if Averages.tio}}<li>TIO: <b>{{Averages.tio}} min</b></li>{{/if}}
         {{#if Averages.cenizas}}<li>Cenizas: <b>{{Averages.cenizas}} %</b></li>{{/if}}
