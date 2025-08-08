@@ -7,35 +7,15 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-// Defines all the valid routes the AI can navigate to.
-// This prevents hallucinations and ensures the AI only navigates to existing pages.
-const availableRoutesForNavigation = z.enum([
-    '/dashboard',
-    '/ensayos/control-rutinario',
-    '/ensayos/tuberias/hdpe',
-    '/ensayos/tuberias/pp',
-    '/ensayos/materia-prima',
-    '/ensayos/reprocesado',
-    '/ensayos/seguimiento',
-    '/equipos',
-    '/equipos/control',
-    '/equipos/programa',
-    '/no-conformidades',
-    '/importaciones',
-    '/reports',
-    '/biblioteca/documentos',
-    '/biblioteca/upload',
-    '/administracion/usuarios',
-    '/administracion/configuracion',
-    '/administracion/rutas',
-]);
+// The validation enum is now defined directly in the flow that uses it (soporte-laboratorio.ts)
+// to avoid exporting non-async functions from a 'use server' file.
 
 export const navigateTool = ai.defineTool(
   {
     name: 'navigate',
     description: 'Navega a una página específica dentro de la aplicación. Utiliza esta herramienta cuando el usuario pida ir a una sección o ver una página.',
     inputSchema: z.object({
-      path: availableRoutesForNavigation.describe("La ruta a la que se debe navegar. Por ejemplo, '/dashboard' para el panel principal."),
+      path: z.string().describe("La ruta a la que se debe navegar. Por ejemplo, '/dashboard' para el panel principal."),
     }),
     outputSchema: z.string(),
   },

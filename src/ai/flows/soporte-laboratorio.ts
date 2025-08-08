@@ -131,7 +131,7 @@ MENSAJE ACTUAL DEL USUARIO:
 });
 
 const navigationKeywords = [
-    'ir a', 'llévame a', 'muéstrame', 'ver', 'abrir', 'navegar a', 'portal', 'dashboard', 'ensayos', 'equipos', 'administración'
+    'ir a', 'llévame a', 'muéstrame', 'ver', 'abrir', 'navegar a', 'portal', 'dashboard', 'ensayos', 'equipos', 'administración', 'informes', 'biblioteca', 'configuración', 'no conformidades'
 ];
 
 function extractNavigationPath(prompt: string): string | null {
@@ -141,8 +141,12 @@ function extractNavigationPath(prompt: string): string | null {
     for (const route of routes) {
         // Create a user-friendly name from the route path to check against the prompt
         // e.g., /ensayos/control-rutinario -> control rutinario
-        const routeName = route.split('/').filter(Boolean).pop()?.replace(/-/g, ' ');
+        const routeName = route.split('/').pop()?.replace(/-/g, ' ');
         if (routeName && lowerCasePrompt.includes(routeName)) {
+            return route;
+        }
+         // Direct match for path, e.g. "go to /dashboard"
+        if (lowerCasePrompt.includes(route)) {
             return route;
         }
     }
@@ -158,7 +162,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
   async ({ history, prompt: userPrompt }) => {
 
     const lowerCasePrompt = userPrompt.toLowerCase();
-    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.startsWith(keyword)) || availableRoutesForNavigation.options.some(route => lowerCasePrompt.includes(route));
+    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.includes(keyword));
     
     if (isNavigationIntent) {
         const path = extractNavigationPath(userPrompt);
