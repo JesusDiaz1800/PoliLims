@@ -68,6 +68,8 @@ export const CoAReport = ({ data }: CoAReportProps) => {
   const results = [
     { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%' },
     { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³' },
+    { parameter: 'Contenido de Fibra de Vidrio (% Total)', value: formatValue(data.fvTotalPorcentaje, 2), unit: '%' },
+    { parameter: 'Contenido de Fibra de Vidrio (% Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje, 2), unit: '%' },
     { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%' },
     { parameter: 'Dispersión de Negro de Humo', value: data.dispersion_nh || '---', unit: 'Grado' },
     { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion, 2), unit: 'MPa' },
