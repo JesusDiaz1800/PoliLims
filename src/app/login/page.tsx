@@ -20,7 +20,7 @@ export default function LoginPage() {
        
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center space-y-4 pt-8">
-            <div className="mx-auto h-16 w-48">
+            <div className="mx-auto h-16 w-40">
               <LogoAlt />
             </div>
           <CardTitle className="text-3xl font-headline">Bienvenido a PoliLIMS</CardTitle>
