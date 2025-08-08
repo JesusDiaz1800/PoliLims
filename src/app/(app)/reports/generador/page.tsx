@@ -85,7 +85,7 @@ export default function GeneradorInformesPage() {
     }
   };
 
-  const handlePrint = () => {
+ const handlePrint = () => {
     const printContent = document.getElementById("printable-report");
     if (!printContent) return;
 
@@ -94,32 +94,39 @@ export default function GeneradorInformesPage() {
     iframe.style.width = '0';
     iframe.style.height = '0';
     iframe.style.border = '0';
+    iframe.style.display = 'none'; // Hide the iframe
+
     document.body.appendChild(iframe);
 
-    const doc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!doc) return;
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+        document.body.removeChild(iframe);
+        return;
+    }
 
     doc.open();
     doc.write('<html><head><title>Informe de Resultados</title>');
-    // Copy all stylesheets from the parent document to the iframe
-    Array.from(document.styleSheets).forEach(styleSheet => {
-        if (styleSheet.href) {
-            doc.write(`<link rel="stylesheet" href="${styleSheet.href}">`);
-        } else if (styleSheet.cssRules) {
-            doc.write('<style>');
-            doc.write(Array.from(styleSheet.cssRules).map(rule => rule.cssText).join('\n'));
-            doc.write('</style>');
+
+    // Clone all stylesheets from the parent document to the iframe
+    const links = document.getElementsByTagName("link");
+    for (let i = 0; i < links.length; i++) {
+        if (links[i].rel === "stylesheet") {
+            doc.write(links[i].outerHTML);
         }
-    });
+    }
+    const styles = document.getElementsByTagName("style");
+    for (let i = 0; i < styles.length; i++) {
+        doc.write(styles[i].outerHTML);
+    }
+    
     doc.write('</head><body>');
     doc.write(printContent.innerHTML);
     doc.write('</body></html>');
     doc.close();
-
-    iframe.contentWindow?.focus();
-
-    // Use a small timeout to ensure content is rendered before printing
+    
+    // Use a timeout to ensure content is fully rendered before printing
     setTimeout(() => {
+        iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
         document.body.removeChild(iframe);
     }, 500);
