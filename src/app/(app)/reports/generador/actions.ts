@@ -47,25 +47,33 @@ function calculateAverages(ensayos: Ensayo[]) {
     tio: 0,
     cenizas: 0,
   };
-  let count = 0;
-
-  for (const ensayo of ensayos) {
-    if (ensayo.meltIndexCalculado) result.meltIndex += Number(ensayo.meltIndexCalculado);
-    if (ensayo.densidadCalculada) result.densidad += Number(ensayo.densidadCalculada);
-    if (ensayo.dsc_punto_fusion) result.dsc += Number(ensayo.dsc_punto_fusion);
-    if (ensayo.negroHumoCalculado) result.negroHumo += Number(ensayo.negroHumoCalculado);
-    if (ensayo.tio_tiempo) result.tio += Number(ensayo.tio_tiempo);
-    if (ensayo.cenizasCalculado) result.cenizas += Number(ensayo.cenizasCalculado);
-    count++;
+  
+  const validEnsayos = {
+    meltIndex: ensayos.filter(e => e.meltIndexCalculado !== null && e.meltIndexCalculado !== undefined && !isNaN(Number(e.meltIndexCalculado))),
+    densidad: ensayos.filter(e => e.densidadCalculada !== null && e.densidadCalculada !== undefined && !isNaN(Number(e.densidadCalculada))),
+    dsc: ensayos.filter(e => e.dsc_punto_fusion !== null && e.dsc_punto_fusion !== undefined && !isNaN(Number(e.dsc_punto_fusion))),
+    negroHumo: ensayos.filter(e => e.negroHumoCalculado !== null && e.negroHumoCalculado !== undefined && !isNaN(Number(e.negroHumoCalculado))),
+    tio: ensayos.filter(e => e.tio_tiempo !== null && e.tio_tiempo !== undefined && !isNaN(Number(e.tio_tiempo))),
+    cenizas: ensayos.filter(e => e.cenizasCalculado !== null && e.cenizasCalculado !== undefined && !isNaN(Number(e.cenizasCalculado))),
   }
 
-  if (count > 0) {
-    result.meltIndex /= count;
-    result.densidad /= count;
-    result.dsc /= count;
-    result.negroHumo /= count;
-    result.tio /= count;
-    result.cenizas /= count;
+  if (validEnsayos.meltIndex.length > 0) {
+    result.meltIndex = validEnsayos.meltIndex.reduce((sum, e) => sum + Number(e.meltIndexCalculado), 0) / validEnsayos.meltIndex.length;
+  }
+  if (validEnsayos.densidad.length > 0) {
+    result.densidad = validEnsayos.densidad.reduce((sum, e) => sum + Number(e.densidadCalculada), 0) / validEnsayos.densidad.length;
+  }
+  if (validEnsayos.dsc.length > 0) {
+      result.dsc = validEnsayos.dsc.reduce((sum, e) => sum + Number(e.dsc_punto_fusion), 0) / validEnsayos.dsc.length;
+  }
+  if (validEnsayos.negroHumo.length > 0) {
+      result.negroHumo = validEnsayos.negroHumo.reduce((sum, e) => sum + Number(e.negroHumoCalculado), 0) / validEnsayos.negroHumo.length;
+  }
+   if (validEnsayos.tio.length > 0) {
+      result.tio = validEnsayos.tio.reduce((sum, e) => sum + Number(e.tio_tiempo), 0) / validEnsayos.tio.length;
+  }
+  if (validEnsayos.cenizas.length > 0) {
+      result.cenizas = validEnsayos.cenizas.reduce((sum, e) => sum + Number(e.cenizasCalculado), 0) / validEnsayos.cenizas.length;
   }
 
   return result;
@@ -90,7 +98,6 @@ export async function generateMateriaPrimaReportAction(
       return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Debe seleccionar al menos un ensayo para generar el informe." };
   }
   
-  // This simulates fetching and then filtering data on the server
   const { ensayos } = await dataService.getInitialData();
   const selectedEnsayos = ensayos.filter(e => selectedIds.includes(e.id));
   
@@ -123,9 +130,7 @@ export async function generateMateriaPrimaReportAction(
       ensayoIds: selectedIds,
       path: `/informes/${filterType.toLowerCase().replace(/\s+/g, '-')}/${format(new Date(), 'yyyy-MM-dd')}-${reportData.producto}-${lotesString}.pdf`
   }
-
-  // In a real app, this would save to a DB and the PDF to a storage bucket.
-  // Here we just pass the info back to the client.
+  
   const savedReport = await dataService.addGeneratedReport(newReport);
 
   try {

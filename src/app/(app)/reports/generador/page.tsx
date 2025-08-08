@@ -73,7 +73,10 @@ export default function GeneradorInformesPage() {
 
   const handleOpenEmail = () => {
     if (reportState?.emailBody && reportState?.emailSubject) {
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(reportState.emailSubject)}&body=${encodeURIComponent(reportState.emailBody)}`;
+        const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
+        const cc = "afigueroa@polifusion.cl; cmunizaga@polifusion.cl; vlutz@polifusion.cl; mgallardo@polifusion.cl; ccalidad4@polifusion.cl; rcruz@polifusion.cl";
+
+        const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(reportState.emailSubject)}&body=${encodeURIComponent(reportState.emailBody)}`;
         window.location.href = mailtoLink;
     }
   };
