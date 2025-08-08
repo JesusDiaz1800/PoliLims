@@ -30,9 +30,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
 import { findUserByUsername } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
-import { CoAReport } from "@/components/reports/coa-report";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import type { ReportData } from "@/app/(app)/reports/generador/actions";
+import { ReportContainer } from "@/components/reports/ReportContainer";
+import { format } from "date-fns";
 
 export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
 
@@ -85,7 +87,7 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleOpenReportDialog(ensayo)}>
                 <Printer className="mr-2 h-4 w-4" />
-                Imprimir Certificado
+                Imprimir Informe
               </DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
@@ -164,6 +166,7 @@ export default function SeguimientoEnsayosPage() {
   const [filterType, setFilterType] = React.useState("Todos");
   const [user, setUser] = React.useState<User | null>(null);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [reportData, setReportData] = React.useState<ReportData | null>(null);
   const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
 
@@ -228,24 +231,67 @@ export default function SeguimientoEnsayosPage() {
   }
   
   const handleOpenReportDialog = (ensayo: Ensayo) => {
-    setSelectedEnsayo(ensayo);
+    const data: ReportData = {
+        lotes: [ensayo.lote || 'N/A'],
+        material: ensayo.tipo_material || ensayo.tipo,
+        producto: ensayo.producto,
+        fechaGeneracion: new Date().toLocaleDateString('es-ES'),
+        inspector: ensayo.analista || 'N/A',
+        corroborador: "Maximiliano Miranda Valdés",
+        ensayos: [ensayo],
+        promedios: ensayo, // For a single assay, promedios are the assay values
+        filterType: ensayo.tipo,
+    };
+    setReportData(data);
     setIsReportDialogOpen(true);
   }
 
   const handleCloseReportDialog = () => {
-    setSelectedEnsayo(null);
+    setReportData(null);
     setIsReportDialogOpen(false);
   }
 
   const handlePrint = () => {
-    const printContents = document.getElementById("printable-coa")?.innerHTML;
-    if (printContents) {
-      const originalContents = document.body.innerHTML;
-      document.body.innerHTML = printContents;
-      window.print();
-      document.body.innerHTML = originalContents;
-      // No reload needed if we want the dialog to stay open
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write('<html><head><title>Informe de Resultados</title>');
+    
+    // Copy stylesheets
+    Array.from(document.styleSheets).forEach(sheet => {
+        try {
+            if (sheet.cssRules) {
+                const rules = Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+                doc.write(`<style>${rules}</style>`);
+            } else if (sheet.href) {
+                doc.write(`<link rel="stylesheet" href="${sheet.href}">`);
+            }
+        } catch (e) {
+            console.warn('Could not read stylesheet rules', e);
+        }
+    });
+
+    const reportContent = document.getElementById("printable-report")?.innerHTML;
+    if (reportContent) {
+        doc.write('</head><body>');
+        doc.write(reportContent);
+        doc.write('</body></html>');
     }
+    doc.close();
+
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        document.body.removeChild(iframe);
+    }, 500);
   }
 
 
@@ -306,24 +352,24 @@ export default function SeguimientoEnsayosPage() {
             user={user}
         />
     )}
-    {selectedEnsayo && (
+    {reportData && (
        <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
           <DialogContent className="sm:max-w-4xl">
             <DialogHeader>
-                <DialogTitle>Certificado de Análisis: {selectedEnsayo.id}</DialogTitle>
+                <DialogTitle>Informe de Ensayo: {reportData.ensayos[0].id}</DialogTitle>
                 <DialogDescription>
-                    Vista previa del certificado. Verifique la información antes de imprimir.
+                    Vista previa del informe. Verifique la información antes de imprimir.
                 </DialogDescription>
             </DialogHeader>
             <div className="max-h-[70vh] overflow-y-auto custom-scrollbar pr-4 -mr-4">
-              <div id="printable-coa">
-                  <CoAReport data={selectedEnsayo} />
+              <div id="printable-report">
+                  <ReportContainer reportData={reportData} />
               </div>
             </div>
              <div className="flex justify-end pt-4">
               <Button onClick={handlePrint}>
                 <Printer className="mr-2 h-4 w-4" />
-                Imprimir Certificado
+                Imprimir Informe
               </Button>
             </div>
           </DialogContent>
