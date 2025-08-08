@@ -85,51 +85,35 @@ export default function GeneradorInformesPage() {
     }
   };
 
- const handlePrint = () => {
+  const handlePrint = () => {
     const printContent = document.getElementById("printable-report");
     if (!printContent) return;
 
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = '0';
-    iframe.style.display = 'none'; // Hide the iframe
-
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) {
-        document.body.removeChild(iframe);
-        return;
+    const printWindow = window.open('', '_blank', 'height=800,width=800');
+    if (!printWindow) {
+      alert("Por favor, habilite las ventanas emergentes para imprimir el informe.");
+      return;
     }
 
-    doc.open();
-    doc.write('<html><head><title>Informe de Resultados</title>');
+    printWindow.document.write('<html><head><title>Informe de Resultados</title>');
 
-    // Clone all stylesheets from the parent document to the iframe
-    const links = document.getElementsByTagName("link");
-    for (let i = 0; i < links.length; i++) {
-        if (links[i].rel === "stylesheet") {
-            doc.write(links[i].outerHTML);
-        }
-    }
-    const styles = document.getElementsByTagName("style");
-    for (let i = 0; i < styles.length; i++) {
-        doc.write(styles[i].outerHTML);
-    }
+    // Copiar todos los estilos de la página principal a la ventana de impresión
+    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+    styles.forEach(style => {
+      printWindow.document.head.appendChild(style.cloneNode(true));
+    });
+
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(printContent.innerHTML);
+    printWindow.document.write('</body></html>');
     
-    doc.write('</head><body>');
-    doc.write(printContent.innerHTML);
-    doc.write('</body></html>');
-    doc.close();
-    
-    // Use a timeout to ensure content is fully rendered before printing
+    // Esperar a que el contenido y los estilos se carguen completamente
+    printWindow.document.close();
+    printWindow.focus();
     setTimeout(() => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        document.body.removeChild(iframe);
-    }, 500);
+        printWindow.print();
+        printWindow.close();
+    }, 250);
   };
 
 
@@ -193,7 +177,7 @@ export default function GeneradorInformesPage() {
                         <CardDescription>Revise el informe generado antes de imprimir o enviar.</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                         <Button onClick={handleOpenEmail} variant="outline" disabled={!state.emailBody}>
+                         <Button onClick={handleOpenEmail} variant="outline" disabled={!!state.emailError}>
                             <Mail className="mr-2 h-4 w-4" />
                             Enviar por Correo
                         </Button>
