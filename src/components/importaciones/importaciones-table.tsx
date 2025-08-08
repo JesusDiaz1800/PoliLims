@@ -124,8 +124,8 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea>
-        <Table className="whitespace-nowrap">
+        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead>BL N°</TableHead>
@@ -199,7 +199,7 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
             ))}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="horizontal" className="h-4"/>
         </ScrollArea>
         {filteredImportaciones.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">

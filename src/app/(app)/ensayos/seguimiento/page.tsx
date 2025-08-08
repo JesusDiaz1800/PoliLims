@@ -65,7 +65,7 @@ const formatValue = (value: any, decimals: number = 2) => {
 const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditClick: (ensayo: Ensayo) => void, handleOpenApprovalDialog: (ensayo: Ensayo) => void, handleOpenReportDialog: (ensayo: Ensayo) => void, canApprove: boolean) => {
   
   const renderActions = (ensayo: Ensayo) => (
-      <TableCell className="text-right">
+      <TableCell className="text-right sticky right-0 bg-card z-10">
           <DropdownMenu>
           <DropdownMenuTrigger asChild>
               <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -141,7 +141,7 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
   }
   
   return (
-    <ScrollArea>
+    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
         <Table>
             <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -153,7 +153,7 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
                 ))}
             </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="horizontal" className="h-4"/>
     </ScrollArea>
   )
 };

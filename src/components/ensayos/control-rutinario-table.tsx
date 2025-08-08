@@ -120,11 +120,11 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
                   Ingresar Producto
               </Button>
           </div>
-          <ScrollArea>
-            <Table className="whitespace-nowrap">
+          <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+            <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="sticky left-0 bg-card z-10">Acciones</TableHead>
+                  <TableHead>Acciones</TableHead>
                   <TableHead>Fecha ingreso</TableHead>
                   <TableHead>Hora</TableHead>
                   <TableHead>Inspector</TableHead>
@@ -157,7 +157,7 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
                   const labResults = findLabResults(registro.id);
                   return (
                   <TableRow key={registro.id}>
-                    <TableCell className="sticky left-0 bg-card z-10">
+                    <TableCell>
                       <AlertDialog>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -253,7 +253,7 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
                 )})}
               </TableBody>
             </Table>
-            <ScrollBar orientation="horizontal" />
+            <ScrollBar orientation="horizontal" className="h-4"/>
           </ScrollArea>
            {filteredRegistros.length === 0 && (
               <div className="text-center py-16 text-muted-foreground">

@@ -304,7 +304,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea>
+        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -361,7 +361,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
                 ))}
             </TableBody>
           </Table>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="h-4"/>
         </ScrollArea>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">

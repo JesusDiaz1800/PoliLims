@@ -264,7 +264,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea>
+        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -321,7 +321,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
                 ))}
             </TableBody>
           </Table>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="h-4"/>
         </ScrollArea>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
