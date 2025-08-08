@@ -126,7 +126,32 @@ export default function GeneradorInformesPage() {
     return <Loading />;
   }
 
-  const activeReportData = productCertState?.reportData || loteSelectionState?.reportData;
+  const ReportPreview = ({ reportData }: { reportData: ReportData | null }) => {
+    if (!reportData) return null;
+    return (
+        <Card className="mt-6">
+            <CardHeader>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle>Vista Previa del Documento</CardTitle>
+                        <CardDescription>Revise el documento generado antes de imprimir.</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button onClick={handlePrint}>
+                            <FileText className="mr-2 h-4 w-4" />
+                            Imprimir Documento
+                        </Button>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <div id="printable-report">
+                    <ReportContainer reportData={reportData}/>
+                </div>
+            </CardContent>
+        </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -134,7 +159,7 @@ export default function GeneradorInformesPage() {
         <CardHeader>
           <CardTitle>Generador de Informes y Certificados</CardTitle>
           <CardDescription>
-            Utilice las pestañas para elegir entre generar un informe por selección o un certificado histórico por producto.
+            Utilice las pestañas para elegir entre generar un certificado histórico por producto o un informe por selección múltiple.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -169,6 +194,16 @@ export default function GeneradorInformesPage() {
                             </CardFooter>
                         </Card>
                     </form>
+                    <ReportPreview reportData={productCertState.reportData} />
+                     {productCertState?.error && (
+                        <Alert variant="destructive" className="mt-4">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Error al Generar</AlertTitle>
+                            <AlertDescription>
+                                {productCertState.error}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </TabsContent>
 
                 <TabsContent value="seleccion" className="pt-4">
@@ -176,7 +211,7 @@ export default function GeneradorInformesPage() {
                          <Card>
                             <CardHeader>
                                 <CardTitle>Selección de Ensayos</CardTitle>
-                                <CardDescription>Filtre y seleccione uno o varios ensayos para generar un informe consolidado y un borrador de correo electrónico.</CardDescription>
+                                <CardDescription>Filtre y seleccione uno o varios ensayos para generar un informe consolidado.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                  <div className="flex flex-col md:flex-row items-center justify-start gap-2 w-full mb-4">
@@ -207,44 +242,20 @@ export default function GeneradorInformesPage() {
                             </CardFooter>
                         </Card>
                     </form>
+                     <ReportPreview reportData={loteSelectionState.reportData} />
+                     {loteSelectionState?.error && (
+                        <Alert variant="destructive" className="mt-4">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle>Error al Generar</AlertTitle>
+                            <AlertDescription>
+                                {loteSelectionState.error}
+                            </AlertDescription>
+                        </Alert>
+                    )}
                 </TabsContent>
             </Tabs>
         </CardContent>
       </Card>
-
-      {activeReportData && (
-        <Card>
-            <CardHeader>
-                <div className="flex justify-between items-center">
-                    <div>
-                        <CardTitle>Vista Previa del Documento</CardTitle>
-                        <CardDescription>Revise el documento generado antes de imprimir.</CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button onClick={handlePrint}>
-                            <FileText className="mr-2 h-4 w-4" />
-                            Imprimir Documento
-                        </Button>
-                    </div>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <div id="printable-report">
-                    <ReportContainer reportData={activeReportData}/>
-                </div>
-            </CardContent>
-        </Card>
-      )}
-
-      {(loteSelectionState?.error || productCertState?.error) && (
-        <Alert variant="destructive">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Error al Generar</AlertTitle>
-            <AlertDescription>
-                {loteSelectionState?.error || productCertState?.error}
-            </AlertDescription>
-        </Alert>
-      )}
     </div>
   );
 }
