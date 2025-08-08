@@ -1,4 +1,5 @@
 
+
 import * as React from 'react';
 import type { Ensayo } from '@/context/data-context';
 import { LogoAlt } from '@/components/logo-alt';

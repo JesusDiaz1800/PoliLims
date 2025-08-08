@@ -50,6 +50,7 @@ import {
     MessageSquarePlus,
     LogOut,
     Info,
+    FileSearch,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -105,7 +106,8 @@ const bibliotecaSubMenu = [
 ];
 
 const reportesSubMenu = [
-    { href: '/reports/materia-prima', label: 'Materia Prima', icon: TestTube },
+    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
+    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
 
 
@@ -193,7 +195,8 @@ const pageTitles: Record<string, string> = {
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
-    '/reports/materia-prima': 'Informe de Materia Prima',
+    '/reports/generador': 'Generador de Informes',
+    '/reports/biblioteca': 'Biblioteca de Informes',
 };
 
 const menuItems = (toggleChat: () => void) => [

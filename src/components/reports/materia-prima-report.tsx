@@ -1,6 +1,7 @@
 
+
 import * as React from 'react';
-import type { ReportData } from '@/app/(app)/reports/materia-prima/actions';
+import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
