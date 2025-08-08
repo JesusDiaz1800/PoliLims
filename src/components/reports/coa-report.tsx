@@ -159,7 +159,7 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
         `}</style>
       <div className="report-container">
         <ReportHeader />
-        <h1 className="text-2xl font-bold text-center my-4 font-headline uppercase">Informe de Resultados - {data.tipo}</h1>
+        <h1 className="text-2xl font-bold text-center my-4 font-headline uppercase">Certificado de Análisis - {data.tipo}</h1>
 
         <div className="grid grid-cols-2 gap-x-12 mt-4 text-sm">
             <div>
