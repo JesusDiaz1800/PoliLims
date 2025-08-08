@@ -170,7 +170,7 @@ export default function GeneradorInformesPage() {
                         <CardDescription>Revise el informe generado antes de imprimir o enviar.</CardDescription>
                     </div>
                     <div className="flex gap-2">
-                         <Button onClick={handleOpenEmail} variant="outline">
+                         <Button onClick={handleOpenEmail} variant="outline" disabled={!state.emailBody}>
                             <Mail className="mr-2 h-4 w-4" />
                             Enviar por Correo
                         </Button>

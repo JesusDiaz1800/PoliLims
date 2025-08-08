@@ -1,12 +1,13 @@
 
-
 import * as React from 'react';
 import type { Ensayo } from '@/context/data-context';
 import { LogoAlt } from '@/components/logo-alt';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Check, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CoAReportProps {
-  data: Ensayo;
+  data: Ensayo & { productoInfo?: any };
 }
 
 const ReportHeader = () => (
@@ -34,14 +35,28 @@ const DetailRow = ({ label, value }: { label: string; value: React.ReactNode }) 
     </div>
 );
 
-const ResultsTable = ({ results }: { results: { parameter: string, value: string, unit: string }[] }) => (
+const formatValue = (value: any, decimals: number = 2) => {
+    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return '---';
+    return Number(value).toFixed(decimals);
+};
+
+interface ResultRow {
+  parameter: string;
+  value: string;
+  unit: string;
+  normative: string;
+  verdict: boolean | null;
+}
+
+const ResultsTable = ({ results }: { results: ResultRow[] }) => (
     <Table>
         <TableHeader>
             <TableRow>
                 <TableHead>Parámetro</TableHead>
                 <TableHead className="text-right">Resultado</TableHead>
                 <TableHead>Unidad</TableHead>
-                 <TableHead>Valor Normativo</TableHead>
+                <TableHead>Valor Normativo</TableHead>
+                <TableHead className="text-center">Veredicto</TableHead>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,36 +65,46 @@ const ResultsTable = ({ results }: { results: { parameter: string, value: string
                     <TableCell className="font-medium">{res.parameter}</TableCell>
                     <TableCell className="text-right font-mono">{res.value}</TableCell>
                     <TableCell>{res.unit}</TableCell>
-                    <TableCell>---</TableCell>
+                    <TableCell>{res.normative}</TableCell>
+                    <TableCell className="text-center">
+                        {res.verdict !== null && (
+                            <div className={cn("inline-flex items-center justify-center w-5 h-5 rounded-full", res.verdict ? "bg-green-500 text-white" : "bg-red-500 text-white")}>
+                                {res.verdict ? <Check size={14} /> : <X size={14} />}
+                            </div>
+                        )}
+                    </TableCell>
                 </TableRow>
             ))}
         </TableBody>
     </Table>
 );
 
-const formatValue = (value: any, decimals: number = 2) => {
-    if (value === null || value === undefined || value === '' || isNaN(Number(value))) return '---';
-    return Number(value).toFixed(decimals);
-};
-
 
 export const CoAReport = ({ data }: CoAReportProps) => {
 
-  const results = [
-    { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%' },
-    { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³' },
-    { parameter: 'Contenido de Fibra de Vidrio (% Total)', value: formatValue(data.fvTotalPorcentaje, 2), unit: '%' },
-    { parameter: 'Contenido de Fibra de Vidrio (% Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje, 2), unit: '%' },
-    { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%' },
-    { parameter: 'Dispersión de Negro de Humo', value: data.dispersion_nh || '---', unit: 'Grado' },
-    { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion, 2), unit: 'MPa' },
-    { parameter: 'Límite de Fluencia', value: formatValue(data.limite_fluencia, 2), unit: 'MPa' },
-    { parameter: 'Elongación de Ruptura', value: formatValue(data.elongacion_rotura, 2), unit: '%' },
-    { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo, 2), unit: 'min' },
-  ];
+  const results: ResultRow[] = [];
+
+  if (data.tipo === 'Tubería HDPE') {
+      results.push(
+        { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%', normative: '< 30%', verdict: data.meltIndexVariacion < 30 },
+        { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³', normative: '> 0.955', verdict: data.densidadCalculada > 0.955 },
+        { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%', normative: '2.0 - 3.0', verdict: data.negroHumoCalculado >= 2.0 && data.negroHumoCalculado <= 3.0 },
+        { parameter: 'Dispersión de Negro de Humo', value: data.dispersion_nh || '---', unit: 'Grado', normative: '< 3', verdict: data.dispersion_nh ? (parseInt(data.dispersion_nh.replace('Grado ', '').charAt(1)) < 3) : null },
+        { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion, 2), unit: 'MPa', normative: '> 22', verdict: data.resistencia_traccion > 22 },
+        { parameter: 'Elongación de Ruptura', value: formatValue(data.elongacion_rotura, 2), unit: '%', normative: '> 500', verdict: data.elongacion_rotura > 500 },
+        { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo, 2), unit: 'min', normative: '> 20', verdict: data.tio_tiempo > 20 }
+      );
+  } else if (data.tipo === 'Tubería PP') {
+      results.push(
+          { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%', normative: '< 30%', verdict: data.meltIndexVariacion < 30 },
+          { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³', normative: '---', verdict: null },
+          { parameter: 'Contenido de Fibra de Vidrio (% Total)', value: formatValue(data.fvTotalPorcentaje, 2), unit: '%', normative: '> 5%', verdict: data.fvTotalPorcentaje > 5 },
+          { parameter: 'Contenido de Fibra de Vidrio (% Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje, 2), unit: '%', normative: '> 15%', verdict: data.fvIntermediaPorcentaje > 15 },
+      );
+  }
 
   return (
-    <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm">
+    <div className="bg-card text-card-foreground p-8 rounded-lg border font-body text-sm max-w-4xl mx-auto">
         <style>{`
             @media print {
                 body {
@@ -97,44 +122,27 @@ export const CoAReport = ({ data }: CoAReportProps) => {
 
       <div className="grid grid-cols-2 gap-x-12 mt-6 text-sm">
         <div>
-            <div className="flex justify-between py-1.5">
-                <span className="font-semibold">INSPECTOR:</span>
-                <span>{data.inspector || data.analista || '---'}</span>
-            </div>
-             <div className="flex justify-between py-1.5">
-                <span className="font-semibold">FECHA DE INGRESO DE MUESTRA:</span>
-                <span>{data.fecha_ingreso || data.fecha || '---'}</span>
-            </div>
-             <div className="flex justify-between py-1.5">
-                <span className="font-semibold">FECHA DE REALIZACIÓN DE ENSAYOS:</span>
-                <span>{data.fecha || '---'}</span>
-            </div>
-            <div className="flex justify-between py-1.5">
-                <span className="font-semibold">ÁREA:</span>
-                <span>Control de Calidad</span>
-            </div>
+            <DetailRow label="ID Ensayo" value={<span className="font-mono">{data.id}</span>} />
+            <DetailRow label="ID Muestra" value={<span className="font-mono">{data.id_muestra || '---'}</span>} />
+            <DetailRow label="Inspector de Línea" value={data.inspector || '---'} />
+            <DetailRow label="Analista de Laboratorio" value={data.analista || '---'} />
         </div>
         <div>
-             <div className="flex justify-between py-1.5">
-                <span className="font-semibold">PRODUCTO:</span>
-                <span className="font-mono">{data.producto || '---'}</span>
-            </div>
-            <div className="flex justify-between py-1.5">
-                <span className="font-semibold">LOTE:</span>
-                <span className="font-mono">{data.lote || '---'}</span>
-            </div>
-             <div className="flex justify-between py-1.5">
-                <span className="font-semibold">MATERIAL:</span>
-                <span>{data.tipo_material || data.tipo.replace('Tubería ', '')}</span>
-            </div>
+             <DetailRow label="PRODUCTO" value={<span className="font-bold">{data.producto || '---'}</span>} />
+             <DetailRow label="LOTE" value={<span className="font-mono font-bold">{data.lote || '---'}</span>} />
+             <DetailRow label="FECHA MUESTRA" value={data.fecha_ingreso || data.fecha || '---'} />
+             <DetailRow label="FECHA ANÁLISIS" value={data.fecha || '---'} />
         </div>
       </div>
       
+      <SectionTitle title="Resultados de Ensayos" />
       <div className="border rounded-lg overflow-hidden mt-6">
         <ResultsTable results={results} />
-         <div className="flex justify-between font-bold p-4 bg-muted">
-            <span>ESTADO DE APROBACIÓN</span>
-            <span className="text-green-600">{data.estado === 'Aprobado' ? 'APROBADO' : '---'}</span>
+         <div className="flex justify-between font-bold text-lg p-4 bg-muted">
+            <span>VEREDICTO FINAL</span>
+            <span className={cn(data.estado === 'Aprobado' ? "text-green-600" : "text-red-600")}>
+                {data.estado ? data.estado.toUpperCase() : 'PENDIENTE'}
+            </span>
         </div>
       </div>
 

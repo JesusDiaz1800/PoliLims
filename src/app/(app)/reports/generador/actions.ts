@@ -6,6 +6,7 @@ import { generateEmailContent } from "@/ai/flows/email-report-flow";
 import type { Ensayo, GeneratedReport } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
 import { format } from "date-fns";
+import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 
 export interface ReportData {
   lotes: string[];
@@ -81,8 +82,15 @@ export async function generateReportAction(
   }
   
   const { ensayos } = await dataService.getInitialData();
-  const selectedEnsayos = ensayos.filter(e => selectedIds.includes(e.id));
-  
+  const matriz = await getMatrizProductos();
+
+  const selectedEnsayos = ensayos
+    .filter(e => selectedIds.includes(e.id))
+    .map(e => ({
+        ...e,
+        productoInfo: matriz.find(p => p.producto === e.producto)
+    }));
+
   if(selectedEnsayos.length === 0) {
       return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "No se encontraron los ensayos seleccionados." };
   }
@@ -117,12 +125,12 @@ export async function generateReportAction(
   const savedReport = await dataService.addGeneratedReport(newReport);
   
   const formattedAverages = {
-      meltIndex: promedios.meltIndexCalculado?.toFixed(3) || '0.000',
-      densidad: promedios.densidadCalculada?.toFixed(3) || '0.000',
-      dsc: promedios.dsc_punto_fusion?.toFixed(2) || '0.00',
-      negroHumo: promedios.negroHumoCalculado?.toFixed(2) || '0.00',
-      tio: promedios.tio_tiempo?.toFixed(2) || '0.00',
-      cenizas: promedios.cenizasCalculado?.toFixed(2) || '0.00',
+      meltIndex: promedios.meltIndexCalculado,
+      densidad: promedios.densidadCalculada,
+      dsc: promedios.dsc_punto_fusion,
+      negroHumo: promedios.negroHumoCalculado,
+      tio: promedios.tio_tiempo,
+      cenizas: promedios.cenizasCalculado,
       // Add other relevant averages here, formatted as strings.
   };
 

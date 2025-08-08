@@ -1,5 +1,4 @@
 
-
 import * as React from 'react';
 import type { ReportData } from '@/app/(app)/reports/generador/actions';
 import { LogoAlt } from '@/components/logo-alt';
@@ -50,6 +49,7 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
     { parameter: '% Negro de Humo', value: formatValue(promedios.negroHumoCalculado, 2), unit: '%' },
     { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(promedios.tio_tiempo, 2), unit: 'min' },
     { parameter: '% de Cenizas', value: formatValue(promedios.cenizasCalculado, 2), unit: '%' },
+    { parameter: '% de Fibra de Vidrio (Total)', value: formatValue(promedios.fvTotalPorcentaje, 2), unit: '%' },
   ];
 
   return (
@@ -100,6 +100,7 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                         <TableHead className="text-right">% NH</TableHead>
                         <TableHead className="text-right">TIO</TableHead>
                         <TableHead className="text-right">% Cenizas</TableHead>
+                        <TableHead className="text-right">% FV</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -112,6 +113,7 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
                            <TableCell className="text-right font-mono">{formatValue(e.negroHumoCalculado, 2)}</TableCell>
                            <TableCell className="text-right font-mono">{formatValue(e.tio_tiempo, 2)}</TableCell>
                            <TableCell className="text-right font-mono">{formatValue(e.cenizasCalculado, 2)}</TableCell>
+                           <TableCell className="text-right font-mono">{formatValue(e.fvTotalPorcentaje, 2)}</TableCell>
                        </TableRow>
                    ))}
                 </TableBody>
