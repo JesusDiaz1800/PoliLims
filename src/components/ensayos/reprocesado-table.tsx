@@ -16,7 +16,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
-import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import type { User } from '@/services/user-service';
 
 interface ReprocesadoTableProps {
@@ -106,7 +105,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
                 </>
             );
         case 'porcentaje_negro_humo':
-             return (
+            return (
                 <>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Lote</TableHead>
@@ -264,7 +263,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <div className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -321,8 +320,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
                 ))}
             </TableBody>
           </Table>
-          <ScrollBar orientation="horizontal" className="h-4"/>
-        </ScrollArea>
+        </div>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />

@@ -33,7 +33,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 
 export type Registro = ReturnType<typeof useDynamicData>["registros"][0] & { productoInfo?: TipoProducto };
@@ -120,7 +119,7 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
                   Ingresar Producto
               </Button>
           </div>
-          <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+          <div className="w-full whitespace-nowrap rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -253,8 +252,7 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
                 )})}
               </TableBody>
             </Table>
-            <ScrollBar orientation="horizontal" className="h-4"/>
-          </ScrollArea>
+          </div>
            {filteredRegistros.length === 0 && (
               <div className="text-center py-16 text-muted-foreground">
                   <Search className="mx-auto h-12 w-12 mb-4" />

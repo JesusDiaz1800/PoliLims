@@ -44,7 +44,6 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData, type Importacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 interface ImportacionesTableProps {
   importaciones: Importacion[];
@@ -124,7 +123,7 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <div className="w-full whitespace-nowrap rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -199,8 +198,7 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
             ))}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" className="h-4"/>
-        </ScrollArea>
+        </div>
         {filteredImportaciones.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />

@@ -31,7 +31,6 @@ import type { User } from "@/services/user-service";
 import { findUserByUsername } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format } from "date-fns";
@@ -141,7 +140,7 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
   }
   
   return (
-    <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+    <div className="w-full whitespace-nowrap rounded-md border">
         <Table>
             <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
             <TableBody>
@@ -153,8 +152,7 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
                 ))}
             </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" className="h-4"/>
-    </ScrollArea>
+    </div>
   )
 };
 

@@ -50,6 +50,7 @@ import {
     MessageSquarePlus,
     LogOut,
     Info,
+    FileSearch,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -102,6 +103,11 @@ const equiposSubMenu = [
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
     { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
+];
+
+const reportsSubMenu = [
+    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
+    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
@@ -188,6 +194,8 @@ const pageTitles: Record<string, string> = {
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Biblioteca de Documentos',
     '/biblioteca/upload': 'Cargar Documento',
+    '/reports/generador': 'Generador de Informes y Certificados',
+    '/reports/biblioteca': 'Biblioteca de Informes',
 };
 
 const menuItems = (toggleChat: () => void) => [
@@ -211,7 +219,12 @@ const menuItems = (toggleChat: () => void) => [
         subMenu: operacionesSubMenu,
         href: '/operaciones'
     },
-    { href: '/reports', label: 'Informes y Certificados', icon: FileText },
+     { 
+        label: 'Informes y Certificados', 
+        icon: FileText,
+        subMenu: reportsSubMenu,
+        href: '/reports',
+    },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 
         label: 'Biblioteca', 
@@ -335,7 +348,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     </div>
                 </SidebarFooter>
             </Sidebar>
-            <div className='flex flex-col flex-1 overflow-hidden'>
+            <div className='flex flex-col flex-1 overflow-x-auto custom-scrollbar'>
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
@@ -344,7 +357,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">
+                <main className="flex-1 p-4 sm:p-6">
                     {children}
                 </main>
             </div>

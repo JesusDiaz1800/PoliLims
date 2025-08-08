@@ -16,7 +16,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useDynamicData } from '@/context/data-context';
-import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import type { User } from '@/services/user-service';
 
 interface MateriaPrimaTableProps {
@@ -304,7 +303,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+        <div className="w-full whitespace-nowrap rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -361,8 +360,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
                 ))}
             </TableBody>
           </Table>
-          <ScrollBar orientation="horizontal" className="h-4"/>
-        </ScrollArea>
+        </div>
         {filteredEnsayos.length === 0 && (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="mx-auto h-12 w-12 mb-4" />
