@@ -59,7 +59,7 @@ const emailPrompt = ai.definePrompt({
           - Conclude with a professional closing.
           - The signature must always be "Maximiliano Miranda Valdés", followed by his title on the next line.
 
-      **Example Structure:**
+      **Example Structure (for guidance, adapt as needed):**
       \`\`\`html
       <html>
       <body>
