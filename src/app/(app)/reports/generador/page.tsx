@@ -17,19 +17,14 @@ import { ReportContainer } from '@/components/reports/ReportContainer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Combobox } from "@/components/ui/combobox";
 import { ProductHistoryReport } from '@/components/reports/ProductHistoryReport';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const initialState: {
   reportData: ReportData | null;
-  emailBody: string | null;
-  emailSubject: string | null;
-  newReportId?: string;
   error?: string | null;
-  emailError?: string | null;
 } = {
   reportData: null,
-  emailBody: null,
-  emailSubject: null,
 };
 
 
@@ -88,19 +83,34 @@ export default function GeneradorInformesPage() {
     const stylesheets = Array.from(document.styleSheets)
       .map(sheet => {
         try {
-          return Array.from(sheet.cssRules).map(rule => rule.cssText).join('');
+          // For inline styles, read the rules
+          if (sheet.cssRules) {
+            return Array.from(sheet.cssRules).map(rule => rule.cssText).join('');
+          }
+          // For linked stylesheets, copy the href
+          if (sheet.href) {
+            return `<link rel="stylesheet" href="${sheet.href}">`;
+          }
+          return '';
         } catch (e) {
           console.warn("Could not read stylesheet rules. This may be due to CORS restrictions.", e);
           return '';
         }
       })
       .join('\n');
+      
     const printWindow = window.open('', '', 'height=800,width=1000');
     if (printWindow) {
       printWindow.document.write('<html><head><title>Informe de Resultados</title>');
-      printWindow.document.write('<style>');
-      printWindow.document.write(stylesheets);
-      printWindow.document.write('</style></head><body>');
+      // Check if it's a link or style block
+      if (stylesheets.includes('<link')) {
+          printWindow.document.write(stylesheets);
+      } else {
+          printWindow.document.write('<style>');
+          printWindow.document.write(stylesheets);
+          printWindow.document.write('</style>');
+      }
+      printWindow.document.write('</head><body>');
       printWindow.document.write(contentToPrint);
       printWindow.document.write('</body></html>');
       printWindow.document.close();
