@@ -44,12 +44,12 @@ export const SummaryReport = ({ reportData, title }: SummaryReportProps) => {
   const { lotes, material, producto, fechaGeneracion, inspector, corroborador, ensayos, promedios } = reportData;
 
   const results = [
-    { parameter: 'Melt Index', value: formatValue(promedios.meltIndex, 3), unit: 'g/10min' },
-    { parameter: 'Densidad', value: formatValue(promedios.densidad, 3), unit: 'g/cm³' },
-    { parameter: 'DSC', value: formatValue(promedios.dsc, 2), unit: '°C' },
-    { parameter: '% Negro de Humo', value: formatValue(promedios.negroHumo, 2), unit: '%' },
-    { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(promedios.tio, 2), unit: 'min' },
-    { parameter: '% de Cenizas', value: formatValue(promedios.cenizas, 2), unit: '%' },
+    { parameter: 'Melt Index', value: formatValue(promedios.meltIndexCalculado, 3), unit: 'g/10min' },
+    { parameter: 'Densidad', value: formatValue(promedios.densidadCalculada, 3), unit: 'g/cm³' },
+    { parameter: 'DSC', value: formatValue(promedios.dsc_punto_fusion, 2), unit: '°C' },
+    { parameter: '% Negro de Humo', value: formatValue(promedios.negroHumoCalculado, 2), unit: '%' },
+    { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(promedios.tio_tiempo, 2), unit: 'min' },
+    { parameter: '% de Cenizas', value: formatValue(promedios.cenizasCalculado, 2), unit: '%' },
   ];
 
   return (

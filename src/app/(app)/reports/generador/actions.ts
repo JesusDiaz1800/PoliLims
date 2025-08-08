@@ -16,13 +16,7 @@ export interface ReportData {
   corroborador: string;
   ensayos: Ensayo[];
   promedios: {
-    meltIndex: number;
-    densidad: number;
-    dsc: number;
-    negroHumo: number;
-    tio: number;
-    cenizas: number;
-    [key: string]: any; // Allow other properties
+    [key: string]: any;
   };
   filterType: string;
 }
@@ -41,31 +35,31 @@ type FormState = {
 };
 
 function calculateAverages(ensayos: Ensayo[]) {
-  const result: { [key: string]: number } = {
-    meltIndex: 0,
-    densidad: 0,
-    dsc: 0,
-    negroHumo: 0,
-    tio: 0,
-    cenizas: 0,
-    resistencia_traccion: 0,
-    limite_fluencia: 0,
-    elongacion_rotura: 0,
-    fvTotalPorcentaje: 0,
-    fvIntermediaPorcentaje: 0,
-  };
+  const result: { [key: string]: { sum: number; count: number } } = {};
   
-  const keysToAverage = Object.keys(result);
+  ensayos.forEach(ensayo => {
+    Object.keys(ensayo).forEach(key => {
+      const value = ensayo[key];
+      if (typeof value === 'number' && !isNaN(value)) {
+        if (!result[key]) {
+          result[key] = { sum: 0, count: 0 };
+        }
+        result[key].sum += value;
+        result[key].count++;
+      }
+    });
+  });
 
-  keysToAverage.forEach(key => {
-    const validEnsayos = ensayos.filter(e => e[key] !== null && e[key] !== undefined && !isNaN(Number(e[key])));
-    if (validEnsayos.length > 0) {
-        result[key] = validEnsayos.reduce((sum, e) => sum + Number(e[key]), 0) / validEnsayos.length;
+  const averages: { [key: string]: number } = {};
+  Object.keys(result).forEach(key => {
+    if (result[key].count > 0) {
+      averages[key] = result[key].sum / result[key].count;
     }
   });
 
-  return result;
+  return averages;
 }
+
 
 export async function generateReportAction(
   prevState: FormState,
@@ -77,7 +71,7 @@ export async function generateReportAction(
   });
 
   if (!parsed.success) {
-    return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Invalid form data." };
+    return { ...prevState, reportData: null, emailBody: null, emailSubject: null, error: "Datos de formulario inválidos." };
   }
   
   const { selectedIds, filterType } = parsed.data;
@@ -121,28 +115,23 @@ export async function generateReportAction(
   }
   
   const savedReport = await dataService.addGeneratedReport(newReport);
+  
+  const emailInput = {
+    Material: reportData.material,
+    Producto: reportData.producto,
+    Lotes: reportData.lotes.join(', '),
+    Averages: promedios,
+    FilterType: filterType,
+    Ensayos: selectedEnsayos,
+  };
+  
+  const emailResult = await generateEmailContent(emailInput);
 
-  try {
-      const emailInput = {
-        Material: reportData.material,
-        Producto: reportData.producto,
-        Lotes: reportData.lotes.join(', '),
-        Averages: promedios,
-        FilterType: filterType,
-        Ensayos: selectedEnsayos, // Pass individual assays for single-item reports
-    };
-    const emailResult = await generateEmailContent(emailInput);
-
-    return {
-        reportData,
-        emailBody: emailResult.htmlBody,
-        emailSubject: emailResult.subject,
-        newReportId: savedReport.id,
-        error: null,
-    }
-
-  } catch(error) {
-      console.error("Error generating email:", error);
-      return { ...prevState, reportData, error: "Error al generar el correo. El informe se ha creado, pero no se pudo preparar el email."}
+  return {
+      reportData,
+      emailBody: emailResult.htmlBody,
+      emailSubject: emailResult.subject,
+      newReportId: savedReport.id,
+      error: null,
   }
 }
