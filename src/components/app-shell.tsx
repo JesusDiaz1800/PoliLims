@@ -272,7 +272,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     }
 
     return (
-        <div className="flex h-screen w-full bg-background">
+        <div className="flex h-screen w-full bg-background overflow-hidden">
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
@@ -347,7 +347,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     </div>
                 </SidebarFooter>
             </Sidebar>
-            <div className='flex flex-col flex-1 overflow-hidden'>
+            <div className='flex flex-col flex-1 overflow-auto'>
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
@@ -356,12 +356,10 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                         </h1>
                     </div>
                 </header>
-                <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">
+                <main className="flex-1 p-4 sm:p-6">
                     {children}
                 </main>
             </div>
         </div>
     );
 }
-
-    
