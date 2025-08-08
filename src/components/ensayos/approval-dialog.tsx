@@ -89,7 +89,7 @@ export function ApprovalDialog({ isOpen, onClose, ensayo, user }: ApprovalDialog
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
+        <Form form={form} onSubmit={onSubmit}>
           <DialogHeader>
             <div className="flex items-center gap-2">
                 <ShieldCheck className="h-6 w-6 text-primary" />
