@@ -19,6 +19,18 @@ export default function MateriaPrimaPage() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = React.useState('all');
 
+  const materiaPrimaEnsayos = React.useMemo(() => 
+    ensayos.filter(e => e.tipo === 'Materia Prima'), 
+  [ensayos]);
+
+  const analistas = React.useMemo(() => [
+      { value: "jesus.diaz", label: "Jesus Diaz" },
+      { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
+      { value: "antonia.figueroa", label: "Antonia Figueroa" },
+      { value: "robinson.cordova", label: "Robinson Córdova" },
+      { value: "bryan.vasquez", label: "Bryan Vásquez" },
+  ], []);
+
   React.useEffect(() => {
     const username = searchParams.get('user') || 'jdiaz';
     async function loadUser() {
@@ -38,23 +50,10 @@ export default function MateriaPrimaPage() {
     setSelectedEnsayo(null);
     setIsFormDialogOpen(false);
   };
-  
-  const materiaPrimaEnsayos = React.useMemo(() => 
-    ensayos.filter(e => e.tipo === 'Materia Prima'), 
-  [ensayos]);
-
 
   if (isLoading || !user) {
     return <Loading />;
   }
-  
-  const analistas = React.useMemo(() => [
-      { value: "jesus.diaz", label: "Jesus Diaz" },
-      { value: "maximiliano.miranda", label: "Maximiliano Miranda" },
-      { value: "antonia.figueroa", label: "Antonia Figueroa" },
-      { value: "robinson.cordova", label: "Robinson Córdova" },
-      { value: "bryan.vasquez", label: "Bryan Vásquez" },
-  ], []);
 
   return (
     <div className="space-y-6">
