@@ -80,7 +80,6 @@ export default function GeneradorInformesPage() {
         const to = "jtapia@polifusion.cl; amendez@polifusion.cl; pestay@polifusion.cl";
         const cc = "afigueroa@polifusion.cl; cmunizaga@polifusion.cl; vlutz@polifusion.cl; mgallardo@polifusion.cl; ccalidad4@polifusion.cl; rcruz@polifusion.cl";
         const body = state.emailBody;
-        // Encode the body for the mailto link to handle special characters and line breaks
         const mailtoLink = `mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(state.emailSubject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     }
@@ -90,32 +89,30 @@ export default function GeneradorInformesPage() {
     const printableElement = document.getElementById("printable-report");
     if (!printableElement) return;
 
-    const printStyles = `
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printable-report, #printable-report * {
-                visibility: visible;
-            }
-            #printable-report {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-        }
-    `;
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = printStyles;
-    document.head.appendChild(styleSheet);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+        document.body.removeChild(iframe);
+        return;
+    }
+
+    // Copy all style tags and link tags from the parent document to the iframe
+    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+    styles.forEach(style => {
+        doc.head.appendChild(style.cloneNode(true));
+    });
+
+    doc.body.innerHTML = printableElement.innerHTML;
     
-    window.print();
-
-    // Clean up the stylesheet after printing
-    document.head.removeChild(styleSheet);
+    // Use a small timeout to ensure styles are applied before printing
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        document.body.removeChild(iframe);
+    }, 500);
   };
 
 
