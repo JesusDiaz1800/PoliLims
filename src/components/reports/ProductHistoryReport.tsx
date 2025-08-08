@@ -50,8 +50,6 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
     const stats = selectedParameter ? estadisticas?.[selectedParameter] : undefined;
     const trendData = selectedParameter ? tendencias?.[selectedParameter] : undefined;
     
-    const unit = selectedParameter ? (reportData.promedios[selectedParameter] ? '%' : 'units') : ''; // Basic unit logic
-
     const getUnitForParameter = (param: string): string => {
         const units: { [key: string]: string } = {
             meltIndexCalculado: 'g/10min',
@@ -89,20 +87,18 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
 
             <SectionTitle title={`Tendencia de ${parameterLabel || 'Parámetro'}`} />
             {trendData && trendData.length > 1 ? (
-                 <Card>
-                    <CardContent className="pt-6">
-                        <ResponsiveContainer width="100%" height={250}>
-                             <LineChart data={trendData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-                                <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - (dataMax-dataMin)*0.1', 'dataMax + (dataMax-dataMin)*0.1']} tickFormatter={(v) => typeof v === 'number' ? v.toFixed(2) : v}/>
-                                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}/>
-                                <Legend verticalAlign="top" height={36} formatter={() => parameterLabel || ''} />
-                                <Line type="monotone" dataKey="valor" name={parameterLabel} stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+                <div className="w-full h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={trendData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
+                            <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - (dataMax-dataMin)*0.1', 'dataMax + (dataMax-dataMin)*0.1']} tickFormatter={(v) => typeof v === 'number' ? v.toFixed(2) : v}/>
+                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}/>
+                            <Legend verticalAlign="top" height={36} formatter={() => parameterLabel || ''} />
+                            <Line type="monotone" dataKey="valor" name={parameterLabel} stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
             ) : <p className="text-muted-foreground">No hay suficientes datos para mostrar una tendencia.</p>}
             
 
@@ -134,6 +130,17 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
                         ))}
                     </TableBody>
                 </Table>
+            </div>
+
+            <div className="mt-16 pt-4 border-t text-center signature-section">
+                 <div className="inline-block">
+                    <div className="w-64 h-16"></div>
+                    <div className="border-t-2 border-dotted w-full pt-1 mt-1 text-center">
+                        <p className="font-semibold">Maximiliano Miranda Valdés</p>
+                        <p className="text-xs text-muted-foreground">Ing. Analista de Control de Calidad</p>
+                        <p className="text-xs text-muted-foreground">Polifusión S.A.</p>
+                    </div>
+                </div>
             </div>
         </div>
       </>
