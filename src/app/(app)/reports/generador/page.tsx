@@ -87,33 +87,35 @@ export default function GeneradorInformesPage() {
   };
 
   const handlePrint = () => {
-    const printContent = document.getElementById("printable-report");
-    if (!printContent) return;
+    const printableElement = document.getElementById("printable-report");
+    if (!printableElement) return;
 
-    const printWindow = window.open('', '', 'height=800,width=800');
-    if (!printWindow) {
-      alert("Por favor, habilite las ventanas emergentes para imprimir el informe.");
-      return;
-    }
+    const printStyles = `
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-report, #printable-report * {
+                visibility: visible;
+            }
+            #printable-report {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    `;
+
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = printStyles;
+    document.head.appendChild(styleSheet);
     
-    const allStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+    window.print();
 
-    printWindow.document.write('<html><head><title>Informe de Resultados</title>');
-    allStyles.forEach(style => {
-      printWindow.document.head.appendChild(style.cloneNode(true));
-    });
-
-    printWindow.document.write('</head><body>');
-    printWindow.document.write(printContent.innerHTML);
-    printWindow.document.write('</body></html>');
-    
-    printWindow.document.close();
-    printWindow.focus();
-
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
+    // Clean up the stylesheet after printing
+    document.head.removeChild(styleSheet);
   };
 
 
