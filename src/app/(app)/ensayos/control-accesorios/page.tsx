@@ -65,86 +65,84 @@ export default function ControlAccesoriosPage() {
                 </div>
             </CardHeader>
             <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                             <FormField control={form.control} name="tipo_accesorio" render={({ field }) => (
+                <Form form={form} onSubmit={onSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                         <FormField control={form.control} name="tipo_accesorio" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tipo de Accesorio</FormLabel>
+                                <FormControl><Input placeholder="Ej: Codo 90°, Unión" {...field} /></FormControl>
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="material" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Material</FormLabel>
+                                <FormControl><Input placeholder="Ej: HDPE, PP-R" {...field} /></FormControl>
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="dimension" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Dimensión</FormLabel>
+                                <FormControl><Input placeholder="Ej: 90mm, 1/2 pulgada" {...field} /></FormControl>
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="lote" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Lote de Producción</FormLabel>
+                                <FormControl><Input placeholder="Número de lote" {...field} /></FormControl>
+                            </FormItem>
+                        )} />
+                    </div>
+                    <Card>
+                      <CardHeader>
+                          <CardTitle>Inspección Visual y Dimensional</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                              <FormField control={form.control} name="inspeccion_visual" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Apariencia Conforme</FormLabel></FormItem>)} />
+                              <FormField control={form.control} name="rebabas" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Libre de Rebabas</FormLabel></FormItem>)} />
+                              <FormField control={form.control} name="superficie" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Superficie Lisa</FormLabel></FormItem>)} />
+                              <FormField control={form.control} name="marcado" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Marcado Correcto</FormLabel></FormItem>)} />
+                          </div>
+                          <FormField control={form.control} name="observaciones" render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Observaciones Adicionales</FormLabel>
+                                  <FormControl><Textarea placeholder="Añada cualquier nota relevante sobre la inspección..." {...field} /></FormControl>
+                              </FormItem>
+                          )} />
+                      </CardContent>
+                    </Card>
+                     <div className="flex items-end justify-between gap-6">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+                            <FormField control={form.control} name="veredicto" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tipo de Accesorio</FormLabel>
-                                    <FormControl><Input placeholder="Ej: Codo 90°, Unión" {...field} /></FormControl>
+                                    <FormLabel>Veredicto Final</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione un resultado..." /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Aprobado">Aprobado</SelectItem>
+                                            <SelectItem value="Rechazado">Rechazado</SelectItem>
+                                            <SelectItem value="Aprobado con Observaciones">Aprobado con Observaciones</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )} />
-                             <FormField control={form.control} name="material" render={({ field }) => (
+                            <FormField control={form.control} name="responsable" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Material</FormLabel>
-                                    <FormControl><Input placeholder="Ej: HDPE, PP-R" {...field} /></FormControl>
+                                    <FormLabel>Responsable de Inspección</FormLabel>
+                                    <Select onValueChange={field.onChange} value={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione inspector..." /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            {analistas.map(a => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
+                                        </SelectContent>
+                                    </Select>
                                 </FormItem>
                             )} />
-                             <FormField control={form.control} name="dimension" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dimensión</FormLabel>
-                                    <FormControl><Input placeholder="Ej: 90mm, 1/2 pulgada" {...field} /></FormControl>
-                                </FormItem>
-                            )} />
-                             <FormField control={form.control} name="lote" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Lote de Producción</FormLabel>
-                                    <FormControl><Input placeholder="Número de lote" {...field} /></FormControl>
-                                </FormItem>
-                            )} />
-                        </div>
-                        <Card>
-                          <CardHeader>
-                              <CardTitle>Inspección Visual y Dimensional</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                  <FormField control={form.control} name="inspeccion_visual" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Apariencia Conforme</FormLabel></FormItem>)} />
-                                  <FormField control={form.control} name="rebabas" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Libre de Rebabas</FormLabel></FormItem>)} />
-                                  <FormField control={form.control} name="superficie" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Superficie Lisa</FormLabel></FormItem>)} />
-                                  <FormField control={form.control} name="marcado" render={({ field }) => (<FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 h-fit"><FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl><FormLabel className="font-normal">Marcado Correcto</FormLabel></FormItem>)} />
-                              </div>
-                              <FormField control={form.control} name="observaciones" render={({ field }) => (
-                                  <FormItem>
-                                      <FormLabel>Observaciones Adicionales</FormLabel>
-                                      <FormControl><Textarea placeholder="Añada cualquier nota relevante sobre la inspección..." {...field} /></FormControl>
-                                  </FormItem>
-                              )} />
-                          </CardContent>
-                        </Card>
-                         <div className="flex items-end justify-between gap-6">
-                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
-                                <FormField control={form.control} name="veredicto" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Veredicto Final</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione un resultado..." /></SelectTrigger></FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Aprobado">Aprobado</SelectItem>
-                                                <SelectItem value="Rechazado">Rechazado</SelectItem>
-                                                <SelectItem value="Aprobado con Observaciones">Aprobado con Observaciones</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )} />
-                                <FormField control={form.control} name="responsable" render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Responsable de Inspección</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione inspector..." /></SelectTrigger></FormControl>
-                                            <SelectContent>
-                                                {analistas.map(a => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )} />
-                           </div>
-                            <Button type="submit" className="h-10">
-                                <Save className="mr-2 h-4 w-4" />
-                                Guardar Inspección
-                            </Button>
-                        </div>
-                    </form>
+                       </div>
+                        <Button type="submit" className="h-10">
+                            <Save className="mr-2 h-4 w-4" />
+                            Guardar Inspección
+                        </Button>
+                    </div>
                 </Form>
             </CardContent>
         </Card>
