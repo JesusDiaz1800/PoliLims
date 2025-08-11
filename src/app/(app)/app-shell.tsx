@@ -365,7 +365,8 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
-        className="bg-card dark:bg-card"
+        className="border-r-0"
+        style={{ backgroundColor: 'hsl(var(--card))' }}
         role="navigation"
         aria-label="Main sidebar"
       >
