@@ -149,7 +149,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
       <CollapsibleTrigger asChild disabled={disabled}>
           <SidebarMenuButton
             variant="ghost"
-            className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20"
+            className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
             isActive={isActive}
             disabled={disabled}
             aria-disabled={disabled}
@@ -178,7 +178,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
                         asChild 
                         size="sm" 
                         variant="ghost" 
-                        className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20" 
+                        className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400" 
                         isActive={isSubItemActive} 
                         disabled={disabled}
                         aria-disabled={disabled}
@@ -335,7 +335,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                                         tooltip={{content: item.label, side:"right", align:"center"}}
                                         disabled={isDisabled}
                                         aria-disabled={isDisabled}
-                                        className="text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20"
+                                        className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                                     >
                                         <Link href={`${item.href}?${userQuery}`} onClick={(e) => handleMenuClick(e, item.onClick)}>
                                             <div className='flex items-center gap-3'>
