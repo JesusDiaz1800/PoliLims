@@ -29,7 +29,7 @@ interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
   maquinistas: { value: string; label: string }[]
   maquinas: { value: string; label: string }[]
-  productos: { value: string; label: string }[]
+  productos: { value: string, label: string }[]
   marcas: { value: string; label: string }[]
   matrizProductos: TipoProducto[];
   onFormSubmit: () => void;
@@ -152,7 +152,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
 
   const onSubmit = async (data: FormValues) => {
-    const resultado = Object.values(alerts).length === 0 ? "Conforme" : "No Conforme";
+    const resultado = Object.values(alerts).some(Boolean) ? "No Conforme" : "Conforme";
     const selectedProduct = productos.find(p => p.value === data.producto);
 
     if (!selectedProduct) {
@@ -192,6 +192,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         toast({
           title: "Registro Guardado",
           description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
+          variant: resultado === 'No Conforme' ? 'destructive' : 'default',
         });
 
         await dataService.addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
@@ -548,27 +549,11 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             <RefreshCw className="mr-2 h-4 w-4" />
             Limpiar
         </Button>
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    {/* El div es necesario para que el Tooltip se muestre correctamente en un botón deshabilitado */}
-                    <div> 
-                        <Button type="submit" disabled={hasAlerts}>
-                            <FilePlus2 className="mr-2 h-4 w-4" />
-                            Registrar Control
-                        </Button>
-                    </div>
-                </TooltipTrigger>
-                {hasAlerts && (
-                    <TooltipContent>
-                        <div className="flex items-center gap-2 text-destructive">
-                            <AlertTriangle className="h-4 w-4" />
-                            <p>Corrija los campos con alertas para poder guardar.</p>
-                        </div>
-                    </TooltipContent>
-                )}
-            </Tooltip>
-        </TooltipProvider>
+        <Button type="submit" className={cn(hasAlerts && 'bg-destructive/90 hover:bg-destructive text-destructive-foreground')}>
+            {hasAlerts && <AlertTriangle className="mr-2 h-4 w-4" />}
+            <FilePlus2 className="mr-2 h-4 w-4" />
+            Registrar Control
+        </Button>
     </div>
       </form>
     </Form>
