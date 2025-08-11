@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle } from "lucide-react";
+import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle, AlertOctagon } from "lucide-react";
 import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear, subYears } from 'date-fns';
 
 import { StatsCard } from "@/components/dashboard/stats-card";
@@ -21,6 +21,8 @@ import { useDynamicData } from "@/context/data-context";
 import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
+import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
+import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 
 export type DashboardFilterParams = {
   month?: string;
@@ -32,7 +34,7 @@ export type DashboardFilterParams = {
 }
 
 export default function DashboardPage() {
-  const { ensayos, isLoading, recentActivity, equipos } = useDynamicData();
+  const { ensayos, isLoading, recentActivity, equipos, noConformidades } = useDynamicData();
   const searchParams = useSearchParams();
   
   const month = searchParams.get('month') || 'last_12_months';
@@ -151,6 +153,7 @@ export default function DashboardPage() {
   
   const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
   const totalEquipment = equipos.length;
+  const openNcCount = noConformidades.filter(nc => nc.estado !== "Cerrada").length;
 
   return (
     <div className="space-y-6">
@@ -162,11 +165,12 @@ export default function DashboardPage() {
         defaultValues={{ month, analyst, status, type, supplier }} 
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="Ensayos en el período y filtro actual" icon={Target} />
         <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="De ensayos finalizados en el período" icon={Percent} />
         <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="Ensayos activos que requieren acción" icon={Hourglass} />
         <StatsCard title="Equipos Operativos" value={`${operationalEquipment} / ${totalEquipment}`} description="Equipos calibrados y activos" icon={Beaker} />
+        <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="No conformidades que requieren acción" icon={AlertOctagon} href="/no-conformidades" />
       </div>
       
       <div className="grid grid-cols-12 gap-6 lg:grid-rows-1">
@@ -198,8 +202,15 @@ export default function DashboardPage() {
           <WorkloadDistributionChart data={filteredEnsayos} />
         </div>
       </div>
+
+       <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 lg:col-span-8">
+            <NonConformitiesByMonthChart data={noConformidades} />
+        </div>
+        <div className="col-span-12 lg:col-span-4">
+            <NonConformitiesByTypeChart data={noConformidades} />
+        </div>
+      </div>
     </div>
   );
 }
-
-    

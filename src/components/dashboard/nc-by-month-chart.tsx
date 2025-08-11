@@ -1,0 +1,72 @@
+
+"use client"
+
+import * as React from "react"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import type { NoConformidad } from "@/context/data-context";
+import { format, subMonths, parseISO } from "date-fns";
+import { es } from 'date-fns/locale';
+
+interface NonConformitiesByMonthChartProps {
+    data: NoConformidad[];
+}
+
+export function NonConformitiesByMonthChart({ data: allData }: NonConformitiesByMonthChartProps) {
+  const chartData = React.useMemo(() => {
+    const now = new Date();
+    const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
+
+    for (let i = 11; i >= 0; i--) {
+        const d = subMonths(now, i);
+        const monthKey = format(d, 'yyyy-MM');
+        const monthLabel = format(d, 'MMM yy', { locale: es });
+        monthlyData[monthKey] = {
+            total: 0,
+            name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
+            fill: `hsl(var(--chart-${((11 - i) % 5) + 1}))`
+        };
+    }
+
+    allData.forEach(nc => {
+        try {
+            const ncDate = parseISO(nc.fecha_deteccion.split('-').reverse().join('-'));
+            const monthKey = format(ncDate, 'yyyy-MM');
+            if (monthlyData[monthKey]) {
+                monthlyData[monthKey].total++;
+            }
+        } catch (e) {
+            console.warn(`Invalid date format for NC ${nc.id}: ${nc.fecha_deteccion}`);
+        }
+    });
+    
+    return Object.values(monthlyData);
+  }, [allData]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Tendencia de No Conformidades</CardTitle>
+        <CardDescription>Volumen de no conformidades registradas mensualmente durante los últimos 12 meses.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                <Tooltip
+                    cursor={{ fill: 'hsla(var(--accent), 0.3)' }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      borderColor: 'hsl(var(--border))',
+                      borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
+                    }}
+                />
+                <Bar dataKey="total" name="No Conformidades" radius={[4, 4, 0, 0]} fill="hsl(var(--chart-5))"/>
+            </BarChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
+  )
+}
