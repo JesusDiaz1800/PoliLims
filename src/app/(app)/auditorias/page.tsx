@@ -26,6 +26,7 @@ const AuditoriasPage = () => {
   /**
    * @callback loadUsers
    * @description Fetches the list of users and filters them to include only relevant roles for auditing.
+   * This is memoized with useCallback to prevent re-creation on every render.
    */
   const loadUsers = React.useCallback(async () => {
     setIsLoadingUsers(true);
@@ -84,3 +85,5 @@ const AuditoriasPage = () => {
 }
 
 export default AuditoriasPage;
+
+    

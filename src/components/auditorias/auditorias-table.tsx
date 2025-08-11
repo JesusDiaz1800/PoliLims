@@ -119,7 +119,7 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
       <CardHeader>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex-1 space-y-1.5">
-            <CardTitle>Plan de Auditorías</CardTitle>
+            <CardTitle className="font-headline">Plan de Auditorías</CardTitle>
             <CardDescription>
               Gestione y planifique las auditorías internas y externas del sistema de calidad.
             </CardDescription>
@@ -224,3 +224,5 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
 };
 
 export const AuditoriasTable = React.memo(AuditoriasTableInternal);
+
+    
