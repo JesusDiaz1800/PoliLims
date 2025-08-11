@@ -36,9 +36,14 @@ export default function AuditoriasPage() {
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
+    // Re-fetch data to reflect changes
+    setIsLoading(true);
+    const initialData = await dataService.getInitialData();
+    setAuditorias(initialData.auditorias);
+    setIsLoading(false);
   };
 
   if (isLoading) {

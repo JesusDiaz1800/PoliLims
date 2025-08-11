@@ -40,10 +40,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, MoreHorizontal, Trash2, Library, Eye, FileSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type GeneratedReport } from "@/context/data-context";
+import type { GeneratedReport } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Badge } from "../ui/badge";
+import * as dataService from "@/services/data-service";
 
 interface BibliotecaInformesTableProps {
   informes: GeneratedReport[];
@@ -52,21 +53,22 @@ interface BibliotecaInformesTableProps {
 const BibliotecaInformesTableInternal = ({ informes }: BibliotecaInformesTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
-  const { deleteGeneratedReport } = useDynamicData();
+  const [currentInformes, setCurrentInformes] = React.useState(informes);
   const { toast } = useToast();
 
   const tiposDeInforme = ["Todos", ...Array.from(new Set(informes.map(i => i.tipo)))];
 
   const filteredInformes = React.useMemo(() => 
-    informes.filter(
+    currentInformes.filter(
       (informe) =>
         (filterType === "Todos" || informe.tipo === filterType) &&
         (informe.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
-    ), [informes, searchTerm, filterType]);
+    ), [currentInformes, searchTerm, filterType]);
   
   const handleDelete = async (id: string) => {
     try {
-        await deleteGeneratedReport(id);
+        await dataService.deleteGeneratedReport(id);
+        setCurrentInformes(currentInformes.filter(i => i.id !== id));
         toast({
             title: "Informe Eliminado",
             description: "El registro del informe ha sido eliminado de la biblioteca.",
