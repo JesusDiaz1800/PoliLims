@@ -6,22 +6,22 @@ import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
-import type { Ensayo } from '@/context/data-context';
+import type { Test } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
 import { findUserByUsername } from '@/services/user-service';
 
 export default function MateriaPrimaPage() {
-  const { ensayos, isLoading } = useDynamicData();
+  const { tests, isLoading } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
-  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Test | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = React.useState('all');
 
   const materiaPrimaEnsayos = React.useMemo(() => 
-    ensayos.filter(e => e.tipo === 'Materia Prima'), 
-  [ensayos]);
+    tests.filter(e => e.type === 'Materia Prima'), 
+  [tests]);
 
   const analistas = React.useMemo(() => [
       { value: "jesus.diaz", label: "Jesus Diaz" },
@@ -40,7 +40,7 @@ export default function MateriaPrimaPage() {
     loadUser();
   }, [searchParams]);
 
-  const handleOpenFormDialog = (ensayo?: Ensayo, filterType: string = 'all') => {
+  const handleOpenFormDialog = (ensayo?: Test, filterType: string = 'all') => {
     setSelectedEnsayo(ensayo || null);
     setActiveTab(filterType);
     setIsFormDialogOpen(true);

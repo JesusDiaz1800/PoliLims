@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from 'react';
@@ -9,19 +10,19 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Edit, MoreHorizontal, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Ensayo } from '@/context/data-context';
+import type { Test } from '@/context/data-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { User } from '@/services/user-service';
 
 interface EnsayosProductoTerminadoTableProps {
-  ensayos: Ensayo[];
+  ensayos: Test[];
   tipoEnsayo: 'HDPE' | 'PP';
-  onOpenDialog: (ensayo: Ensayo, filterType: string) => void;
+  onOpenDialog: (ensayo: Test, filterType: string) => void;
   user: User | null;
 }
 
-function getStatusVariant(status: Ensayo['estado']) {
+function getStatusVariant(status: Test['status']) {
   switch (status) {
     case 'Aprobado':
       return 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30';
@@ -49,7 +50,7 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
 
   const filteredEnsayos = React.useMemo(() =>
     ensayos.filter(ensayo =>
-        (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (ensayo.test_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ensayo.lote?.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [ensayos, searchTerm]);
@@ -149,80 +150,80 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
     }
   };
 
-  const renderRow = (ensayo: Ensayo) => {
+  const renderRow = (ensayo: Test) => {
     switch (filterType) {
         case 'melt_index':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_materia_prima, 4)}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.melt_index_materia_prima, 4)}</TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexCalculado, 4)}</TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexVariacion, 2)}%</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'densidad':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.densidadCalculada, 4)}</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'traccion':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.resistencia_traccion, 2)} MPa</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.elongacion_rotura, 2)} %</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.resistencia_traccion, 2)} MPa</TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.elongacion_rotura, 2)} %</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'negro_humo':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)} %</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.negroHumoCalculado, 2)} %</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'dispersion_nh':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell>{ensayo.dispersion_nh || 'N/A'}</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell>{ensayo.results?.dispersion_nh || 'N/A'}</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'tio':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.tio_tiempo, 2)} min</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         case 'fibra_vidrio':
             return (<>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.fvTotalPorcentaje, 2)} %</TableCell>
-                <TableCell className="text-right font-mono">{formatValue(ensayo.fvIntermediaPorcentaje, 2)} %</TableCell>
-                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.fvTotalPorcentaje, 2)} %</TableCell>
+                <TableCell className="text-right font-mono">{formatValue(ensayo.results?.fvIntermediaPorcentaje, 2)} %</TableCell>
+                <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
             </>);
         default: // 'all'
             return (<>
-                <TableCell>{ensayo.fecha_ingreso || 'N/A'}</TableCell>
+                <TableCell>{ensayo.created_at}</TableCell>
                 <TableCell>{ensayo.hora || 'N/A'}</TableCell>
                 <TableCell>{ensayo.inspector || 'N/A'}</TableCell>
                 <TableCell>{ensayo.maquina || 'N/A'}</TableCell>
-                <TableCell>{ensayo.fecha}</TableCell>
+                <TableCell>{ensayo.finished_at}</TableCell>
                 <TableCell className="font-medium">{ensayo.producto}</TableCell>
                 <TableCell>{ensayo.lote}</TableCell>
                 <TableCell>
-                  <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
-                    {ensayo.estado}
+                  <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>
+                    {ensayo.status}
                   </Badge>
                 </TableCell>
             </>);
@@ -273,7 +274,7 @@ const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDial
           </TableHeader>
           <TableBody>
             {filteredEnsayos.map((ensayo) => (
-                <TableRow key={ensayo.id}>
+                <TableRow key={ensayo.test_id}>
                   {renderRow(ensayo)}
                   <TableCell className="text-right">
                     <DropdownMenu>
