@@ -156,7 +156,7 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
+          className="w-full justify-between group/button text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:data-[active=true]:text-accent-foreground"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -202,7 +202,7 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
+                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:data-[active=true]:text-accent-foreground"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -367,8 +367,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
-        className="border-r-0"
-        style={{ backgroundColor: 'hsl(var(--card))' }}
+        className="border-r-0 bg-[#1C3664] dark:bg-card text-white dark:text-foreground"
         role="navigation"
         aria-label="Main sidebar"
       >
@@ -422,13 +421,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
+                    className="text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:data-[active=true]:text-accent-foreground"
                   >
                     <Link
                       href={hrefWithQuery}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
                     >
-                      {isActive && <div className="absolute left-0 h-6 w-1 bg-white rounded-r-lg" />}
+                      {isActive && <div className="absolute left-0 h-6 w-1 bg-white dark:bg-primary rounded-r-lg" />}
                       <div className="flex items-center gap-3">
                         {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
                         <span className="truncate">{item.label}</span>
@@ -441,7 +440,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           </SidebarMenu>
         </SidebarContent>
   
-          <SidebarFooter className="px-3 py-2 border-t">
+          <SidebarFooter className="px-3 py-2 border-t dark:border-border">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -449,7 +448,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                   size="sm"
                   variant="ghost"
                   tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                  className="text-white/80 hover:bg-white/10 hover:text-white"
+                  className="text-white/80 hover:bg-white/10 hover:text-white dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground"
                 >
                   <Link href="/login" aria-label="Cerrar sesión">
                     <div className="flex items-center gap-3">
@@ -474,7 +473,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   
               <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
                 <span className="font-semibold truncate">{user?.fullName ?? "Usuario"}</span>
-                <span className="text-xs truncate">{user?.role ?? ""}</span>
+                <span className="text-xs truncate text-white/70 dark:text-muted-foreground">{user?.role ?? ""}</span>
               </div>
             </div>
           </SidebarFooter>
@@ -506,3 +505,5 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </div>
     );
   }
+
+    

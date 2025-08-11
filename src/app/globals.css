@@ -9,7 +9,7 @@ body {
 
 @layer base {
   :root {
-    --background: 210 20% 98%; /* Cultured White */
+    --background: 210 20% 98%;
     --foreground: 224 71.4% 4.1%;
  
     --card: 0 0% 100%;
@@ -18,8 +18,7 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
  
-    /* Primary (Steel Blue) */
-    --primary: 207 44% 49%; /* #4682B4 */
+    --primary: 207 44% 49%;
     --primary-foreground: 210 40% 98%;
  
     --secondary: 210 20% 94.1%;
@@ -28,7 +27,6 @@ body {
     --muted: 210 20% 94.1%;
     --muted-foreground: 215 27.9% 44.1%;
  
-    /* Accent (Light Blue/Green) */
     --accent: 210 20% 88.2%;
     --accent-foreground: 224 71.4% 4.1%;
  
@@ -41,46 +39,44 @@ body {
  
     --radius: 0.5rem;
 
-    /* Chart Colors (Institutional Light Theme) */
-    --chart-1: 213 89% 44%; /* #126FCC */
-    --chart-2: 215 57% 25%; /* #1C3664 */
-    --chart-3: 38 78% 61%; /* #E8B14D */
-    --chart-4: 0 0% 80%; /* #CDCCCC */
-    --chart-5: 240 3.8% 46.1%; /* Muted-foreground as fallback */
+    --chart-1: 213 89% 44%;
+    --chart-2: 215 57% 25%;
+    --chart-3: 38 78% 61%;
+    --chart-4: 0 0% 80%;
+    --chart-5: 240 3.8% 46.1%;
   }
  
   .dark {
-    --background: 224 71.4% 4.1%; /* #09090B */
-    --foreground: 210 20% 98%; /* #fafafa */
-    
-    --card: 224 71.4% 6.1%; /* Slightly lighter than background */
-    --card-foreground: 210 20% 98%;
-    
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    
-    --primary: 217.2 91.2% 59.8%; /* Bright Blue for accents */
-    --primary-foreground: 210 20% 98%;
-    
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 215.4 20.2% 65.1%;
-    
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
-    
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 14%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: 217.2 91.2% 59.8%;
     
     --radius: 0.5rem;
 
-    /* Chart Colors (Dark Theme) */
     --chart-1: 217 91% 60%;
     --chart-2: 173 80% 40%;
     --chart-3: 38 78% 61%;
@@ -98,21 +94,20 @@ body {
   }
 }
 
-/* Custom Scrollbar Styles */
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(28, 54, 100, 0.5) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px; /* Barra horizontal un poco gruesa */
+  height: 8px;
   background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: rgba(28, 54, 100, 0.5);
   border-radius: 4px;
-  border: 2px solid transparent; /* Espacio para separarlo */
+  border: 2px solid transparent;
   background-clip: content-box;
 }
 
@@ -120,7 +115,6 @@ body {
   background-color: rgba(28, 54, 100, 0.8);
 }
 
-/* Disable mouse wheel on number inputs */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -153,3 +147,5 @@ input[type=number] {
     opacity: 1;
   }
 }
+
+    
