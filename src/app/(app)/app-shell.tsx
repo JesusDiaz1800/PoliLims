@@ -381,7 +381,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
-                         <h1 className="text-lg font-semibold font-headline text-foreground">
+                         <h1 className="text-xl font-semibold font-headline text-foreground">
                            {getPageTitle()}
                         </h1>
                     </div>
