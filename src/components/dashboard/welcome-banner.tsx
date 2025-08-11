@@ -4,12 +4,13 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Hand } from "lucide-react";
 import type { User } from "@/services/user-service";
+import React from "react";
 
 interface WelcomeBannerProps {
   user: User | null;
 }
 
-export function WelcomeBanner({ user }: WelcomeBannerProps) {
+const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   if (!user) {
     return null;
   }
@@ -28,5 +29,7 @@ export function WelcomeBanner({ user }: WelcomeBannerProps) {
     </Card>
   );
 }
+export const WelcomeBanner = React.memo(WelcomeBannerInternal);
+    
 
     

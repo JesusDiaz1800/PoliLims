@@ -16,7 +16,7 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
-export function AssaysByTypeChart({ data: allData }: AssaysByTypeChartProps) {
+const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) => {
     const chartData = React.useMemo(() => {
         const typeCounts = allData.reduce((acc, ensayo) => {
             acc[ensayo.tipo] = (acc[ensayo.tipo] || 0) + 1;
@@ -59,5 +59,7 @@ export function AssaysByTypeChart({ data: allData }: AssaysByTypeChartProps) {
     </Card>
   )
 }
+export const AssaysByTypeChart = React.memo(AssaysByTypeChartInternal);
+    
 
     

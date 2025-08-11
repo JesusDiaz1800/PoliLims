@@ -10,7 +10,7 @@ interface NonConformitiesByTypeChartProps {
   data: NoConformidad[];
 }
 
-export function NonConformitiesByTypeChart({ data }: NonConformitiesByTypeChartProps) {
+const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChartProps) => {
   const chartData = React.useMemo(() => {
     const typeCounts = data.reduce((acc, nc) => {
       acc[nc.tipo] = (acc[nc.tipo] || 0) + 1;
@@ -71,3 +71,6 @@ export function NonConformitiesByTypeChart({ data }: NonConformitiesByTypeChartP
     </Card>
   )
 }
+export const NonConformitiesByTypeChart = React.memo(NonConformitiesByTypeChartInternal);
+
+    

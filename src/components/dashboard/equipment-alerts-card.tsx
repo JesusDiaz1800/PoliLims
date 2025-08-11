@@ -5,7 +5,7 @@ import * as React from "react";
 import { AlertTriangle, Edit } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useDynamicData, type Equipo } from "@/context/data-context";
+import type { Equipo } from "@/context/data-context";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -17,7 +17,7 @@ interface EquipmentAlertsCardProps {
   equipos: Equipo[];
 }
 
-export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
+const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
   const [isClient, setIsClient] = React.useState(false);
   const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
@@ -127,5 +127,7 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
     </>
   );
 }
+export const EquipmentAlertsCard = React.memo(EquipmentAlertsCardInternal);
+    
 
     

@@ -16,7 +16,7 @@ const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"
 
 const statusOrder = ["Aprobado", "Pendiente", "Rechazado"];
 
-export function SampleStatusChart({ data }: SampleStatusChartProps) {
+const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   const chartData = React.useMemo(() => {
     const statusCounts = {
       Aprobado: 0,
@@ -122,5 +122,7 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
     </Card>
   )
 }
+export const SampleStatusChart = React.memo(SampleStatusChartInternal);
+    
 
     

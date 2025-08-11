@@ -12,7 +12,7 @@ interface NonConformitiesByMonthChartProps {
     data: NoConformidad[];
 }
 
-export function NonConformitiesByMonthChart({ data: allData }: NonConformitiesByMonthChartProps) {
+const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesByMonthChartProps) => {
   const chartData = React.useMemo(() => {
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
@@ -70,3 +70,6 @@ export function NonConformitiesByMonthChart({ data: allData }: NonConformitiesBy
     </Card>
   )
 }
+export const NonConformitiesByMonthChart = React.memo(NonConformitiesByMonthChartInternal);
+
+    

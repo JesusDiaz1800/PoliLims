@@ -36,7 +36,7 @@ interface RecentActivityListProps {
     initialActivity: RecentActivity[];
 }
 
-export function RecentActivityList({ initialActivity }: RecentActivityListProps) {
+const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps) => {
     const [isClient, setIsClient] = React.useState(false);
 
     React.useEffect(() => {
@@ -79,3 +79,7 @@ export function RecentActivityList({ initialActivity }: RecentActivityListProps)
         </Card>
     );
 }
+
+export const RecentActivityList = React.memo(RecentActivityListInternal);
+
+    

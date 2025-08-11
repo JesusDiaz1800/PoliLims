@@ -18,7 +18,7 @@ const CustomCursor = (props: any) => {
 };
 
 
-export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
+const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) => {
   const {chartData, average} = React.useMemo(() => {
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
@@ -88,5 +88,7 @@ export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
     </Card>
   )
 }
+export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);
+    
 
     

@@ -12,7 +12,7 @@ interface ThroughputTrendChartProps {
     data: Ensayo[];
 }
 
-export function ThroughputTrendChart({ data: allData }: ThroughputTrendChartProps) {
+const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartProps) => {
   const chartData = React.useMemo(() => {
     const now = new Date();
     const interval = eachDayOfInterval({
@@ -62,5 +62,7 @@ export function ThroughputTrendChart({ data: allData }: ThroughputTrendChartProp
     </Card>
   )
 }
+export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);
+    
 
     
