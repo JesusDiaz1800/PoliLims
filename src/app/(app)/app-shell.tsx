@@ -305,7 +305,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         <div className="flex min-h-screen w-full bg-muted/40">
             <Sidebar>
                 <SidebarContent>
-                     <div className="py-4 overflow-hidden transition-all duration-300">
+                     <div className="py-4 px-2 overflow-hidden transition-all duration-300">
                         <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
                     </div>
                     {isInspectorView && (
@@ -366,13 +366,13 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                     </SidebarMenu>
                     <SidebarSeparator className="my-2" />
                     <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
-                        <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
+                        <Avatar className="h-10 w-10 border-2 border-background/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
                             <span className="font-semibold truncate">{user.fullName}</span>
-                            <span className="text-primary-foreground/70 text-xs truncate">{user.role}</span>
+                            <span className="text-muted-foreground text-xs truncate">{user.role}</span>
                         </div>
                     </div>
                 </SidebarFooter>
@@ -393,4 +393,3 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
-
