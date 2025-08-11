@@ -154,6 +154,26 @@ export interface CalculoIncertidumbre {
         tipo: 'A' | 'B';
         distribucion: 'normal' | 'rectangular' | 'triangular';
         desviacion_estandar?: number;
+        unidades?: string;
+    }[];
+}
+
+export interface Proveedor {
+    id: string;
+    nombre: string;
+    tipo: string;
+    contacto_nombre?: string;
+    contacto_email?: string;
+    contacto_telefono?: string;
+    estado: 'Activo' | 'En evaluación' | 'Inactivo';
+    certificacionesISO?: string;
+    contratoUrl?: string;
+    observaciones?: string;
+    evaluacion_desempeno?: {
+        fecha: string;
+        calidad: number;
+        cumplimiento: number;
+        puntualidad: number;
     }[];
 }
 
@@ -207,6 +227,7 @@ interface DynamicDataContextType {
   importaciones: Importacion[];
   generatedReports: GeneratedReport[];
   calculosIncertidumbre: CalculoIncertidumbre[];
+  proveedores: Proveedor[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -225,6 +246,9 @@ interface DynamicDataContextType {
   addGeneratedReport: (report: Omit<GeneratedReport, 'id'>) => Promise<GeneratedReport>;
   deleteGeneratedReport: (id: string) => Promise<void>;
   addCalculoIncertidumbre: (calculo: Omit<CalculoIncertidumbre, 'id'>) => Promise<CalculoIncertidumbre>;
+  addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
+  updateProveedor: (id: string, proveedor: Partial<Proveedor>) => Promise<void>;
+  deleteProveedor: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -252,6 +276,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [importaciones, setImportaciones] = useState<Importacion[]>([]);
   const [generatedReports, setGeneratedReports] = useState<GeneratedReport[]>([]);
   const [calculosIncertidumbre, setCalculosIncertidumbre] = useState<CalculoIncertidumbre[]>([]);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data once on the client
@@ -280,6 +305,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setImportaciones(initialData.importaciones);
             setGeneratedReports(initialData.generatedReports);
             setCalculosIncertidumbre(initialData.calculosIncertidumbre);
+            setProveedores(initialData.proveedores);
         }
         
       } catch (error) {
@@ -388,6 +414,22 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       setCalculosIncertidumbre(prev => [newCalculo, ...prev]);
       return newCalculo;
   }, []);
+  
+  const addProveedor = useCallback(async (proveedorData: Omit<Proveedor, 'id'>) => {
+    const newProveedor = await dataService.addProveedor(proveedorData);
+    setProveedores(prev => [newProveedor, ...prev].sort((a,b) => a.nombre.localeCompare(b.nombre)));
+    return newProveedor;
+  }, []);
+
+  const updateProveedor = useCallback(async (id: string, updatedProveedorData: Partial<Proveedor>) => {
+    await dataService.updateProveedor(id, updatedProveedorData);
+    setProveedores(prev => prev.map(p => p.id === id ? { ...p, ...updatedProveedorData } : p).sort((a,b) => a.nombre.localeCompare(b.nombre)));
+  }, []);
+
+  const deleteProveedor = useCallback(async (id: string) => {
+    await dataService.deleteProveedor(id);
+    setProveedores(prev => prev.filter(p => p.id !== id));
+  }, []);
 
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const fullActivity = await dataService.addRecentActivity(activity);
@@ -404,6 +446,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     importaciones,
     generatedReports,
     calculosIncertidumbre,
+    proveedores,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -422,13 +465,16 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addGeneratedReport,
     deleteGeneratedReport,
     addCalculoIncertidumbre,
+    addProveedor,
+    updateProveedor,
+    deleteProveedor,
     addRecentActivity,
     isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, isLoading,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, proveedores, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
-    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addRecentActivity
+    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addProveedor, updateProveedor, deleteProveedor, addRecentActivity
   ]);
 
   const staticContextValue = useMemo(() => ({

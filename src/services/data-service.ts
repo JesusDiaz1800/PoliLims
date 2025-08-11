@@ -1,6 +1,6 @@
 
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor } from "@/context/data-context";
 import { isPast, parse } from 'date-fns';
 
 
@@ -99,6 +99,21 @@ let demoIncertidumbre: CalculoIncertidumbre[] = Array.from({ length: 22 }, (_, i
     ]
 }));
 
+let demoProveedores: Proveedor[] = [
+    { id: 'PROV-001', nombre: 'Sigma-Aldrich', tipo: 'Reactivos', contacto_nombre: 'Juan Pérez', contacto_email: 'juan.perez@sigma.com', estado: 'Activo', certificacionesISO: 'ISO 9001' },
+    { id: 'PROV-002', nombre: 'Trescal', tipo: 'Calibración', contacto_nombre: 'María González', contacto_email: 'maria.gonzalez@trescal.com', estado: 'Activo', certificacionesISO: 'ISO 17025' },
+    { id: 'PROV-003', nombre: 'BOREALIS CO.', tipo: 'Materia Prima', contacto_nombre: 'Peter Schmidt', contacto_email: 'peter.schmidt@borealis.com', estado: 'Activo' },
+    { id: 'PROV-004', nombre: 'Merck', tipo: 'Reactivos', estado: 'Activo' },
+    { id: 'PROV-005', nombre: 'Servicios de Ingeniería Metrológica', tipo: 'Calibración', estado: 'En evaluación' },
+    ...Array.from({ length: 25 }, (_, i) => ({
+      id: `PROV-${String(i + 6).padStart(3, '0')}`,
+      nombre: `Proveedor de Prueba ${i + 1}`,
+      tipo: i % 2 === 0 ? 'Materia Prima' : 'Servicios Generales',
+      estado: i % 5 === 0 ? 'Inactivo' : 'Activo',
+    }))
+];
+
+
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
 
@@ -155,6 +170,19 @@ export async function addImportacion(importacion: Omit<Importacion, 'id'>) {
  }
 export async function updateImportacion(id: string, updatedData: Partial<Importacion>) { return; }
 export async function deleteImportacion(id: string) { return; }
+
+export async function addProveedor(proveedor: Omit<Proveedor, 'id'>) {
+    const newProveedor = { ...proveedor, id: `PROV-NEW-${Math.random().toString(16).slice(2)}` };
+    demoProveedores.unshift(newProveedor);
+    return newProveedor;
+}
+export async function updateProveedor(id: string, updatedData: Partial<Proveedor>) {
+    demoProveedores = demoProveedores.map(p => p.id === id ? { ...p, ...updatedData } : p);
+}
+export async function deleteProveedor(id: string) {
+    demoProveedores = demoProveedores.filter(p => p.id !== id);
+}
+
 export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>) { 
      const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
     recentActivityData.unshift(newActivity);
@@ -180,5 +208,6 @@ export async function getInitialData() {
         importaciones: demoImportaciones,
         generatedReports: generatedReports,
         calculosIncertidumbre: calculosIncertidumbre,
+        proveedores: demoProveedores,
     };
 }

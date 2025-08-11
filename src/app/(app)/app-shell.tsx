@@ -52,6 +52,7 @@ import {
     Info,
     FileSearch,
     Map,
+    Truck,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -110,6 +111,11 @@ const reportsSubMenu = [
     { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
     { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
+
+const proveedoresSubMenu = [
+    { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
+];
+
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
@@ -199,6 +205,7 @@ const pageTitles: Record<string, string> = {
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
     '/workflows': 'Flujos de Trabajo',
+    '/proveedores/gestion': 'Gestión de Proveedores',
 };
 
 const menuItems = (toggleChat: () => void) => [
@@ -214,6 +221,12 @@ const menuItems = (toggleChat: () => void) => [
         icon: BookCheck,
         subMenu: equiposSubMenu,
         href: '/equipos',
+    },
+    { 
+        label: 'Proveedores', 
+        icon: Truck,
+        subMenu: proveedoresSubMenu,
+        href: '/proveedores',
     },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     {
