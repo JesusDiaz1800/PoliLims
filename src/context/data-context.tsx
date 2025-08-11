@@ -61,7 +61,7 @@ export interface RecentActivity {
   id: string;
   user: string;
   action: string;
-  timestamp: string;
+  timestamp: string; // ISO 8601 string
 }
 
 export interface Equipo {
@@ -249,7 +249,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setSapProducts(products);
             setEnsayos(initialData.ensayos);
             setRegistros(initialData.registros);
-            setRecentActivity(initialData.recentActivity);
+            setRecentActivity(initialData.recentActivity.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
             setEquipos(initialData.equipos);
             setControles(initialData.controles);
             setNoConformidades(initialData.noConformidades);
@@ -360,7 +360,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
 
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const fullActivity = await dataService.addRecentActivity(activity);
-     setRecentActivity(prev => [fullActivity, ...prev].slice(0, 10)); // Keep the list tidy
+     setRecentActivity(prev => [fullActivity, ...prev].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
   }, []);
 
   const dynamicContextValue = useMemo(() => ({

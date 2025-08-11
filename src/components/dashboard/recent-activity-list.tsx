@@ -7,8 +7,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { RecentActivity } from "@/context/data-context";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { parseISO } from "date-fns";
 
 const getAvatarInfo = (name: string) => {
     const fallback = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -66,7 +67,7 @@ export function RecentActivityList({ initialActivity }: RecentActivityListProps)
                                             <span className="font-semibold text-foreground">{activity.user}</span> {activity.action}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            {isClient ? formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true, locale: es }) : '...'}
+                                            {isClient ? format(parseISO(activity.timestamp), "dd/MM/yyyy HH:mm:ss", { locale: es }) : '...'}
                                         </p>
                                     </div>
                                 </div>
