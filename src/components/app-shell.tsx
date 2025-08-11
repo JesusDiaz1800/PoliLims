@@ -188,6 +188,7 @@ const pageTitles: Record<string, string> = {
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
     '/control-ambiental': 'Control de Condiciones Ambientales',
+    '/auditorias': 'Gestión de Auditorías',
     '/ensayos/tuberias/hdpe': 'Ensayos de Tuberías HDPE',
     '/ensayos/tuberias/pp': 'Ensayos de Tuberías PP',
     '/ensayos/materia-prima': 'Ensayos de Materia Prima',
@@ -230,6 +231,7 @@ const menuItems = (toggleChat: () => void) => [
         subMenu: equiposSubMenu,
         href: '/equipos',
     },
+    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
     { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     {
