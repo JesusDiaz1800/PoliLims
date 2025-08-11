@@ -389,39 +389,3 @@ export const useDynamicData = (): DynamicDataContextType => {
     }
     return context;
 };
-
-// --- API Client ---
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-const apiClient = {
-  get: async <T>(endpoint: string): Promise<T> => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`);
-    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-    return response.json();
-  },
-  post: async <T, U>(endpoint: string, body: U): Promise<T> => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-    return response.json();
-  },
-  put: async <T, U>(endpoint: string, body: U): Promise<T> => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-    return response.json();
-  },
-  delete: async <T>(endpoint: string): Promise<T> => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
-    return response.json();
-  },
-};
