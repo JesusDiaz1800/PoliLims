@@ -3,46 +3,51 @@
 
 import * as React from 'react';
 import type { Formacion } from '@/context/data-context';
-import { useDynamicData } from '@/context/data-context';
 import * as userService from "@/services/user-service";
+import * as dataService from "@/services/data-service";
 import Loading from '@/app/(app)/loading';
 import { FormacionTable } from '@/components/formacion/formacion-table';
 import { FormacionDialog } from '@/components/formacion/formacion-dialog';
 import type { User } from '@/services/user-service';
 
 export default function FormacionPage() {
-  const { formacion: initialFormacion, isLoading: isDynamicLoading } = useDynamicData();
-  const [isDataLoading, setIsDataLoading] = React.useState(true);
-  
-  const [formacion, setFormacion] = React.useState<Formacion[]>(initialFormacion);
+  const [formacion, setFormacion] = React.useState<Formacion[]>([]);
   const [users, setUsers] = React.useState<User[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedFormacion, setSelectedFormacion] = React.useState<Formacion | null>(null);
 
   React.useEffect(() => {
     async function loadData() {
-        if (!isDynamicLoading) {
-            const allUsers = await userService.getAllUsers();
-            setFormacion(initialFormacion);
-            setUsers(allUsers);
-            setIsDataLoading(false);
-        }
+        setIsLoading(true);
+        const [initialData, allUsers] = await Promise.all([
+            dataService.getInitialData(),
+            userService.getAllUsers()
+        ]);
+        setFormacion(initialData.formacion);
+        setUsers(allUsers);
+        setIsLoading(false);
     }
     loadData();
-  }, [isDynamicLoading, initialFormacion]);
+  }, []);
 
   const handleOpenDialog = (record?: Formacion) => {
     setSelectedFormacion(record || null);
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
     setSelectedFormacion(null);
     setIsDialogOpen(false);
+    // Re-fetch data to reflect changes
+    setIsLoading(true);
+    const initialData = await dataService.getInitialData();
+    setFormacion(initialData.formacion);
+    setIsLoading(false);
   };
 
-  if (isDataLoading) {
+  if (isLoading) {
     return <Loading />;
   }
 
