@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -48,6 +47,9 @@ import {
   CalendarCheck,
   History,
   Truck,
+  Layers3,
+  SlidersHorizontal,
+  BookCheck
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -55,7 +57,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
-import { cn } from "@/lib/utils";
 
 const ensayosSubMenu = [
     { 
@@ -113,6 +114,7 @@ const reportsSubMenu = [
 const proveedoresSubMenu = [
     { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
 ];
+
 
 function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item: any; pathname: string; disabled?: boolean; userQuery: string }) {
   const subMenuItems = item.subMenu || item.subItems;
