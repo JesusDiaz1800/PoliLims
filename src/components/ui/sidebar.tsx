@@ -22,7 +22,7 @@ const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "18rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3.25rem"
+const SIDEBAR_WIDTH_ICON = "3.75rem" // Aumentado para dar más espacio al indicador
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
@@ -184,7 +184,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "hidden md:flex flex-col h-screen sticky top-0 transition-[width] duration-300 ease-in-out shadow-lg",
+          "hidden md:flex flex-col h-screen sticky top-0 transition-[width] duration-300 ease-in-out",
           state === 'collapsed' ? 'w-[--sidebar-width-icon]' : 'w-[--sidebar-width]',
           className
         )}
@@ -321,9 +321,9 @@ const sidebarMenuButtonVariants = cva(
         ghost: "hover:bg-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
       },
       size: {
-        default: "h-10 px-2 text-sm font-medium gap-3",
-        sm: "h-9 px-2 text-sm gap-2",
-        lg: "h-12 px-2 text-base gap-4",
+        default: "h-10 px-3 text-sm font-medium gap-3",
+        sm: "h-9 px-3 text-sm gap-2",
+        lg: "h-12 px-3 text-base gap-4",
       },
     },
     defaultVariants: {
@@ -339,7 +339,6 @@ const SidebarMenuButton = React.forwardRef<
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
-    hasSubmenu?: boolean
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
   (
@@ -350,7 +349,6 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
-      hasSubmenu = false,
       children,
       ...props
     },
@@ -408,5 +406,3 @@ export {
   SidebarTrigger,
   useSidebar,
 }
-
-    

@@ -55,6 +55,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
+import { cn } from "@/lib/utils";
 
 const ensayosSubMenu = [
     { 
@@ -112,8 +113,6 @@ const reportsSubMenu = [
 const proveedoresSubMenu = [
     { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
 ];
-
-// -- Aquí irían las definiciones de submenús y NavCollapsible tal como ya tienes --
 
 function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item: any; pathname: string; disabled?: boolean; userQuery: string }) {
   const subMenuItems = item.subMenu || item.subItems;
@@ -219,7 +218,7 @@ const menuItems = (toggleChat: () => void): any[] => [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
-        icon: SlidersHorizontal,
+        icon: TestTube,
         subMenu: ensayosSubMenu,
         href: '/ensayos'
     },
@@ -233,7 +232,7 @@ const menuItems = (toggleChat: () => void): any[] => [
     { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     {
-        label: 'Operaciones',
+        label: 'Operaciones de Gestión',
         icon: GitBranch,
         subMenu: operacionesSubMenu,
         href: '/operaciones'
@@ -297,13 +296,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-muted/40 dark:bg-gray-900">
+    <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
         className="
-          text-white
-          bg-[#1C3664]
-          dark:bg-gray-900
-          dark:text-gray-300
+          bg-[#1C3664] text-white
+          dark:bg-card
           shadow-lg
           transition-colors duration-300
         "
@@ -365,18 +362,19 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
                     className="
-                      text-white
-                      hover:bg-white/10
-                      hover:text-white
-                      data-[active=true]:text-cyan-400
-                      dark:hover:bg-cyan-700/30
-                      dark:data-[active=true]:text-cyan-400
+                      text-white/80 dark:text-foreground/80
+                      hover:bg-white/10 hover:text-white
+                      dark:hover:bg-muted
+                      data-[active=true]:text-white
+                      data-[active=true]:dark:text-foreground
+                      relative
                     "
                   >
                     <Link
                       href={`${item.href}?${userQuery}`}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
                     >
+                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
                       <div className="flex items-center gap-3">
                         <item.icon className="size-5 shrink-0" aria-hidden="true" />
                         <span className="truncate">{item.label}</span>
@@ -389,19 +387,15 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter className="px-3 py-2 border-t border-white/20 dark:border-gray-700">
+        <SidebarFooter className="px-3 py-2 border-t border-white/20 dark:border-border">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
+                size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="
-                  text-white
-                  hover:bg-white/10
-                  hover:text-white
-                  dark:hover:bg-cyan-700/30
-                "
+                className="text-white/80 dark:text-foreground/80 hover:bg-white/10 dark:hover:bg-muted hover:text-white dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
@@ -413,11 +407,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <SidebarSeparator className="my-2 bg-white/20 dark:bg-gray-700" />
+          <SidebarSeparator className="my-2 bg-white/20 dark:bg-border" />
 
           <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
             <Avatar
-              className="h-10 w-10 border-2 border-white/30 dark:border-gray-600"
+              className="h-10 w-10 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
               {user?.avatarUrl ? (
@@ -428,8 +422,8 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Avatar>
 
             <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <span className="font-semibold truncate text-white dark:text-gray-200">{user?.fullName ?? "Usuario"}</span>
-              <span className="text-white/70 dark:text-gray-400 text-xs truncate">{user?.role ?? ""}</span>
+              <span className="font-semibold truncate text-white dark:text-foreground">{user?.fullName ?? "Usuario"}</span>
+              <span className="text-white/70 dark:text-muted-foreground text-xs truncate">{user?.role ?? ""}</span>
             </div>
           </div>
         </SidebarFooter>
@@ -437,27 +431,29 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
         <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 backdrop-blur-sm px-4 sm:px-6 dark:bg-gray-900/80 dark:border-gray-700"
+          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
           role="banner"
         >
           <div className="flex items-center gap-2">
             <SidebarTrigger aria-label="Toggle sidebar" />
             <h1
-              className="text-xl font-semibold font-headline text-gray-900 dark:text-gray-100"
+              className="text-xl font-semibold font-headline text-foreground"
               tabIndex={-1}
             >
               {getPageTitle()}
             </h1>
           </div>
         </header>
-
-        <main
-          className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar"
-          role="main"
-          tabIndex={-1}
-        >
-          {children}
-        </main>
+        
+        <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
+            <main
+                className="min-w-full p-4 sm:p-6"
+                role="main"
+                tabIndex={-1}
+            >
+                {children}
+            </main>
+        </div>
       </div>
     </div>
   );
