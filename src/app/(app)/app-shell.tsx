@@ -56,6 +56,7 @@ import {
     Truck,
     Thermometer,
     GraduationCap,
+    Bell,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -90,6 +91,7 @@ const administracionSubMenu = [
     { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
     { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
@@ -205,6 +207,7 @@ const pageTitles: Record<string, string> = {
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/administracion/rutas': 'Rutas Disponibles',
+    '/administracion/notificaciones': 'Gestión de Notificaciones',
     '/assistant': 'Asistente de Código',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
