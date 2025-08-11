@@ -52,12 +52,24 @@ const demoControles: ControlEvento[] = [
     { id: 'CE-06', equipoId: 'EQ-06', fecha: '01-06-2025', tipo: 'Mantenimiento Preventivo', responsable: 'Robinson Córdova', observaciones: 'Limpieza de cámara y revisión de termocupla.' },
 ];
 
-const demoNoConformidades: NoConformidad[] = [
-    { id: 'NC-001', tipo: 'Interna', fecha_deteccion: '15-07-2025', descripcion: 'El equipo EQ-05 (Balanza Analítica) está fuera de calibración desde el 2025-07-10.', estado: 'En Investigación', severidad: 'Alta', responsable: 'Victor Lutz', fecha_vencimiento: '25-07-2025' },
-    { id: 'NC-002', tipo: 'Reclamo de Cliente', fecha_deteccion: '18-07-2025', descripcion: 'El cliente "Constructora XYZ" reporta que el lote Lote-250710-PP1 presenta fragilidad.', estado: 'Abierta', severidad: 'Crítica', responsable: 'Jesus Diaz', fecha_vencimiento: '22-07-2025' },
-    { id: 'NC-003', tipo: 'Auditoría', fecha_deteccion: '30-06-2025', descripcion: 'Durante la auditoría interna se detectó que el PNT para ensayos de impacto no está actualizado a la última versión de la norma.', estado: 'Resuelta', severidad: 'Media', responsable: 'Maximiliano Miranda', fecha_vencimiento: '15-07-2025', accion_correctiva: 'Se actualizó el PNT y se realizó capacitación al personal.' },
-    { id: 'NC-004', tipo: 'Interna', fecha_deteccion: '21-07-2025', descripcion: 'Contaminación cruzada detectada en muestras de Reprocesado.', estado: 'Abierta', severidad: 'Alta', responsable: 'Robinson Córdova', fecha_vencimiento: '28-07-2025' },
-];
+let demoNoConformidades: NoConformidad[] = Array.from({ length: 15 }, (_, i) => {
+    const tipos: NoConformidad['tipo'][] = ['Interna', 'Reclamo de Cliente', 'Auditoría'];
+    const estados: NoConformidad['estado'][] = ['Abierta', 'En Investigación', 'Resuelta', 'Cerrada'];
+    const severidades: NoConformidad['severidad'][] = ['Baja', 'Media', 'Alta', 'Crítica'];
+    const responsables = ['Victor Lutz', 'Jesus Diaz', 'Maximiliano Miranda', 'Antonia Figueroa'];
+    
+    return {
+        id: `NC-${String(i + 1).padStart(3, '0')}`,
+        tipo: tipos[i % tipos.length],
+        fecha_deteccion: `1${i % 9 + 1}-07-2025`,
+        descripcion: `Descripción de la incidencia de prueba número ${i + 1}. Este es un texto de ejemplo para simular un problema detectado.`,
+        estado: estados[i % estados.length],
+        severidad: severidades[i % severidades.length],
+        responsable: responsables[i % responsables.length],
+        fecha_vencimiento: `2${i % 9 + 1}-07-2025`,
+        accion_correctiva: i % 3 === 0 ? `Se implementó la acción correctiva #${i+1} para solucionar el problema raíz.` : undefined,
+    };
+});
 
 const demoImportaciones: Importacion[] = [
     { id: 'IMP-001', bl: 'YMLUC236092186', fecha_embarque: '11-12-2021', sca: '65344', fecha_emision_cert: '07-03-2022', di: '2400301661-3', etiqueta_rango_inicio: '7820106', etiqueta_rango_fin: '7820606', operacion: '170389', proveedor: 'RYNO', fecha_solicitada: '03-02-2022', fecha_entrega_calidad: '21-02-2022', cantidad_lote: 15821, fecha_liberacion: '05-04-2022', ingresado_siss: true, estado: 'CADUCADO' },
@@ -134,7 +146,9 @@ export async function addIncidencia(incidencia: Omit<NoConformidad, 'id'>) {
     return newIncidencia;
 }
 export async function updateIncidencia(id: string, updatedData: Partial<NoConformidad>) { return; }
-export async function deleteIncidencia(id: string) { return; }
+export async function deleteIncidencia(id: string) {
+    demoNoConformidades = demoNoConformidades.filter(nc => nc.id !== id);
+}
 export async function addImportacion(importacion: Omit<Importacion, 'id'>) {
     const newImportacion = { ...importacion, id: `IMP-NEW-${Math.random().toString(16).slice(2)}` };
     return newImportacion;
