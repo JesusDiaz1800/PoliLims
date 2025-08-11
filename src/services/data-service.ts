@@ -135,6 +135,9 @@ let demoFormacion: Formacion[] = [
     { id: 'FORM-001', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Auditor Interno ISO/IEC 17025:2017', fecha: '2023-11-15', evaluador: 'AENOR', resultado: 'Aprobado', fecha_vencimiento: '2025-11-15' },
     { id: 'FORM-002', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Cromatografía de Gases Avanzada', fecha: '2024-03-20', evaluador: 'Waters Corp.', resultado: 'Completado' },
     { id: 'FORM-003', empleadoId: 'mmiranda', empleadoNombre: 'Maximiliano Miranda', tipo: 'Evaluación de Competencia', nombre_actividad: 'Análisis de Melt Index (ASTM D1238)', fecha: '2024-06-10', evaluador: 'Victor Lutz', resultado: 'Aprobado' },
+    { id: 'FORM-004', empleadoId: 'rcordova', empleadoNombre: 'Robinson Córdova', tipo: 'Inducción', nombre_actividad: 'Inducción General de Laboratorio', fecha: '2024-01-15', evaluador: 'Jesus Diaz', resultado: 'Completado', observaciones: 'Completó todos los módulos satisfactoriamente.' },
+    { id: 'FORM-005', empleadoId: 'bvasquez', empleadoNombre: 'Bryan Vásquez', tipo: 'Curso', nombre_actividad: 'Buenas Prácticas de Laboratorio (BPL)', fecha: '2023-09-05', evaluador: 'OTEC Qualitas', resultado: 'Aprobado' },
+    { id: 'FORM-006', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Evaluación de Competencia', nombre_actividad: 'Manejo de Espectrómetro FTIR', fecha: '2024-07-01', evaluador: 'Victor Lutz', resultado: 'Pendiente' },
 ];
 
 let demoAuditorias: Auditoria[] = [
