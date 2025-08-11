@@ -39,7 +39,7 @@ const demoEquipos: Equipo[] = [
   { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo', marca: 'TA Instruments', modelo: 'Q200', numero_serie: 'DSC-1122', fecha_puesta_marcha: '15-06-2020', proxima_calibracion: '30-11-2025', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta', fotoUrl: '', ensayos_asociados: ['dsc', 'tio'] },
   { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo', marca: 'CEAST', modelo: 'Melt Flow 2000', numero_serie: 'MFI-3344', fecha_puesta_marcha: '20-02-2023', proxima_calibracion: '01-03-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
   { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento', marca: 'Mettler Toledo', modelo: 'MS-TS', numero_serie: 'BAL-5566', fecha_puesta_marcha: '01-09-2019', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta', fotoUrl: '', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
-  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo', marca: 'Thermo Scientific', modelo: 'Thermolyne', numero_serie: 'MUF-7788', fecha_puesta_marcha: '12-11-2018', proxima_calibracion: '28-02-2026', ubicacion: 'Área de Hornos', criticidad: 'Baja', fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio'] },
+  { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo', marca: 'Thermo Scientific', modelo: 'Thermolyne', numero_serie: 'MUF-7788', fecha_puesta_marcha: '12-11-2018', proxima_calibracion: '28-02-2026', ubicacion: 'Área de Hornos', criticidad: 'Baja', fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio', 'cenizas'] },
   { id: 'EQ-07', nombre: 'Máquina de Tracción', estado: 'Inactivo', marca: 'Instron', modelo: '3369', numero_serie: 'TRAC-9900', fecha_puesta_marcha: '30-01-2017', proxima_calibracion: '30-07-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media', fotoUrl: '', ensayos_asociados: ['traccion'] },
 ];
 
@@ -70,31 +70,22 @@ const demoGeneratedReports: GeneratedReport[] = [
     { id: 'REP-002', nombre: '2025-07-21 - R202P - Lote 500312.pdf', tipo: 'Materia Prima', fecha_creacion: '21-07-2025', path: '/informes/materia-prima/2025-07-21-R202P-500312.pdf', ensayoIds: ['LAB-07-07'] },
 ];
 
-const demoIncertidumbre: CalculoIncertidumbre[] = [
-    {
-        id: 'INC-001',
-        nombre: 'Incertidumbre de pesada en balanza EQ-05',
-        fecha: '2025-07-24T10:00:00Z',
-        usuario: 'Victor Lutz',
-        resultado: { incertidumbreCombinada: 0.00015, incertidumbreExpandida: 0.00030, factorCobertura: 2 },
-        componentes: [
-            { descripcion: 'Calibración de la balanza', valor: 0.0002, tipo: 'B', distribucion: 'rectangular' },
-            { descripcion: 'Repetibilidad', valor: 0.0001, tipo: 'A', distribucion: 'normal' },
-        ]
+let demoIncertidumbre: CalculoIncertidumbre[] = Array.from({ length: 22 }, (_, i) => ({
+    id: `INC-${String(i + 1).padStart(3, '0')}`,
+    nombre: `Cálculo de Incertidumbre para Equipo EQ-${String(i % 7 + 1).padStart(2, '0')}`,
+    fecha: new Date(2025, 6, 24 - i).toISOString(),
+    usuario: i % 3 === 0 ? "Victor Lutz" : "Maximiliano Miranda",
+    resultado: {
+        incertidumbreCombinada: 0.00015 + (i * 0.00001),
+        incertidumbreExpandida: (0.00015 + (i * 0.00001)) * 2,
+        factorCobertura: 2,
     },
-    {
-        id: 'INC-002',
-        nombre: 'Incertidumbre de medición de temperatura',
-        fecha: '2025-07-22T14:30:00Z',
-        usuario: 'Maximiliano Miranda',
-        resultado: { incertidumbreCombinada: 0.55, incertidumbreExpandida: 1.1, factorCobertura: 2 },
-        componentes: [
-            { descripcion: 'Certificado del termómetro', valor: 1.0, tipo: 'B', distribucion: 'normal' },
-            { descripcion: 'Resolución del display', valor: 0.1, tipo: 'B', distribucion: 'rectangular' },
-            { descripcion: 'Deriva del sensor', valor: 0.2, tipo: 'B', distribucion: 'rectangular' },
-        ]
-    }
-];
+    componentes: [
+        { descripcion: 'Calibración', valor: 0.0002 + (i * 0.00001), tipo: 'B', distribucion: 'rectangular', unidades: 'g' },
+        { descripcion: 'Repetibilidad', valor: 0.0001 - (i * 0.000005), tipo: 'A', distribucion: 'normal', unidades: 'g' },
+        { descripcion: 'Resolución de Display', valor: 0.00005, tipo: 'B', distribucion: 'rectangular', unidades: 'g' },
+    ]
+}));
 
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
