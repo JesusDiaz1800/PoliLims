@@ -46,32 +46,32 @@ body {
   }
  
   .dark {
-    --background: 217 56% 12%; /* #0E1B33 - Very Dark Blue */
+    --background: 222 84% 4%; /* Almost black */
     --foreground: 210 40% 98%;
  
-    --card: 217 56% 16%; /* #142541 - Dark Blue Card */
+    --card: 222 84% 5.5%;
     --card-foreground: 210 40% 98%;
  
-    --popover: 217 56% 12%;
+    --popover: 222 84% 4%;
     --popover-foreground: 210 40% 98%;
  
-    --primary: 209 85% 60%; /* Brighter Blue for dark mode */
+    --primary: 209 85% 60%;
     --primary-foreground: 210 40% 98%;
  
-    --secondary: 217 32.6% 27.5%;
+    --secondary: 217 32% 17%;
     --secondary-foreground: 210 40% 98%;
  
-    --muted: 217 32.6% 27.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
  
-    --accent: 195 85% 60%; /* Brighter Cyan for dark mode */
+    --accent: 195 85% 60%;
     --accent-foreground: 210 40% 98%;
  
-    --destructive: 0 62.8% 50.6%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
  
-    --border: 217 32.6% 27.5%;
-    --input: 217 32.6% 27.5%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
     --ring: 209 85% 60%;
     
     --chart-1: 209 85% 60%;
