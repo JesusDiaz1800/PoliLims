@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -74,6 +73,68 @@ type MenuItem = {
   onClick?: () => void;
 };
 
+const ensayosSubMenu: MenuItem[] = [
+  {
+    label: "Tuberías",
+    icon: SlidersHorizontal,
+    href: "/ensayos/tuberias",
+    subItems: [
+      { href: "/ensayos/tuberias/hdpe", label: "HDPE", icon: Beaker },
+      { href: "/ensayos/tuberias/pp", label: "PP", icon: Beaker },
+    ],
+  },
+  { href: "/ensayos/materia-prima", label: "Materia Prima", icon: TestTube },
+  { href: "/ensayos/reprocesado", label: "Reprocesado", icon: Recycle },
+  { type: "separator" },
+  {
+    href: "/ensayos/control-rutinario",
+    label: "Control Rutinario",
+    icon: ClipboardCheck,
+  },
+  { href: "/ensayos/control-accesorios", label: "Control de Accesorios", icon: Wrench },
+  { href: "/ensayos/control-agua", label: "Control de Agua", icon: Droplets },
+  { type: "separator" },
+  { href: "/ensayos/seguimiento", label: "Seguimiento General", icon: ClipboardList },
+];
+
+const gestionSubMenu: MenuItem[] = [
+  {
+    label: "Gestión de Equipos",
+    icon: BookCheck,
+    href: "/equipos",
+    subItems: [
+      { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+      { href: "/equipos/control", label: "Control de Equipos", icon: History },
+      { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+    ],
+  },
+  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+  {
+    label: "Proveedores",
+    icon: Truck,
+    href: "/proveedores",
+    subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+  },
+  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
+  { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+  { href: "/portal", label: "Portal de Clientes", icon: Users },
+];
+
+const administracionSubMenu: MenuItem[] = [
+  { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
+  { href: "/administracion/basedatos", label: "Base de Datos", icon: Database },
+  { href: "/administracion/permisos", label: "Roles y Permisos", icon: ShieldCheck },
+  { href: "/administracion/notificaciones", label: "Notificaciones", icon: Bell },
+  { href: "/administracion/configuracion", label: "Configuración", icon: Settings },
+  { href: "/administracion/rutas", label: "Rutas Disponibles", icon: Map },
+  { type: "separator" },
+  { href: "/administracion/proximos-pasos", label: "Próximos Pasos", icon: Rocket },
+];
+
 const NavCollapsible = ({
   item,
   pathname,
@@ -86,7 +147,6 @@ const NavCollapsible = ({
   userQuery?: string;
 }) => {
   const subMenuItems = item.subMenu || item.subItems;
-  // An item is active if its href is a prefix of the current path
   const isActive = !!(item.href && pathname.startsWith(item.href));
 
   const Icon = item.icon;
@@ -163,118 +223,80 @@ const NavCollapsible = ({
 };
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/ensayos": "Ensayos",
-  "/informes": "Informes y Certificados",
-  "/biblioteca": "Biblioteca",
-  "/asistentes": "Asistentes de IA",
-  "/procesos/equipos/lista": "Lista de Equipos",
-  "/procesos/equipos/mantenimiento": "Mantenimiento de Equipos",
-  "/procesos/equipos/calibraciones": "Calibraciones de Equipos",
-  "/procesos/auditorias": "Auditorías",
-  "/procesos/control-ambiental": "Control Ambiental",
-  "/procesos/no-conformidades": "No Conformidades",
-  "/procesos/proveedores/lista": "Lista de Proveedores",
-  "/procesos/proveedores/evaluaciones": "Evaluaciones de Proveedores",
-  "/procesos/flujos": "Flujos de Trabajo",
-  "/procesos/formacion": "Formación y Competencia",
-  "/procesos/calculadora-incertidumbre": "Calculadora de Incertidumbre",
-  "/procesos/control-importaciones": "Control de Importaciones",
-  "/procesos/portal-clientes": "Portal de Clientes",
-  "/admin/usuarios": "Gestión de Usuarios",
-  "/admin/roles": "Roles y Permisos",
-  "/admin/configuracion": "Configuración del Sistema",
+  "/equipos": "Inventario de Equipos",
+  "/equipos/control": "Control de Equipos",
+  "/equipos/programa": "Programa de Calibración y Mantenimiento",
+  "/control-ambiental": "Control de Condiciones Ambientales",
+  "/auditorias": "Gestión de Auditorías",
+  "/ensayos/tuberias/hdpe": "Ensayos de Tuberías HDPE",
+  "/ensayos/tuberias/pp": "Ensayos de Tuberías PP",
+  "/ensayos/materia-prima": "Ensayos de Materia Prima",
+  "/ensayos/reprocesado": "Ensayos de Reprocesado",
+  "/ensayos/control-accesorios": "Control de Accesorios",
+  "/ensayos/control-agua": "Control de Agua",
+  "/ensayos/control-rutinario": "Control Rutinario de Tuberías",
+  "/ensayos/seguimiento": "Seguimiento General de Ensayos",
+  "/administracion/usuarios": "Gestión de Usuarios",
+  "/administracion/formacion": "Gestión de Formación y Competencia",
+  "/administracion/basedatos": "Base de Datos",
+  "/administracion/permisos": "Roles y Permisos",
+  "/administracion/notificaciones": "Notificaciones",
+  "/administracion/incertidumbre": "Calculadora de Incertidumbre",
+  "/administracion/configuracion": "Configuración",
+  "/administracion/proximos-pasos": "Próximos Pasos para Producción",
+  "/administracion/rutas": "Rutas Disponibles",
+  "/assistant": "Asistente de Código",
+  "/portal": "Portal de Clientes",
+  "/importaciones": "Control de Importaciones",
+  "/no-conformidades": "Gestión de No Conformidades",
+  "/biblioteca/documentos": "Gestor Documental",
+  "/reports/generador": "Generador de Informes y Certificados",
+  "/reports/biblioteca": "Biblioteca de Informes",
+  "/workflows": "Flujos de Trabajo",
+  "/proveedores/gestion": "Gestión de Proveedores",
 };
 
 const menuItems = (toggleChat: () => void): MenuItem[] => [
-    // Acceso Rápido
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    {
-      label: "Ensayos",
-      icon: SlidersHorizontal,
-      href: "/ensayos",
-      subMenu: [
-        { label: "Tuberías HDPE", icon: Beaker, href: "/ensayos/tuberias/hdpe" },
-        { label: "Tuberías PP", icon: Beaker, href: "/ensayos/tuberias/pp" },
-        { label: "Materia Prima", icon: TestTube, href: "/ensayos/materia-prima" },
-        { label: "Reprocesado", icon: Recycle, href: "/ensayos/reprocesado" },
-        { type: "separator" },
-        { label: "Control Rutinario", icon: ClipboardCheck, href: "/ensayos/control-rutinario" },
-        { label: "Seguimiento General", icon: ClipboardList, href: "/ensayos/seguimiento" },
-      ],
-    },
-    {
-      label: "Informes",
-      icon: FileText,
-      href: "/reports",
-      subMenu: [
-        { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
-        { href: "/reports/biblioteca", label: "Biblioteca de Informes", icon: FileSearch },
-      ],
-    },
-    { label: "Biblioteca", icon: Library, href: "/biblioteca/documentos" },
-    {
-      label: "Asistentes",
-      icon: Code2,
-      href: "/asistentes",
-      subMenu: [
-        { href: "/assistant", label: "Asistente de Código", icon: Code2 },
-        { href: "#", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
-      ]
-    },
-    { type: "separator" },
-    // Procesos de Gestión
-    {
-      label: "Procesos de Gestión",
-      icon: Layers3,
-      href: "/procesos",
-      subMenu: [
-        {
-          label: "Gestión de Equipos",
-          icon: BookCheck,
-          href: "/equipos",
-          subItems: [
-            { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-            { href: "/equipos/control", label: "Control de Equipos", icon: History },
-            { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
-          ],
-        },
-        { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
-        { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
-        { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
-        {
-          label: "Proveedores",
-          icon: Truck,
-          href: "/proveedores",
-          subItems: [
-            { href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList },
-          ],
-        },
-        { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
-        { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
-        { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
-        { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
-        { href: "/portal", label: "Portal de Clientes", icon: Users },
-      ],
-    },
-    { type: "separator" },
-    // Administración
-    {
-      label: "Administración",
-      icon: Settings,
-      href: "/admin",
-      subMenu: [
-        { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
-        { href: "/administracion/permisos", label: "Roles y Permisos", icon: ShieldCheck },
-        { href: "/administracion/configuracion", label: "Configuración", icon: Settings },
-        { href: "/administracion/notificaciones", label: "Notificaciones", icon: Bell },
-        { href: "/administracion/basedatos", label: "Base de Datos", icon: Database },
-        { href: "/administracion/rutas", label: "Rutas Disponibles", icon: Map },
-        { type: "separator" },
-        { href: "/administracion/proximos-pasos", label: "Próximos Pasos", icon: Rocket },
-      ],
-    },
-  ];
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  {
+    label: "Ensayos",
+    icon: SlidersHorizontal,
+    subMenu: ensayosSubMenu,
+    href: "/ensayos",
+  },
+  {
+    label: "Informes y Certificados",
+    icon: FileText,
+    href: "/reports",
+    subItems: [
+      { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
+      { href: "/reports/biblioteca", label: "Biblioteca de Informes", icon: FileSearch },
+    ],
+  },
+  {
+    label: "Biblioteca",
+    icon: Library,
+    href: "/biblioteca",
+    subItems: [{ href: "/biblioteca/documentos", label: "Documentos", icon: Library }],
+  },
+  { type: "separator" },
+  {
+    label: "Procesos de Gestión",
+    icon: Layers3,
+    subMenu: gestionSubMenu,
+    href: "/gestion",
+  },
+  { type: "separator" },
+  { href: "/soporte", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
+  { href: "/assistant", label: "Asistente de Código", icon: Code2 },
+  { type: "separator" },
+  {
+    label: "Administración",
+    icon: Settings,
+    subMenu: administracionSubMenu,
+    href: "/administracion",
+  },
+];
 
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
   const pathname = usePathname() ?? "/";
@@ -288,18 +310,18 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
     if (title) return title;
-    // Fallback for nested routes
-    for (const key in pageTitles) {
-      if (pathname.startsWith(key) && key !== "/") {
-        return pageTitles[key];
-      }
+
+    for (const item of menuItems(() => {})) {
+      if (item.href && pathname === item.href) return item.label ?? "Dashboard";
     }
+
     return "Dashboard";
   }, [pathname]);
 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
     if (onClick) {
       e.preventDefault();
+      // If an item has a custom onClick (e.g., open chat), call it and open widget
       try {
         onClick();
       } catch (err) {
@@ -312,7 +334,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
-      <Sidebar className="dark:bg-card text-white border-r-0">
+      <Sidebar className="text-white border-r-0" style={{ backgroundColor: '#1C3664' }}>
         <SidebarContent className="text-white">
           <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
             <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
@@ -330,8 +352,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
           <SidebarMenu>
             {menuItems(() => {
-              setIsWidgetVisible(true);
-              setIsOpen(true);
+              /* toggleChat stub - replaced below with actual setIsOpen usage when mapping */
             }).map((item, index) => {
               const isDisabled =
                 isInspectorView &&
@@ -355,7 +376,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 );
               }
 
-              const isActive = pathname === item.href || (item.href && item.href !== "/" && pathname.startsWith(item.href));
+              const isActive = pathname === item.href || (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
               const Icon = item.icon;
               const hrefWithQuery = item.href ? `${item.href}${userQuery ? `?${userQuery}` : ""}` : "#";
 
@@ -370,9 +391,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     aria-disabled={isDisabled}
                     className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                   >
+                    {/* Use Link and attach onClick only when item.onClick exists */}
                     <Link
                       href={hrefWithQuery}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
+                      // ensure we don't pass undefined to Link's onClick if not needed
                     >
                       <div className="flex items-center gap-3">
                         {Icon && <Icon className="size-5 shrink-0" />}
