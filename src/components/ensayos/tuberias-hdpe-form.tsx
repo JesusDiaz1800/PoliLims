@@ -4,9 +4,8 @@
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save, ShieldCheck } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
-import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -38,7 +37,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useDynamicData } from "@/context/data-context";
 import type { Ensayo, Equipo } from "@/context/data-context";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
 
 
@@ -98,7 +97,24 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
     defaultValues: defaultFormValues,
   });
 
-  const { control, getValues, register, handleSubmit, reset } = form;
+  const { control, getValues, register, handleSubmit, reset, setValue } = form;
+
+   const getEquiposPorEnsayo = React.useCallback((ensayoId: string) => {
+    return equipos
+      .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
+      .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
+  }, [equipos]);
+
+  // Auto-set equipment if only one option is available
+  React.useEffect(() => {
+    const ensayoTipos = ['melt_index', 'densidad', 'traccion', 'negro_humo', 'dispersion_nh', 'tio'];
+    ensayoTipos.forEach(tipo => {
+        const equiposDisponibles = getEquiposPorEnsayo(tipo);
+        if (equiposDisponibles.length === 1) {
+            setValue(`equipo_${tipo}` as any, equiposDisponibles[0].value);
+        }
+    });
+  }, [getEquiposPorEnsayo, setValue]);
 
   React.useEffect(() => {
       if (ensayo) {
@@ -136,7 +152,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
     const valoresNumericos = mediciones
-      .map(m => parseFloat(m.value))
+      .map(m => parseFloat(m.value as string))
       .filter(v => !isNaN(v) && v !== 0);
 
     let promedio = 0;
@@ -221,14 +237,35 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
   
-  const getEquiposPorEnsayo = (ensayoId: string) => {
-      return equipos
-        .filter(eq => eq.ensayos_asociados?.includes(ensayoId))
-        .map(eq => ({ value: eq.id, label: `${eq.nombre} (${eq.id})`}));
-  }
+  const EquipoSelector = ({ name, ensayoId }: { name: any, ensayoId: string }) => {
+    const equiposDisponibles = getEquiposPorEnsayo(ensayoId);
+    if (equiposDisponibles.length <= 1) {
+        return <Input value={equiposDisponibles[0]?.label || 'No asignado'} disabled className="bg-muted"/>;
+    }
+    return (
+        <FormField
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Seleccione equipo..." />
+                        </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        {equiposDisponibles.map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+            )}
+        />
+    );
+};
+
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -331,19 +368,20 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
               {/* Pestaña Melt Index */}
               <TabsContent value="melt_index" className="mt-4">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
-                    <CardDescription>
-                      Fórmula Producto Terminado: PROMEDIO(mediciones) * 2
-                    </CardDescription>
-                  </CardHeader>
+                    <CardHeader>
+                        <CardTitle>Ensayo: Melt Index (Índice de Fluidez)</CardTitle>
+                        <div className="flex items-end gap-4 pt-2">
+                            <div className="flex-1">
+                                <FormLabel>Equipo Utilizado</FormLabel>
+                                <EquipoSelector name="equipo_mi" ensayoId="melt_index" />
+                            </div>
+                            <div className="flex-1">
+                                <FormLabel>Fórmula</FormLabel>
+                                <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">PROMEDIO(mediciones) * 2</div>
+                            </div>
+                        </div>
+                    </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={control} name="equipo_mi" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('melt_index').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                     <div className="space-y-4 p-4 border rounded-md">
                       <FormLabel>Mediciones de extrusionado [g]</FormLabel>
                       {fields.map((field, index) => (
@@ -407,17 +445,18 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Densidad</CardTitle>
-                    <CardDescription>
-                      Fórmula: Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))
-                    </CardDescription>
+                    <div className="flex items-end gap-4 pt-2">
+                        <div className="flex-1">
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <EquipoSelector name="equipo_densidad" ensayoId="densidad" />
+                        </div>
+                        <div className="flex-1">
+                            <FormLabel>Fórmula</FormLabel>
+                            <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">Densidad Líquido * (Masa Aire / (Masa Aire - Masa Agua))</div>
+                        </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <FormField control={control} name="equipo_densidad" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('densidad').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
@@ -447,14 +486,12 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                  <Card>
                     <CardHeader>
                         <CardTitle>Ensayo: Tracción y Elongación</CardTitle>
+                        <div className="pt-2">
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <EquipoSelector name="equipo_traccion" ensayoId="traccion" />
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        <FormField control={control} name="equipo_traccion" render={({ field }) => (
-                            <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                            <SelectContent>{getEquiposPorEnsayo('traccion').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                            </Select></FormItem>
-                        )}/>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                           <div className="space-y-2">
                               <FormLabel htmlFor="resistencia_traccion">Resistencia a la tracción promedio [Mpa]</FormLabel>
@@ -478,17 +515,18 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Porcentaje de Negro de Humo</CardTitle>
-                    <CardDescription>
-                      Fórmula: %NH = ((m3 - m4) / (m2 - m1)) * 100
-                    </CardDescription>
+                     <div className="flex items-end gap-4 pt-2">
+                        <div className="flex-1">
+                            <FormLabel>Equipo Utilizado</FormLabel>
+                            <EquipoSelector name="equipo_nh" ensayoId="negro_humo" />
+                        </div>
+                        <div className="flex-1">
+                            <FormLabel>Fórmula</FormLabel>
+                            <div className="text-xs text-muted-foreground p-2 border rounded-md h-10 flex items-center bg-muted/50">%NH = ((m3 - m4) / (m2 - m1)) * 100</div>
+                        </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={control} name="equipo_nh" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('negro_humo').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
@@ -520,14 +558,14 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
               {/* Pestaña Dispersion Negro de Humo */}
               <TabsContent value="dispersion_nh" className="mt-4">
                  <Card>
-                  <CardHeader><CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle></CardHeader>
+                  <CardHeader>
+                    <CardTitle>Ensayo: Dispersión de Negro de Humo</CardTitle>
+                    <div className="pt-2">
+                        <FormLabel>Equipo Utilizado</FormLabel>
+                        <EquipoSelector name="equipo_nh" ensayoId="dispersion_nh" />
+                    </div>
+                  </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={control} name="equipo_nh" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('dispersion_nh').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                     <div className="space-y-2">
                         <FormLabel htmlFor="dispersion_nh">Grado de Dispersión</FormLabel>
                         <Input id="dispersion_nh" placeholder="Ej: Grado A1" {...register("dispersion_nh")} />
@@ -541,14 +579,12 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                  <Card>
                   <CardHeader>
                     <CardTitle>Ensayo: Tiempo de Inducción a la Oxidación (TIO)</CardTitle>
+                     <div className="pt-2">
+                        <FormLabel>Equipo Utilizado</FormLabel>
+                        <EquipoSelector name="equipo_tio" ensayoId="tio" />
+                    </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <FormField control={control} name="equipo_tio" render={({ field }) => (
-                        <FormItem><FormLabel>Equipo Utilizado</FormLabel><Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione equipo..."/></SelectTrigger></FormControl>
-                        <SelectContent>{getEquiposPorEnsayo('tio').map(eq => <SelectItem key={eq.value} value={eq.value}>{eq.label}</SelectItem>)}</SelectContent>
-                        </Select></FormItem>
-                    )}/>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-2">
                           <FormLabel htmlFor="tio_gas">Gas utilizado</FormLabel>
@@ -590,12 +626,13 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
         </CardContent>
       </Card>
 
-      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
+      <CardFooter className="flex justify-end pt-6">
         <Button type="submit">
             <Save className="mr-2 h-4 w-4" />
             Guardar Resultados
         </Button>
       </CardFooter>
+      </div>
     </Form>
   );
 }

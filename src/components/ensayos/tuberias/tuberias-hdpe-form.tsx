@@ -4,9 +4,8 @@
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, FilePlus2, Trash2, PlusCircle, Save, ShieldCheck } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
-import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -153,7 +152,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
     const valoresNumericos = mediciones
-      .map(m => parseFloat(m.value))
+      .map(m => parseFloat(m.value as string))
       .filter(v => !isNaN(v) && v !== 0);
 
     let promedio = 0;
@@ -266,6 +265,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
   return (
     <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -626,12 +626,13 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
         </CardContent>
       </Card>
 
-      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
+      <CardFooter className="flex justify-end pt-6">
         <Button type="submit">
             <Save className="mr-2 h-4 w-4" />
             Guardar Resultados
         </Button>
       </CardFooter>
+      </div>
     </Form>
   );
 }

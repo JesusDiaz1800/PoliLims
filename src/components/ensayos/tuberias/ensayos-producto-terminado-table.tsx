@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Edit, MoreHorizontal, Filter, ShieldCheck } from 'lucide-react';
+import { Search, Edit, MoreHorizontal, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Ensayo } from '@/context/data-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -46,7 +46,6 @@ const formatValue = (value: any, decimals: number = 2) => {
 const EnsayosProductoTerminadoTableInternal = ({ ensayos, tipoEnsayo, onOpenDialog, user }: EnsayosProductoTerminadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
-  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() =>
     ensayos.filter(ensayo =>
