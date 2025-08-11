@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    --background: 220 20% 98%; /* Light Grey Blue */
+    --background: 208 27% 92%; /* #D1DCE5 - Light grayish-blue */
     --foreground: 224 71.4% 4.1%;
  
     --card: 0 0% 100%;
@@ -17,7 +17,7 @@ body {
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
  
-    --primary: 209 90% 45%; /* #126FCC - Bright Blue */
+    --primary: 207 44% 49%; /* #4682B4 - Steel Blue */
     --primary-foreground: 0 0% 100%;
  
     --secondary: 215 27.9% 92.5%;
@@ -26,7 +26,7 @@ body {
     --muted: 215 27.9% 92.5%;
     --muted-foreground: 215 20.2% 45.1%;
  
-    --accent: 195 90% 45%; /* #12B4CC - Cyan */
+    --accent: 195 27% 56%; /* #70A1AF - Light blue/green */
     --accent-foreground: 224 71.4% 4.1%;
  
     --destructive: 0 84.2% 60.2%;
@@ -34,12 +34,12 @@ body {
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 209 90% 45%;
+    --ring: 207 44% 49%;
  
     --radius: 0.5rem;
 
-    --chart-1: 209 90% 45%; /* Bright Blue */
-    --chart-2: 195 90% 45%; /* Cyan */
+    --chart-1: 207 44% 49%; /* Primary */
+    --chart-2: 195 27% 56%; /* Accent */
     --chart-3: 217 56% 25%; /* Dark Blue */
     --chart-4: 209 90% 65%; /* Lighter Bright Blue */
     --chart-5: 195 90% 65%; /* Lighter Cyan */
@@ -55,7 +55,7 @@ body {
     --popover: 222 84% 4%;
     --popover-foreground: 210 40% 98%;
  
-    --primary: 209 85% 60%;
+    --primary: 207 44% 65%; /* Lighter Steel Blue */
     --primary-foreground: 210 40% 98%;
  
     --secondary: 217 32% 17%;
@@ -64,7 +64,7 @@ body {
     --muted: 217 32% 17%;
     --muted-foreground: 215 20% 65%;
  
-    --accent: 195 85% 60%;
+    --accent: 195 27% 66%; /* Lighter blue/green */
     --accent-foreground: 210 40% 98%;
  
     --destructive: 0 62% 50%;
@@ -72,13 +72,13 @@ body {
  
     --border: 217 32% 17%;
     --input: 217 32% 17%;
-    --ring: 209 85% 60%;
+    --ring: 207 44% 65%;
     
-    --chart-1: 209 85% 60%;
-    --chart-2: 195 85% 60%;
+    --chart-1: 207 44% 65%;
+    --chart-2: 195 27% 66%;
     --chart-3: 210 40% 98%;
-    --chart-4: 209 85% 70%;
-    --chart-5: 195 85% 70%;
+    --chart-4: 209 90% 70%;
+    --chart-5: 195 90% 70%;
   }
 }
  
