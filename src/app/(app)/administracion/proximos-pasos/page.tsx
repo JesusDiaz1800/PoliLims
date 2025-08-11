@@ -55,8 +55,8 @@ export default function ProximosPasosPage() {
         />
          <StepCard 
             icon={FolderSync}
-            title="Almacenamiento de Archivos (PDFs)"
-            description="Una aplicación web no puede guardar archivos directamente en una red local (Ej: unidad Y:\) por seguridad. La solución estándar es usar un servicio de almacenamiento en la nube como Firebase Storage. El equipo de TI puede configurar esto para que los informes generados se guarden de forma segura y centralizada."
+            title="Almacenamiento de Archivos (PDFs, Documentos)"
+            description="Una aplicación web no puede acceder directamente a carpetas de red locales (Ej: Y:\) por seguridad. La solución estándar es usar un servicio de almacenamiento en la nube como Firebase Storage o Amazon S3. El equipo de TI puede configurar el backend para que se conecte a estas unidades de red y sirva los archivos de forma segura y centralizada a la aplicación web."
         />
          <StepCard 
             icon={KeyRound}

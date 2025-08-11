@@ -213,7 +213,6 @@ const pageTitles: Record<string, string> = {
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Gestor Documental',
-    '/biblioteca/upload': 'Cargar Documento',
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
     '/workflows': 'Flujos de Trabajo',

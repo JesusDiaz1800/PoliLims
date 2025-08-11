@@ -93,9 +93,9 @@ export function UploadForm() {
             </Alert>
             <Alert>
                 <FolderGit2 className="h-4 w-4" />
-                <AlertTitle>Conexión a Carpetas de Red (Pre-migración)</AlertTitle>
+                <AlertTitle>Conexión a Carpetas de Red (Producción)</AlertTitle>
                 <AlertDescription>
-                    Este prototipo simula la gestión de archivos. En un entorno de producción con Django, el sistema se conectará directamente a carpetas de red (ej. `\\SERVIDOR\Calidad\Documentos`) para leer y versionar los archivos existentes sin necesidad de subirlos manualmente.
+                    Este prototipo simula la carga de archivos. En un entorno de producción, el sistema se conectará directamente a las carpetas de red de la empresa (Ej: `\\SERVIDOR\Calidad\Documentos`) para leer y versionar los archivos existentes sin necesidad de subirlos manualmente.
                 </AlertDescription>
             </Alert>
         </form>
