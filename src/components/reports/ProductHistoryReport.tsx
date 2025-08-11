@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
 import { cn } from '@/lib/utils';
-import { TrendingUp, ArrowDownWideNarrow, ArrowUpWideNarrow, Sigma } from 'lucide-react';
+import { TrendingUp, ArrowDownWideNarrow, ArrowUpWideNarrow, Sigma, PenSquare } from 'lucide-react';
 
 const ReportHeader = ({ title, producto, fecha }: { title: string, producto: string, fecha: string }) => (
     <div className="flex justify-between items-start pb-4 border-b-2 border-primary">
@@ -133,9 +133,14 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
             </div>
 
             <div className="mt-16 pt-4 border-t text-center signature-section">
-                 <div className="inline-block">
-                    <div className="w-64 h-16"></div>
-                    <div className="border-t-2 border-dotted w-full pt-1 mt-1 text-center">
+                <div className="inline-block">
+                    {/* Nota de implementación: En producción, aquí se insertaría la imagen de la firma digital (SVG/PNG)
+                    obtenida de un servicio de firma (ej. DocuSign) o generada a partir de un certificado. */}
+                    <div className="w-64 h-20 flex flex-col items-center justify-center border-2 border-dashed rounded-md">
+                        <PenSquare className="h-8 w-8 text-muted-foreground/50"/>
+                        <span className="text-xs text-muted-foreground mt-1">Firma Digital Válida</span>
+                    </div>
+                    <div className="border-t-2 border-primary w-full pt-1 mt-2 text-center">
                         <p className="font-semibold">Maximiliano Miranda Valdés</p>
                         <p className="text-xs text-muted-foreground">Ing. Analista de Control de Calidad</p>
                         <p className="text-xs text-muted-foreground">Polifusión S.A.</p>

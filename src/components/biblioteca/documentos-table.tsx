@@ -4,9 +4,9 @@
 import * as React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Library, ServerCrash, Eye, MoreHorizontal, CheckCircle, Clock, Trash2 } from "lucide-react";
+import { FileText, Library, ServerCrash, Eye, MoreHorizontal, CheckCircle, Clock, Trash2, PenSquare } from "lucide-react";
 import type { KnowledgeBaseFile } from "@/services/server-data-service";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -61,7 +61,7 @@ export function DocumentosTable({ files: initialFiles }: DocumentosTableProps) {
     setFiles(files.map(file => {
         if (file.name === fileName) {
             toast({
-                title: "Documento Aprobado",
+                title: "Documento Aprobado y Firmado",
                 description: `${fileName} ha sido aprobado y su versión ha sido actualizada.`,
             });
             return {
@@ -141,11 +141,13 @@ export function DocumentosTable({ files: initialFiles }: DocumentosTableProps) {
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                     <DropdownMenuItem asChild>
-                                        <Link href={`/data/${file.name}`} target="_blank"><Eye className="mr-2 h-4 w-4" />Ver</Link>
+                                        <Link href={`/data/${file.name}`} target="_blank"><Eye className="mr-2 h-4 w-4" />Ver Documento</Link>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onSelect={() => handleApprove(file.name)}>
-                                        <CheckCircle className="mr-2 h-4 w-4" />Aprobar (Simular Firma)
-                                    </DropdownMenuItem>
+                                     <AlertDialogTrigger asChild>
+                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                            <PenSquare className="mr-2 h-4 w-4" />Aprobar y Firmar Digitalmente
+                                        </DropdownMenuItem>
+                                    </AlertDialogTrigger>
                                     <DropdownMenuSeparator />
                                     <AlertDialogTrigger asChild>
                                         <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
@@ -156,15 +158,15 @@ export function DocumentosTable({ files: initialFiles }: DocumentosTableProps) {
                             </DropdownMenu>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>¿Está seguro que desea eliminar?</AlertDialogTitle>
+                                    <AlertDialogTitle>¿Está seguro que desea firmar y aprobar este documento?</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        Esta acción no se puede deshacer. El archivo '{file.name}' será eliminado permanentemente.
+                                        Esta acción es irreversible y quedará registrada en el historial de auditoría. El documento '{file.name}' será marcado como 'Aprobado' y su número de versión se incrementará.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDelete(file.name)} className={cn(buttonVariants({variant: 'destructive'}))}>
-                                        Sí, eliminar
+                                    <AlertDialogAction onClick={() => handleApprove(file.name)}>
+                                        Sí, firmar y aprobar
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
