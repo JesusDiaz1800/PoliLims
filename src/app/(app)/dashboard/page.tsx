@@ -23,7 +23,7 @@ import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
-import type { Ensayo, Recen, Equipo, NoConformidad } from "@/context/data-context";
+import type { Ensayo, RecentActivity, Equipo, NoConformidad } from "@/context/data-context";
 
 export type DashboardFilterParams = {
   month?: string;

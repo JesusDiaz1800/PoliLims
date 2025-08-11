@@ -2,17 +2,31 @@
 "use client";
 
 import * as React from 'react';
-import { useDynamicData } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { NoConformidadDialog } from '@/components/no-conformidades/no-conformidad-dialog';
 import { NoConformidadTable } from '@/components/no-conformidades/no-conformidad-table';
-import type { NoConformidad } from '@/context/data-context';
-
+import type { NoConformidad, Ensayo, Equipo } from '@/context/data-context';
+import * as dataService from "@/services/data-service";
 
 export default function NoConformidadesPage() {
-  const { noConformidades, isLoading, equipos, ensayos } = useDynamicData();
+  const [noConformidades, setNoConformidades] = React.useState<NoConformidad[]>([]);
+  const [equipos, setEquipos] = React.useState<Equipo[]>([]);
+  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedIncidencia, setSelectedIncidencia] = React.useState<NoConformidad | null>(null);
+
+  React.useEffect(() => {
+    async function loadData() {
+      setIsLoading(true);
+      const data = await dataService.getInitialData();
+      setNoConformidades(data.noConformidades);
+      setEquipos(data.equipos);
+      setEnsayos(data.ensayos);
+      setIsLoading(false);
+    }
+    loadData();
+  }, []);
 
   const handleOpenDialog = (incidencia?: NoConformidad) => {
     setSelectedIncidencia(incidencia || null);
