@@ -1,5 +1,9 @@
 
 
+/**
+ * @interface User
+ * @description Defines the structure of a user object in the application.
+ */
 export interface User {
     username: string;
     fullName: string;
@@ -8,6 +12,11 @@ export interface User {
     avatarUrl: string;
 }
 
+/**
+ * @const users
+ * @description A mock database of users for the prototype. In a real application, this would be
+ * replaced with a call to an authentication service or a user database.
+ */
 const users: Record<string, User> = {
     "jdiaz": {
         username: "jdiaz",
@@ -95,11 +104,24 @@ const users: Record<string, User> = {
     }
 };
 
+/**
+ * @function findUserByUsername
+ * @description Finds a user by their username from the mock user database.
+ * If the user is not found, it returns a default user ('jefe.calidad').
+ * @param {string} username - The username to search for.
+ * @returns {Promise<User>} A promise that resolves to the found user object.
+ */
 export async function findUserByUsername(username: string): Promise<User> {
-    // Devuelve un usuario predeterminado si no se encuentra el especificado.
+    // This simulates an async API call to fetch a user.
     return users[username] || users["jefe.calidad"];
 }
 
+/**
+ * @function getAllUsers
+ * @description Retrieves a list of all users from the mock user database.
+ * @returns {Promise<User[]>} A promise that resolves to an array of all user objects.
+ */
 export async function getAllUsers(): Promise<User[]> {
+    // This simulates an async API call to fetch all users.
     return Object.values(users);
 }

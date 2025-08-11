@@ -1,6 +1,11 @@
 
 import Papa from 'papaparse';
 
+/**
+ * @interface TipoProducto
+ * @description Defines the structure for a product type, including its properties and specifications
+ * as defined in the product matrix. This is a central interface for product data across the app.
+ */
 export interface TipoProducto {
   producto: string;
   material: 'PE100' | 'PP' | 'PP-RCT/FV' | 'PEAD' | 'PPR' | 'PP-R' | 'PPR-CT' | 'PPR-CT/FV' | 'PP-RCT' | 'PP-R(R3)' | 'PP-H' | 'PVDF' | 'PE-RT' | 'PP-RCT/FV/BOX' | 'PP-R100/CACO3';
@@ -24,9 +29,15 @@ export interface TipoProducto {
   largo?: number | null;
 }
 
-// Cache for the parsed product matrix to avoid reloading and re-parsing.
+// Cache for the parsed product matrix to avoid reloading and re-parsing on every call.
 let matrizProductos: TipoProducto[] = [];
 
+/**
+ * @function toNumberOrNull
+ * @description Safely converts a value to a number or null. It handles commas as decimal separators.
+ * @param {unknown} value - The value to convert.
+ * @returns {number | null} The converted number or null if conversion is not possible.
+ */
 const toNumberOrNull = (value: unknown): number | null => {
     if (value === null || value === undefined) return null;
     const s = String(value).replace(',', '.').trim();
@@ -35,6 +46,12 @@ const toNumberOrNull = (value: unknown): number | null => {
     return isNaN(num) ? null : num;
 };
 
+/**
+ * @function toNullableString
+ * @description Converts a value to a string or undefined if it's empty.
+ * @param {unknown} value - The value to convert.
+ * @returns {string | undefined} The trimmed string or undefined.
+ */
 const toNullableString = (value: unknown): string | undefined => {
     const s = String(value).trim();
     return s && s !== '' ? s : undefined;
@@ -42,11 +59,15 @@ const toNullableString = (value: unknown): string | undefined => {
 
 
 /**
- * Fetches and parses the product data from a remote CSV file.
- * Caches the result to prevent re-fetching on subsequent calls.
+ * @function getMatrizProductos
+ * @description Fetches and parses the product data from a remote CSV file ('/data/productos.csv').
+ * It caches the result to prevent re-fetching and re-parsing on subsequent calls.
  * This function is intended to be called from the client-side.
+ * It uses PapaParse to handle CSV parsing and transforms raw data into the `TipoProducto` interface.
+ * @returns {Promise<TipoProducto[]>} A promise that resolves to an array of product data.
  */
 export async function getMatrizProductos(): Promise<TipoProducto[]> {
+    // Return cached data if available
     if (matrizProductos.length > 0) {
         return matrizProductos;
     }
@@ -62,7 +83,7 @@ export async function getMatrizProductos(): Promise<TipoProducto[]> {
             header: true,
             skipEmptyLines: 'greedy',
             transformHeader: (header) => header.trim(),
-            delimiter: '\t', // Specify the delimiter as tab
+            delimiter: '\t',
         });
         
         if (results.errors.length > 0) {

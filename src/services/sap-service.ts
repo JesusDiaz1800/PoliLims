@@ -1,22 +1,30 @@
 
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
+/**
+ * @interface SapProduct
+ * @description Represents the structure of a product as it would be retrieved from an SAP system.
+ * This is used for simulation purposes.
+ */
 export interface SapProduct {
-  code: string; // Código del producto en SAP
-  name: string; // Descripción del producto en SAP
-  label: string;
-  value: string;
+  code: string; // Unique product code in SAP
+  name: string; // Product description in SAP
+  label: string; // User-friendly label for UI components
+  value: string; // Value used in select/combobox components
 }
 
-// Cache for the products
+// In-memory cache for the products to simulate a faster API response on subsequent calls.
 let products: SapProduct[] = [];
 
 /**
- * Simula una llamada a la API de SAP para obtener la lista de productos.
- * En esta versión, lee los datos desde el servicio de matriz de datos.
- * @returns Una promesa que resuelve a una lista de productos.
+ * @function getProductsFromSap
+ * @description Simulates a call to an SAP API to fetch a list of all products.
+ * In this prototype, it reads the data from the local product matrix (`matriz-datos.ts`).
+ * The function caches the result to improve performance on repeated calls.
+ * @returns {Promise<SapProduct[]>} A promise that resolves to a list of products.
  */
 export async function getProductsFromSap(): Promise<SapProduct[]> {
+  // Return from cache if already populated
   if (products.length > 0) {
     return products;
   }
@@ -30,7 +38,7 @@ export async function getProductsFromSap(): Promise<SapProduct[]> {
         label: p.producto,
     }));
 
-    // Filter out duplicates based on the 'code' property
+    // Filter out duplicates based on the 'code' property to ensure a unique list
     const uniqueProductsMap = new Map<string, SapProduct>();
     allProducts.forEach(p => {
         if (!uniqueProductsMap.has(p.code)) {
@@ -38,21 +46,23 @@ export async function getProductsFromSap(): Promise<SapProduct[]> {
         }
     });
 
-    products = Array.from(uniqueProductsMap.values());
+    products = Array.from(uniqueProductsMap.values()); // Cache the unique list
     
     return products;
   } catch (error) {
     console.error("Failed to get products from matrix for SAP service:", error);
-    return []; // Return empty on failure
+    return []; // Return an empty array on failure
   }
 }
 
 /**
- * Simula una llamada a la API de SAP para buscar un producto por su código.
- * @param code - El código del producto a buscar.
- * @returns Una promesa que resuelve al producto encontrado o null si no existe.
+ * @function findProductByCode
+ * @description Simulates a call to an SAP API to find a specific product by its code.
+ * @param {string} code - The product code to search for.
+ * @returns {Promise<SapProduct | null>} A promise that resolves to the found product or null if it doesn't exist.
  */
 export async function findProductByCode(code: string): Promise<SapProduct | null> {
+    // Ensure the product list is loaded before searching
     if (products.length === 0) {
       await getProductsFromSap();
     }
