@@ -88,3 +88,5 @@ export function AssaysByMonthChart({ data: allData }: AssaysByMonthChartProps) {
     </Card>
   )
 }
+
+    

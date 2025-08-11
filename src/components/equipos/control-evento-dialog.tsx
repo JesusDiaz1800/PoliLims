@@ -39,3 +39,5 @@ export function ControlEventoDialog({ isOpen, onClose, equipo }: ControlEventoDi
     </Dialog>
   );
 }
+
+    

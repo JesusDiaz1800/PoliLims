@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -123,3 +122,5 @@ export function SampleStatusChart({ data }: SampleStatusChartProps) {
     </Card>
   )
 }
+
+    

@@ -62,3 +62,5 @@ export function ThroughputTrendChart({ data: allData }: ThroughputTrendChartProp
     </Card>
   )
 }
+
+    

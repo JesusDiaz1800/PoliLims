@@ -70,3 +70,5 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
     </Card>
   )
 }
+
+    

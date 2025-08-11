@@ -59,3 +59,5 @@ export function AssaysByTypeChart({ data: allData }: AssaysByTypeChartProps) {
     </Card>
   )
 }
+
+    

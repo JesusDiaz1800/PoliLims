@@ -28,3 +28,5 @@ export function WelcomeBanner({ user }: WelcomeBannerProps) {
     </Card>
   );
 }
+
+    

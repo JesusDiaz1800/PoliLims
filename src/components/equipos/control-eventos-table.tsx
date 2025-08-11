@@ -124,3 +124,5 @@ export function ControlEventosTable({ controles, equipos, isDialogView = false }
     </Card>
   );
 }
+
+    

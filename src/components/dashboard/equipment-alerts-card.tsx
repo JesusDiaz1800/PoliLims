@@ -127,3 +127,5 @@ export function EquipmentAlertsCard({ equipos }: EquipmentAlertsCardProps) {
     </>
   );
 }
+
+    

@@ -176,3 +176,5 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
     </>
   );
 }
+
+    
