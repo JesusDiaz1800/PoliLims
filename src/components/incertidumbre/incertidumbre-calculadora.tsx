@@ -122,8 +122,7 @@ export function CalculadoraIncertidumbre() {
         <CardTitle>Calculadora de Incertidumbre de Medición</CardTitle>
         <CardDescription>Estime la incertidumbre combinada y expandida según la guía GUM (ISO/IEC Guide 98-3).</CardDescription>
       </CardHeader>
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <Form {...form} onSubmit={handleSubmit}>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <FormField control={form.control} name="nombre_calculo" render={({ field }) => (<FormItem><FormLabel>Nombre del Cálculo</FormLabel><FormControl><Input placeholder="Ej: Incertidumbre de pesada en balanza analítica" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -186,7 +185,6 @@ export function CalculadoraIncertidumbre() {
           <CardFooter className="flex justify-end">
             <Button type="submit"><Save className="mr-2 h-4 w-4"/> Guardar Cálculo en Historial</Button>
           </CardFooter>
-        </form>
       </Form>
     </Card>
   );
