@@ -92,13 +92,8 @@ export default function ControlAmbientalPage() {
                         <RegistroAmbientalForm
                             zonas={zonas}
                             usuarios={usuarios}
-                            onAddRecord={async (data) => {
-                                await addCondicionAmbiental(data);
-                                await addRecentActivity({
-                                    user: data.usuario,
-                                    action: `registró condiciones ambientales para ${data.zona}`,
-                                });
-                            }}
+                            onAddRecord={addCondicionAmbiental}
+                            onAddActivity={addRecentActivity}
                         />
                     </CardContent>
                 </Card>
@@ -149,3 +144,4 @@ export default function ControlAmbientalPage() {
         </div>
     );
 }
+

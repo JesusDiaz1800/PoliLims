@@ -17,6 +17,7 @@ interface RegistroAmbientalFormProps {
   zonas: string[];
   usuarios: string[];
   onAddRecord: (data: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => Promise<void>;
+  onAddActivity: (activity: { user: string; action: string }) => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -29,7 +30,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: RegistroAmbientalFormProps) {
+export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord, onAddActivity }: RegistroAmbientalFormProps) {
   const { toast } = useToast();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -42,6 +43,10 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: Registro
   const onSubmit = async (data: FormValues) => {
     try {
       await onAddRecord(data);
+      await onAddActivity({
+          user: data.usuario,
+          action: `registró condiciones ambientales para ${data.zona}`,
+      });
       toast({
         title: "Registro Guardado",
         description: `Se ha guardado la lectura para ${data.zona}.`,
@@ -57,7 +62,8 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: Registro
   };
 
   return (
-    <Form form={form} onSubmit={onSubmit} className="space-y-4">
+    <Form {...form}>
+       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField control={form.control} name="zona" render={({ field }) => (
           <FormItem><FormLabel>Zona</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
             <SelectContent>{zonas.map(z => <SelectItem key={z} value={z}>{z}</SelectItem>)}</SelectContent>
@@ -76,6 +82,8 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: Registro
         <Button type="submit" className="w-full">
             <Save className="mr-2 h-4 w-4"/> Guardar
         </Button>
+       </form>
     </Form>
   );
 }
+

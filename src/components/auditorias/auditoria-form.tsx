@@ -16,9 +16,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import type { Auditoria, User } from "@/context/data-context";
+import type { Auditoria } from "@/context/data-context";
 import { Textarea } from "@/components/ui/textarea";
 import * as dataService from "@/services/data-service";
+import type { User } from "@/services/user-service";
 
 interface AuditoriaFormProps {
   auditoriaToEdit: Auditoria | null;
@@ -127,3 +128,4 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
     </Form>
   );
 }
+

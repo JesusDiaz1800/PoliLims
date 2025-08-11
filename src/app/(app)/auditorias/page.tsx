@@ -10,40 +10,38 @@ import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { getAllUsers } from '@/services/user-service';
 
-export default function AuditoriasPage() {
+const AuditoriasPageInternal = () => {
   const [auditorias, setAuditorias] = React.useState<Auditoria[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   const [users, setUsers] = React.useState<User[]>([]);
 
-  React.useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      const [initialData, allUsers] = await Promise.all([
-        dataService.getInitialData(),
-        getAllUsers()
-      ]);
-      setAuditorias(initialData.auditorias);
-      setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
-      setIsLoading(false);
-    }
-    loadData();
+  const loadData = React.useCallback(async () => {
+    setIsLoading(true);
+    const [initialData, allUsers] = await Promise.all([
+      dataService.getInitialData(),
+      getAllUsers()
+    ]);
+    setAuditorias(initialData.auditorias);
+    setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
+    setIsLoading(false);
   }, []);
+
+  React.useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleOpenDialog = (auditoria?: Auditoria) => {
     setSelectedAuditoria(auditoria || null);
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialog = async () => {
+  const handleCloseDialog = () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
     // Re-fetch data to reflect changes
-    setIsLoading(true);
-    const initialData = await dataService.getInitialData();
-    setAuditorias(initialData.auditorias);
-    setIsLoading(false);
+    loadData();
   };
 
   if (isLoading) {
@@ -66,3 +64,6 @@ export default function AuditoriasPage() {
     </div>
   );
 }
+
+export default AuditoriasPageInternal;
+
