@@ -39,9 +39,10 @@ export default function TuberiasPpPage() {
     setIsFormDialogOpen(false);
   };
 
-  const ppEnsayos = React.useMemo(() =>
-    ensayos.filter(e => e.tipo === 'Tubería PP'),
-  [ensayos]);
+  const ppEnsayos = React.useMemo(() => {
+    if (!ensayos) return [];
+    return ensayos.filter(e => e.tipo === 'Tubería PP');
+  }, [ensayos]);
 
   if (isLoading || !user) {
     return <Loading />;

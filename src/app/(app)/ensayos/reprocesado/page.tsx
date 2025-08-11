@@ -39,9 +39,10 @@ export default function ReprocesadoPage() {
     setIsFormDialogOpen(false);
   };
   
-  const reprocesadoEnsayos = React.useMemo(() => 
-    tests.filter(e => e.type === 'Reprocesado'),
-  [tests]);
+  const reprocesadoEnsayos = React.useMemo(() => {
+    if (!tests) return [];
+    return tests.filter(e => e.type === 'Reprocesado');
+  },[tests]);
 
   const analistas = React.useMemo(() => [
       { value: "jesus.diaz", label: "Jesus Diaz" },

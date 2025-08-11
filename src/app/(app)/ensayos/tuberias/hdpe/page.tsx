@@ -39,9 +39,10 @@ export default function TuberiasHdpePage() {
     setIsFormDialogOpen(false);
   };
   
-  const hdpeEnsayos = React.useMemo(() => 
-    ensayos.filter(e => e.tipo === 'Tubería HDPE'), 
-  [ensayos]);
+  const hdpeEnsayos = React.useMemo(() => {
+    if (!ensayos) return [];
+    return ensayos.filter(e => e.tipo === 'Tubería HDPE');
+  }, [ensayos]);
 
 
   if (isLoading || !user) {

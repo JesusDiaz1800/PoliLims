@@ -19,9 +19,10 @@ export default function MateriaPrimaPage() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = React.useState('all');
 
-  const materiaPrimaEnsayos = React.useMemo(() => 
-    tests.filter(e => e.type === 'Materia Prima'), 
-  [tests]);
+  const materiaPrimaEnsayos = React.useMemo(() => {
+    if (!tests) return [];
+    return tests.filter(e => e.type === 'Materia Prima');
+  }, [tests]);
 
   const analistas = React.useMemo(() => [
       { value: "jesus.diaz", label: "Jesus Diaz" },
