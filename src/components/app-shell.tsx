@@ -55,6 +55,7 @@ import {
     Calculator,
     Truck,
     Thermometer,
+    GraduationCap,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -86,6 +87,7 @@ const ensayosSubMenu = [
 
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
@@ -195,6 +197,7 @@ const pageTitles: Record<string, string> = {
     '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
     '/ensayos/seguimiento': 'Seguimiento General de Ensayos',
     '/administracion/usuarios': 'Gestión de Usuarios',
+    '/administracion/formacion': 'Gestión de Formación y Competencia',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
     '/administracion/incertidumbre': 'Calculadora de Incertidumbre',
