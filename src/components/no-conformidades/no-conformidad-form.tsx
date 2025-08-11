@@ -162,6 +162,9 @@ export function NoConformidadForm({
                         {productosAfectados.map(p => <SelectItem key={p.value} value={p.label}>{p.label}</SelectItem>)}
                     </SelectContent>
                 </Select>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {field.value?.map(item => <Badge key={item} variant="secondary">{item}</Badge>)}
+                </div>
                 <FormMessage />
             </FormItem>
            )}/>
@@ -173,6 +176,9 @@ export function NoConformidadForm({
                         {equiposImplicados.map(e => <SelectItem key={e.value} value={e.label}>{e.label}</SelectItem>)}
                     </SelectContent>
                 </Select>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {field.value?.map(item => <Badge key={item} variant="secondary">{item}</Badge>)}
+                </div>
                 <FormMessage />
             </FormItem>
            )}/>
