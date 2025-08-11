@@ -16,56 +16,72 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  Construction,
-  Cylinder,
-  TestTube,
-  Recycle,
-  ClipboardCheck,
-  Wrench,
-  Droplets,
-  ClipboardList,
+  GitBranch,
   Users,
-  GraduationCap,
+  FileText,
+  Beaker,
   Database,
   ShieldCheck,
-  Bell,
-  Calculator,
   Settings,
-  Map,
-  Rocket,
-  Ship,
-  Library,
   FilePlus2,
-  FileSearch,
-  GitBranch,
-  Thermometer,
-  AlertOctagon,
+  ClipboardList,
+  TestTube,
+  Recycle,
+  Wrench,
+  Droplets,
+  ClipboardCheck,
+  ChevronDown,
+  Layers3,
+  SlidersHorizontal,
   Code2,
+  AlertOctagon,
+  Ship,
+  BookCheck,
+  History,
+  Library,
+  Rocket,
+  CalendarCheck,
   MessageSquarePlus,
   LogOut,
   Info,
-  CalendarCheck,
-  History,
+  FileSearch,
+  Map,
+  Calculator,
   Truck,
-  ChevronDown,
+  Thermometer,
+  GraduationCap,
+  Bell,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
 
+type MenuItem = {
+  href?: string;
+  label?: string;
+  icon?: any;
+  subItems?: MenuItem[];
+  subMenu?: MenuItem[];
+  type?: "separator";
+  onClick?: () => void;
+};
 
-// ---------- Definición de submenús ----------
-const ensayosSubMenu = [
+/* ----------- Submenus ----------- */
+const ensayosSubMenu: MenuItem[] = [
   {
     label: "Tuberías",
-    icon: Construction,
+    icon: SlidersHorizontal,
     href: "/ensayos/tuberias",
     subItems: [
-      { href: "/ensayos/tuberias/hdpe", label: "HDPE", icon: Cylinder },
-      { href: "/ensayos/tuberias/pp", label: "PP", icon: Cylinder },
+      { href: "/ensayos/tuberias/hdpe", label: "HDPE", icon: Beaker },
+      { href: "/ensayos/tuberias/pp", label: "PP", icon: Beaker },
     ],
   },
   { href: "/ensayos/materia-prima", label: "Materia Prima", icon: TestTube },
@@ -78,96 +94,120 @@ const ensayosSubMenu = [
   { href: "/ensayos/seguimiento", label: "Seguimiento General", icon: ClipboardList },
 ];
 
-const administracionSubMenu = [
-  { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
+const gestionSubMenu: MenuItem[] = [
+  {
+    label: "Gestión de Equipos",
+    icon: BookCheck,
+    href: "/equipos",
+    subItems: [
+      { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+      { href: "/equipos/control", label: "Control de Equipos", icon: History },
+      { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+    ],
+  },
+  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+  {
+    label: "Proveedores",
+    icon: Truck,
+    href: "/proveedores",
+    subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+  },
+  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
   { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+  { href: "/portal", label: "Portal de Clientes", icon: Users },
+];
+
+const administracionSubMenu: MenuItem[] = [
+  { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
   { href: "/administracion/basedatos", label: "Base de Datos", icon: Database },
   { href: "/administracion/permisos", label: "Roles y Permisos", icon: ShieldCheck },
   { href: "/administracion/notificaciones", label: "Notificaciones", icon: Bell },
-  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
   { href: "/administracion/configuracion", label: "Configuración", icon: Settings },
   { href: "/administracion/rutas", label: "Rutas Disponibles", icon: Map },
   { type: "separator" },
   { href: "/administracion/proximos-pasos", label: "Próximos Pasos", icon: Rocket },
 ];
 
-const operacionesSubMenu = [
-  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
-  { href: "/portal", label: "Portal de Clientes", icon: Users },
-];
-
-const equiposSubMenu = [
-  { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-  { href: "/equipos/control", label: "Control de Equipos", icon: History },
-  { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
-];
-
-const bibliotecaSubMenu = [{ href: "/biblioteca/documentos", label: "Documentos", icon: Library }];
-
-const reportsSubMenu = [
-  { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
-  { href: "/reports/biblioteca", label: "Biblioteca de Informes", icon: FileSearch },
-];
-
-const proveedoresSubMenu = [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }];
-
-// ---------- Componente NavCollapsible para submenús ----------
-function NavCollapsible({
+/* ----------- NavCollapsible ----------- */
+const NavCollapsible = ({
   item,
   pathname,
   disabled = false,
   userQuery,
 }: {
-  item: any;
+  item: MenuItem;
   pathname: string;
   disabled?: boolean;
-  userQuery: string;
-}) {
+  userQuery?: string;
+}) => {
   const subMenuItems = item.subMenu || item.subItems;
+  const isActive = !!(item.href && pathname.startsWith(item.href));
+  const Icon = item.icon;
 
   return (
-    <Collapsible key={item.label} defaultOpen={pathname.startsWith(item.href)} className="w-full" disabled={disabled}>
+    <Collapsible key={item.label ?? item.href} defaultOpen={isActive} className="w-full" disabled={disabled}>
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
-          isActive={pathname.startsWith(item.href)}
+          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+          isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
+          aria-expanded={isActive}
         >
           <div className="flex items-center gap-3 flex-1">
-            <item.icon className="size-5 shrink-0" />
+            {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
             <span className="truncate">{item.label}</span>
           </div>
           <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
         </SidebarMenuButton>
       </CollapsibleTrigger>
+
       <CollapsibleContent>
         <SidebarMenu className="pl-4">
           {subMenuItems &&
-            subMenuItems.map((subItem: any, index: number) => {
+            subMenuItems.map((subItem, index) => {
+              if (!subItem) return null;
               if (subItem.type === "separator") {
-                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20" />;
               }
+
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
+                return (
+                  <NavCollapsible
+                    key={subItem.label ?? subItem.href ?? `nested-${index}`}
+                    item={subItem}
+                    pathname={pathname}
+                    disabled={disabled}
+                    userQuery={userQuery}
+                  />
+                );
               }
+
+              const IconSub = subItem.icon;
               const isSubItemActive = pathname === subItem.href;
+              const hrefWithQuery = subItem.href ? `${subItem.href}${userQuery ? `?${userQuery}` : ""}` : "#";
 
               return (
-                <SidebarMenuItem key={subItem.href}>
+                <SidebarMenuItem key={subItem.href ?? `sub-${index}`}>
                   <SidebarMenuButton
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={`${subItem.href}?${userQuery}`}>
-                      {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                      <span>{subItem.label}</span>
+                    <Link href={hrefWithQuery}>
+                      <div className="flex items-center">
+                        {IconSub && <IconSub className="mr-2 size-4" aria-hidden />}
+                        <span>{subItem.label}</span>
+                      </div>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -177,9 +217,9 @@ function NavCollapsible({
       </CollapsibleContent>
     </Collapsible>
   );
-}
+};
 
-// ---------- Títulos de página ----------
+/* ---------------- Page Titles ---------------- */
 const pageTitles: Record<string, string> = {
   "/equipos": "Inventario de Equipos",
   "/equipos/control": "Control de Equipos",
@@ -198,11 +238,11 @@ const pageTitles: Record<string, string> = {
   "/administracion/formacion": "Gestión de Formación y Competencia",
   "/administracion/basedatos": "Base de Datos",
   "/administracion/permisos": "Roles y Permisos",
+  "/administracion/notificaciones": "Notificaciones",
   "/administracion/incertidumbre": "Calculadora de Incertidumbre",
   "/administracion/configuracion": "Configuración",
   "/administracion/proximos-pasos": "Próximos Pasos para Producción",
   "/administracion/rutas": "Rutas Disponibles",
-  "/administracion/notificaciones": "Gestión de Notificaciones",
   "/assistant": "Asistente de Código",
   "/portal": "Portal de Clientes",
   "/importaciones": "Control de Importaciones",
@@ -214,48 +254,36 @@ const pageTitles: Record<string, string> = {
   "/proveedores/gestion": "Gestión de Proveedores",
 };
 
-// ---------- Items principales del menú ----------
-const menuItems = (toggleChat: () => void) => [
+/* ---------------- Menu Items ---------------- */
+const menuItems = (toggleChat: () => void): MenuItem[] => [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   {
     label: "Ensayos",
-    icon: ChevronDown,
+    icon: SlidersHorizontal,
     subMenu: ensayosSubMenu,
     href: "/ensayos",
   },
   {
-    label: "Gestión de Equipos",
-    icon: ClipboardList,
-    subMenu: equiposSubMenu,
-    href: "/equipos",
-  },
-  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
-  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
-  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
-  {
-    label: "Operaciones",
-    icon: GitBranch,
-    subMenu: operacionesSubMenu,
-    href: "/operaciones",
-  },
-  {
     label: "Informes y Certificados",
-    icon: FileSearch,
-    subMenu: reportsSubMenu,
+    icon: FileText,
     href: "/reports",
+    subItems: [
+      { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
+      { href: "/reports/biblioteca", label: "Biblioteca de Informes", icon: FileSearch },
+    ],
   },
-  {
-    label: "Proveedores",
-    icon: Truck,
-    subMenu: proveedoresSubMenu,
-    href: "/proveedores",
-  },
-  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
   {
     label: "Biblioteca",
     icon: Library,
-    subMenu: bibliotecaSubMenu,
     href: "/biblioteca",
+    subItems: [{ href: "/biblioteca/documentos", label: "Documentos", icon: Library }],
+  },
+  { type: "separator" },
+  {
+    label: "Procesos de Gestión",
+    icon: Layers3,
+    subMenu: gestionSubMenu,
+    href: "/gestion",
   },
   { type: "separator" },
   { href: "/soporte", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
@@ -269,21 +297,26 @@ const menuItems = (toggleChat: () => void) => [
   },
 ];
 
-// ---------- Componente principal AppShell ----------
+/* ---------------- AppShell ---------------- */
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const searchParams = useSearchParams();
-  const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
-  const isInspectorView = user?.role === "Inspector de Calidad";
-  const userQuery = searchParams.toString();
+  const isInspectorView = !!(user && user.role === "Inspector de Calidad");
+
+  const userQuery = searchParams ? searchParams.toString() : "";
 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
     if (title) return title;
 
     for (const item of menuItems(() => {})) {
-      if (item.href && pathname === item.href) return item.label;
+      if (item.href && pathname === item.href) return item.label ?? "Dashboard";
+      if (item.subMenu) {
+        for (const s of item.subMenu) {
+          if (s.href && pathname === s.href) return s.label ?? item.label ?? "Dashboard";
+        }
+      }
     }
 
     return "Dashboard";
@@ -292,34 +325,35 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
     if (onClick) {
       e.preventDefault();
+      try {
+        onClick();
+      } catch {
+        // ignore
+      }
       setIsWidgetVisible(true);
       setIsOpen(true);
     }
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-muted/40 dark:bg-gray-900">
+    <div className="flex min-h-screen w-full bg-muted/40">
+      {/* Sidebar con fondo personalizado #1C3664 */}
       <Sidebar
-        className="
-          text-white
-          bg-[#1C3664]
-          dark:bg-gray-900
-          dark:text-gray-300
-          shadow-lg
-          transition-colors duration-300
-          select-none
-        "
+        className="text-white border-r-0"
+        style={{ backgroundColor: "#1C3664" }}
+        role="navigation"
+        aria-label="Main sidebar"
       >
-        <SidebarContent>
-          <div className="py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+        <SidebarContent className="text-white">
+          <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
+            <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           {isInspectorView && (
-            <Alert className="m-2 border-white-600/30 bg-white-600/10 text-white-300 dark:border-white-400/50 dark:bg-white-900/30 dark:text-cyan-400">
-              <Info className="h-4 w-4 text-white-500" />
-              <AlertTitle className="text-white-300 dark:text-white-400">Modo Inspector</AlertTitle>
-              <AlertDescription className="text-white-200 dark:text-white-300">
+            <Alert className="m-2 border-primary/30 bg-primary/10" role="status">
+              <Info className="h-4 w-4 text-primary" aria-hidden />
+              <AlertTitle className="text-primary/90">Modo Inspector</AlertTitle>
+              <AlertDescription className="text-primary/70">
                 La vista está limitada a las funciones de inspector de calidad.
               </AlertDescription>
             </Alert>
@@ -329,22 +363,16 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             {menuItems(() => setIsOpen(true)).map((item, index) => {
               const isDisabled =
                 isInspectorView &&
-                !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
-                  item.href?.startsWith(p)
-                );
+                !["/dashboard", "/ensayos/control-rutinario"].some((p) => Boolean(item.href && item.href.startsWith(p)));
 
               if (item.type === "separator") {
-                return (
-                  <SidebarSeparator
-                    key={`sep-${index}`}
-                    className="my-2 bg-white/20 dark:bg-gray-700"
-                  />
-                );
+                return <SidebarSeparator key={`sep-${index}`} className="my-2 bg-white/20" />;
               }
+
               if (item.subMenu) {
                 return (
                   <NavCollapsible
-                    key={item.label}
+                    key={item.label ?? item.href ?? `menu-${index}`}
                     item={item}
                     pathname={pathname}
                     disabled={isDisabled}
@@ -353,34 +381,27 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 );
               }
 
-              const isActive =
-                pathname === item.href ||
-                (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+              const isActive = pathname === item.href || (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+              const Icon = item.icon;
+              const hrefWithQuery = item.href ? `${item.href}${userQuery ? `?${userQuery}` : ""}` : "#";
 
               return (
-                <SidebarMenuItem key={item.href || index}>
+                <SidebarMenuItem key={item.href ?? `item-${index}`}>
                   <SidebarMenuButton
                     asChild
                     variant="ghost"
                     isActive={isActive}
-                    tooltip={{ content: item.label, side: "right", align: "center" }}
+                    tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="
-                      text-white
-                      hover:bg-white/10
-                      hover:text-white
-                      data-[active=true]:text-white-400
-                      dark:hover:bg-white-700/30
-                      dark:data-[active=true]:text-white-400
-                    "
+                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                   >
                     <Link
-                      href={`${item.href}?${userQuery}`}
+                      href={hrefWithQuery}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
                     >
                       <div className="flex items-center gap-3">
-                        <item.icon className="size-5 shrink-0" aria-hidden="true" />
+                        {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
                         <span className="truncate">{item.label}</span>
                       </div>
                     </Link>
@@ -390,71 +411,60 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             })}
           </SidebarMenu>
         </SidebarContent>
-
-        <SidebarFooter className="px-3 py-2 border-t border-white/20 dark:border-gray-700">
+  
+        <SidebarFooter className="px-3 py-2 border-t border-white/20">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="
-                  text-white
-                  hover:bg-white/10
-                  hover:text-white
-                  dark:hover:bg-white-700/30
-                "
+                className="text-white hover:bg-white/10 hover:text-white"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
-                    <LogOut className="size-5 shrink-0" aria-hidden="true" />
+                    <LogOut className="size-5 shrink-0" aria-hidden />
                     <span className="truncate">Cerrar Sesión</span>
                   </div>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-
-          <SidebarSeparator className="my-2 bg-white/20 dark:bg-gray-700" />
-
+  
+          <SidebarSeparator className="my-2 bg-white/20" />
+  
           <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
-            <Avatar
-              className="h-10 w-10 border-2 border-white/30 dark:border-gray-600"
-              aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
-            >
+            <Avatar className="h-10 w-10 border-2 border-white/30" aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}>
               {user?.avatarUrl ? (
                 <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
               ) : (
                 <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
               )}
             </Avatar>
-
+  
             <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <span className="font-semibold truncate text-white dark:text-gray-200">{user?.fullName ?? "Usuario"}</span>
-              <span className="text-white/70 dark:text-gray-400 text-xs truncate">{user?.role ?? ""}</span>
+              <span className="font-semibold truncate">{user?.fullName ?? "Usuario"}</span>
+              <span className="text-white/70 text-xs truncate">{user?.role ?? ""}</span>
             </div>
           </div>
         </SidebarFooter>
       </Sidebar>
-
+  
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
         <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 backdrop-blur-sm px-4 sm:px-6 dark:bg-gray-900/80"
+          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
           role="banner"
         >
           <div className="flex items-center gap-2">
             <SidebarTrigger aria-label="Toggle sidebar" />
-            <h1
-              className="text-xl font-semibold font-headline text-gray-900 dark:text-gray-100"
-              tabIndex={-1}
-            >
+            <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
               {getPageTitle()}
             </h1>
           </div>
         </header>
-
+  
         <main
-          className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+          className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar"
           role="main"
           tabIndex={-1}
         >
