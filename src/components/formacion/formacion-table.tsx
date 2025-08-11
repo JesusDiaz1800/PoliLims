@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -28,11 +28,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type Formacion } from "@/context/data-context";
+import type { Formacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
+import { deleteFormacionAction } from "@/app/(app)/administracion/formacion/actions";
 
 
 interface FormacionTableProps {
@@ -57,7 +69,6 @@ function getStatusVariant(status: Formacion["resultado"]) {
 
 const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { deleteFormacion } = useDynamicData();
   const { toast } = useToast();
 
   const filteredData = React.useMemo(() => 
@@ -69,19 +80,19 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
     ), [data, searchTerm]);
   
   const handleDelete = async (id: string) => {
-    try {
-        await deleteFormacion(id);
+    const result = await deleteFormacionAction(id);
+    if (result.success) {
         toast({
             title: "Registro Eliminado",
             description: "La actividad de formación ha sido eliminada.",
         });
-    } catch (error) {
+    } else {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
             description: "No se pudo eliminar el registro.",
         });
-        console.error("Failed to delete training record", error);
+        console.error("Failed to delete training record", result.message);
     }
   };
   
@@ -142,23 +153,41 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
                     {item.fecha_vencimiento ? format(parseISO(item.fecha_vencimiento), 'dd-MM-yyyy') : 'N/A'}
                 </TableCell>
                 <TableCell className="text-right">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" /><span className="sr-only">Acciones</span>
-                        </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem onSelect={() => onEdit(item)}>
-                            <Edit className="mr-2 h-4 w-4" />Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(item.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" />Eliminar
-                        </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <AlertDialog>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" /><span className="sr-only">Acciones</span>
+                            </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem onSelect={() => onEdit(item)}>
+                                <Edit className="mr-2 h-4 w-4" />Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                             <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                    <Trash2 className="mr-2 h-4 w-4" />Eliminar
+                                </DropdownMenuItem>
+                             </AlertDialogTrigger>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <AlertDialogContent>
+                              <AlertDialogHeader>
+                              <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. Esto eliminará permanentemente el registro de formación para <span className="font-bold">{item.empleadoNombre}</span> sobre la actividad <span className="font-bold">{item.nombre_actividad}</span>.
+                              </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDelete(item.id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                  Sí, eliminar registro
+                              </AlertDialogAction>
+                              </AlertDialogFooter>
+                          </AlertDialogContent>
+                    </AlertDialog>
                 </TableCell>
             </TableRow>
             )})}

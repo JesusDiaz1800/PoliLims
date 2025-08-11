@@ -16,8 +16,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useDynamicData, type Formacion, type User } from "@/context/data-context";
+import type { Formacion, User } from "@/context/data-context";
 import { Textarea } from "@/components/ui/textarea";
+import * as dataService from "@/services/data-service";
+
 
 interface FormacionFormProps {
   recordToEdit: Formacion | null;
@@ -33,13 +35,13 @@ const formSchema = z.object({
   evaluador: z.string().optional(),
   resultado: z.enum(['Aprobado', 'Reprobado', 'Pendiente', 'Completado']),
   observaciones: z.string().optional(),
+  fecha_vencimiento: z.date().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export function FormacionForm({ recordToEdit, onFormSubmit, users }: FormacionFormProps) {
   const { toast } = useToast();
-  const { addFormacion, updateFormacion, addRecentActivity } = useDynamicData();
   const isEditing = !!recordToEdit;
 
   const defaultValues = React.useMemo(() => ({
@@ -50,6 +52,7 @@ export function FormacionForm({ recordToEdit, onFormSubmit, users }: FormacionFo
       evaluador: recordToEdit?.evaluador || "",
       resultado: recordToEdit?.resultado || 'Pendiente',
       observaciones: recordToEdit?.observaciones || "",
+      fecha_vencimiento: recordToEdit?.fecha_vencimiento ? parseISO(recordToEdit.fecha_vencimiento) : undefined,
     }), [recordToEdit]);
     
   const form = useForm<FormValues>({
@@ -72,12 +75,13 @@ export function FormacionForm({ recordToEdit, onFormSubmit, users }: FormacionFo
       ...data,
       empleadoNombre: empleado.fullName,
       fecha: format(data.fecha, "yyyy-MM-dd"),
+      fecha_vencimiento: data.fecha_vencimiento ? format(data.fecha_vencimiento, "yyyy-MM-dd") : undefined,
     };
     
     try {
       if (isEditing && recordToEdit) {
-        await updateFormacion(recordToEdit.id, formacionData);
-        await addRecentActivity({
+        await dataService.updateFormacion(recordToEdit.id, formacionData as any);
+        await dataService.addRecentActivity({
           user: "Usuario del Sistema", // This should be dynamic in a real app
           action: `actualizó el registro de formación de ${empleado.fullName}`,
         });
@@ -86,8 +90,8 @@ export function FormacionForm({ recordToEdit, onFormSubmit, users }: FormacionFo
           description: `La actividad de formación para ${empleado.fullName} ha sido actualizada.`,
         });
       } else {
-        await addFormacion(formacionData as Omit<Formacion, 'id' | 'fecha_vencimiento'>);
-        await addRecentActivity({
+        await dataService.addFormacion(formacionData as Omit<Formacion, 'id'>);
+        await dataService.addRecentActivity({
           user: "Usuario del Sistema",
           action: `registró una nueva actividad de formación para ${empleado.fullName}`,
         });
@@ -115,6 +119,7 @@ export function FormacionForm({ recordToEdit, onFormSubmit, users }: FormacionFo
             <FormField control={form.control} name="tipo" render={({ field }) => (<FormItem><FormLabel>Tipo de Actividad</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Curso">Curso</SelectItem><SelectItem value="Certificación">Certificación</SelectItem><SelectItem value="Evaluación de Competencia">Evaluación de Competencia</SelectItem><SelectItem value="Inducción">Inducción</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="nombre_actividad" render={({ field }) => (<FormItem className="md:col-span-2"><FormLabel>Nombre de la Actividad / Curso</FormLabel><FormControl><Input placeholder="Ej: Curso de Cromatografía de Gases" {...field} /></FormControl><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="fecha" render={({ field }) => (<FormItem><FormLabel>Fecha de Realización</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)}/>
+            <FormField control={form.control} name="fecha_vencimiento" render={({ field }) => (<FormItem><FormLabel>Fecha de Vencimiento (Opcional)</FormLabel><Popover><PopoverTrigger asChild><FormControl><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal",!field.value && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione fecha</span>}</Button></FormControl></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus /></PopoverContent></Popover><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="evaluador" render={({ field }) => (<FormItem><FormLabel>Evaluador / Institución</FormLabel><FormControl><Input placeholder="Ej: OTEC Qualitas" {...field} /></FormControl><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="resultado" render={({ field }) => (<FormItem><FormLabel>Resultado</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Aprobado">Aprobado</SelectItem><SelectItem value="Reprobado">Reprobado</SelectItem><SelectItem value="Pendiente">Pendiente</SelectItem><SelectItem value="Completado">Completado</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
             <FormField control={form.control} name="observaciones" render={({ field }) => (<FormItem className="md:col-span-2"><FormLabel>Observaciones y Detalles de Evaluación</FormLabel><FormControl><Textarea placeholder="Añada cualquier nota relevante, detalles de la evaluación, puntajes, etc." {...field} /></FormControl><FormMessage /></FormItem>)}/>
