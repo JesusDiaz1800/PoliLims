@@ -1,7 +1,7 @@
 
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental } from "@/context/data-context";
-import { isPast, parse, subDays, format as formatDate } from 'date-fns';
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion } from "@/context/data-context";
+import { isPast, parse, subDays, format as formatDate, addYears, addDays } from 'date-fns';
 
 
 // --- DEMO DATA ---
@@ -131,6 +131,17 @@ for (let i = 90; i >= 0; i--) {
     });
 }
 
+let demoFormacion: Formacion[] = [
+    { id: 'FORM-001', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Auditor Interno ISO/IEC 17025:2017', fecha: '2023-11-15', evaluador: 'AENOR', resultado: 'Aprobado', fecha_vencimiento: addYears(new Date('2023-11-15'), 3).toISOString() },
+    { id: 'FORM-002', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Cromatografía de Gases Avanzada', fecha: '2024-03-20', evaluador: 'Waters Corp.', resultado: 'Completado' },
+    { id: 'FORM-003', empleadoId: 'mmiranda', empleadoNombre: 'Maximiliano Miranda', tipo: 'Evaluación de Competencia', nombre_actividad: 'Análisis de Melt Index (ASTM D1238)', fecha: '2024-06-10', evaluador: 'Victor Lutz', resultado: 'Aprobado' },
+    { id: 'FORM-004', empleadoId: 'jefe.calidad', empleadoNombre: 'Victor Lutz', tipo: 'Certificación', nombre_actividad: 'Lead Auditor ISO 9001:2015', fecha: '2022-05-30', evaluador: 'SGS Academy', resultado: 'Aprobado', fecha_vencimiento: subDays(new Date(), 90).toISOString() }, // Expired
+    { id: 'FORM-005', empleadoId: 'rcordova', empleadoNombre: 'Robinson Córdova', tipo: 'Certificación', nombre_actividad: 'Operador de Espectrómetro FTIR', fecha: '2023-08-01', evaluador: 'PerkinElmer', resultado: 'Aprobado', fecha_vencimiento: addYears(new Date('2023-08-01'), 2).toISOString() },
+    { id: 'FORM-006', empleadoId: 'bvasquez', empleadoNombre: 'Bryan Vásquez', tipo: 'Inducción', nombre_actividad: 'Inducción General de Laboratorio', fecha: '2024-01-15', evaluador: 'Recursos Humanos', resultado: 'Completado' },
+    { id: 'FORM-007', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Gestión de la Incertidumbre', fecha: '2024-02-28', evaluador: 'INTN', resultado: 'Aprobado', fecha_vencimiento: addDays(new Date(), 45).toISOString() }, // Expires soon
+    { id: 'FORM-008', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Buenas Prácticas de Laboratorio (GLP)', fecha: '2023-09-05', evaluador: 'OTEC Qualitas', resultado: 'Completado' },
+];
+
 
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
@@ -207,6 +218,18 @@ export async function deleteProveedor(id: string) {
     demoProveedores = demoProveedores.filter(p => p.id !== id);
 }
 
+export async function addFormacion(record: Omit<Formacion, 'id'>) {
+    const newRecord = { ...record, id: `FORM-NEW-${Math.random().toString(16).slice(2)}` };
+    demoFormacion.unshift(newRecord);
+    return newRecord;
+}
+export async function updateFormacion(id: string, updatedData: Partial<Formacion>) {
+    demoFormacion = demoFormacion.map(f => f.id === id ? { ...f, ...updatedData } : f);
+}
+export async function deleteFormacion(id: string) {
+    demoFormacion = demoFormacion.filter(f => f.id !== id);
+}
+
 export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>) { 
      const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
     recentActivityData.unshift(newActivity);
@@ -234,5 +257,6 @@ export async function getInitialData() {
         calculosIncertidumbre: calculosIncertidumbre,
         proveedores: demoProveedores,
         condicionesAmbientales: demoCondicionesAmbientales,
+        formacion: demoFormacion,
     };
 }

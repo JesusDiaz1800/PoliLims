@@ -2,13 +2,13 @@
 "use client";
 
 import * as React from 'react';
-import type { Formacion, User } from '@/context/data-context';
+import type { Formacion } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
-import * as dataService from "@/services/data-service";
 import * as userService from "@/services/user-service";
 import Loading from '@/app/(app)/loading';
 import { FormacionTable } from '@/components/formacion/formacion-table';
 import { FormacionDialog } from '@/components/formacion/formacion-dialog';
+import type { User } from '@/services/user-service';
 
 export default function FormacionPage() {
   const { formacion: initialFormacion, isLoading: isDynamicLoading } = useDynamicData();

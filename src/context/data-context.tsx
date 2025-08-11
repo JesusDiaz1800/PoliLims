@@ -188,6 +188,19 @@ export interface CondicionAmbiental {
     usuario: string;
 }
 
+export interface Formacion {
+    id: string;
+    empleadoId: string;
+    empleadoNombre: string;
+    tipo: 'Curso' | 'Certificación' | 'Evaluación de Competencia' | 'Inducción';
+    nombre_actividad: string;
+    fecha: string; // ISO 8601 string
+    evaluador?: string;
+    resultado: 'Aprobado' | 'Reprobado' | 'Pendiente' | 'Completado';
+    observaciones?: string;
+    fecha_vencimiento?: string; // ISO 8601 string, for certifications
+}
+
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
@@ -240,6 +253,7 @@ interface DynamicDataContextType {
   calculosIncertidumbre: CalculoIncertidumbre[];
   proveedores: Proveedor[];
   condicionesAmbientales: CondicionAmbiental[];
+  formacion: Formacion[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -262,6 +276,9 @@ interface DynamicDataContextType {
   addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
   updateProveedor: (id: string, proveedor: Partial<Proveedor>) => Promise<void>;
   deleteProveedor: (id: string) => Promise<void>;
+  addFormacion: (record: Omit<Formacion, 'id'>) => Promise<Formacion>;
+  updateFormacion: (id: string, record: Partial<Formacion>) => Promise<void>;
+  deleteFormacion: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -291,6 +308,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [calculosIncertidumbre, setCalculosIncertidumbre] = useState<CalculoIncertidumbre[]>([]);
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const [condicionesAmbientales, setCondicionesAmbientales] = useState<CondicionAmbiental[]>([]);
+  const [formacion, setFormacion] = useState<Formacion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data once on the client
@@ -321,6 +339,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setCalculosIncertidumbre(initialData.calculosIncertidumbre);
             setProveedores(initialData.proveedores);
             setCondicionesAmbientales(initialData.condicionesAmbientales);
+            setFormacion(initialData.formacion);
         }
         
       } catch (error) {
@@ -452,6 +471,23 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setProveedores(prev => prev.filter(p => p.id !== id));
   }, []);
 
+  const addFormacion = useCallback(async (record: Omit<Formacion, 'id'>) => {
+    const newRecord = await dataService.addFormacion(record);
+    setFormacion(prev => [newRecord, ...prev].sort((a,b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()));
+    return newRecord;
+  }, []);
+
+  const updateFormacion = useCallback(async (id: string, record: Partial<Formacion>) => {
+    await dataService.updateFormacion(id, record);
+    setFormacion(prev => prev.map(f => f.id === id ? { ...f, ...record } : f).sort((a,b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()));
+  }, []);
+
+  const deleteFormacion = useCallback(async (id: string) => {
+    await dataService.deleteFormacion(id);
+    setFormacion(prev => prev.filter(f => f.id !== id));
+  }, []);
+
+
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const fullActivity = await dataService.addRecentActivity(activity);
      setRecentActivity(prev => [fullActivity, ...prev].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
@@ -469,6 +505,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     calculosIncertidumbre,
     proveedores,
     condicionesAmbientales,
+    formacion,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -491,13 +528,16 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addProveedor,
     updateProveedor,
     deleteProveedor,
+    addFormacion,
+    updateFormacion,
+    deleteFormacion,
     addRecentActivity,
     isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, proveedores, condicionesAmbientales, isLoading,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, proveedores, condicionesAmbientales, formacion, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
-    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addCondicionAmbiental, addProveedor, updateProveedor, deleteProveedor, addRecentActivity
+    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addCondicionAmbiental, addProveedor, updateProveedor, deleteProveedor, addFormacion, updateFormacion, deleteFormacion, addRecentActivity
   ]);
 
   const staticContextValue = useMemo(() => ({

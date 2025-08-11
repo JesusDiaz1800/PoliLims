@@ -1,4 +1,5 @@
 
+
 export interface User {
     username: string;
     fullName: string;
@@ -97,4 +98,8 @@ const users: Record<string, User> = {
 export async function findUserByUsername(username: string): Promise<User> {
     // Devuelve un usuario predeterminado si no se encuentra el especificado.
     return users[username] || users["jefe.calidad"];
+}
+
+export async function getAllUsers(): Promise<User[]> {
+    return Object.values(users);
 }

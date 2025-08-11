@@ -32,7 +32,7 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2, GraduationCap, AlertCir
 import { cn } from "@/lib/utils";
 import { useDynamicData, type Formacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import { format, isPast, differenceInDays } from "date-fns";
+import { format, isPast, differenceInDays, parseISO } from "date-fns";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 
@@ -88,7 +88,7 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
   
   const getExpiryStatus = (dateString?: string) => {
     if (!dateString) return null;
-    const expiryDate = new Date(dateString);
+    const expiryDate = parseISO(dateString);
     const today = new Date();
     const daysUntil = differenceInDays(expiryDate, today);
 
@@ -150,7 +150,7 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
                     <TableCell className="font-medium">{item.empleadoNombre}</TableCell>
                     <TableCell><Badge variant="outline">{item.tipo}</Badge></TableCell>
                     <TableCell>{item.nombre_actividad}</TableCell>
-                    <TableCell>{format(new Date(item.fecha), 'dd-MM-yyyy')}</TableCell>
+                    <TableCell>{format(parseISO(item.fecha), 'dd-MM-yyyy')}</TableCell>
                     <TableCell>
                     <Badge className={cn("border-transparent font-normal", getStatusVariant(item.resultado))}>
                         {item.resultado}
@@ -158,7 +158,7 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
                     </TableCell>
                     <TableCell>
                         <div className="flex items-center gap-2">
-                           {item.fecha_vencimiento ? format(new Date(item.fecha_vencimiento), 'dd-MM-yyyy') : 'N/A'}
+                           {item.fecha_vencimiento ? format(parseISO(item.fecha_vencimiento), 'dd-MM-yyyy') : 'N/A'}
                            {expiryStatus && (
                                 <Tooltip>
                                     <TooltipTrigger><AlertCircle className={cn("h-4 w-4", expiryStatus.color)} /></TooltipTrigger>
