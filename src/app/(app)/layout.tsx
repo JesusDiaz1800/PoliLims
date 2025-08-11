@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { findUserByUsername } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
 import { DynamicDataProvider } from '@/context/data-context';
+import { getInitialData } from '@/services/data-service';
 
 export const metadata: Metadata = {
     title: {
@@ -18,12 +19,8 @@ export const metadata: Metadata = {
 /**
  * @layout AppLayout
  * @description This is the main layout for the authenticated part of the application.
- * It sets up all the necessary global providers:
- * - ThemeProvider for light/dark mode.
- * - DynamicDataProvider to manage and distribute the application's core data.
- * - ChatWidgetProvider for the AI assistant chat state.
- * - SidebarProvider for the navigation sidebar state.
- * It also fetches the user based on a query parameter for this prototype.
+ * It sets up all the necessary global providers and pre-fetches all application data
+ * on the server to ensure a fast initial load.
  */
 export default async function AppLayout({ 
     children,
@@ -34,7 +31,10 @@ export default async function AppLayout({
 }) {
     // Get user from search params to simulate user session for this prototype.
     const username = (searchParams?.user as string) || 'jdiaz';
-    const user = await findUserByUsername(username);
+    const [user, initialData] = await Promise.all([
+        findUserByUsername(username),
+        getInitialData()
+    ]);
 
     return (
         <ThemeProvider
@@ -43,7 +43,7 @@ export default async function AppLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <DynamicDataProvider>
+            <DynamicDataProvider initialData={initialData}>
                 <ChatWidgetProvider>
                     <SidebarProvider>
                         <AppShell user={user}>

@@ -249,22 +249,9 @@ interface DynamicDataContextType extends InitialData {
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
 
-export function DynamicDataProvider({ children }: { children: ReactNode }) {
-    const [data, setData] = useState<InitialData>({
-        ensayos: [], registros: [], recentActivity: [], equipos: [], controles: [], noConformidades: [],
-        importaciones: [], generatedReports: [], calculosIncertidumbre: [], proveedores: [],
-        condicionesAmbientales: [], formacion: [], auditorias: [],
-    });
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        const loadData = async () => {
-            const initialData = await dataService.getInitialData();
-            setData(initialData);
-            setIsLoaded(true);
-        };
-        loadData();
-    }, []);
+export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
+    const [data, setData] = useState<InitialData>(initialData);
+    const [isLoaded, setIsLoaded] = useState(true);
 
     const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
         const newEnsayo = await dataService.addEnsayo(ensayo);
