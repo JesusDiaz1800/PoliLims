@@ -299,8 +299,17 @@ export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 't
     return newActivity;
 }
 
+/**
+ * @function getInitialData
+ * @description Simulates fetching the entire initial state for the application.
+ * In a real-world scenario, this would be broken down into multiple, more specific API calls.
+ * For the prototype, it aggregates all demo data into a single object.
+ * It also applies some dynamic logic, like updating equipment status based on the current date.
+ * @returns {Promise<object>} A promise that resolves to an object containing all initial data arrays.
+ */
 export async function getInitialData() {
     const today = new Date();
+    // Dynamically update equipment status based on calibration date for realistic simulation.
     const updatedEquipos = demoEquipos.map(equipo => {
         if (equipo.estado === 'Activo' && isPast(parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date()))) {
             return { ...equipo, estado: 'Requiere Calibración' as const };

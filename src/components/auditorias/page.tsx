@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { AuditoriasTable } from '@/components/auditorias/auditorias-table';
 import { AuditoriaDialog } from '@/components/auditorias/auditoria-dialog';
-import Loading from '../loading';
+import Loading from '../../app/(app)/loading';
 import * as dataService from "@/services/data-service";
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
