@@ -81,5 +81,6 @@ const users: Record<string, User> = {
 };
 
 export async function findUserByUsername(username: string): Promise<User> {
+    // Devuelve un usuario predeterminado (Jefe de Calidad) si no se encuentra el especificado.
     return users[username] || users["jefe.calidad"];
 }
