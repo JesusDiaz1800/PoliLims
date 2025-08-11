@@ -41,12 +41,12 @@ body {
  
     --radius: 0.5rem;
 
-    /* Chart Colors */
-    --chart-1: 207 44% 49%; /* Primary */
-    --chart-2: 195 27% 56%; /* Accent */
-    --chart-3: 240 3.8% 46.1%; /* Muted-foreground */
-    --chart-4: 222.2 47.4% 11.2%; /* Secondary-foreground */
-    --chart-5: 240 4.8% 95.9%; /* Secondary */
+    /* Chart Colors (Institutional Light Theme) */
+    --chart-1: 213 89% 44%; /* #126FCC */
+    --chart-2: 215 57% 25%; /* #1C3664 */
+    --chart-3: 38 78% 61%; /* #E8B14D */
+    --chart-4: 0 0% 80%; /* #CDCCCC */
+    --chart-5: 240 3.8% 46.1%; /* Muted-foreground as fallback */
   }
  
   .dark {
@@ -81,12 +81,12 @@ body {
     --input: 240 3.7% 15.9%;
     --ring: 207 44% 55%;
     
-    /* Chart Colors */
+    /* Chart Colors (Dark Theme) */
     --chart-1: 207 44% 55%;
     --chart-2: 195 27% 46%;
-    --chart-3: 240 5% 64.9%;
-    --chart-4: 0 0% 98%;
-    --chart-5: 240 3.7% 15.9%;
+    --chart-3: 38 78% 61%; /* Gold accent works in dark mode too */
+    --chart-4: 240 5% 64.9%;
+    --chart-5: 0 0% 98%;
   }
 }
  
@@ -149,4 +149,3 @@ input[type=number] {
     opacity: 1;
   }
 }
-
