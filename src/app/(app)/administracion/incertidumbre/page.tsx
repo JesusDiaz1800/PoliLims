@@ -1,15 +1,27 @@
 
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import * as React from 'react';
 import { CalculadoraIncertidumbre } from "@/components/incertidumbre/incertidumbre-calculadora";
 import { HistoricoIncertidumbre } from "@/components/incertidumbre/incertidumbre-historico";
-import { useDynamicData, type CalculoIncertidumbre } from "@/context/data-context";
+import type { CalculoIncertidumbre } from "@/context/data-context";
 import Loading from "../../loading";
-import type { Metadata } from 'next';
+import * as dataService from "@/services/data-service";
 
 export default function IncertidumbrePage() {
-    const { calculosIncertidumbre, isLoading } = useDynamicData();
+    const [calculos, setCalculos] = React.useState<CalculoIncertidumbre[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    React.useEffect(() => {
+        async function loadData() {
+            setIsLoading(true);
+            const data = await dataService.getInitialData();
+            setCalculos(data.calculosIncertidumbre);
+            setIsLoading(false);
+        }
+        loadData();
+    }, []);
+
 
     if (isLoading) {
         return <Loading/>
@@ -18,7 +30,7 @@ export default function IncertidumbrePage() {
     return (
         <div className="space-y-6">
             <CalculadoraIncertidumbre />
-            <HistoricoIncertidumbre calculos={calculosIncertidumbre} />
+            <HistoricoIncertidumbre calculos={calculos} />
         </div>
     );
 }
