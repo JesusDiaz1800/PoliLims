@@ -1,7 +1,7 @@
 
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor } from "@/context/data-context";
-import { isPast, parse } from 'date-fns';
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental } from "@/context/data-context";
+import { isPast, parse, subDays, format as formatDate } from 'date-fns';
 
 
 // --- DEMO DATA ---
@@ -114,6 +114,23 @@ let demoProveedores: Proveedor[] = [
     }))
 ];
 
+const zonas = ['Laboratorio Principal', 'Sala de Muestras', 'Área de Ensayos Mecánicos'];
+let demoCondicionesAmbientales: CondicionAmbiental[] = [];
+for (let i = 90; i >= 0; i--) {
+    zonas.forEach(zona => {
+        const timestamp = subDays(new Date(), i).toISOString();
+        demoCondicionesAmbientales.push({
+            id: `ENV-${zona.charAt(0)}-${timestamp}`,
+            zona,
+            timestamp,
+            temperatura: 22.5 + (Math.random() - 0.5) * 5, // Temp between 20-25
+            humedad: 45 + (Math.random() - 0.5) * 20, // Humidity between 35-55
+            presion: 1012 + (Math.random() - 0.5) * 10, // Pressure around 1012 hPa
+            usuario: 'Sistema'
+        });
+    });
+}
+
 
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
@@ -132,6 +149,12 @@ export async function addCalculoIncertidumbre(calculo: Omit<CalculoIncertidumbre
     const newCalculo = { ...calculo, id: `INC-${String(calculosIncertidumbre.length + 1).padStart(3, '0')}` };
     calculosIncertidumbre.unshift(newCalculo);
     return newCalculo;
+}
+
+export async function addCondicionAmbiental(registro: Omit<CondicionAmbiental, 'id' | 'timestamp'>): Promise<CondicionAmbiental> {
+    const newRegistro = { ...registro, id: `ENV-${Math.random()}`, timestamp: new Date().toISOString() };
+    demoCondicionesAmbientales.push(newRegistro);
+    return newRegistro;
 }
 
 // Dummy add/update/delete functions to simulate API calls
@@ -210,5 +233,6 @@ export async function getInitialData() {
         generatedReports: generatedReports,
         calculosIncertidumbre: calculosIncertidumbre,
         proveedores: demoProveedores,
+        condicionesAmbientales: demoCondicionesAmbientales,
     };
 }

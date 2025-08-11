@@ -178,6 +178,16 @@ export interface Proveedor {
     }[];
 }
 
+export interface CondicionAmbiental {
+    id: string;
+    timestamp: string; // ISO 8601 string
+    zona: string;
+    temperatura: number;
+    humedad: number;
+    presion?: number;
+    usuario: string;
+}
+
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
@@ -229,6 +239,7 @@ interface DynamicDataContextType {
   generatedReports: GeneratedReport[];
   calculosIncertidumbre: CalculoIncertidumbre[];
   proveedores: Proveedor[];
+  condicionesAmbientales: CondicionAmbiental[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -247,6 +258,7 @@ interface DynamicDataContextType {
   addGeneratedReport: (report: Omit<GeneratedReport, 'id'>) => Promise<GeneratedReport>;
   deleteGeneratedReport: (id: string) => Promise<void>;
   addCalculoIncertidumbre: (calculo: Omit<CalculoIncertidumbre, 'id'>) => Promise<CalculoIncertidumbre>;
+  addCondicionAmbiental: (registro: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => Promise<CondicionAmbiental>;
   addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
   updateProveedor: (id: string, proveedor: Partial<Proveedor>) => Promise<void>;
   deleteProveedor: (id: string) => Promise<void>;
@@ -278,6 +290,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [generatedReports, setGeneratedReports] = useState<GeneratedReport[]>([]);
   const [calculosIncertidumbre, setCalculosIncertidumbre] = useState<CalculoIncertidumbre[]>([]);
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
+  const [condicionesAmbientales, setCondicionesAmbientales] = useState<CondicionAmbiental[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data once on the client
@@ -307,6 +320,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setGeneratedReports(initialData.generatedReports);
             setCalculosIncertidumbre(initialData.calculosIncertidumbre);
             setProveedores(initialData.proveedores);
+            setCondicionesAmbientales(initialData.condicionesAmbientales);
         }
         
       } catch (error) {
@@ -416,6 +430,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       return newCalculo;
   }, []);
   
+  const addCondicionAmbiental = useCallback(async (registroData: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => {
+      const newRegistro = await dataService.addCondicionAmbiental(registroData);
+      setCondicionesAmbientales(prev => [newRegistro, ...prev].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+      return newRegistro;
+  }, []);
+
   const addProveedor = useCallback(async (proveedorData: Omit<Proveedor, 'id'>) => {
     const newProveedor = await dataService.addProveedor(proveedorData);
     setProveedores(prev => [newProveedor, ...prev].sort((a,b) => a.nombre.localeCompare(b.nombre)));
@@ -448,6 +468,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     generatedReports,
     calculosIncertidumbre,
     proveedores,
+    condicionesAmbientales,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -466,16 +487,17 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     addGeneratedReport,
     deleteGeneratedReport,
     addCalculoIncertidumbre,
+    addCondicionAmbiental,
     addProveedor,
     updateProveedor,
     deleteProveedor,
     addRecentActivity,
     isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, proveedores, isLoading,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, proveedores, condicionesAmbientales, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
-    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addProveedor, updateProveedor, deleteProveedor, addRecentActivity
+    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addCondicionAmbiental, addProveedor, updateProveedor, deleteProveedor, addRecentActivity
   ]);
 
   const staticContextValue = useMemo(() => ({
