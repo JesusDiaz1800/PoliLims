@@ -88,26 +88,43 @@ const ensayosSubMenu = [
 
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
-    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
     { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
-const operacionesSubMenu = [
+const gestionSubMenu = [
+    { 
+        label: 'Gestión de Equipos', 
+        icon: BookCheck,
+        href: '/equipos',
+        subItems: [
+            { href: '/equipos', label: 'Inventario de Equipos', icon: ClipboardList },
+            { href: '/equipos/control', label: 'Control de Equipos', icon: History },
+            { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
+        ]
+    },
+    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
+    { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
+    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
+    { 
+        label: 'Proveedores', 
+        icon: Truck,
+        href: '/proveedores',
+        subItems: [
+            { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
+        ],
+    },
+    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
+    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
+    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
+    { type: 'separator' },
     { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
-];
-
-const equiposSubMenu = [
-    { href: '/equipos', label: 'Inventario de Equipos', icon: ClipboardList },
-    { href: '/equipos/control', label: 'Control de Equipos', icon: History },
-    { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
 ];
 
 const bibliotecaSubMenu = [
@@ -118,11 +135,6 @@ const reportsSubMenu = [
     { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
     { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
-
-const proveedoresSubMenu = [
-    { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
-];
-
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
@@ -228,38 +240,23 @@ const menuItems = (toggleChat: () => void) => [
         href: '/ensayos'
     },
     { 
-        label: 'Gestión de Equipos', 
-        icon: BookCheck,
-        subMenu: equiposSubMenu,
-        href: '/equipos',
-    },
-    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
-    { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
-    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
-    {
-        label: 'Operaciones',
-        icon: Layers3,
-        subMenu: operacionesSubMenu,
-        href: '/operaciones'
-    },
-     { 
         label: 'Informes y Certificados', 
         icon: FileText,
         subMenu: reportsSubMenu,
         href: '/reports',
     },
     { 
-        label: 'Proveedores', 
-        icon: Truck,
-        subMenu: proveedoresSubMenu,
-        href: '/proveedores',
-    },
-    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
-    { 
         label: 'Biblioteca', 
         icon: Library,
         subMenu: bibliotecaSubMenu,
         href: '/biblioteca',
+    },
+    { type: 'separator' },
+     {
+        label: 'Procesos de Gestión',
+        icon: Layers3,
+        subMenu: gestionSubMenu,
+        href: '/gestion'
     },
     { type: 'separator' },
     { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
@@ -303,7 +300,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
 
     return (
         <div className="flex min-h-screen w-full bg-muted/40">
-            <Sidebar className="bg-card dark:bg-card text-card-foreground dark:text-card-foreground border-r-0 dark:bg-[#142541] bg-[#1C3664] text-white">
+            <Sidebar className="dark:bg-[#142541] bg-[#1C3664] text-white border-r-0">
                 <SidebarContent className="text-white">
                      <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
                         <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
