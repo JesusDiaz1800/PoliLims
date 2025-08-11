@@ -6,8 +6,16 @@ import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { revalidatePath } from "next/cache";
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
-const ACCEPTED_FILE_TYPES = ["text/plain"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+// Lista de tipos MIME más permisiva para documentos de oficina
+const ACCEPTED_FILE_TYPES = [
+  "text/plain",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+];
 
 const formSchema = z.object({
   file: z
@@ -15,11 +23,11 @@ const formSchema = z.object({
     .refine((file) => file.size > 0, "El archivo no puede estar vacío.")
     .refine(
       (file) => file.size <= MAX_FILE_SIZE,
-      `El tamaño máximo del archivo es de 4MB.`
+      `El tamaño máximo del archivo es de 5MB.`
     )
     .refine(
       (file) => ACCEPTED_FILE_TYPES.includes(file.type),
-      "Solo se permiten archivos .txt"
+      "Formato de archivo no soportado. Pruebe con .txt, .pdf, .doc, .docx, .xls, .xlsx"
     ),
 });
 
@@ -62,5 +70,3 @@ export async function uploadDocument(prevState: FormState, formData: FormData): 
     return { message: "Error al cargar el archivo.", error: (error as Error).message };
   }
 }
-
-    

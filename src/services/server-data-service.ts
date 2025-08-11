@@ -7,6 +7,10 @@ import * as path from 'path';
 export interface KnowledgeBaseFile {
   name: string;
   size: number;
+  version: number;
+  status: 'Aprobado' | 'En Revisión';
+  approvedBy?: string;
+  approvedAt?: string;
 }
 
 
@@ -18,11 +22,21 @@ export async function getKnowledgeBaseFiles(): Promise<KnowledgeBaseFile[]> {
         const files = await fs.readdir(dataDirectory);
         const fileDetails = await Promise.all(
             files
-                .filter(file => file.endsWith('.txt'))
-                .map(async file => {
+                // Omitimos archivos que no son de texto para la IA, pero se podrían incluir todos si se quisiera
+                .filter(file => file.endsWith('.txt') || file.endsWith('.md'))
+                .map(async (file, index) => {
                     const filePath = path.join(dataDirectory, file);
                     const stats = await fs.stat(filePath);
-                    return { name: file, size: stats.size };
+                    // Mock data para el ejemplo
+                    const isApproved = index % 2 === 0;
+                    return { 
+                        name: file, 
+                        size: stats.size,
+                        version: isApproved ? 2 : 1,
+                        status: isApproved ? 'Aprobado' : 'En Revisión',
+                        approvedBy: isApproved ? 'Victor Lutz' : undefined,
+                        approvedAt: isApproved ? '15-07-2024' : undefined,
+                    };
                 })
         );
         return fileDetails;
@@ -36,5 +50,3 @@ export async function getKnowledgeBaseFiles(): Promise<KnowledgeBaseFile[]> {
         return [];
     }
 }
-
-    
