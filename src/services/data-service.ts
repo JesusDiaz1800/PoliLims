@@ -22,16 +22,14 @@ const demoEnsayos: Ensayo[] = [
 ];
 
 
-const now = new Date('2025-07-23T10:30:00Z');
-
-const demoRecentActivity: RecentActivity[] = [
-    { id: 'ACT-1', user: 'Jesus Diaz', action: 'actualizó el ensayo LAB-07-01', timestamp: new Date(now.getTime() - 5 * 60 * 1000).toISOString() }, // 5 minutes ago
-    { id: 'ACT-2', user: 'Elias Ibañez', action: 'registró un nuevo control para Tubería HDPE 90mm', timestamp: new Date(now.getTime() - 15 * 60 * 1000).toISOString() }, // 15 minutes ago
-    { id: 'ACT-3', user: 'Victor Lutz', action: 'ha iniciado sesión', timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString() }, // 2 hours ago
-    { id: 'ACT-4', user: 'Antonia Figueroa', action: 'comenzó a procesar el ensayo LAB-07-02', timestamp: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString() }, // 5 hours ago
-    { id: 'ACT-5', user: 'Cristian Montellano', action: 'registró un control no conforme para Tubería HDPE 200mm', timestamp: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString() }, // Yesterday
-    { id: 'ACT-6', user: 'Maximiliano Miranda', action: 'aprobó el informe para el ensayo LAB-07-03', timestamp: new Date(now.getTime() - 1.5 * 24 * 60 * 60 * 1000).toISOString() }, // 1.5 days ago
-    { id: 'ACT-7', user: 'Robinson Córdova', action: 'registró un nuevo ensayo de reprocesado', timestamp: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString() }, // 2 days ago
+let recentActivityData: RecentActivity[] = [
+    { id: 'ACT-1', user: 'Jesus Diaz', action: 'actualizó el ensayo LAB-07-01', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 5 * 60 * 1000).toISOString() },
+    { id: 'ACT-2', user: 'Elias Ibañez', action: 'registró un nuevo control para Tubería HDPE 90mm', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 15 * 60 * 1000).toISOString() },
+    { id: 'ACT-3', user: 'Victor Lutz', action: 'ha iniciado sesión', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 2 * 60 * 60 * 1000).toISOString() },
+    { id: 'ACT-4', user: 'Antonia Figueroa', action: 'comenzó a procesar el ensayo LAB-07-02', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 5 * 60 * 60 * 1000).toISOString() },
+    { id: 'ACT-5', user: 'Cristian Montellano', action: 'registró un control no conforme para Tubería HDPE 200mm', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'ACT-6', user: 'Maximiliano Miranda', action: 'aprobó el informe para el ensayo LAB-07-03', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 1.5 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'ACT-7', user: 'Robinson Córdova', action: 'registró un nuevo ensayo de reprocesado', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 2 * 24 * 60 * 60 * 1000).toISOString() },
 ];
 
 
@@ -121,6 +119,7 @@ export async function updateImportacion(id: string, updatedData: Partial<Importa
 export async function deleteImportacion(id: string) { return; }
 export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>) { 
      const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
+    recentActivityData.unshift(newActivity);
     return newActivity;
 }
 
@@ -136,7 +135,7 @@ export async function getInitialData() {
     return {
         ensayos: demoEnsayos,
         registros: demoRegistros,
-        recentActivity: demoRecentActivity,
+        recentActivity: recentActivityData,
         equipos: updatedEquipos,
         controles: demoControles,
         noConformidades: demoNoConformidades,
