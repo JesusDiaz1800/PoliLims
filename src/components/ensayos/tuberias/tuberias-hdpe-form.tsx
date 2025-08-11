@@ -36,7 +36,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useDynamicData } from "@/context/data-context";
+import * as dataService from "@/services/data-service";
 import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
@@ -92,13 +92,12 @@ const defaultFormValues = {
 
 export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
-  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
   const form = useForm({
     defaultValues: defaultFormValues,
   });
 
-  const { control, getValues, register, handleSubmit, reset, setValue } = form;
+  const { control, getValues, register, handleSubmit, reset, setValue, watch } = form;
 
    const getEquiposPorEnsayo = React.useCallback((ensayoId: string) => {
     return equipos
@@ -149,6 +148,8 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
   const [meltIndexCalculado, setMeltIndexCalculado] = React.useState(0);
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
   const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
+
+  const watchedValues = watch();
 
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
@@ -202,6 +203,12 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
     }
   }, [getValues]);
 
+  React.useEffect(() => {
+      calculateMeltIndex();
+      calculateDensidad();
+      calculateNegroHumo();
+  }, [watchedValues, calculateMeltIndex, calculateDensidad, calculateNegroHumo]);
+
 
   const onSubmit = async (data: any) => {
     const ensayoData: Partial<Ensayo> = {
@@ -217,8 +224,8 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
         comentarios_aprobacion: data.comentarios_aprobacion,
     };
 
-    await updateEnsayo(ensayo.id, ensayoData);
-    await addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería HDPE: ${ensayo.id}`});
+    await dataService.updateEnsayo(ensayo.id, ensayoData);
+    await dataService.addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería HDPE: ${ensayo.id}`});
     toast({
         title: "Resultados Guardados",
         description: `Los resultados para el ensayo ${ensayo.id} han sido guardados.`,
@@ -265,7 +272,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+    <Form {...form}>
         <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -392,7 +399,6 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                             type="number"
                             step="any"
                             placeholder={`Medición #${index + 1}`}
-                            onChange={calculateMeltIndex}
                             className="flex-1"
                           />
                           <Button
@@ -401,7 +407,6 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                             size="icon"
                             onClick={() => {
                                 remove(index);
-                                setTimeout(calculateMeltIndex, 0);
                             }}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -422,7 +427,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
@@ -461,15 +466,15 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
@@ -531,19 +536,19 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
+                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumo} />
+                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</FormLabel>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumo} />
+                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m4">m4: Cápsula con ceniza [g]</FormLabel>
-                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumo} />
+                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>% Negro de Humo</FormLabel>
@@ -628,7 +633,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
       </Card>
 
       <CardFooter className="flex justify-end pt-6">
-        <Button type="submit">
+        <Button onClick={handleSubmit(onSubmit)}>
             <Save className="mr-2 h-4 w-4" />
             Guardar Resultados
         </Button>

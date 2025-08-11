@@ -34,7 +34,7 @@ import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format } from "date-fns";
 import { parseISO } from "date-fns";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, RecentActivity } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
 import Loading from "../../loading";
 import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
@@ -216,9 +216,14 @@ export default function SeguimientoEnsayosPage() {
     setIsApprovalDialogOpen(true);
   }
 
-  const handleCloseApprovalDialog = () => {
+  const handleCloseApprovalDialog = async () => {
     setSelectedEnsayo(null);
     setIsApprovalDialogOpen(false);
+    // Reload data to reflect approval status change
+    setIsLoading(true);
+    const initialData = await dataService.getInitialData();
+    setEnsayos(initialData.ensayos);
+    setIsLoading(false);
   }
   
   const handleOpenReportDialog = (ensayo: Ensayo) => {
@@ -346,6 +351,8 @@ export default function SeguimientoEnsayosPage() {
             onClose={handleCloseApprovalDialog}
             ensayo={selectedEnsayo}
             user={user}
+            updateEnsayo={dataService.updateEnsayo}
+            addRecentActivity={dataService.addRecentActivity}
         />
     )}
      {selectedEnsayo && user && (selectedEnsayo.tipo === 'Tubería HDPE' || selectedEnsayo.tipo === 'Tubería PP') && (

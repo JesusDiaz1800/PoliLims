@@ -18,8 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useDynamicData } from "@/context/data-context";
-import type { Ensayo } from "@/context/data-context";
+import type { Ensayo, RecentActivity } from "@/context/data-context";
 import type { User } from "@/services/user-service";
 import { Save, ShieldCheck } from "lucide-react";
 
@@ -28,6 +27,8 @@ interface ApprovalDialogProps {
   onClose: () => void;
   ensayo: Ensayo;
   user: User;
+  updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
+  addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -37,9 +38,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function ApprovalDialog({ isOpen, onClose, ensayo, user }: ApprovalDialogProps) {
+export function ApprovalDialog({ isOpen, onClose, ensayo, user, updateEnsayo, addRecentActivity }: ApprovalDialogProps) {
   const { toast } = useToast();
-  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

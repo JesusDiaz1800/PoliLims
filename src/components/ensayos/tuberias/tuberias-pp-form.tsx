@@ -1,10 +1,11 @@
 
+
 "use client"
 
 import * as React from "react"
 import { format, parseISO } from "date-fns"
 import { es } from "date-fns/locale";
-import { Calendar as CalendarIcon, Save, Trash2, PlusCircle, ShieldCheck } from "lucide-react"
+import { Calendar as CalendarIcon, Save, Trash2, PlusCircle } from "lucide-react"
 import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from 'next/navigation';
 
@@ -36,7 +37,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useDynamicData } from "@/context/data-context";
+import * as dataService from "@/services/data-service";
 import type { Ensayo, Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
@@ -83,7 +84,6 @@ const defaultFormValues = {
 
 export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasPpFormProps) {
   const { toast } = useToast();
-  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -148,11 +148,13 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
   const [fvIntermediaMasaCeniza, setFvIntermediaMasaCeniza] = React.useState(0);
   const [fvIntermediaPorcentaje, setFvIntermediaPorcentaje] = React.useState(0);
 
+  const watchedValues = watch();
+
 
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
     const valoresNumericos = mediciones
-      .map(m => parseFloat(m.value))
+      .map(m => parseFloat(m.value as string))
       .filter(v => !isNaN(v) && v !== 0);
 
     let promedio = 0;
@@ -231,15 +233,11 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
     }
   }, [getValues]);
   
-  // Watch for changes in FV fields and recalculate
-  const watchedFvFields = watch([
-    "fv_total_m1", "fv_total_m2", "fv_total_m3",
-    "fv_intermedia_m1", "fv_intermedia_m2", "fv_intermedia_m3"
-  ]);
-
   React.useEffect(() => {
+    calculateMeltIndex();
+    calculateDensidad();
     calculateFV();
-  }, [watchedFvFields, calculateFV]);
+  }, [watchedValues, calculateMeltIndex, calculateDensidad, calculateFV]);
   
   const onSubmit = async (data: any) => {
      const ensayoData: Partial<Ensayo> = {
@@ -256,8 +254,8 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
         comentarios_aprobacion: data.comentarios_aprobacion,
     };
     
-    await updateEnsayo(ensayo.id, ensayoData);
-    await addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería PP: ${ensayo.id}`});
+    await dataService.updateEnsayo(ensayo.id, ensayoData);
+    await dataService.addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería PP: ${ensayo.id}`});
     toast({
         title: "Resultados Guardados",
         description: `Los resultados para el ensayo ${ensayo.id} han sido guardados.`,
@@ -300,7 +298,8 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+    <Form {...form}>
+        <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
         <CardHeader>
@@ -426,17 +425,13 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                             type="number"
                             step="any"
                             placeholder={`Medición #${index + 1}`}
-                            onChange={calculateMeltIndex}
                             className="flex-1"
                           />
                           <Button
                             type="button"
                             variant="destructive"
                             size="icon"
-                            onClick={() => {
-                                remove(index);
-                                setTimeout(calculateMeltIndex, 0);
-                            }}
+                            onClick={() => remove(index)}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                           </Button>
@@ -456,7 +451,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
@@ -495,15 +490,15 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
@@ -522,7 +517,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                     <Card>
                         <CardHeader>
                             <CardTitle>Fibra de vidrio Total</CardTitle>
-                            <div className="pt-2">
+                             <div className="pt-2">
                                 <FormLabel>Equipo Utilizado</FormLabel>
                                 <EquipoSelector name="equipo_fv" ensayoId="fibra_vidrio" />
                             </div>
@@ -617,12 +612,13 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
         </CardContent>
       </Card>
 
-      <CardFooter className="flex justify-end pt-6 sticky bottom-0 bg-background/95 -mb-6 -mx-6 px-6 pb-6 mt-6 border-t">
-        <Button type="submit">
+      <CardFooter className="flex justify-end pt-6">
+        <Button onClick={handleSubmit(onSubmit)}>
           <Save className="mr-2 h-4 w-4" />
           Guardar Resultados
         </Button>
       </CardFooter>
+      </div>
     </Form>
   );
 }
