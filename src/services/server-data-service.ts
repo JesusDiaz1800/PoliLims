@@ -36,3 +36,5 @@ export async function getKnowledgeBaseFiles(): Promise<KnowledgeBaseFile[]> {
         return [];
     }
 }
+
+    
