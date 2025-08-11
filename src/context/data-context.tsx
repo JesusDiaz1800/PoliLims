@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, ReactNode, useMemo, useEffe
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
+import type { User } from '@/services/user-service';
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -224,8 +225,170 @@ export interface Auditoria {
     hallazgos?: Hallazgo[];
 }
 
-
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
+
+interface DynamicDataContextType extends InitialData {
+    isLoaded: boolean;
+    addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
+    updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
+    deleteEnsayo: (id: string) => Promise<void>;
+    addRegistro: (registro: Omit<Registro, 'id'>) => Promise<Registro>;
+    deleteRegistro: (id: string) => Promise<void>;
+    addEquipo: (equipo: Omit<Equipo, 'id'>) => Promise<Equipo>;
+    updateEquipo: (id: string, updatedData: Partial<Equipo>) => Promise<void>;
+    deleteEquipo: (id: string) => Promise<void>;
+    addControlEvento: (evento: Omit<ControlEvento, 'id'>) => Promise<ControlEvento>;
+    addIncidencia: (incidencia: Omit<NoConformidad, 'id'>) => Promise<NoConformidad>;
+    updateIncidencia: (id: string, updatedData: Partial<NoConformidad>) => Promise<void>;
+    deleteIncidencia: (id: string) => Promise<void>;
+    addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<RecentActivity>;
+    addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
+    updateProveedor: (id: string, updatedData: Partial<Proveedor>) => Promise<void>;
+    deleteProveedor: (id: string) => Promise<void>;
+}
+
+const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
+
+export function DynamicDataProvider({ children }: { children: ReactNode }) {
+    const [data, setData] = useState<InitialData>({
+        ensayos: [], registros: [], recentActivity: [], equipos: [], controles: [], noConformidades: [],
+        importaciones: [], generatedReports: [], calculosIncertidumbre: [], proveedores: [],
+        condicionesAmbientales: [], formacion: [], auditorias: [],
+    });
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadData = async () => {
+            const initialData = await dataService.getInitialData();
+            setData(initialData);
+            setIsLoaded(true);
+        };
+        loadData();
+    }, []);
+
+    const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
+        const newEnsayo = await dataService.addEnsayo(ensayo);
+        setData(prev => ({...prev, ensayos: [newEnsayo, ...prev.ensayos]}));
+        return newEnsayo;
+    }, []);
+    
+    const updateEnsayo = useCallback(async (id: string, updatedData: Partial<Ensayo>) => {
+        await dataService.updateEnsayo(id, updatedData);
+        setData(prev => ({ ...prev, ensayos: prev.ensayos.map(e => e.id === id ? { ...e, ...updatedData } : e)}));
+    }, []);
+    
+    const deleteEnsayo = useCallback(async (id: string) => {
+        await dataService.deleteEnsayo(id);
+        setData(prev => ({...prev, ensayos: prev.ensayos.filter(e => e.id !== id)}));
+    }, []);
+
+    const addRegistro = useCallback(async (registro: Omit<Registro, 'id'>) => {
+        const newRegistro = await dataService.addRegistro(registro);
+        setData(prev => ({ ...prev, registros: [newRegistro, ...prev.registros] }));
+        return newRegistro;
+    }, []);
+
+    const deleteRegistro = useCallback(async (id: string) => {
+        await dataService.deleteRegistro(id);
+        setData(prev => ({ ...prev, registros: prev.registros.filter(r => r.id !== id) }));
+    }, []);
+    
+    const addEquipo = useCallback(async (equipo: Omit<Equipo, 'id'>) => {
+        const newEquipo = await dataService.addEquipo(equipo);
+        setData(prev => ({ ...prev, equipos: [newEquipo, ...prev.equipos] }));
+        return newEquipo;
+    }, []);
+
+    const updateEquipo = useCallback(async (id: string, updatedData: Partial<Equipo>) => {
+        await dataService.updateEquipo(id, updatedData);
+        setData(prev => ({ ...prev, equipos: prev.equipos.map(e => e.id === id ? { ...e, ...updatedData } : e) }));
+    }, []);
+    
+    const deleteEquipo = useCallback(async (id: string) => {
+        await dataService.deleteEquipo(id);
+        setData(prev => ({ ...prev, equipos: prev.equipos.filter(e => e.id !== id) }));
+    }, []);
+
+     const addControlEvento = useCallback(async (evento: Omit<ControlEvento, 'id'>) => {
+        const newEvento = await dataService.addControlEvento(evento);
+        setData(prev => ({ ...prev, controles: [newEvento, ...prev.controles] }));
+        return newEvento;
+    }, []);
+
+    const addIncidencia = useCallback(async (incidencia: Omit<NoConformidad, 'id'>) => {
+        const newIncidencia = await dataService.addIncidencia(incidencia);
+        setData(prev => ({ ...prev, noConformidades: [newIncidencia, ...prev.noConformidades] }));
+        return newIncidencia;
+    }, []);
+
+    const updateIncidencia = useCallback(async (id: string, updatedData: Partial<NoConformidad>) => {
+        await dataService.updateIncidencia(id, updatedData);
+        setData(prev => ({ ...prev, noConformidades: prev.noConformidades.map(i => i.id === id ? { ...i, ...updatedData } : i) }));
+    }, []);
+    
+    const deleteIncidencia = useCallback(async (id: string) => {
+        await dataService.deleteIncidencia(id);
+        setData(prev => ({...prev, noConformidades: prev.noConformidades.filter(i => i.id !== id)}));
+    }, []);
+    
+    const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
+        const newActivity = await dataService.addRecentActivity(activity);
+        setData(prev => ({...prev, recentActivity: [newActivity, ...prev.recentActivity].slice(0, 50)}));
+        return newActivity;
+    }, []);
+
+    const addProveedor = useCallback(async (proveedor: Omit<Proveedor, 'id'>) => {
+        const newProveedor = await dataService.addProveedor(proveedor);
+        setData(prev => ({ ...prev, proveedores: [newProveedor, ...prev.proveedores] }));
+        return newProveedor;
+    }, []);
+
+    const updateProveedor = useCallback(async (id: string, updatedData: Partial<Proveedor>) => {
+        await dataService.updateProveedor(id, updatedData);
+        setData(prev => ({ ...prev, proveedores: prev.proveedores.map(p => p.id === id ? { ...p, ...updatedData } as Proveedor : p) }));
+    }, []);
+
+    const deleteProveedor = useCallback(async (id: string) => {
+        await dataService.deleteProveedor(id);
+        setData(prev => ({ ...prev, proveedores: prev.proveedores.filter(p => p.id !== id) }));
+    }, []);
+
+
+    const value = useMemo(() => ({
+        ...data,
+        isLoaded,
+        addEnsayo,
+        updateEnsayo,
+        deleteEnsayo,
+        addRegistro,
+        deleteRegistro,
+        addEquipo,
+        updateEquipo,
+        deleteEquipo,
+        addControlEvento,
+        addIncidencia,
+        updateIncidencia,
+        deleteIncidencia,
+        addRecentActivity,
+        addProveedor,
+        updateProveedor,
+        deleteProveedor,
+    }), [data, isLoaded, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor]);
+
+    return (
+        <DynamicDataContext.Provider value={value}>
+            {children}
+        </DynamicDataContext.Provider>
+    );
+}
+
+export const useDynamicData = (): DynamicDataContextType => {
+    const context = useContext(DynamicDataContext);
+    if (!context) {
+        throw new Error('useDynamicData must be used within a DynamicDataProvider');
+    }
+    return context;
+};
 
 // --- API Client ---
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';

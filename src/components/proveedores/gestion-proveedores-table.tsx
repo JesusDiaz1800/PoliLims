@@ -41,9 +41,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Proveedor } from "@/context/data-context";
+import { useDynamicData, type Proveedor } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import { deleteProveedorAction } from "@/app/(app)/proveedores/gestion/actions";
+
 
 interface GestionProveedoresTableProps {
   proveedores: Proveedor[];
@@ -66,6 +66,7 @@ function getStatusVariant(status: Proveedor["estado"]) {
 
 const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: GestionProveedoresTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const { deleteProveedor } = useDynamicData();
   const { toast } = useToast();
 
   const filteredProveedores = React.useMemo(() => 
@@ -76,19 +77,19 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
     ), [proveedores, searchTerm]);
   
   const handleDelete = async (proveedorId: string) => {
-    const result = await deleteProveedorAction(proveedorId);
-    if (result.success) {
+    try {
+        await deleteProveedor(proveedorId);
         toast({
             title: "Proveedor Eliminado",
-            description: result.message,
+            description: "El proveedor ha sido eliminado correctamente.",
         });
-    } else {
+    } catch (error) {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: result.message,
+            description: "No se pudo eliminar el proveedor. Intente de nuevo.",
         });
-        console.error("Failed to delete proveedor", result.message);
+        console.error("Failed to delete proveedor", error);
     }
   };
 

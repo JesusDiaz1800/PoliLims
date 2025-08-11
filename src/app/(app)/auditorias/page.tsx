@@ -5,32 +5,28 @@ import * as React from 'react';
 import { AuditoriasTable } from '@/components/auditorias/auditorias-table';
 import { AuditoriaDialog } from '@/components/auditorias/auditoria-dialog';
 import Loading from '../loading';
-import * as dataService from "@/services/data-service";
+import * as userService from "@/services/user-service";
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
-import { getAllUsers } from '@/services/user-service';
+import { useDynamicData } from '@/context/data-context';
 
 const AuditoriasPageInternal = () => {
-  const [auditorias, setAuditorias] = React.useState<Auditoria[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   const [users, setUsers] = React.useState<User[]>([]);
-
-  const loadData = React.useCallback(async () => {
-    setIsLoading(true);
-    const [initialData, allUsers] = await Promise.all([
-      dataService.getInitialData(),
-      getAllUsers()
-    ]);
-    setAuditorias(initialData.auditorias);
-    setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
-    setIsLoading(false);
-  }, []);
+  const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
+  
+  const { auditorias, isLoaded: isAuditoriasLoaded } = useDynamicData();
 
   React.useEffect(() => {
-    loadData();
-  }, [loadData]);
+    const loadUsers = async () => {
+      setIsLoadingUsers(true);
+      const allUsers = await userService.getAllUsers();
+      setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
+      setIsLoadingUsers(false);
+    };
+    loadUsers();
+  }, []);
 
   const handleOpenDialog = (auditoria?: Auditoria) => {
     setSelectedAuditoria(auditoria || null);
@@ -40,11 +36,9 @@ const AuditoriasPageInternal = () => {
   const handleCloseDialog = () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
-    // Re-fetch data to reflect changes
-    loadData();
   };
 
-  if (isLoading) {
+  if (!isAuditoriasLoaded || isLoadingUsers) {
     return <Loading />;
   }
 
@@ -66,4 +60,3 @@ const AuditoriasPageInternal = () => {
 }
 
 export default AuditoriasPageInternal;
-
