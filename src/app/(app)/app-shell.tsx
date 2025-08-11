@@ -21,7 +21,6 @@ import {
     GitBranch,
     Users,
     FileText,
-    FlaskConical,
     Beaker,
     Database,
     ShieldCheck,
@@ -46,7 +45,6 @@ import {
     Library,
     Rocket,
     CalendarCheck,
-    UploadCloud,
     MessageSquarePlus,
     LogOut,
     Info,
@@ -393,3 +391,4 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
+
