@@ -52,14 +52,17 @@ import {
     Info,
     FileSearch,
     Map,
+    Calculator,
     Truck,
+    Thermometer,
+    GraduationCap,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { User } from '@/services/user-service';
-import { Logo } from './logo';
-import { useChatWidget } from './soporte/chat-widget';
+import { Logo } from '@/components/logo';
+import { useChatWidget } from '@/components/soporte/chat-widget';
 
 
 const ensayosSubMenu = [
@@ -84,8 +87,10 @@ const ensayosSubMenu = [
 
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
@@ -182,6 +187,8 @@ const pageTitles: Record<string, string> = {
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
+    '/control-ambiental': 'Control de Condiciones Ambientales',
+    '/auditorias': 'Gestión de Auditorías',
     '/ensayos/tuberias/hdpe': 'Ensayos de Tuberías HDPE',
     '/ensayos/tuberias/pp': 'Ensayos de Tuberías PP',
     '/ensayos/materia-prima': 'Ensayos de Materia Prima',
@@ -191,8 +198,10 @@ const pageTitles: Record<string, string> = {
     '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
     '/ensayos/seguimiento': 'Seguimiento General de Ensayos',
     '/administracion/usuarios': 'Gestión de Usuarios',
+    '/administracion/formacion': 'Gestión de Formación y Competencia',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
+    '/administracion/incertidumbre': 'Calculadora de Incertidumbre',
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/administracion/rutas': 'Rutas Disponibles',
@@ -222,12 +231,8 @@ const menuItems = (toggleChat: () => void) => [
         subMenu: equiposSubMenu,
         href: '/equipos',
     },
-    { 
-        label: 'Proveedores', 
-        icon: Truck,
-        subMenu: proveedoresSubMenu,
-        href: '/proveedores',
-    },
+    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
+    { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
     { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
     {
         label: 'Operaciones',
@@ -240,6 +245,12 @@ const menuItems = (toggleChat: () => void) => [
         icon: FileText,
         subMenu: reportsSubMenu,
         href: '/reports',
+    },
+    { 
+        label: 'Proveedores', 
+        icon: Truck,
+        subMenu: proveedoresSubMenu,
+        href: '/proveedores',
     },
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 

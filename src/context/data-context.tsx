@@ -200,6 +200,30 @@ export interface Formacion {
     fecha_vencimiento?: string;
 }
 
+export interface Hallazgo {
+    id: string;
+    auditoriaId: string;
+    tipo: 'No Conformidad Mayor' | 'No Conformidad Menor' | 'Observación' | 'Oportunidad de Mejora';
+    descripcion: string;
+    clausula_norma: string;
+    responsable_accion: string;
+    fecha_limite_accion: string; // ISO 8601 string
+    estado: 'Abierto' | 'En Proceso' | 'Cerrado' | 'Verificado';
+}
+
+export interface Auditoria {
+    id: string;
+    tipo: 'Interna' | 'Externa - Proveedor' | 'Externa - Certificación';
+    fecha_inicio: string; // ISO 8601 string
+    fecha_fin: string; // ISO 8601 string
+    auditor_lider: string;
+    auditores?: string[];
+    alcance: string;
+    objetivos?: string;
+    estado: 'Planificada' | 'En Curso' | 'Finalizada' | 'Cancelada';
+    hallazgos?: Hallazgo[];
+}
+
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 

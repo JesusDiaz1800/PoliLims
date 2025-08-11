@@ -1,6 +1,6 @@
 
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 
 
@@ -132,16 +132,18 @@ for (let i = 90; i >= 0; i--) {
 }
 
 let demoFormacion: Formacion[] = [
-    { id: 'FORM-001', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Auditor Interno ISO/IEC 17025:2017', fecha: '2023-11-15', evaluador: 'AENOR', resultado: 'Aprobado' },
+    { id: 'FORM-001', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Auditor Interno ISO/IEC 17025:2017', fecha: '2023-11-15', evaluador: 'AENOR', resultado: 'Aprobado', fecha_vencimiento: '2025-11-15' },
     { id: 'FORM-002', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Cromatografía de Gases Avanzada', fecha: '2024-03-20', evaluador: 'Waters Corp.', resultado: 'Completado' },
     { id: 'FORM-003', empleadoId: 'mmiranda', empleadoNombre: 'Maximiliano Miranda', tipo: 'Evaluación de Competencia', nombre_actividad: 'Análisis de Melt Index (ASTM D1238)', fecha: '2024-06-10', evaluador: 'Victor Lutz', resultado: 'Aprobado' },
-    { id: 'FORM-004', empleadoId: 'jefe.calidad', empleadoNombre: 'Victor Lutz', tipo: 'Certificación', nombre_actividad: 'Lead Auditor ISO 9001:2015', fecha: '2022-05-30', evaluador: 'SGS Academy', resultado: 'Aprobado' },
-    { id: 'FORM-005', empleadoId: 'rcordova', empleadoNombre: 'Robinson Córdova', tipo: 'Certificación', nombre_actividad: 'Operador de Espectrómetro FTIR', fecha: '2023-08-01', evaluador: 'PerkinElmer', resultado: 'Aprobado' },
-    { id: 'FORM-006', empleadoId: 'bvasquez', empleadoNombre: 'Bryan Vásquez', tipo: 'Inducción', nombre_actividad: 'Inducción General de Laboratorio', fecha: '2024-01-15', evaluador: 'Recursos Humanos', resultado: 'Completado' },
-    { id: 'FORM-007', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Gestión de la Incertidumbre', fecha: '2024-02-28', evaluador: 'INTN', resultado: 'Aprobado' },
-    { id: 'FORM-008', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Buenas Prácticas de Laboratorio (GLP)', fecha: '2023-09-05', evaluador: 'OTEC Qualitas', resultado: 'Completado' },
 ];
 
+let demoAuditorias: Auditoria[] = [
+    { id: 'AUD-INT-001', tipo: 'Interna', fecha_inicio: '2025-08-01', fecha_fin: '2025-08-02', auditor_lider: 'Victor Lutz', auditores: ['Jesus Diaz'], alcance: 'Procesos de ensayo de materias primas (Cláusulas 7.2 a 7.7 de ISO 17025)', estado: 'Planificada' },
+    { id: 'AUD-EXT-001', tipo: 'Externa - Certificación', fecha_inicio: '2025-09-15', fecha_fin: '2025-09-17', auditor_lider: 'Juan Garcia (AENOR)', auditores: [], alcance: 'Auditoría de seguimiento para certificación ISO/IEC 17025', estado: 'Planificada' },
+    { id: 'AUD-PROV-001', tipo: 'Externa - Proveedor', fecha_inicio: '2025-07-20', fecha_fin: '2025-07-20', auditor_lider: 'Maximiliano Miranda', auditores: [], alcance: 'Auditoría al sistema de calidad del proveedor de reactivos Sigma-Aldrich', estado: 'Finalizada' },
+    { id: 'AUD-INT-002', tipo: 'Interna', fecha_inicio: '2025-05-10', fecha_fin: '2025-05-11', auditor_lider: 'Victor Lutz', auditores: ['Antonia Figueroa'], alcance: 'Gestión de equipos y calibraciones (Cláusula 6.4 de ISO 17025)', estado: 'Finalizada' },
+    { id: 'AUD-INT-003', tipo: 'Interna', fecha_inicio: '2025-07-25', fecha_fin: '2025-07-26', auditor_lider: 'Jesus Diaz', auditores: ['Maximiliano Miranda'], alcance: 'Procesos de gestión de no conformidades y acciones correctivas (Cláusula 8.7 de ISO 17025)', estado: 'En Curso' }
+];
 
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
@@ -230,6 +232,18 @@ export async function deleteFormacion(id: string) {
     demoFormacion = demoFormacion.filter(f => f.id !== id);
 }
 
+export async function addAuditoria(auditoria: Omit<Auditoria, 'id'>) {
+    const newAuditoria = { ...auditoria, id: `AUD-NEW-${Math.random().toString(16).slice(2)}` };
+    demoAuditorias.unshift(newAuditoria);
+    return newAuditoria;
+}
+export async function updateAuditoria(id: string, updatedData: Partial<Auditoria>) {
+    demoAuditorias = demoAuditorias.map(a => a.id === id ? { ...a, ...updatedData } : a);
+}
+export async function deleteAuditoria(id: string) {
+    demoAuditorias = demoAuditorias.filter(a => a.id !== id);
+}
+
 export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 'timestamp'>) { 
      const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
     recentActivityData.unshift(newActivity);
@@ -258,5 +272,6 @@ export async function getInitialData() {
         proveedores: demoProveedores,
         condicionesAmbientales: demoCondicionesAmbientales,
         formacion: demoFormacion,
+        auditorias: demoAuditorias,
     };
 }
