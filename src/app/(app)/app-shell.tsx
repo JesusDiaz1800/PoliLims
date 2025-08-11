@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React from 'react';
@@ -82,7 +81,7 @@ const ensayosSubMenu = [
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
 
-const gestionSubMenu = [
+const procesosGestionSubMenu = [
     { 
         label: 'Gestión de Equipos', 
         icon: BookCheck,
@@ -107,10 +106,12 @@ const gestionSubMenu = [
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
-    { type: 'separator' },
+];
+
+const operacionesSubMenu = [
     { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
-];
+]
 
 
 const administracionSubMenu = [
@@ -250,8 +251,14 @@ const menuItems = (toggleChat: () => void) => [
      {
         label: 'Procesos de Gestión',
         icon: Layers3,
-        subMenu: gestionSubMenu,
+        subMenu: procesosGestionSubMenu,
         href: '/gestion' // Use a virtual base path for the group
+    },
+    {
+        label: 'Operaciones',
+        icon: GitBranch,
+        subMenu: operacionesSubMenu,
+        href: '/operaciones'
     },
     { type: 'separator' },
     { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
@@ -386,3 +393,6 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
+
+
+    
