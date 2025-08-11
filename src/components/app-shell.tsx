@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React from 'react';
@@ -197,6 +198,7 @@ const pageTitles: Record<string, string> = {
     '/biblioteca/upload': 'Cargar Documento',
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
+    '/workflows': 'Flujos de Trabajo',
 };
 
 const menuItems = (toggleChat: () => void) => [
