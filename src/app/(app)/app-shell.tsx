@@ -51,6 +51,8 @@ import {
   Thermometer,
   GraduationCap,
   Bell,
+  HardHat,
+  Factory,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -62,6 +64,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
+import { cn } from "@/lib/utils";
 
 type MenuItem = {
   href?: string;
@@ -77,7 +80,7 @@ type MenuItem = {
 const ensayosSubMenu: MenuItem[] = [
   {
     label: "Tuberías",
-    icon: SlidersHorizontal,
+    icon: HardHat, // Reemplazado de SlidersHorizontal
     href: "/ensayos/tuberias",
     subItems: [
       { href: "/ensayos/tuberias/hdpe", label: "HDPE", icon: Beaker },
@@ -153,7 +156,7 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+          className="w-full justify-between group/button"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -173,7 +176,7 @@ const NavCollapsible = ({
             subMenuItems.map((subItem, index) => {
               if (!subItem) return null;
               if (subItem.type === "separator") {
-                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20" />;
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
               }
 
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
@@ -198,7 +201,7 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+                    className="w-full justify-start"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -252,6 +255,22 @@ const pageTitles: Record<string, string> = {
   "/reports/biblioteca": "Biblioteca de Informes",
   "/workflows": "Flujos de Trabajo",
   "/proveedores/gestion": "Gestión de Proveedores",
+  "/procesos/equipos/lista": "Lista de Equipos",
+  "/procesos/equipos/mantenimiento": "Mantenimiento de Equipos",
+  "/procesos/equipos/calibraciones": "Calibraciones de Equipos",
+  "/procesos/auditorias": "Auditorías",
+  "/procesos/control-ambiental": "Control Ambiental",
+  "/procesos/no-conformidades": "No Conformidades",
+  "/procesos/proveedores/lista": "Lista de Proveedores",
+  "/procesos/proveedores/evaluaciones": "Evaluaciones de Proveedores",
+  "/procesos/flujos": "Flujos de Trabajo",
+  "/procesos/formacion": "Formación y Competencia",
+  "/procesos/calculadora-incertidumbre": "Calculadora de Incertidumbre",
+  "/procesos/control-importaciones": "Control de Importaciones",
+  "/procesos/portal-clientes": "Portal de Clientes",
+  "/admin/usuarios": "Gestión de Usuarios",
+  "/admin/roles": "Roles y Permisos",
+  "/admin/configuracion": "Configuración del Sistema",
 };
 
 /* ---------------- Menu Items ---------------- */
@@ -259,13 +278,13 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   {
     label: "Ensayos",
-    icon: SlidersHorizontal,
+    icon: Science,
     subMenu: ensayosSubMenu,
     href: "/ensayos",
   },
   {
-    label: "Informes y Certificados",
-    icon: FileText,
+    label: "Informes",
+    icon: Description,
     href: "/reports",
     subItems: [
       { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
@@ -274,26 +293,48 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   },
   {
     label: "Biblioteca",
-    icon: Library,
+    icon: LibraryBooks,
     href: "/biblioteca",
     subItems: [{ href: "/biblioteca/documentos", label: "Documentos", icon: Library }],
+  },
+  {
+    label: "Asistentes",
+    icon: Build,
+    href: "/asistentes",
+     subItems: [
+      { href: "/soporte", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
+      { href: "/assistant", label: "Asistente de Código", icon: Code2 },
+    ],
   },
   { type: "separator" },
   {
     label: "Procesos de Gestión",
-    icon: Layers3,
-    subMenu: gestionSubMenu,
-    href: "/gestion",
+    icon: Factory, // Usando un icono más representativo
+    subMenu: [
+        { href: "/equipos", label: 'Gestión de Equipos', icon: Build },
+        { href: "/auditorias", label: 'Auditorías', icon: Assessment },
+        { href: "/control-ambiental", label: 'Control Ambiental', icon: Eco },
+        { href: "/no-conformidades", label: 'No Conformidades', icon: ReportProblem },
+        { href: "/proveedores/gestion", label: 'Proveedores', icon: LocalShipping },
+        { href: "/workflows", label: 'Flujos de Trabajo', icon: GitBranch },
+        { href: "/administracion/formacion", label: 'Formación y Competencia', icon: School },
+        { href: "/administracion/incertidumbre", label: 'Calculadora de Incertidumbre', icon: Calculator },
+        { href: "/importaciones", label: 'Control de Importaciones', icon: Ship },
+        { href: "/portal", label: 'Portal de Clientes', icon: Users },
+    ],
+    href: "/procesos",
   },
-  { type: "separator" },
-  { href: "/soporte", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
-  { href: "/assistant", label: "Asistente de Código", icon: Code2 },
   { type: "separator" },
   {
     label: "Administración",
     icon: Settings,
-    subMenu: administracionSubMenu,
-    href: "/administracion",
+    subMenu: [
+      { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
+      { href: "/administracion/permisos", label: "Roles y Permisos", icon: ShieldCheck },
+      { href: "/administracion/configuracion", label: "Configuración", icon: Settings },
+      { href: "/administracion/basedatos", label: "Base de Datos", icon: Database },
+    ],
+    href: "/admin",
   },
 ];
 
@@ -309,13 +350,15 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
     if (title) return title;
-
+    
     for (const item of menuItems(() => {})) {
-      if (item.href && pathname === item.href) return item.label ?? "Dashboard";
-      if (item.subMenu) {
-        for (const s of item.subMenu) {
-          if (s.href && pathname === s.href) return s.label ?? item.label ?? "Dashboard";
-        }
+      if (!item.href) continue;
+      if(pathname.startsWith(item.href)) return item.label ?? "Dashboard";
+
+      if(item.subMenu) {
+          for (const subItem of item.subMenu) {
+               if(subItem.href && pathname.startsWith(subItem.href)) return subItem.label ?? item.label ?? "Dashboard";
+          }
       }
     }
 
@@ -338,12 +381,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
-        className="text-white border-r-0 dark:bg-card"
-        style={{ backgroundColor: "var(--sidebar-bg, #1C3664)" }}
+        className="dark:bg-card"
         role="navigation"
         aria-label="Main sidebar"
       >
-        <SidebarContent className="text-white">
+        <SidebarContent>
           <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
             <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
@@ -365,7 +407,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 !["/dashboard", "/ensayos/control-rutinario"].some((p) => Boolean(item.href && item.href.startsWith(p)));
 
               if (item.type === "separator") {
-                return <SidebarSeparator key={`sep-${index}`} className="my-2 bg-white/20" />;
+                return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
               }
 
               if (item.subMenu) {
@@ -393,7 +435,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                   >
                     <Link
                       href={hrefWithQuery}
@@ -411,14 +452,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           </SidebarMenu>
         </SidebarContent>
   
-          <SidebarFooter className="px-3 py-2 border-t border-white/20">
+          <SidebarFooter className="px-3 py-2 border-t">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   variant="ghost"
                   tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                  className="text-white hover:bg-white/10 hover:text-white"
                 >
                   <Link href="/login" aria-label="Cerrar sesión">
                     <div className="flex items-center gap-3">
@@ -430,10 +470,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               </SidebarMenuItem>
             </SidebarMenu>
   
-            <SidebarSeparator className="my-2 bg-white/20" />
+            <SidebarSeparator className="my-2" />
   
             <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
-              <Avatar className="h-10 w-10 border-2 border-white/30" aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}>
+              <Avatar className="h-10 w-10 border-2" aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}>
                 {user?.avatarUrl ? (
                   <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
                 ) : (
@@ -443,7 +483,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   
               <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
                 <span className="font-semibold truncate">{user?.fullName ?? "Usuario"}</span>
-                <span className="text-white/70 text-xs truncate">{user?.role ?? ""}</span>
+                <span className="text-xs truncate">{user?.role ?? ""}</span>
               </div>
             </div>
           </SidebarFooter>
@@ -473,5 +513,3 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </div>
     );
   }
-
-    
