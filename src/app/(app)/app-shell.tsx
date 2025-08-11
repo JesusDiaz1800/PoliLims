@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -11,7 +12,6 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
-  useSidebar,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import {
@@ -73,6 +73,7 @@ type MenuItem = {
   onClick?: () => void;
 };
 
+/* ----------- Submenus ----------- */
 const ensayosSubMenu: MenuItem[] = [
   {
     label: "Tuberías",
@@ -86,11 +87,7 @@ const ensayosSubMenu: MenuItem[] = [
   { href: "/ensayos/materia-prima", label: "Materia Prima", icon: TestTube },
   { href: "/ensayos/reprocesado", label: "Reprocesado", icon: Recycle },
   { type: "separator" },
-  {
-    href: "/ensayos/control-rutinario",
-    label: "Control Rutinario",
-    icon: ClipboardCheck,
-  },
+  { href: "/ensayos/control-rutinario", label: "Control Rutinario", icon: ClipboardCheck },
   { href: "/ensayos/control-accesorios", label: "Control de Accesorios", icon: Wrench },
   { href: "/ensayos/control-agua", label: "Control de Agua", icon: Droplets },
   { type: "separator" },
@@ -135,6 +132,7 @@ const administracionSubMenu: MenuItem[] = [
   { href: "/administracion/proximos-pasos", label: "Próximos Pasos", icon: Rocket },
 ];
 
+/* ----------- NavCollapsible ----------- */
 const NavCollapsible = ({
   item,
   pathname,
@@ -155,7 +153,7 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
+          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -200,7 +198,7 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
+                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -338,10 +336,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-background">
+    <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
         className="text-white border-r-0 dark:bg-card"
-        style={{ backgroundColor: "var(--background-light, #1C3664)" }}
+        style={{ backgroundColor: "var(--sidebar-bg, #1C3664)" }}
         role="navigation"
         aria-label="Main sidebar"
       >
@@ -395,7 +393,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
+                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
                   >
                     <Link
                       href={hrefWithQuery}
@@ -453,7 +451,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   
         <div className="flex flex-col flex-1 h-screen overflow-hidden">
           <header
-            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur-sm px-4 sm:px-6"
+            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
             role="banner"
           >
             <div className="flex items-center gap-2">
@@ -475,3 +473,5 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </div>
     );
   }
+
+    
