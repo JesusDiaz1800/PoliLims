@@ -6,14 +6,12 @@ import type { Proveedor } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { GestionProveedoresTable } from '@/components/proveedores/gestion-proveedores-table';
 import { GestionProveedorDialog } from '@/components/proveedores/gestion-proveedor-dialog';
-import * as dataService from '@/services/data-service';
 import { useDynamicData } from '@/context/data-context';
 
 /**
  * @component GestionProveedoresPage
- * @description Page component for managing suppliers. It fetches and displays a list of suppliers,
- * and handles the creation and editing of suppliers through a dialog.
- * It uses a useCallback for the data loading function to optimize performance.
+ * @description Page component for managing suppliers. It fetches and displays a list of suppliers
+ * from the dynamic data context and handles the creation and editing of suppliers through a dialog.
  */
 export default function GestionProveedoresPage() {
   const { proveedores, isLoaded } = useDynamicData();
@@ -33,7 +31,7 @@ export default function GestionProveedoresPage() {
 
   /**
    * @function handleCloseDialog
-   * @description Closes the supplier dialog and reloads the data to reflect any changes.
+   * @description Closes the supplier dialog. The context handles data updates, so no refetch is needed here.
    */
   const handleCloseDialog = () => {
     setSelectedProveedor(null);

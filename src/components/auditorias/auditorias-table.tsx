@@ -52,6 +52,12 @@ interface AuditoriasTableProps {
   onEdit: (auditoria: Auditoria) => void;
 }
 
+/**
+ * @function getStatusVariant
+ * @description Returns a Tailwind CSS class string for styling a badge based on the audit status.
+ * @param {Auditoria["estado"]} status - The status of the audit.
+ * @returns {string} The CSS class for the badge.
+ */
 function getStatusVariant(status: Auditoria["estado"]) {
   switch (status) {
     case "Planificada":
@@ -67,6 +73,12 @@ function getStatusVariant(status: Auditoria["estado"]) {
   }
 }
 
+/**
+ * @component AuditoriasTableInternal
+ * @description Internal component for displaying a table of audits. It includes filtering,
+ * and actions like editing and deleting audits. It's memoized for performance.
+ * @param {AuditoriasTableProps} props - The props for the component.
+ */
 const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
@@ -80,6 +92,12 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
         auditoria.alcance.toLowerCase().includes(searchTerm.toLowerCase())
     ), [auditorias, searchTerm]);
   
+  /**
+   * @function handleDelete
+   * @description Handles the deletion of an audit by calling the server action
+   * and displaying a toast notification with the result.
+   * @param {string} auditoriaId - The ID of the audit to delete.
+   */
   const handleDelete = async (auditoriaId: string) => {
     const result = await deleteAuditoriaAction(auditoriaId);
     if (result.success) {

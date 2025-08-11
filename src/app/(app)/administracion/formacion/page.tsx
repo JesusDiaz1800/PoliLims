@@ -9,45 +9,53 @@ import Loading from '@/app/(app)/loading';
 import { FormacionTable } from '@/components/formacion/formacion-table';
 import { FormacionDialog } from '@/components/formacion/formacion-dialog';
 import type { User } from '@/services/user-service';
+import { useDynamicData } from '@/context/data-context';
 
+/**
+ * @component FormacionPage
+ * @description Page component for managing employee training and competency records.
+ * It fetches all users and training data, displays it in a table, and handles
+ * the creation and editing of records through a dialog.
+ */
 export default function FormacionPage() {
-  const [formacion, setFormacion] = React.useState<Formacion[]>([]);
+  const { formacion, isLoaded: isDataLoaded, addFormacion, updateFormacion } = useDynamicData();
   const [users, setUsers] = React.useState<User[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-
+  const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedFormacion, setSelectedFormacion] = React.useState<Formacion | null>(null);
 
-  React.useEffect(() => {
-    async function loadData() {
-        setIsLoading(true);
-        const [initialData, allUsers] = await Promise.all([
-            dataService.getInitialData(),
-            userService.getAllUsers()
-        ]);
-        setFormacion(initialData.formacion);
+  /**
+   * @callback loadUsers
+   * @description Fetches the list of all users from the user service.
+   * This is used to populate selection dropdowns in the form.
+   */
+  const loadUsers = React.useCallback(async () => {
+    setIsLoadingUsers(true);
+    try {
+        const allUsers = await userService.getAllUsers();
         setUsers(allUsers);
-        setIsLoading(false);
+    } catch(error) {
+        console.error("Failed to load users for formacion page", error);
+    } finally {
+        setIsLoadingUsers(false);
     }
-    loadData();
   }, []);
+
+  React.useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const handleOpenDialog = (record?: Formacion) => {
     setSelectedFormacion(record || null);
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialog = async () => {
+  const handleCloseDialog = () => {
     setSelectedFormacion(null);
     setIsDialogOpen(false);
-    // Re-fetch data to reflect changes
-    setIsLoading(true);
-    const initialData = await dataService.getInitialData();
-    setFormacion(initialData.formacion);
-    setIsLoading(false);
   };
 
-  if (isLoading) {
+  if (!isDataLoaded || isLoadingUsers) {
     return <Loading />;
   }
 

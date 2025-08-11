@@ -10,7 +10,12 @@ import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
 
-const AuditoriasPageInternal = () => {
+/**
+ * @component AuditoriasPage
+ * @description Page component for managing audits. It fetches audit and user data,
+ * handles the creation and editing of audits through a dialog, and provides loading states.
+ */
+const AuditoriasPage = () => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   const [users, setUsers] = React.useState<User[]>([]);
@@ -18,21 +23,40 @@ const AuditoriasPageInternal = () => {
   
   const { auditorias, isLoaded: isAuditoriasLoaded } = useDynamicData();
 
-  React.useEffect(() => {
-    const loadUsers = async () => {
-      setIsLoadingUsers(true);
-      const allUsers = await userService.getAllUsers();
-      setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
-      setIsLoadingUsers(false);
-    };
-    loadUsers();
+  /**
+   * @callback loadUsers
+   * @description Fetches the list of users and filters them to include only relevant roles for auditing.
+   */
+  const loadUsers = React.useCallback(async () => {
+    setIsLoadingUsers(true);
+    try {
+        const allUsers = await userService.getAllUsers();
+        setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
+    } catch (error) {
+        console.error("Failed to load users for audits", error);
+    } finally {
+        setIsLoadingUsers(false);
+    }
   }, []);
 
+  React.useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  /**
+   * @function handleOpenDialog
+   * @description Opens the audit dialog. If an audit is passed, it opens in edit mode.
+   * @param {Auditoria} [auditoria] - The audit object to edit.
+   */
   const handleOpenDialog = (auditoria?: Auditoria) => {
     setSelectedAuditoria(auditoria || null);
     setIsDialogOpen(true);
   };
 
+  /**
+   * @function handleCloseDialog
+   * @description Closes the audit dialog. The table will refetch data via the context.
+   */
   const handleCloseDialog = () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
@@ -59,4 +83,4 @@ const AuditoriasPageInternal = () => {
   );
 }
 
-export default AuditoriasPageInternal;
+export default AuditoriasPage;

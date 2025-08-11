@@ -302,7 +302,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
 
     return (
         <div className="flex min-h-screen w-full bg-muted/40">
-            <Sidebar className="dark:bg-[#142541] bg-[#1C3664] text-white border-r-0">
+            <Sidebar className="dark:bg-card text-white border-r-0">
                 <SidebarContent className="text-white">
                      <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
                         <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />

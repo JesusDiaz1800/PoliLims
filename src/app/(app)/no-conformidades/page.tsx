@@ -5,33 +5,50 @@ import * as React from 'react';
 import Loading from '@/app/(app)/loading';
 import { NoConformidadDialog } from '@/components/no-conformidades/no-conformidad-dialog';
 import { NoConformidadTable } from '@/components/no-conformidades/no-conformidad-table';
-import { useDynamicData, type NoConformidad, type Ensayo, type Equipo } from '@/context/data-context';
+import { useDynamicData, type NoConformidad } from '@/context/data-context';
 
+/**
+ * @component NoConformidadesPage
+ * @description Page for managing non-conformities. It fetches all necessary data from the dynamic data context,
+ * including non-conformities, equipment, and assays, to populate the table and dialog forms.
+ */
 export default function NoConformidadesPage() {
   const { noConformidades, equipos, ensayos, isLoaded } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedIncidencia, setSelectedIncidencia] = React.useState<NoConformidad | null>(null);
 
+  /**
+   * @function handleOpenDialog
+   * @description Opens the dialog for creating a new non-conformity or editing an existing one.
+   * @param {NoConformidad} [incidencia] - The non-conformity object to edit.
+   */
   const handleOpenDialog = (incidencia?: NoConformidad) => {
     setSelectedIncidencia(incidencia || null);
     setIsDialogOpen(true);
   };
 
+  /**
+   * @function handleCloseDialog
+   * @description Closes the dialog and resets the selected non-conformity state.
+   */
   const handleCloseDialog = () => {
     setSelectedIncidencia(null);
     setIsDialogOpen(false);
   };
   
+  // Memoized list of analysts derived from the assays data.
   const analistas = React.useMemo(() => {
     if (!isLoaded) return [];
     return [...new Set(ensayos.map(e => e.analista).filter(Boolean))].map(a => ({ value: a, label: a }))
   }, [ensayos, isLoaded]);
   
+  // Memoized list of affected products derived from the assays data.
   const productosAfectados = React.useMemo(() => {
     if (!isLoaded) return [];
     return [...new Set(ensayos.map(e => e.producto).filter(Boolean))].map(p => ({ value: p, label: p }))
   }, [ensayos, isLoaded]);
 
+  // Memoized list of involved equipment.
   const equiposImplicados = React.useMemo(() => {
     if (!isLoaded) return [];
     return equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})` }))
