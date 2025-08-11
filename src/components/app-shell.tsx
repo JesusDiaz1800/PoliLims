@@ -56,6 +56,7 @@ import {
     Truck,
     Thermometer,
     GraduationCap,
+    Bell,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -90,6 +91,7 @@ const administracionSubMenu = [
     { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
     { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
@@ -135,7 +137,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
       <CollapsibleTrigger asChild disabled={disabled}>
           <SidebarMenuButton
             variant="ghost"
-            className="w-full justify-between group/button"
+            className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20"
             isActive={pathname.startsWith(item.href)}
             disabled={disabled}
             aria-disabled={disabled}
@@ -151,7 +153,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
         <SidebarMenu className="pl-4">
           {subMenuItems && subMenuItems.map((subItem: any, index: number) => {
             if (subItem.type === 'separator') {
-                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20" />;
             }
             if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
                 return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
@@ -164,7 +166,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
                         asChild 
                         size="sm" 
                         variant="ghost" 
-                        className="w-full justify-start" 
+                        className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20" 
                         isActive={isSubItemActive} 
                         disabled={disabled}
                         aria-disabled={disabled}
@@ -201,6 +203,7 @@ const pageTitles: Record<string, string> = {
     '/administracion/formacion': 'Gestión de Formación y Competencia',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
+    '/administracion/notificaciones': 'Notificaciones',
     '/administracion/incertidumbre': 'Calculadora de Incertidumbre',
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
@@ -210,7 +213,6 @@ const pageTitles: Record<string, string> = {
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Gestor Documental',
-    '/biblioteca/upload': 'Cargar Documento',
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
     '/workflows': 'Flujos de Trabajo',
@@ -301,9 +303,9 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
 
     return (
         <div className="flex min-h-screen w-full bg-muted/40">
-            <Sidebar>
-                <SidebarContent>
-                     <div className="py-4 overflow-hidden transition-all duration-300">
+            <Sidebar className="bg-[#1C3664] dark:bg-card text-white border-r-0">
+                <SidebarContent className="text-white">
+                     <div className="py-4 px-2 overflow-hidden transition-all duration-300">
                         <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
                     </div>
                     {isInspectorView && (
@@ -320,7 +322,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                             const isDisabled = isInspectorView && !['/dashboard', '/ensayos/control-rutinario'].some(p => item.href?.startsWith(p));
 
                             if (item.type === 'separator') {
-                                return <SidebarSeparator key={`sep-${index}`} className="my-2" />;
+                                return <SidebarSeparator key={`sep-${index}`} className="my-2 bg-white/20" />;
                             }
                             if (item.subMenu) {
                                 return <NavCollapsible key={item.label} item={item} pathname={pathname} disabled={isDisabled} userQuery={userQuery} />;
@@ -336,6 +338,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                                         tooltip={{content: item.label, side:"right", align:"center"}}
                                         disabled={isDisabled}
                                         aria-disabled={isDisabled}
+                                        className="text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20"
                                     >
                                         <Link href={`${item.href}?${userQuery}`} onClick={(e) => handleMenuClick(e, item.onClick)}>
                                             <div className='flex items-center gap-3'>
@@ -352,7 +355,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                 <SidebarFooter>
                     <SidebarMenu>
                         <SidebarMenuItem>
-                           <SidebarMenuButton asChild variant="ghost" tooltip={{content: "Cerrar Sesión", side: "right", align: "center"}}>
+                           <SidebarMenuButton asChild variant="ghost" tooltip={{content: "Cerrar Sesión", side: "right", align: "center"}} className="text-white hover:bg-white/10 hover:text-white">
                                 <Link href="/login">
                                     <div className='flex items-center gap-3'>
                                         <LogOut className="size-5 shrink-0" />
@@ -362,15 +365,15 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                            </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
-                    <SidebarSeparator className="my-2" />
+                    <SidebarSeparator className="my-2 bg-white/20" />
                     <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
-                        <Avatar className="h-10 w-10 border-2 border-primary-foreground/30">
+                        <Avatar className="h-10 w-10 border-2 border-white/30">
                             <AvatarImage src={user.avatarUrl} alt={user.fullName} />
                             <AvatarFallback>{user.initials}</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
                             <span className="font-semibold truncate">{user.fullName}</span>
-                            <span className="text-primary-foreground/70 text-xs truncate">{user.role}</span>
+                            <span className="text-white/70 text-xs truncate">{user.role}</span>
                         </div>
                     </div>
                 </SidebarFooter>

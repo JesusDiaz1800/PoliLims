@@ -16,7 +16,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   }
 
   return (
-    <Card className="bg-primary/5 dark:bg-primary/10 border-primary/20">
+    <Card className="bg-card">
       <CardHeader>
         <div className="flex items-center gap-4">
             <Hand className="h-8 w-8 text-primary" />
@@ -30,6 +30,4 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   );
 }
 export const WelcomeBanner = React.memo(WelcomeBannerInternal);
-    
-
     

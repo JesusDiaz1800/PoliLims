@@ -164,7 +164,10 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-card p-0 [&>button]:hidden"
+            className={cn(
+                "w-[--sidebar-width] p-0 [&>button]:hidden",
+                className
+            )}
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -182,7 +185,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "hidden md:flex flex-col h-screen sticky top-0 bg-card text-card-foreground transition-[width] duration-300 ease-in-out shadow-lg",
+          "hidden md:flex flex-col h-screen sticky top-0 transition-[width] duration-300 ease-in-out shadow-lg",
           state === 'collapsed' ? 'w-[--sidebar-width-icon]' : 'w-[--sidebar-width]',
           className
         )}
@@ -277,7 +280,7 @@ const SidebarSeparator = React.forwardRef<
     <Separator
       ref={ref}
       data-sidebar="separator"
-      className={cn("mx-2 w-auto bg-primary-foreground/20", className)}
+      className={cn("mx-2 w-auto", className)}
       {...props}
     />
   )
@@ -311,12 +314,12 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex items-center overflow-hidden rounded-md text-left outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-accent data-[active=true]:text-accent-foreground group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&_div]:gap-0",
+  "peer/menu-button flex items-center overflow-hidden rounded-md text-left outline-none ring-sidebar-ring transition-colors focus-visible:ring-2 active:bg-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&_div]:gap-0",
   {
     variants: {
       variant: {
-        default: "hover:bg-muted data-[active=true]:bg-accent",
-        ghost: "hover:bg-muted data-[active=true]:bg-accent",
+        default: "hover:bg-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
+        ghost: "hover:bg-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
       },
       size: {
         default: "h-10 px-2 text-sm font-medium gap-3",
