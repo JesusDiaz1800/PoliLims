@@ -156,12 +156,13 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
+          className="w-full justify-between group/button text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
           aria-expanded={isActive}
         >
+          {isActive && <div className="absolute left-0 h-6 w-1 bg-white rounded-r-lg" />}
           <div className="flex items-center gap-3 flex-1">
             {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
             <span className="truncate">{item.label}</span>
@@ -201,12 +202,13 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
+                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
                     <Link href={hrefWithQuery}>
+                      {isSubItemActive && <div className="absolute left-0 h-5 w-1 bg-white rounded-r-lg" />}
                       <div className="flex items-center">
                         {IconSub && <IconSub className="mr-2 size-4" aria-hidden />}
                         <span>{subItem.label}</span>
@@ -420,12 +422,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
+                    className="text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:text-white"
                   >
                     <Link
                       href={hrefWithQuery}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
                     >
+                      {isActive && <div className="absolute left-0 h-6 w-1 bg-white rounded-r-lg" />}
                       <div className="flex items-center gap-3">
                         {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
                         <span className="truncate">{item.label}</span>
