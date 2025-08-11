@@ -35,8 +35,6 @@ import {
     ChevronDown,
     Layers3,
     SlidersHorizontal,
-    Construction,
-    Cylinder,
     Code2,
     AlertOctagon,
     Ship,
@@ -67,11 +65,11 @@ import { useChatWidget } from '@/components/soporte/chat-widget';
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: Construction,
+      icon: SlidersHorizontal, // Using a more generic icon for the group
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Cylinder },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Cylinder },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Beaker },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
@@ -82,17 +80,6 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
     { type: 'separator' },
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
-];
-
-const administracionSubMenu = [
-    { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-    { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
-    { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
-    { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
-    { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
-    { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
-    { type: 'separator' },
-    { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
 const gestionSubMenu = [
@@ -125,13 +112,16 @@ const gestionSubMenu = [
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
 ];
 
-const bibliotecaSubMenu = [
-    { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
-];
 
-const reportsSubMenu = [
-    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
-    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
+const administracionSubMenu = [
+    { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+    { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
+    { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
+    { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
+    { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
+    { type: 'separator' },
+    { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
@@ -242,14 +232,19 @@ const menuItems = (toggleChat: () => void) => [
     { 
         label: 'Informes y Certificados', 
         icon: FileText,
-        subMenu: reportsSubMenu,
         href: '/reports',
+        subItems: [
+            { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
+            { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
+        ]
     },
     { 
         label: 'Biblioteca', 
         icon: Library,
-        subMenu: bibliotecaSubMenu,
         href: '/biblioteca',
+        subItems: [
+            { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
+        ]
     },
     { type: 'separator' },
      {
@@ -391,11 +386,3 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
-
-
-  
-
-    
-
-    
-
