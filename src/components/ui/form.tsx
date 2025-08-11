@@ -1,4 +1,6 @@
 
+"use client"
+
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
@@ -9,40 +11,12 @@ import {
   type ControllerProps,
   type FieldPath,
   type FieldValues,
-  type UseFormReturn,
 } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
-
-interface FormProps<TFieldValues extends FieldValues> extends Omit<React.ComponentPropsWithoutRef<'form'>, 'onSubmit'> {
-  form: UseFormReturn<TFieldValues>;
-  onSubmit: (values: TFieldValues) => void;
-  className?: string;
-  children: React.ReactNode;
-}
-
-const Form = <TFieldValues extends FieldValues>({
-  form,
-  onSubmit,
-  children,
-  className,
-  ...props
-}: FormProps<TFieldValues>) => {
-  return (
-    <FormProvider {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(className)}
-        {...props}
-      >
-        {children}
-      </form>
-    </FormProvider>
-  );
-};
-
+const Form = FormProvider
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
