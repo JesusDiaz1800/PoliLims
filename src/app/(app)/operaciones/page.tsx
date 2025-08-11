@@ -1,4 +1,3 @@
-
 import { redirect } from 'next/navigation';
 
 // This page acts as a base route for the "Operaciones" sidebar group.

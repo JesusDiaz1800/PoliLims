@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React from 'react';
@@ -21,7 +19,6 @@ import {
     GitBranch,
     Users,
     FileText,
-    FlaskConical,
     Beaker,
     Database,
     ShieldCheck,
@@ -386,4 +383,3 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
-
