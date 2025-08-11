@@ -105,6 +105,9 @@ const gestionSubMenu = [
     { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
+];
+
+const operacionesSubMenu = [
     { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
     { href: '/portal', label: 'Portal de Clientes', icon: Users },
 ];
@@ -249,6 +252,12 @@ const menuItems = (toggleChat: () => void) => [
         icon: Layers3,
         subMenu: gestionSubMenu,
         href: '/gestion'
+    },
+    {
+        label: 'Operaciones',
+        icon: GitBranch,
+        subMenu: operacionesSubMenu,
+        href: '/operaciones'
     },
     { type: 'separator' },
     { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
