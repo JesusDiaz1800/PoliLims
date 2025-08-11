@@ -4,11 +4,12 @@
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { CalendarioEquipos } from '@/components/equipos/calendario-equipos';
-import { useDynamicData, type Equipo } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { parse, isPast } from 'date-fns';
 import { EquipoDetailsDialog } from '@/components/equipos/equipo-details-dialog';
 import { EquipoDialog } from '@/components/equipos/equipo-dialog';
+import * as dataService from "@/services/data-service";
+import type { Equipo } from '@/context/data-context';
 
 
 export type CalendarioEvento = {
@@ -20,11 +21,22 @@ export type CalendarioEvento = {
 };
 
 export default function ProgramaPage() {
-    const { equipos, isLoading } = useDynamicData();
+    const [equipos, setEquipos] = React.useState<Equipo[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [eventos, setEventos] = React.useState<CalendarioEvento[]>([]);
     const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
     const [isEditOpen, setIsEditOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        async function loadData() {
+            setIsLoading(true);
+            const data = await dataService.getInitialData();
+            setEquipos(data.equipos);
+            setIsLoading(false);
+        }
+        loadData();
+    }, []);
 
     React.useEffect(() => {
         if (!isLoading && equipos.length > 0) {
@@ -95,5 +107,3 @@ export default function ProgramaPage() {
         </>
     );
 }
-
-    

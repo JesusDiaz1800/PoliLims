@@ -5,7 +5,6 @@ import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { findUserByUsername } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
-import { DataProvider } from '@/context/data-context';
 
 export const metadata: Metadata = {
     title: {
@@ -34,7 +33,6 @@ export default async function AppLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider>
                 <ChatWidgetProvider>
                     <SidebarProvider>
                         <AppShell user={user}>
@@ -43,7 +41,6 @@ export default async function AppLayout({
                     </SidebarProvider>
                     <ChatWidget />
                 </ChatWidgetProvider>
-            </DataProvider>
         </ThemeProvider>
     );
 }

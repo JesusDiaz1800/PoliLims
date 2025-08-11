@@ -43,8 +43,7 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Truck } from "lucide-re
 import { cn } from "@/lib/utils";
 import type { Proveedor } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import * as dataService from "@/services/data-service";
-import { revalidatePath } from "next/cache";
+import { deleteProveedorAction } from "@/app/(app)/proveedores/gestion/actions";
 
 interface GestionProveedoresTableProps {
   proveedores: Proveedor[];
@@ -77,20 +76,19 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
     ), [proveedores, searchTerm]);
   
   const handleDelete = async (proveedorId: string) => {
-    try {
-        await dataService.deleteProveedor(proveedorId);
-        revalidatePath('/proveedores/gestion');
+    const result = await deleteProveedorAction(proveedorId);
+    if (result.success) {
         toast({
             title: "Proveedor Eliminado",
-            description: "El proveedor ha sido eliminado correctamente.",
+            description: result.message,
         });
-    } catch (error) {
+    } else {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: "No se pudo eliminar el proveedor. Intente de nuevo.",
+            description: result.message,
         });
-        console.error("Failed to delete proveedor", error);
+        console.error("Failed to delete proveedor", result.message);
     }
   };
 

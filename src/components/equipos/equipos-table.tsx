@@ -47,8 +47,7 @@ import { useToast } from "@/hooks/use-toast";
 import { EquipoDetailsDialog } from "./equipo-details-dialog";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import * as dataService from "@/services/data-service";
-import { revalidatePath } from "next/cache";
+import { deleteEquipoAction } from "@/app/(app)/equipos/actions";
 
 
 interface EquiposTableProps {
@@ -102,20 +101,18 @@ const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) 
     ), [equipos, searchTerm]);
   
   const handleDelete = async (equipoId: string) => {
-    try {
-        await dataService.deleteEquipo(equipoId);
-        revalidatePath('/equipos');
+    const result = await deleteEquipoAction(equipoId);
+    if (result.success) {
         toast({
             title: "Equipo Eliminado",
-            description: "El equipo ha sido eliminado correctamente.",
+            description: result.message,
         });
-    } catch (error) {
+    } else {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: "No se pudo eliminar el equipo. Intente de nuevo.",
+            description: result.message,
         });
-        console.error("Failed to delete equipo", error);
     }
   };
 
