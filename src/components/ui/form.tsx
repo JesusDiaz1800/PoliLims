@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label"
 
 interface FormProps<TFieldValues extends FieldValues> extends Omit<React.ComponentPropsWithoutRef<'form'>, 'onSubmit'> {
   form: UseFormReturn<TFieldValues>;
-  onSubmit?: (values: TFieldValues) => void;
+  onSubmit: (values: TFieldValues) => void;
   className?: string;
   children: React.ReactNode;
 }
@@ -30,13 +30,10 @@ const Form = <TFieldValues extends FieldValues>({
   className,
   ...props
 }: FormProps<TFieldValues>) => {
-  
-  const handleFormSubmit = onSubmit ? form.handleSubmit(onSubmit) : (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
-
   return (
     <FormProvider {...form}>
       <form
-        onSubmit={handleFormSubmit}
+        onSubmit={form.handleSubmit(onSubmit)}
         className={cn(className)}
         {...props}
       >
