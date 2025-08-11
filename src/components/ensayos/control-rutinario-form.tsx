@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { format } from "date-fns"
-import { Calendar as CalendarIcon, FilePlus2, RefreshCw } from "lucide-react"
+import { Calendar as CalendarIcon, FilePlus2, RefreshCw, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -20,9 +20,10 @@ import { useToast } from "@/hooks/use-toast"
 import { TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
-import { useDynamicData } from "@/context/data-context"
 import { Combobox } from "../ui/combobox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
+import * as dataService from "@/services/data-service"
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip"
 
 interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
@@ -83,8 +84,8 @@ const defaultFormValues: Partial<FormValues> = {
 
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
-  const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
+  const hasAlerts = Object.values(alerts).some(Boolean);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -186,14 +187,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
     };
 
     try {
-        const newRegistro = await addRegistro(newRegistroData);
+        const newRegistro = await dataService.addRegistro(newRegistroData);
         
         toast({
           title: "Registro Guardado",
           description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
         });
 
-        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
+        await dataService.addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
         
         if (data.entregado_laboratorio) {
             const productoInfo = matrizProductos.find(p => p.code === selectedProduct.value);
@@ -221,14 +222,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 maquina: data.maquina,
                 inspector: data.inspector,
             };
-            await addEnsayo(newEnsayo);
+            await dataService.addEnsayo(newEnsayo);
             
             toast({
                 title: "Muestra Enviada a Laboratorio",
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
-            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
+            await dataService.addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);
@@ -547,10 +548,27 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
             <RefreshCw className="mr-2 h-4 w-4" />
             Limpiar
         </Button>
-        <Button type="submit">
-        <FilePlus2 className="mr-2 h-4 w-4" />
-        Registrar Control
-        </Button>
+        <TooltipProvider>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    {/* El div es necesario para que el Tooltip se muestre correctamente en un botón deshabilitado */}
+                    <div> 
+                        <Button type="submit" disabled={hasAlerts}>
+                            <FilePlus2 className="mr-2 h-4 w-4" />
+                            Registrar Control
+                        </Button>
+                    </div>
+                </TooltipTrigger>
+                {hasAlerts && (
+                    <TooltipContent>
+                        <div className="flex items-center gap-2 text-destructive">
+                            <AlertTriangle className="h-4 w-4" />
+                            <p>Corrija los campos con alertas para poder guardar.</p>
+                        </div>
+                    </TooltipContent>
+                )}
+            </Tooltip>
+        </TooltipProvider>
     </div>
       </form>
     </Form>
