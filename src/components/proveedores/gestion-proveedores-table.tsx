@@ -197,6 +197,6 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
       </CardContent>
     </Card>
   );
-}
+};
 
 export const GestionProveedoresTable = React.memo(GestionProveedoresTableInternal);

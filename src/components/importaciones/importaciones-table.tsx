@@ -207,6 +207,6 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
     </Card>
     </>
   );
-}
+};
 
 export const ImportacionesTable = React.memo(ImportacionesTableInternal);

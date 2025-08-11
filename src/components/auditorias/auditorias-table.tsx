@@ -203,6 +203,6 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
       </CardContent>
     </Card>
   );
-}
+};
 
 export const AuditoriasTable = React.memo(AuditoriasTableInternal);

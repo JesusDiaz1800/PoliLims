@@ -203,6 +203,6 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
     </CardContent>
     </Card>
   );
-}
+};
 
 export const FormacionTable = React.memo(FormacionTableInternal);

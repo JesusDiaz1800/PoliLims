@@ -216,6 +216,6 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit }: NoConform
     </Card>
     </>
   );
-}
+};
 
 export const NoConformidadTable = React.memo(NoConformidadTableInternal);

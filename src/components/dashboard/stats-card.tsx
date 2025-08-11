@@ -34,6 +34,6 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href }: Stat
     }
 
     return cardContent;
-}
+};
 
 export const StatsCard = React.memo(StatsCardInternal);
