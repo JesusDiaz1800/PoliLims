@@ -156,7 +156,7 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
+          className="w-full justify-between group/button text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -201,7 +201,7 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -420,6 +420,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
+                    className="text-white/80 hover:bg-white/10 hover:text-white data-[active=true]:bg-white/10 data-[active=true]:text-white"
                   >
                     <Link
                       href={hrefWithQuery}
@@ -498,3 +499,4 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </div>
     );
   }
+
