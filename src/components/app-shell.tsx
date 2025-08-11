@@ -50,6 +50,7 @@ import {
     LogOut,
     Info,
     FileSearch,
+    Map,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -84,6 +85,7 @@ const administracionSubMenu = [
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
+    { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
     { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
@@ -101,7 +103,6 @@ const equiposSubMenu = [
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
-    { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
 const reportsSubMenu = [
@@ -187,11 +188,12 @@ const pageTitles: Record<string, string> = {
     '/administracion/permisos': 'Roles y Permisos',
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
+    '/administracion/rutas': 'Rutas Disponibles',
     '/assistant': 'Asistente de Código',
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
-    '/biblioteca/documentos': 'Biblioteca de Documentos',
+    '/biblioteca/documentos': 'Gestor Documental',
     '/biblioteca/upload': 'Cargar Documento',
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
@@ -272,7 +274,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     }
 
     return (
-        <div className="flex h-screen w-full bg-background">
+        <div className="flex min-h-screen w-full bg-muted/40">
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
@@ -363,3 +365,5 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
         </div>
     );
 }
+
+    
