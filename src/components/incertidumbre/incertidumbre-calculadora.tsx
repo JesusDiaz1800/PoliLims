@@ -10,10 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Trash2, PlusCircle, Calculator, Save, FileText, Info, BookOpen } from "lucide-react";
+import { Trash2, PlusCircle, Calculator, Save, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
-import { useDynamicData } from "@/context/data-context";
+import type { CalculoIncertidumbre } from "@/context/data-context";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 
@@ -36,9 +35,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 type Componente = z.infer<typeof uncertaintyComponentSchema>;
 
-export function CalculadoraIncertidumbre() {
-  const { toast } = useToast();
-  const { addCalculoIncertidumbre, addRecentActivity } = useDynamicData();
+interface CalculadoraIncertidumbreProps {
+  onCalculoGuardado: (calculo: Omit<CalculoIncertidumbre, 'id'>) => void;
+}
+
+export function CalculadoraIncertidumbre({ onCalculoGuardado }: CalculadoraIncertidumbreProps) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -104,15 +105,7 @@ export function CalculadoraIncertidumbre() {
         },
         componentes: componentesCalculados,
     };
-    await addCalculoIncertidumbre(calculoParaGuardar);
-    await addRecentActivity({
-        user: "Victor Lutz",
-        action: `realizó un nuevo cálculo de incertidumbre: ${data.nombre_calculo}`,
-    });
-    toast({
-      title: "Cálculo Guardado",
-      description: "El cálculo de incertidumbre se ha guardado en el historial.",
-    });
+    onCalculoGuardado(calculoParaGuardar);
     form.reset();
   };
 
