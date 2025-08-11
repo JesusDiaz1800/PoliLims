@@ -8,7 +8,7 @@
 
 Para acceder al sistema, utiliza el correo electrónico y la contraseña proporcionados por el administrador. En la versión de prototipo, puedes usar una de las siguientes cuentas para explorar los diferentes roles:
 
--   **Jefe de Calidad:** `jefe.calidad@polifusion.cl`
+-   **Jefe de Calidad:** `vlutz@polifusion.cl`
 -   **Ing. Analista de Calidad:** `jdiaz@polifusion.cl`
 -   **Analista de Calidad:** `afigueroa@polifusion.cl`
 -   **Inspector de Calidad:** `eibanez@polifusion.cl`

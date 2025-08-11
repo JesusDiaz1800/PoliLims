@@ -31,7 +31,7 @@ export default function LoginPage() {
           <form action={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">Correo Electrónico</Label>
-              <Input name="email" id="email" type="email" placeholder="nombre.apellido@polifusion.cl" required defaultValue="jdiaz@polifusion.cl" />
+              <Input name="email" id="email" type="email" placeholder="nombre.apellido@polifusion.cl" required defaultValue="vlutz@polifusion.cl" />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
