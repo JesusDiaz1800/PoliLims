@@ -43,8 +43,7 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Importacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import * as dataService from "@/services/data-service";
-import { revalidatePath } from "next/cache";
+import { deleteImportacionAction } from "@/app/(app)/importaciones/actions";
 
 
 interface ImportacionesTableProps {
@@ -79,20 +78,18 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
     ), [importaciones, searchTerm]);
   
   const handleDelete = async (id: string) => {
-    try {
-        await dataService.deleteImportacion(id);
-        revalidatePath('/importaciones');
+    const result = await deleteImportacionAction(id);
+    if (result.success) {
         toast({
             title: "Importación Eliminada",
-            description: "El registro de importación ha sido eliminado correctamente.",
+            description: result.message,
         });
-    } catch (error) {
+    } else {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: "No se pudo eliminar el registro. Intente de nuevo.",
+            description: result.message,
         });
-        console.error("Failed to delete import record", error);
     }
   };
 
