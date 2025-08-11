@@ -32,8 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
-import * as dataService from "@/services/data-service";
-import { revalidatePath } from "next/cache";
+import { deleteRegistroAction } from "@/app/(app)/ensayos/control-rutinario/actions";
 
 
 export type EnrichedRegistro = Registro & { productoInfo?: TipoProducto };
@@ -71,21 +70,19 @@ const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick, m
   }
 
   const handleDelete = async (registroId: string) => {
-    try {
-        await dataService.deleteRegistro(registroId);
-        revalidatePath('/ensayos/control-rutinario');
-        toast({
-            title: "Registro Eliminado",
-            description: "El registro ha sido eliminado correctamente.",
-        });
-    } catch (error) {
-         toast({
-            variant: "destructive",
-            title: "Error al Eliminar",
-            description: "No se pudo eliminar el registro. Intente de nuevo.",
-        });
-        console.error("Failed to delete registro", error);
-    }
+      const result = await deleteRegistroAction(registroId);
+      if (result.success) {
+          toast({
+              title: "Registro Eliminado",
+              description: result.message,
+          });
+      } else {
+          toast({
+              variant: "destructive",
+              title: "Error al Eliminar",
+              description: result.message,
+          });
+      }
   };
 
   const formatValue = (value: any, decimals: number = 2) => {

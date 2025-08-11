@@ -58,10 +58,10 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { User } from '@/services/user-service';
-import { Logo } from './logo';
-import { useChatWidget } from './soporte/chat-widget';
+import { Logo } from '@/components/logo';
+import { useChatWidget } from '@/components/soporte/chat-widget';
 
 
 const ensayosSubMenu = [
