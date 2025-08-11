@@ -198,7 +198,6 @@ export interface Formacion {
     evaluador?: string;
     resultado: 'Aprobado' | 'Reprobado' | 'Pendiente' | 'Completado';
     observaciones?: string;
-    fecha_vencimiento?: string; // ISO 8601 string, for certifications
 }
 
 
@@ -276,7 +275,7 @@ interface DynamicDataContextType {
   addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
   updateProveedor: (id: string, proveedor: Partial<Proveedor>) => Promise<void>;
   deleteProveedor: (id: string) => Promise<void>;
-  addFormacion: (record: Omit<Formacion, 'id'>) => Promise<Formacion>;
+  addFormacion: (record: Omit<Formacion, 'id' | 'fecha_vencimiento'>) => Promise<Formacion>;
   updateFormacion: (id: string, record: Partial<Formacion>) => Promise<void>;
   deleteFormacion: (id: string) => Promise<void>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
@@ -471,8 +470,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setProveedores(prev => prev.filter(p => p.id !== id));
   }, []);
 
-  const addFormacion = useCallback(async (record: Omit<Formacion, 'id'>) => {
-    const newRecord = await dataService.addFormacion(record);
+  const addFormacion = useCallback(async (record: Omit<Formacion, 'id' | 'fecha_vencimiento'>) => {
+    const newRecord = await dataService.addFormacion(record as Omit<Formacion, 'id'>);
     setFormacion(prev => [newRecord, ...prev].sort((a,b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()));
     return newRecord;
   }, []);
