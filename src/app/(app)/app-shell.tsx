@@ -308,7 +308,7 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   },
   { type: "separator" },
   {
-    label: "Procesos de Gestión",
+    label: "Operaciones de Gestión",
     icon: Factory, // Usando un icono más representativo
     subMenu: gestionSubMenu,
     href: "/procesos",
