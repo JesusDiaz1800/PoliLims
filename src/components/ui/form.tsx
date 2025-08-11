@@ -18,44 +18,26 @@ import { Label } from "@/components/ui/label"
 
 interface FormProps<TFieldValues extends FieldValues> extends Omit<React.ComponentPropsWithoutRef<'form'>, 'onSubmit'> {
   form: UseFormReturn<TFieldValues>;
-  onSubmit: (values: TFieldValues) => void;
+  onSubmit?: (values: TFieldValues) => void;
+  className?: string;
+  children: React.ReactNode;
 }
 
-const Form = <TFieldValues extends FieldValues>({ form, onSubmit, children, className, ...props }: FormProps<TFieldValues>) => {
+const Form = <TFieldValues extends FieldValues>({
+  form,
+  onSubmit,
+  children,
+  className,
+  ...props
+}: FormProps<TFieldValues>) => {
   
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter') {
-      const target = event.target as HTMLElement;
-      
-      // Don't interfere with textareas or buttons
-      if (target.tagName === 'TEXTAREA' || target.tagName === 'BUTTON') {
-        return;
-      }
-      
-      const form = event.currentTarget;
-      const focusable = Array.from(
-        form.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter(
-        (el) => !el.hasAttribute('disabled') && !el.hasAttribute('data-disabled')
-      );
-
-      const index = focusable.indexOf(target);
-      
-      if (index > -1 && index < focusable.length - 1) {
-        event.preventDefault();
-        focusable[index + 1].focus();
-      }
-    }
-  };
+  const handleFormSubmit = onSubmit ? form.handleSubmit(onSubmit) : (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
     <FormProvider {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        onKeyDown={handleKeyDown}
-        className={cn("space-y-6", className)}
+        onSubmit={handleFormSubmit}
+        className={cn(className)}
         {...props}
       >
         {children}

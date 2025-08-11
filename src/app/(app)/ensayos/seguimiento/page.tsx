@@ -335,6 +335,7 @@ export default function SeguimientoEnsayosPage() {
         </div>
       </CardHeader>
       <CardContent>
+         <div className="relative overflow-x-auto">
          {filteredEnsayos.length > 0 ? (
            renderDynamicTable(filteredEnsayos, filterType, handleEditClick, handleOpenApprovalDialog, handleOpenReportDialog, canApprove || false)
          ) : (
@@ -344,6 +345,7 @@ export default function SeguimientoEnsayosPage() {
                 <p>Intente ajustar su búsqueda o filtros.</p>
             </div>
         )}
+        </div>
       </CardContent>
     </Card>
     {selectedEnsayo && user && (
