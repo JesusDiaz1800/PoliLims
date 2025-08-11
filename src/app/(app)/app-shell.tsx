@@ -138,11 +138,13 @@ const reportsSubMenu = [
 
 const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item: any, pathname: string, disabled?: boolean, userQuery: string }) => {
     const subMenuItems = item.subMenu || item.subItems;
+    // An item is active if its href is the start of the current pathname
+    const isActive = item.href && pathname.startsWith(item.href);
 
     return (
     <Collapsible
       key={item.label}
-      defaultOpen={pathname.startsWith(item.href)}
+      defaultOpen={isActive}
       className="w-full"
       disabled={disabled}
     >
@@ -150,7 +152,7 @@ const NavCollapsible = ({ item, pathname, disabled = false, userQuery }: { item:
           <SidebarMenuButton
             variant="ghost"
             className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-white/20"
-            isActive={pathname.startsWith(item.href)}
+            isActive={isActive}
             disabled={disabled}
             aria-disabled={disabled}
           >
@@ -256,7 +258,7 @@ const menuItems = (toggleChat: () => void) => [
         label: 'Procesos de Gestión',
         icon: Layers3,
         subMenu: gestionSubMenu,
-        href: '/gestion'
+        href: '/gestion' // Use a virtual base path for the group
     },
     { type: 'separator' },
     { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
