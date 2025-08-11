@@ -162,7 +162,7 @@ const soporteLaboratorioFlow = ai.defineFlow(
   async ({ history, prompt: userPrompt }) => {
 
     const lowerCasePrompt = userPrompt.toLowerCase();
-    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.includes(keyword));
+    const isNavigationIntent = navigationKeywords.some(keyword => lowerCasePrompt.includes(keyword)) || extractNavigationPath(lowerCasePrompt);
     
     // Bypass LLM for clear navigation intents
     if (isNavigationIntent) {
@@ -201,5 +201,3 @@ const soporteLaboratorioFlow = ai.defineFlow(
     };
   }
 );
-
-    
