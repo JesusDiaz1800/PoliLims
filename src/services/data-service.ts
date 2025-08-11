@@ -100,16 +100,17 @@ let demoIncertidumbre: CalculoIncertidumbre[] = Array.from({ length: 22 }, (_, i
 }));
 
 let demoProveedores: Proveedor[] = [
-    { id: 'PROV-001', nombre: 'Sigma-Aldrich', tipo: 'Reactivos', contacto_nombre: 'Juan Pérez', contacto_email: 'juan.perez@sigma.com', estado: 'Activo', certificacionesISO: 'ISO 9001' },
-    { id: 'PROV-002', nombre: 'Trescal', tipo: 'Calibración', contacto_nombre: 'María González', contacto_email: 'maria.gonzalez@trescal.com', estado: 'Activo', certificacionesISO: 'ISO 17025' },
-    { id: 'PROV-003', nombre: 'BOREALIS CO.', tipo: 'Materia Prima', contacto_nombre: 'Peter Schmidt', contacto_email: 'peter.schmidt@borealis.com', estado: 'Activo' },
-    { id: 'PROV-004', nombre: 'Merck', tipo: 'Reactivos', estado: 'Activo' },
+    { id: 'PROV-001', nombre: 'Sigma-Aldrich', tipo: 'Reactivos', contacto_nombre: 'Juan Pérez', contacto_email: 'juan.perez@sigma.com', estado: 'Activo', certificacionesISO: 'ISO 9001', evaluaciones: [{ fecha: '15-01-2025', calidad: 5, cumplimiento: 5, puntualidad: 4, comentarios: 'Excelente calidad de reactivos.' }] },
+    { id: 'PROV-002', nombre: 'Trescal', tipo: 'Calibración', contacto_nombre: 'María González', contacto_email: 'maria.gonzalez@trescal.com', estado: 'Activo', certificacionesISO: 'ISO 17025', evaluaciones: [{ fecha: '20-02-2025', calidad: 5, cumplimiento: 5, puntualidad: 5, comentarios: 'Servicio puntual y profesional.' }] },
+    { id: 'PROV-003', nombre: 'BOREALIS CO.', tipo: 'Materia Prima', contacto_nombre: 'Peter Schmidt', contacto_email: 'peter.schmidt@borealis.com', estado: 'Activo', evaluaciones: [{ fecha: '01-03-2025', calidad: 4, cumplimiento: 5, puntualidad: 3, comentarios: 'Retraso menor en la última entrega.' }, { fecha: '05-12-2024', calidad: 5, cumplimiento: 5, puntualidad: 5, comentarios: 'Sin problemas.' }] },
+    { id: 'PROV-004', nombre: 'Merck', tipo: 'Reactivos', estado: 'Activo', evaluaciones: [] },
     { id: 'PROV-005', nombre: 'Servicios de Ingeniería Metrológica', tipo: 'Calibración', estado: 'En evaluación' },
     ...Array.from({ length: 25 }, (_, i) => ({
       id: `PROV-${String(i + 6).padStart(3, '0')}`,
       nombre: `Proveedor de Prueba ${i + 1}`,
       tipo: i % 2 === 0 ? 'Materia Prima' : 'Servicios Generales',
       estado: i % 5 === 0 ? 'Inactivo' : 'Activo',
+      evaluaciones: i % 3 === 0 ? [{ fecha: `10-04-2025`, calidad: 4, cumplimiento: 4, puntualidad: 5, comentarios: 'Evaluación de ejemplo.'}] : []
     }))
 ];
 

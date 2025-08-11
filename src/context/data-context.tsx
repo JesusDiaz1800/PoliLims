@@ -169,11 +169,12 @@ export interface Proveedor {
     certificacionesISO?: string;
     contratoUrl?: string;
     observaciones?: string;
-    evaluacion_desempeno?: {
+    evaluaciones?: {
         fecha: string;
-        calidad: number;
-        cumplimiento: number;
-        puntualidad: number;
+        calidad: number; // score 1-5
+        cumplimiento: number; // score 1-5
+        puntualidad: number; // score 1-5
+        comentarios: string;
     }[];
 }
 
