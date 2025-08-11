@@ -36,8 +36,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import * as dataService from "@/services/data-service";
-import type { Ensayo, Equipo } from "@/context/data-context";
+import { useDynamicData, type Ensayo, type Equipo } from "@/context/data-context";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import type { User } from "@/services/user-service";
 
@@ -92,6 +91,7 @@ const defaultFormValues = {
 
 export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasHdpeFormProps) {
   const { toast } = useToast();
+  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -149,8 +149,6 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
   const [densidadCalculada, setDensidadCalculada] = React.useState(0);
   const [negroHumoCalculado, setNegroHumoCalculado] = React.useState(0);
 
-  const watchedValues = watch();
-
   const calculateMeltIndex = React.useCallback(() => {
     const mediciones = getValues("meltIndexMediciones");
     const valoresNumericos = mediciones
@@ -203,6 +201,8 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
     }
   }, [getValues]);
 
+  const watchedValues = watch();
+
   React.useEffect(() => {
       calculateMeltIndex();
       calculateDensidad();
@@ -224,8 +224,8 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
         comentarios_aprobacion: data.comentarios_aprobacion,
     };
 
-    await dataService.updateEnsayo(ensayo.id, ensayoData);
-    await dataService.addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería HDPE: ${ensayo.id}`});
+    await updateEnsayo(ensayo.id, ensayoData);
+    await addRecentActivity({ user: user.fullName, action: `ingresó resultados para el ensayo de Tubería HDPE: ${ensayo.id}`});
     toast({
         title: "Resultados Guardados",
         description: `Los resultados para el ensayo ${ensayo.id} han sido guardados.`,
