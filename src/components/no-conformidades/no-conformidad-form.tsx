@@ -40,6 +40,8 @@ const formSchema = z.object({
   estado: z.enum(['Abierta', 'En Investigación', 'Resuelta', 'Cerrada']),
   severidad: z.enum(['Baja', 'Media', 'Alta', 'Crítica']),
   responsable: z.string().nonempty("El responsable es requerido."),
+  productos_afectados: z.array(z.string()).optional(),
+  equipos_implicados: z.array(z.string()).optional(),
   fecha_vencimiento: z.date().optional(),
   accion_correctiva: z.string().optional(),
 });
@@ -65,6 +67,8 @@ export function NoConformidadForm({
       estado: incidenciaToEdit?.estado || 'Abierta',
       severidad: incidenciaToEdit?.severidad || 'Media',
       responsable: incidenciaToEdit?.responsable || "",
+      productos_afectados: incidenciaToEdit?.productos_afectados || [],
+      equipos_implicados: incidenciaToEdit?.equipos_implicados || [],
       fecha_vencimiento: incidenciaToEdit?.fecha_vencimiento ? parseISO(incidenciaToEdit.fecha_vencimiento.split('-').reverse().join('-')) : undefined,
       accion_correctiva: incidenciaToEdit?.accion_correctiva || "",
     }), [incidenciaToEdit]);
@@ -150,6 +154,28 @@ export function NoConformidadForm({
               <FormControl><Textarea placeholder="Describa la no conformidad, incluyendo detalles, lotes, equipos, etc." {...field} rows={4}/></FormControl><FormMessage />
             </FormItem>
           )}/>
+           <FormField control={form.control} name="productos_afectados" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Productos Afectados</FormLabel>
+                 <Select onValueChange={(value) => field.onChange([...(field.value || []), value])}><FormControl><SelectTrigger><SelectValue placeholder="Añada producto..."/></SelectTrigger></FormControl>
+                    <SelectContent>
+                        {productosAfectados.map(p => <SelectItem key={p.value} value={p.label}>{p.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+            </FormItem>
+           )}/>
+           <FormField control={form.control} name="equipos_implicados" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Equipos Implicados</FormLabel>
+                 <Select onValueChange={(value) => field.onChange([...(field.value || []), value])}><FormControl><SelectTrigger><SelectValue placeholder="Añada equipo..."/></SelectTrigger></FormControl>
+                    <SelectContent>
+                        {equiposImplicados.map(e => <SelectItem key={e.value} value={e.label}>{e.label}</SelectItem>)}
+                    </SelectContent>
+                </Select>
+                <FormMessage />
+            </FormItem>
+           )}/>
             <FormField control={form.control} name="severidad" render={({ field }) => (
             <FormItem>
               <FormLabel>Severidad</FormLabel>
