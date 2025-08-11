@@ -64,7 +64,7 @@ import { useChatWidget } from '@/components/soporte/chat-widget';
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: SlidersHorizontal, // Using a more generic icon for the group
+      icon: SlidersHorizontal,
       href: '/ensayos/tuberias',
       subItems: [
         { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
@@ -81,7 +81,7 @@ const ensayosSubMenu = [
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
 
-const procesosGestionSubMenu = [
+const gestionSubMenu = [
     { 
         label: 'Gestión de Equipos', 
         icon: BookCheck,
@@ -251,8 +251,8 @@ const menuItems = (toggleChat: () => void) => [
      {
         label: 'Procesos de Gestión',
         icon: Layers3,
-        subMenu: procesosGestionSubMenu,
-        href: '/gestion' // Use a virtual base path for the group
+        subMenu: gestionSubMenu,
+        href: '/gestion'
     },
     {
         label: 'Operaciones',
@@ -394,5 +394,3 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     );
 }
 
-
-    
