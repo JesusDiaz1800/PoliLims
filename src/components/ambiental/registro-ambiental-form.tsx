@@ -57,8 +57,7 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: Registro
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <Form form={form} onSubmit={onSubmit} className="space-y-4">
         <FormField control={form.control} name="zona" render={({ field }) => (
           <FormItem><FormLabel>Zona</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl>
             <SelectContent>{zonas.map(z => <SelectItem key={z} value={z}>{z}</SelectItem>)}</SelectContent>
@@ -77,7 +76,6 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord }: Registro
         <Button type="submit" className="w-full">
             <Save className="mr-2 h-4 w-4"/> Guardar
         </Button>
-      </form>
     </Form>
   );
 }
