@@ -1,6 +1,6 @@
 
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre } from "@/context/data-context";
 import { isPast, parse } from 'date-fns';
 
 
@@ -70,7 +70,34 @@ const demoGeneratedReports: GeneratedReport[] = [
     { id: 'REP-002', nombre: '2025-07-21 - R202P - Lote 500312.pdf', tipo: 'Materia Prima', fecha_creacion: '21-07-2025', path: '/informes/materia-prima/2025-07-21-R202P-500312.pdf', ensayoIds: ['LAB-07-07'] },
 ];
 
+const demoIncertidumbre: CalculoIncertidumbre[] = [
+    {
+        id: 'INC-001',
+        nombre: 'Incertidumbre de pesada en balanza EQ-05',
+        fecha: '2025-07-24T10:00:00Z',
+        usuario: 'Victor Lutz',
+        resultado: { incertidumbreCombinada: 0.00015, incertidumbreExpandida: 0.00030, factorCobertura: 2 },
+        componentes: [
+            { descripcion: 'Calibración de la balanza', valor: 0.0002, tipo: 'B', distribucion: 'rectangular' },
+            { descripcion: 'Repetibilidad', valor: 0.0001, tipo: 'A', distribucion: 'normal' },
+        ]
+    },
+    {
+        id: 'INC-002',
+        nombre: 'Incertidumbre de medición de temperatura',
+        fecha: '2025-07-22T14:30:00Z',
+        usuario: 'Maximiliano Miranda',
+        resultado: { incertidumbreCombinada: 0.55, incertidumbreExpandida: 1.1, factorCobertura: 2 },
+        componentes: [
+            { descripcion: 'Certificado del termómetro', valor: 1.0, tipo: 'B', distribucion: 'normal' },
+            { descripcion: 'Resolución del display', valor: 0.1, tipo: 'B', distribucion: 'rectangular' },
+            { descripcion: 'Deriva del sensor', valor: 0.2, tipo: 'B', distribucion: 'rectangular' },
+        ]
+    }
+];
+
 let generatedReports = [...demoGeneratedReports];
+let calculosIncertidumbre = [...demoIncertidumbre];
 
 export async function addGeneratedReport(report: Omit<GeneratedReport, 'id'>): Promise<GeneratedReport> {
     const newReport = { ...report, id: `REP-${String(generatedReports.length + 1).padStart(3, '0')}` };
@@ -80,6 +107,12 @@ export async function addGeneratedReport(report: Omit<GeneratedReport, 'id'>): P
 
 export async function deleteGeneratedReport(id: string): Promise<void> {
     generatedReports = generatedReports.filter(r => r.id !== id);
+}
+
+export async function addCalculoIncertidumbre(calculo: Omit<CalculoIncertidumbre, 'id'>): Promise<CalculoIncertidumbre> {
+    const newCalculo = { ...calculo, id: `INC-${String(calculosIncertidumbre.length + 1).padStart(3, '0')}` };
+    calculosIncertidumbre.unshift(newCalculo);
+    return newCalculo;
 }
 
 // Dummy add/update/delete functions to simulate API calls
@@ -141,5 +174,6 @@ export async function getInitialData() {
         noConformidades: demoNoConformidades,
         importaciones: demoImportaciones,
         generatedReports: generatedReports,
+        calculosIncertidumbre: calculosIncertidumbre,
     };
 }

@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
@@ -137,6 +138,26 @@ export interface GeneratedReport {
     ensayoIds: string[];
 }
 
+export interface CalculoIncertidumbre {
+    id: string;
+    nombre: string;
+    fecha: string;
+    usuario: string;
+    resultado: {
+        incertidumbreCombinada: number;
+        incertidumbreExpandida: number;
+        factorCobertura: number;
+    };
+    componentes: {
+        descripcion: string;
+        valor: number;
+        tipo: 'A' | 'B';
+        distribucion: 'normal' | 'rectangular' | 'triangular';
+        desviacion_estandar?: number;
+    }[];
+}
+
+
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
 
 // --- API Client ---
@@ -185,6 +206,7 @@ interface DynamicDataContextType {
   noConformidades: NoConformidad[];
   importaciones: Importacion[];
   generatedReports: GeneratedReport[];
+  calculosIncertidumbre: CalculoIncertidumbre[];
   addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
   updateEnsayo: (id: string, ensayo: Partial<Ensayo>) => Promise<void>;
   deleteEnsayo: (id: string) => Promise<void>;
@@ -202,6 +224,7 @@ interface DynamicDataContextType {
   deleteImportacion: (id: string) => Promise<void>;
   addGeneratedReport: (report: Omit<GeneratedReport, 'id'>) => Promise<GeneratedReport>;
   deleteGeneratedReport: (id: string) => Promise<void>;
+  addCalculoIncertidumbre: (calculo: Omit<CalculoIncertidumbre, 'id'>) => Promise<CalculoIncertidumbre>;
   addRecentActivity: (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => Promise<void>;
   isLoading: boolean;
 }
@@ -228,6 +251,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [noConformidades, setNoConformidades] = useState<NoConformidad[]>([]);
   const [importaciones, setImportaciones] = useState<Importacion[]>([]);
   const [generatedReports, setGeneratedReports] = useState<GeneratedReport[]>([]);
+  const [calculosIncertidumbre, setCalculosIncertidumbre] = useState<CalculoIncertidumbre[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load all data once on the client
@@ -255,6 +279,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
             setNoConformidades(initialData.noConformidades);
             setImportaciones(initialData.importaciones);
             setGeneratedReports(initialData.generatedReports);
+            setCalculosIncertidumbre(initialData.calculosIncertidumbre);
         }
         
       } catch (error) {
@@ -358,6 +383,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setGeneratedReports(prev => prev.filter(r => r.id !== id));
   }, []);
 
+  const addCalculoIncertidumbre = useCallback(async (calculoData: Omit<CalculoIncertidumbre, 'id'>) => {
+      const newCalculo = await dataService.addCalculoIncertidumbre(calculoData);
+      setCalculosIncertidumbre(prev => [newCalculo, ...prev]);
+      return newCalculo;
+  }, []);
+
   const addRecentActivity = useCallback(async (activity: Omit<RecentActivity, 'id' | 'timestamp'>) => {
      const fullActivity = await dataService.addRecentActivity(activity);
      setRecentActivity(prev => [fullActivity, ...prev].sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
@@ -372,6 +403,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     noConformidades,
     importaciones,
     generatedReports,
+    calculosIncertidumbre,
     addEnsayo,
     updateEnsayo,
     deleteEnsayo,
@@ -389,13 +421,14 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     deleteImportacion,
     addGeneratedReport,
     deleteGeneratedReport,
+    addCalculoIncertidumbre,
     addRecentActivity,
     isLoading: isLoading,
   }), [
-    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, isLoading,
+    ensayos, registros, recentActivity, equipos, controles, noConformidades, importaciones, generatedReports, calculosIncertidumbre, isLoading,
     addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, 
     addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addImportacion, updateImportacion, deleteImportacion, 
-    addGeneratedReport, deleteGeneratedReport, addRecentActivity
+    addGeneratedReport, deleteGeneratedReport, addCalculoIncertidumbre, addRecentActivity
   ]);
 
   const staticContextValue = useMemo(() => ({

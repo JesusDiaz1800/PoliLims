@@ -52,6 +52,7 @@ import {
     Info,
     FileSearch,
     Map,
+    Calculator,
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
@@ -85,6 +86,7 @@ const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
@@ -187,6 +189,7 @@ const pageTitles: Record<string, string> = {
     '/administracion/usuarios': 'Gestión de Usuarios',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
+    '/administracion/incertidumbre': 'Calculadora de Incertidumbre',
     '/administracion/configuracion': 'Configuración',
     '/administracion/proximos-pasos': 'Próximos Pasos para Producción',
     '/administracion/rutas': 'Rutas Disponibles',
