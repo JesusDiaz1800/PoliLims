@@ -490,13 +490,15 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </div>
           </header>
   
-          <main
-            className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar"
-            role="main"
-            tabIndex={-1}
-          >
-            {children}
-          </main>
+          <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
+            <main
+                className="min-w-full p-4 sm:p-6 custom-scrollbar"
+                role="main"
+                tabIndex={-1}
+            >
+                {children}
+            </main>
+          </div>
         </div>
       </div>
     );
