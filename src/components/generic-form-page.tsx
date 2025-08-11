@@ -71,69 +71,67 @@ export function GenericFormPage({ title, description, icon: Icon, formFields, fo
                 </CardHeader>
             </Card>
 
-            <Form {...form}>
-                 <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>{formTitle}</CardTitle>
-                            <CardDescription>{formDescription}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {formFields.map((field) => (
-                                <FormField
-                                    key={field.name}
-                                    control={form.control}
-                                    name={field.name}
-                                    render={({ field: formField }) => (
-                                        <FormItem className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-                                            <FormLabel>{field.label}</FormLabel>
-                                            <FormControl>
-                                                {field.type === 'textarea' ? (
-                                                    <Textarea placeholder={field.placeholder} {...formField} />
-                                                ) : field.type === 'select' ? (
-                                                    <Select onValueChange={formField.onChange} value={formField.value}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder={field.placeholder} />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {field.options?.map((option) => (
-                                                                <SelectItem key={option} value={option}>{option}</SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                ) : field.type === 'date' ? (
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                            <Button
-                                                                variant={"outline"}
-                                                                className={cn("w-full justify-start text-left font-normal", !formField.value && "text-muted-foreground")}
-                                                            >
-                                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                {formField.value ? format(formField.value, "PPP") : <span>{field.placeholder || 'Seleccione una fecha'}</span>}
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-0">
-                                                            <Calendar mode="single" selected={formField.value} onSelect={formField.onChange} initialFocus />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                ) : (
-                                                    <Input type={field.type} placeholder={field.placeholder} {...formField} />
-                                                )}
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            ))}
-                        </CardContent>
-                        <CardFooter>
-                            <Button type="submit">
-                                <Save className="mr-2 h-4 w-4" />
-                                {buttonText}
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                </form>
+            <Form form={form} onSubmit={onSubmit}>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{formTitle}</CardTitle>
+                        <CardDescription>{formDescription}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {formFields.map((field) => (
+                            <FormField
+                                key={field.name}
+                                control={form.control}
+                                name={field.name}
+                                render={({ field: formField }) => (
+                                    <FormItem className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
+                                        <FormLabel>{field.label}</FormLabel>
+                                        <FormControl>
+                                            {field.type === 'textarea' ? (
+                                                <Textarea placeholder={field.placeholder} {...formField} />
+                                            ) : field.type === 'select' ? (
+                                                <Select onValueChange={formField.onChange} value={formField.value}>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={field.placeholder} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {field.options?.map((option) => (
+                                                            <SelectItem key={option} value={option}>{option}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            ) : field.type === 'date' ? (
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn("w-full justify-start text-left font-normal", !formField.value && "text-muted-foreground")}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                                            {formField.value ? format(formField.value, "PPP") : <span>{field.placeholder || 'Seleccione una fecha'}</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar mode="single" selected={formField.value} onSelect={formField.onChange} initialFocus />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            ) : (
+                                                <Input type={field.type} placeholder={field.placeholder} {...formField} />
+                                            )}
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        ))}
+                    </CardContent>
+                    <CardFooter>
+                        <Button type="submit">
+                            <Save className="mr-2 h-4 w-4" />
+                            {buttonText}
+                        </Button>
+                    </CardFooter>
+                </Card>
             </Form>
         </div>
     );
