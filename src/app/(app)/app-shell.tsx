@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -148,7 +149,6 @@ const NavCollapsible = ({
 }) => {
   const subMenuItems = item.subMenu || item.subItems;
   const isActive = !!(item.href && pathname.startsWith(item.href));
-
   const Icon = item.icon;
 
   return (
@@ -156,13 +156,14 @@ const NavCollapsible = ({
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+          className="w-full justify-between group/button text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
+          aria-expanded={isActive}
         >
           <div className="flex items-center gap-3 flex-1">
-            {Icon && <Icon className="size-5 shrink-0" />}
+            {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
             <span className="truncate">{item.label}</span>
           </div>
           <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
@@ -192,7 +193,6 @@ const NavCollapsible = ({
 
               const IconSub = subItem.icon;
               const isSubItemActive = pathname === subItem.href;
-
               const hrefWithQuery = subItem.href ? `${subItem.href}${userQuery ? `?${userQuery}` : ""}` : "#";
 
               return (
@@ -201,14 +201,14 @@ const NavCollapsible = ({
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+                    className="w-full justify-start text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
                     <Link href={hrefWithQuery}>
                       <div className="flex items-center">
-                        {IconSub && <IconSub className="mr-2 size-4" />}
+                        {IconSub && <IconSub className="mr-2 size-4" aria-hidden />}
                         <span>{subItem.label}</span>
                       </div>
                     </Link>
@@ -222,6 +222,7 @@ const NavCollapsible = ({
   );
 };
 
+/* ---------------- Page Titles ---------------- */
 const pageTitles: Record<string, string> = {
   "/equipos": "Inventario de Equipos",
   "/equipos/control": "Control de Equipos",
@@ -256,6 +257,7 @@ const pageTitles: Record<string, string> = {
   "/proveedores/gestion": "Gestión de Proveedores",
 };
 
+/* ---------------- Menu Items ---------------- */
 const menuItems = (toggleChat: () => void): MenuItem[] => [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   {
@@ -298,10 +300,10 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   },
 ];
 
+/* ---------------- AppShell ---------------- */
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
   const pathname = usePathname() ?? "/";
   const searchParams = useSearchParams();
-  const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = !!(user && user.role === "Inspector de Calidad");
 
@@ -313,6 +315,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
     for (const item of menuItems(() => {})) {
       if (item.href && pathname === item.href) return item.label ?? "Dashboard";
+      if (item.subMenu) {
+        for (const s of item.subMenu) {
+          if (s.href && pathname === s.href) return s.label ?? item.label ?? "Dashboard";
+        }
+      }
     }
 
     return "Dashboard";
@@ -321,11 +328,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
     if (onClick) {
       e.preventDefault();
-      // If an item has a custom onClick (e.g., open chat), call it and open widget
       try {
         onClick();
-      } catch (err) {
-        // swallow
+      } catch {
+        // ignore
       }
       setIsWidgetVisible(true);
       setIsOpen(true);
@@ -333,16 +339,21 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-muted/40">
-      <Sidebar className="text-white border-r-0" style={{ backgroundColor: '#1C3664' }}>
+    <div className="flex min-h-screen w-full bg-background">
+      <Sidebar
+        className="text-white border-r-0 dark:bg-card"
+        style={{ backgroundColor: "var(--background-light, #1C3664)" }}
+        role="navigation"
+        aria-label="Main sidebar"
+      >
         <SidebarContent className="text-white">
           <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
             <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           {isInspectorView && (
-            <Alert className="m-2 border-primary/30 bg-primary/10">
-              <Info className="h-4 w-4 text-primary" />
+            <Alert className="m-2 border-primary/30 bg-primary/10" role="status">
+              <Info className="h-4 w-4 text-primary" aria-hidden />
               <AlertTitle className="text-primary/90">Modo Inspector</AlertTitle>
               <AlertDescription className="text-primary/70">
                 La vista está limitada a las funciones de inspector de calidad.
@@ -351,14 +362,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           )}
 
           <SidebarMenu>
-            {menuItems(() => {
-              /* toggleChat stub - replaced below with actual setIsOpen usage when mapping */
-            }).map((item, index) => {
+            {menuItems(() => setIsOpen(true)).map((item, index) => {
               const isDisabled =
                 isInspectorView &&
-                !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
-                  Boolean(item.href && item.href.startsWith(p))
-                );
+                !["/dashboard", "/ensayos/control-rutinario"].some((p) => Boolean(item.href && item.href.startsWith(p)));
 
               if (item.type === "separator") {
                 return <SidebarSeparator key={`sep-${index}`} className="my-2 bg-white/20" />;
@@ -389,16 +396,14 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label ?? "", side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:text-cyan-400"
+                    className="text-white hover:bg-white/10 hover:text-white data-[active=true]:bg-primary/10 data-[active=true]:text-white"
                   >
-                    {/* Use Link and attach onClick only when item.onClick exists */}
                     <Link
                       href={hrefWithQuery}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
-                      // ensure we don't pass undefined to Link's onClick if not needed
                     >
                       <div className="flex items-center gap-3">
-                        {Icon && <Icon className="size-5 shrink-0" />}
+                        {Icon && <Icon className="size-5 shrink-0" aria-hidden />}
                         <span className="truncate">{item.label}</span>
                       </div>
                     </Link>
@@ -408,55 +413,66 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             })}
           </SidebarMenu>
         </SidebarContent>
-
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                variant="ghost"
-                tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Link href="/login">
-                  <div className="flex items-center gap-3">
-                    <LogOut className="size-5 shrink-0" />
-                    <span className="truncate">Cerrar Sesión</span>
-                  </div>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-
-          <SidebarSeparator className="my-2 bg-white/20" />
-
-          <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
-            <Avatar className="h-10 w-10 border-2 border-white/30">
-              {user?.avatarUrl ? (
-                <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
-              ) : (
-                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
-              )}
-            </Avatar>
-
-            <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <span className="font-semibold truncate">{user?.fullName ?? "Usuario"}</span>
-              <span className="text-white/70 text-xs truncate">{user?.role ?? ""}</span>
+  
+          <SidebarFooter className="px-3 py-2 border-t border-white/20">
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  variant="ghost"
+                  tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
+                  className="text-white hover:bg-white/10 hover:text-white"
+                >
+                  <Link href="/login" aria-label="Cerrar sesión">
+                    <div className="flex items-center gap-3">
+                      <LogOut className="size-5 shrink-0" aria-hidden />
+                      <span className="truncate">Cerrar Sesión</span>
+                    </div>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+  
+            <SidebarSeparator className="my-2 bg-white/20" />
+  
+            <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
+              <Avatar className="h-10 w-10 border-2 border-white/30" aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}>
+                {user?.avatarUrl ? (
+                  <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
+                ) : (
+                  <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+                )}
+              </Avatar>
+  
+              <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                <span className="font-semibold truncate">{user?.fullName ?? "Usuario"}</span>
+                <span className="text-white/70 text-xs truncate">{user?.role ?? ""}</span>
+              </div>
             </div>
-          </div>
-        </SidebarFooter>
-      </Sidebar>
-
-      <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <h1 className="text-xl font-semibold font-headline text-foreground">{getPageTitle()}</h1>
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar">{children}</main>
+          </SidebarFooter>
+        </Sidebar>
+  
+        <div className="flex flex-col flex-1 h-screen overflow-hidden">
+          <header
+            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur-sm px-4 sm:px-6"
+            role="banner"
+          >
+            <div className="flex items-center gap-2">
+              <SidebarTrigger aria-label="Toggle sidebar" />
+              <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                {getPageTitle()}
+              </h1>
+            </div>
+          </header>
+  
+          <main
+            className="flex-1 overflow-auto p-4 sm:p-6 custom-scrollbar"
+            role="main"
+            tabIndex={-1}
+          >
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
