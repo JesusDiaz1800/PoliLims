@@ -145,6 +145,52 @@ let demoAuditorias: Auditoria[] = [
     { id: 'AUD-INT-003', tipo: 'Interna', fecha_inicio: '2025-07-25', fecha_fin: '2025-07-26', auditor_lider: 'Jesus Diaz', auditores: ['Maximiliano Miranda'], alcance: 'Procesos de gestión de no conformidades y acciones correctivas (Cláusula 8.7 de ISO 17025)', estado: 'En Curso' }
 ];
 
+export interface AlertaConfig {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    roles: string[];
+    email: { activa: boolean; plantilla: string; };
+    sms: { activa: boolean; plantilla: string; };
+}
+
+export interface Notificacion {
+    id: string;
+    fecha: string; // ISO 8601 string
+    canal: 'Email' | 'SMS';
+    destinatario: string;
+    asunto: string;
+    estado: 'Enviado' | 'Fallido' | 'Pendiente';
+}
+
+export interface PlantillaNotificacion {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    asunto: string;
+    cuerpo: string; // Contenido con placeholders como {{variable}}
+}
+
+export const mockAlertConfigs: AlertaConfig[] = [
+    { id: 'cal_vencimiento', nombre: 'Vencimiento de Calibración', descripcion: 'Notifica 30, 15 y 3 días antes del vencimiento de la calibración de un equipo.', roles: ['Jefe de Calidad', 'Ing. Analista de Calidad'], email: { activa: true, plantilla: 'cal_vencimiento_email' }, sms: { activa: false, plantilla: 'cal_vencimiento_sms' } },
+    { id: 'nc_nueva', nombre: 'Nueva No Conformidad Registrada', descripcion: 'Notifica al responsable asignado cuando se crea una nueva no conformidad.', roles: ['Responsable Asignado'], email: { activa: true, plantilla: 'nc_nueva_email' }, sms: { activa: false, plantilla: 'nc_nueva_sms' } },
+    { id: 'ac_vencimiento', nombre: 'Vencimiento de Acción Correctiva', descripcion: 'Alerta al responsable 7 días antes de la fecha límite para cerrar una acción correctiva.', roles: ['Responsable Asignado', 'Jefe de Calidad'], email: { activa: true, plantilla: 'ac_vencimiento_email' }, sms: { activa: true, plantilla: 'ac_vencimiento_sms' } },
+];
+
+export const mockNotificationHistory: Notificacion[] = [
+    { id: 'NOTIF-001', fecha: '2025-07-23T10:00:00Z', canal: 'Email', destinatario: 'jefe.calidad@polifusion.cl', asunto: 'Alerta: Calibración próxima a vencer para EQ-05', estado: 'Enviado' },
+    { id: 'NOTIF-002', fecha: '2025-07-22T14:30:00Z', canal: 'Email', destinatario: 'jdiaz@polifusion.cl', asunto: 'Asignación de No Conformidad: NC-015', estado: 'Enviado' },
+    { id: 'NOTIF-003', fecha: '2025-07-22T09:00:00Z', canal: 'SMS', destinatario: '+56912345678', asunto: 'Vencimiento Acción Correctiva NC-012', estado: 'Enviado' },
+    { id: 'NOTIF-004', fecha: '2025-07-21T18:00:00Z', canal: 'Email', destinatario: 'admin@polifusion.cl', asunto: 'Fallo en el envío de notificación a proveedor', estado: 'Fallido' },
+];
+
+export const mockAlertTemplates: PlantillaNotificacion[] = [
+    { id: 'cal_vencimiento_email', nombre: 'Email de Vencimiento de Calibración', descripcion: 'Plantilla para notificar sobre calibraciones próximas a vencer.', asunto: 'Alerta de Calibración: {{equipo.nombre}} vence en {{dias_restantes}} días', cuerpo: 'Estimado(a),\n\nLe informamos que la calibración del equipo {{equipo.nombre}} (ID: {{equipo.id}}) está programada para vencer el {{equipo.proxima_calibracion}}.\n\nPor favor, tome las acciones necesarias para coordinar su calibración a tiempo.\n\nAtentamente,\nSistema PoliLIMS.'},
+    { id: 'nc_nueva_email', nombre: 'Email de Nueva No Conformidad', descripcion: 'Notifica al usuario asignado sobre una nueva NC.', asunto: 'Nueva No Conformidad Asignada: {{nc.id}}', cuerpo: 'Hola {{usuario.nombre}},\n\nSe le ha asignado como responsable de la No Conformidad N° {{nc.id}} ({{nc.descripcion}}), detectada el {{nc.fecha_deteccion}}.\n\nPor favor, ingrese al sistema para revisar los detalles y establecer un plan de acción.\n\nGracias,\nSistema PoliLIMS.'},
+    { id: 'ac_vencimiento_email', nombre: 'Email de Vencimiento de Acción Correctiva', descripcion: 'Alerta sobre el vencimiento próximo de una acción correctiva.', asunto: 'Recordatorio: Acción Correctiva para NC {{nc.id}} vence pronto', cuerpo: 'Estimado(a) {{usuario.nombre}},\n\nEste es un recordatorio de que la fecha límite para completar la acción correctiva asociada a la No Conformidad N° {{nc.id}} es el {{nc.fecha_vencimiento}}.\n\nPor favor, asegúrese de completar y documentar la acción antes de la fecha indicada.\n\nSaludos,\nSistema PoliLIMS.'},
+];
+
+
 let generatedReports = [...demoGeneratedReports];
 let calculosIncertidumbre = [...demoIncertidumbre];
 
