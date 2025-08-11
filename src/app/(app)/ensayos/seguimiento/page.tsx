@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData } from "@/context/data-context";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
 import { findUserByUsername } from "@/services/user-service";
@@ -35,8 +34,10 @@ import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format } from "date-fns";
 import { parseISO } from "date-fns";
-
-export type Ensayo = ReturnType<typeof useDynamicData>["ensayos"][0];
+import type { Ensayo } from "@/context/data-context";
+import * as dataService from "@/services/data-service";
+import Loading from "../../loading";
+import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -157,8 +158,9 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
 
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
-  const { ensayos } = useDynamicData();
   const searchParams = useSearchParams();
+  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
   const [user, setUser] = React.useState<User | null>(null);
@@ -166,17 +168,23 @@ export default function SeguimientoEnsayosPage() {
   const [reportData, setReportData] = React.useState<ReportData | null>(null);
   const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
   const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
-
-  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
-    const username = searchParams.get('user') || 'jdiaz';
-    async function loadUser() {
-      const userData = await findUserByUsername(username);
-      setUser(userData);
+    async function loadData() {
+        setIsLoading(true);
+        const [userData, initialData] = await Promise.all([
+            findUserByUsername(searchParams.get('user') || 'jdiaz'),
+            dataService.getInitialData()
+        ]);
+        setUser(userData);
+        setEnsayos(initialData.ensayos);
+        setIsLoading(false);
     }
-    loadUser();
+    loadData();
   }, [searchParams]);
+
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const ensayoTypes = React.useMemo(() => 
     ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
@@ -199,27 +207,8 @@ export default function SeguimientoEnsayosPage() {
   }
 
   const handleEditClick = (ensayo: Ensayo) => {
-    let path = '';
-    const userQuery = searchParams.toString();
-
-    switch (ensayo.tipo) {
-      case 'Tubería HDPE':
-        path = '/ensayos/tuberias/hdpe';
-        break;
-      case 'Tubería PP':
-        path = '/ensayos/tuberias/pp';
-        break;
-      case 'Materia Prima':
-        path = '/ensayos/materia-prima';
-        break;
-      case 'Reprocesado':
-        path = '/ensayos/reprocesado';
-        break;
-      default:
-        path = `/ensayos/seguimiento`; 
-        break;
-    }
-    router.push(`${path}?id=${ensayo.id}&${userQuery}`);
+    setSelectedEnsayo(ensayo);
+    setIsFormDialogOpen(true);
   };
 
   const handleOpenApprovalDialog = (ensayo: Ensayo) => {
@@ -295,7 +284,10 @@ export default function SeguimientoEnsayosPage() {
         document.body.removeChild(iframe);
     }, 500);
   }
-
+  
+  if (isLoading || !user) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -354,6 +346,16 @@ export default function SeguimientoEnsayosPage() {
             onClose={handleCloseApprovalDialog}
             ensayo={selectedEnsayo}
             user={user}
+        />
+    )}
+     {selectedEnsayo && user && (selectedEnsayo.tipo === 'Tubería HDPE' || selectedEnsayo.tipo === 'Tubería PP') && (
+        <EnsayoProductoTerminadoDialog
+            isOpen={isFormDialogOpen}
+            onClose={() => setIsFormDialogOpen(false)}
+            ensayo={selectedEnsayo}
+            tipo={selectedEnsayo.tipo.replace('Tubería ', '') as 'HDPE' | 'PP'}
+            user={user}
+            defaultTab={filterType}
         />
     )}
     {reportData && (

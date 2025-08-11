@@ -10,7 +10,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, FilePlus2, Edit, Trash2, MoreHorizontal, Filter, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Test } from '@/context/data-context';
+import type { Ensayo } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
@@ -19,9 +19,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '.
 import type { User } from '@/services/user-service';
 
 interface ReprocesadoTableProps {
-  ensayos: Test[];
+  ensayos: Ensayo[];
   onAddNew: () => void;
-  onEdit: (ensayo: Test, filterType: string) => void;
+  onEdit: (ensayo: Ensayo, filterType: string) => void;
   user: User | null;
 }
 
@@ -45,19 +45,19 @@ const formatValue = (value: any, decimals: number = 2) => {
 const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: ReprocesadoTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
-  const { deleteTest } = useDynamicData();
+  const { deleteEnsayo } = useDynamicData();
   const { toast } = useToast();
   const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() => 
     ensayos.filter(ensayo =>
-        (ensayo.test_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase())))
     ), [ensayos, searchTerm]);
   
   const handleDelete = async (ensayoId: string) => {
     try {
-        await deleteTest(ensayoId);
+        await deleteEnsayo(ensayoId);
         toast({
             title: "Ensayo Eliminado",
             description: "El ensayo ha sido eliminado correctamente.",
@@ -150,74 +150,74 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
     }
   };
 
-  const renderRow = (ensayo: Test) => {
+  const renderRow = (ensayo: Ensayo) => {
      switch (filterType) {
         case 'melt_index':
             return (
                 <>
-                    <TableCell>{ensayo.finished_at}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.melt_index_reportado, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexCalculado, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexVariacion, 2)}%</TableCell>
-                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.melt_index_reportado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                 </>
             );
         case 'densidad':
             return (
                  <>
-                    <TableCell>{ensayo.finished_at}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.densidad_liquido, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.densidadCalculada, 4)}</TableCell>
-                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidad_liquido, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                  </>
             );
         case 'porcentaje_negro_humo':
             return (
                  <>
-                    <TableCell>{ensayo.finished_at}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.negroHumoCalculado, 2)}%</TableCell>
-                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                  </>
             );
         case 'cenizas':
              return (
                  <>
-                    <TableCell>{ensayo.finished_at}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.cenizasCalculado, 2)}%</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.cenizasCorregido, 2)}%</TableCell>
-                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCorregido, 2)}%</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                  </>
             );
         case 'tio':
             return (
                 <>
-                    <TableCell>{ensayo.finished_at}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
                     <TableCell>{ensayo.lote}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.tio_tiempo, 2)} min</TableCell>
-                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>{ensayo.status}</Badge></TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)} min</TableCell>
+                    <TableCell><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{ensayo.estado}</Badge></TableCell>
                 </>
             );
         default: // 'all'
             return (
                 <>
                     <TableCell className="font-medium">{ensayo.lote}</TableCell>
-                    <TableCell>{ensayo.finished_at}</TableCell>
-                    <TableCell>{ensayo.assigned_to}</TableCell>
+                    <TableCell>{ensayo.fecha}</TableCell>
+                    <TableCell>{ensayo.analista}</TableCell>
                     <TableCell>
-                        <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.status))}>
-                        {ensayo.status}
+                        <Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>
+                        {ensayo.estado}
                         </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexCalculado, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.meltIndexVariacion, 2)}%</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.densidadCalculada, 4)}</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.negroHumoCalculado, 2)}%</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.cenizasCalculado, 2)}%</TableCell>
-                    <TableCell className="text-right font-mono">{formatValue(ensayo.results?.tio_tiempo, 2)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.cenizasCalculado, 2)}%</TableCell>
+                    <TableCell className="text-right font-mono">{formatValue(ensayo.tio_tiempo, 2)}</TableCell>
                 </>
             );
      }
@@ -272,7 +272,7 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
             </TableHeader>
             <TableBody>
               {filteredEnsayos.map((ensayo) => (
-                  <TableRow key={ensayo.test_id}>
+                  <TableRow key={ensayo.id}>
                     {renderRow(ensayo)}
                     <TableCell className="text-right">
                       <AlertDialog>
@@ -303,12 +303,12 @@ const ReprocesadoTableInternal = ({ ensayos, onAddNew, onEdit, user }: Reprocesa
                                 <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
                                 <AlertDialogDescription>
                                     Esta acción no se puede deshacer. Esto eliminará permanentemente el ensayo
-                                    <span className="font-bold"> {ensayo.test_id}</span> de los servidores.
+                                    <span className="font-bold"> {ensayo.id}</span> de los servidores.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(ensayo.test_id)} className={cn(buttonVariants({variant: "destructive"}))}>
+                                <AlertDialogAction onClick={() => handleDelete(ensayo.id)} className={cn(buttonVariants({variant: "destructive"}))}>
                                     Sí, eliminar ensayo
                                 </AlertDialogAction>
                             </AlertDialogFooter>
