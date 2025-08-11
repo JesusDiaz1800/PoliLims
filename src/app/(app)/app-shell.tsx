@@ -443,8 +443,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
+                  size="sm"
                   variant="ghost"
                   tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
+                  className="text-white/80 hover:bg-white/10 hover:text-white"
                 >
                   <Link href="/login" aria-label="Cerrar sesión">
                     <div className="flex items-center gap-3">
@@ -499,4 +501,3 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </div>
     );
   }
-
