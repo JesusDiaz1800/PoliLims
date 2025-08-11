@@ -300,7 +300,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
 
     return (
         <div className="flex min-h-screen w-full bg-muted/40">
-            <Sidebar className="dark:bg-[#142541] bg-[#1C3664] text-white border-r-0">
+            <Sidebar className="dark:bg-card text-white border-r-0 bg-[#1C3664] dark:bg-[#142541]">
                 <SidebarContent className="text-white">
                      <div className="py-4 pl-1 overflow-hidden transition-all duration-300">
                         <Logo className="w-44 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
@@ -379,7 +379,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
                 <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6">
                     <div className="flex items-center gap-2">
                         <SidebarTrigger/>
-                         <h1 className="text-xl font-semibold font-headline text-foreground">
+                         <h1 className="text-lg font-semibold font-headline text-foreground">
                            {getPageTitle()}
                         </h1>
                     </div>
