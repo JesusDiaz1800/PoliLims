@@ -3,7 +3,7 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Library, ServerCrash } from "lucide-react";
+import { FileText, Library, ServerCrash, Eye } from "lucide-react";
 import type { KnowledgeBaseFile } from "@/services/server-data-service";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export function DocumentosTable({ files }: DocumentosTableProps) {
             <div>
                 <CardTitle>Biblioteca de Documentos</CardTitle>
                 <CardDescription>
-                    Esta es la base de conocimiento actual para el Asistente de Soporte. Los archivos listados aquí son consultados para responder preguntas.
+                    Esta es la base de conocimiento para el Asistente de Soporte. Los archivos aquí listados son consultados para responder preguntas.
                 </CardDescription>
             </div>
         </div>
@@ -59,7 +59,10 @@ export function DocumentosTable({ files }: DocumentosTableProps) {
                     <TableCell>{formatBytes(file.size)}</TableCell>
                     <TableCell className="text-right">
                         <Button variant="outline" size="sm" asChild>
-                           <Link href={`/data/${file.name}`} target="_blank">Ver Archivo</Link>
+                           <Link href={`/data/${file.name}`} target="_blank">
+                             <Eye className="mr-2 h-4 w-4" />
+                             Ver
+                           </Link>
                         </Button>
                     </TableCell>
                 </TableRow>

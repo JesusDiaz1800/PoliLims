@@ -103,7 +103,6 @@ const equiposSubMenu = [
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
-    { href: '/biblioteca/upload', label: 'Cargar Documento', icon: UploadCloud },
 ];
 
 const reportsSubMenu = [
@@ -194,7 +193,7 @@ const pageTitles: Record<string, string> = {
     '/portal': 'Portal de Clientes',
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
-    '/biblioteca/documentos': 'Biblioteca de Documentos',
+    '/biblioteca/documentos': 'Gestor Documental',
     '/biblioteca/upload': 'Cargar Documento',
     '/reports/generador': 'Generador de Informes y Certificados',
     '/reports/biblioteca': 'Biblioteca de Informes',
@@ -275,7 +274,7 @@ export function AppShell({ children, user }: { children: React.ReactNode, user: 
     }
 
     return (
-        <div className="flex h-screen w-full bg-background">
+        <div className="flex min-h-screen w-full bg-muted/40">
             <Sidebar>
                 <SidebarContent>
                      <div className="py-4 overflow-hidden transition-all duration-300">
