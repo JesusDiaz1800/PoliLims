@@ -1,62 +1,94 @@
+// Estas reglas de seguridad para Firestore están diseñadas para un prototipo,
+// demostrando los principios de un sistema de control de acceso basado en roles (RBAC).
+// En un sistema de producción, estas reglas serían más granulares y extensas.
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Regla de seguridad predeterminada: denegar todo el acceso.
-    // Esto asegura que ninguna colección sea accesible a menos que se defina una regla explícita.
-    match /{document=**} {
-      allow read, write: if false;
+    // --- Funciones Auxiliares ---
+    // Función para verificar si el usuario está autenticado.
+    function isSignedIn() {
+      return request.auth != null;
     }
 
-    // Permitir a los usuarios autenticados leer y escribir en sus propios datos de usuario.
-    // NOTA: En producción, es posible que desee restringir las escrituras para que los usuarios no puedan cambiar sus propios roles.
+    // Función para obtener los datos del perfil del usuario que realiza la solicitud.
+    // Esto es crucial para la lógica basada en roles.
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    // Función para verificar si el rol del usuario es 'Administrador'.
+    // Los administradores tienen privilegios elevados.
+    function isAdmin() {
+      return getUserData().role == 'Administrador' || getUserData().role == 'Jefe de Calidad';
+    }
+
+    // --- Reglas por Colección ---
+
+    // **Colección de Usuarios (users)**
+    // - Los usuarios solo pueden ver su propio perfil.
+    // - Solo los administradores pueden crear, actualizar o eliminar usuarios.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isAdmin();
     }
 
-    // Permitir que cualquier usuario autenticado lea datos que no son específicos del usuario, como la lista de equipos o ensayos.
-    // Las escrituras deben restringirse a roles específicos.
-    match /ensayos/{ensayoId} {
-      allow read: if request.auth != null;
-      // Permitir la escritura solo a 'Analistas' o 'Jefes'. Esto requeriría que el rol del usuario
-      // se almacene en los custom claims del token de autenticación o en una colección 'users'.
-      // Ejemplo (requiere configuración adicional): allow write: if request.auth.token.role in ['analista', 'jefe_calidad'];
-      allow write: if request.auth != null; // Simplificado para el prototipo
+    // **Colección de Muestras (samples)**
+    // - Los administradores y supervisores pueden leer todas las muestras.
+    // - Los analistas pueden leer todas las muestras para tener contexto.
+    // - Los clientes solo pueden leer las muestras que les pertenecen (basado en un campo 'clientId').
+    // - Solo personal interno autorizado (no clientes) puede crear o modificar muestras.
+    match /samples/{sampleId} {
+      allow read: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor' || getUserData().role == 'Analista');
+      // allow read: if isSignedIn() && getUserData().clientId == resource.data.clientId; // Ejemplo para clientes
+      allow create: if isSignedIn() && getUserData().role != 'Cliente';
+      allow update: if isSignedIn() && getUserData().role != 'Cliente';
+      allow delete: if isAdmin();
     }
 
-    match /equipos/{equipoId} {
-      allow read: if request.auth != null;
-      // Ejemplo: allow write: if request.auth.token.role in ['admin', 'jefe_calidad'];
-      allow write: if request.auth != null; // Simplificado para el prototipo
-    }
-
-    match /registros_control_rutinario/{registroId} {
-        allow read, write: if request.auth != null; // Abierto para inspectores y analistas
-    }
-
-     match /controles_equipos/{controlId} {
-        allow read, write: if request.auth != null;
+    // **Colección de Ensayos (tests)**
+    // - Los administradores y supervisores leen todo.
+    // - Los analistas pueden leer todos los ensayos pero solo modificar los que tienen asignados.
+    match /tests/{testId} {
+      allow read: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor' || getUserData().role == 'Analista');
+      allow create: if isSignedIn() && (isAdmin() || getUserData().role == 'Analista');
+      allow update: if isSignedIn() && (isAdmin() || resource.data.assigned_to == getUserData().fullName);
+      allow delete: if isAdmin();
     }
     
-    match /no_conformidades/{incidenciaId} {
-        allow read, write: if request.auth != null;
+    // **Colección de Equipos (equipment) y su Historial (calibrations)**
+    // - Todo el personal interno puede ver los equipos y su historial.
+    // - Solo los administradores o supervisores pueden añadir o modificar equipos y registros de calibración.
+    match /equipment/{equipId} {
+      allow read: if isSignedIn() && getUserData().role != 'Cliente';
+      allow write: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor');
+    }
+    match /calibrations/{calId} {
+       allow read: if isSignedIn() && getUserData().role != 'Cliente';
+       allow write: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor');
     }
 
-     match /importaciones/{importacionId} {
-        allow read, write: if request.auth != null;
+    // **Colección de Documentos (documents)**
+    // - Lectura permitida para todo el personal interno.
+    // - Escritura restringida a roles con permisos de gestión documental (ej. Supervisor, Admin).
+    match /documents/{docId} {
+       allow read: if isSignedIn() && getUserData().role != 'Cliente';
+       allow write: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor');
     }
 
-    match /generated_reports/{reportId} {
-        allow read, write: if request.auth != null;
+    // **Colección de No Conformidades (nc_actions)**
+    // - Similar a los ensayos, roles de calidad pueden gestionar, otros pueden tener acceso de solo lectura.
+     match /nc_actions/{ncId} {
+      allow read: if isSignedIn() && getUserData().role != 'Cliente';
+      allow write: if isSignedIn() && (isAdmin() || getUserData().role == 'Supervisor');
     }
 
-
-    // El historial de actividad (audit trail) solo debe ser de escritura. Nadie debería poder modificar o eliminar registros.
-    match /recent_activity/{activityId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow update, delete: if false; // Los registros de auditoría son inmutables.
+    // **Regla por Defecto (Default Deny)**
+    // Cualquier otra colección o ruta no definida explícitamente no tendrá acceso.
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

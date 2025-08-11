@@ -2,7 +2,7 @@
 export interface User {
     username: string;
     fullName: string;
-    role: string;
+    role: 'Jefe de Calidad' | 'Ing. Analista de Calidad' | 'Analista de Calidad' | 'Inspector de Calidad' | 'Administrador' | 'Cliente';
     initials: string;
     avatarUrl: string;
 }
@@ -78,9 +78,23 @@ const users: Record<string, User> = {
         initials: "LP",
         avatarUrl: "https://placehold.co/40x40/E6826B/313437?text=LP"
     },
+    "admin": {
+        username: "admin",
+        fullName: "Administrador del Sistema",
+        role: "Administrador",
+        initials: "AD",
+        avatarUrl: "https://placehold.co/40x40/888/fff?text=AD"
+    },
+    "cliente": {
+        username: "cliente",
+        fullName: "Cliente de Ejemplo",
+        role: "Cliente",
+        initials: "CE",
+        avatarUrl: "https://placehold.co/40x40/3498db/fff?text=CE"
+    }
 };
 
 export async function findUserByUsername(username: string): Promise<User> {
-    // Devuelve un usuario predeterminado (Jefe de Calidad) si no se encuentra el especificado.
+    // Devuelve un usuario predeterminado si no se encuentra el especificado.
     return users[username] || users["jefe.calidad"];
 }
