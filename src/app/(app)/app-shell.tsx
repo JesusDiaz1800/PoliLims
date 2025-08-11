@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -163,7 +164,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item:
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start"
+                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white dark:hover:bg-muted data-[active=true]:text-white"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
