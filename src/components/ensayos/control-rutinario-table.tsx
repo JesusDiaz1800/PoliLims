@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -20,7 +19,7 @@ import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, T
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
 import { TipoProducto } from "@/lib/matriz-datos";
-import { useDynamicData, type Ensayo } from "@/context/data-context";
+import type { Ensayo, Registro } from "@/context/data-context";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,30 +32,32 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
+import * as dataService from "@/services/data-service";
+import { revalidatePath } from "next/cache";
 
 
-export type Registro = ReturnType<typeof useDynamicData>["registros"][0] & { productoInfo?: TipoProducto };
+export type EnrichedRegistro = Registro & { productoInfo?: TipoProducto };
 
 interface ControlRutinarioTableProps {
+  registros: Registro[];
+  ensayos: Ensayo[];
   onAddRecordClick: () => void;
   matrizProductos: TipoProducto[];
 }
 
-const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) => {
-  const { registros, deleteRegistro, ensayos, isLoading } = useDynamicData();
+const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [selectedRegistro, setSelectedRegistro] = React.useState<Registro | null>(null);
+  const [selectedRegistro, setSelectedRegistro] = React.useState<EnrichedRegistro | null>(null);
   const [isMecanicosDialogOpen, setIsMecanicosDialogOpen] = React.useState(false);
 
   const filteredRegistros = React.useMemo(() => {
-    if (isLoading) return [];
     return registros.filter(registro => 
       registro.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.inspector.toLowerCase().includes(searchTerm.toLowerCase()) ||
       registro.producto.toLowerCase().includes(searchTerm.toLowerCase())
     )
-  }, [registros, searchTerm, isLoading]);
+  }, [registros, searchTerm]);
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
     const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
@@ -71,7 +72,8 @@ const ControlRutinarioTableInternal = ({ onAddRecordClick, matrizProductos }: Co
 
   const handleDelete = async (registroId: string) => {
     try {
-        await deleteRegistro(registroId);
+        await dataService.deleteRegistro(registroId);
+        revalidatePath('/ensayos/control-rutinario');
         toast({
             title: "Registro Eliminado",
             description: "El registro ha sido eliminado correctamente.",

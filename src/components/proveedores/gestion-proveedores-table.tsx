@@ -41,8 +41,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type Proveedor } from "@/context/data-context";
+import type { Proveedor } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
+import * as dataService from "@/services/data-service";
+import { revalidatePath } from "next/cache";
 
 interface GestionProveedoresTableProps {
   proveedores: Proveedor[];
@@ -65,7 +67,6 @@ function getStatusVariant(status: Proveedor["estado"]) {
 
 const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: GestionProveedoresTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { deleteProveedor } = useDynamicData();
   const { toast } = useToast();
 
   const filteredProveedores = React.useMemo(() => 
@@ -77,7 +78,8 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
   
   const handleDelete = async (proveedorId: string) => {
     try {
-        await deleteProveedor(proveedorId);
+        await dataService.deleteProveedor(proveedorId);
+        revalidatePath('/proveedores/gestion');
         toast({
             title: "Proveedor Eliminado",
             description: "El proveedor ha sido eliminado correctamente.",

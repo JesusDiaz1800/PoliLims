@@ -41,8 +41,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type Importacion } from "@/context/data-context";
+import type { Importacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
+import * as dataService from "@/services/data-service";
+import { revalidatePath } from "next/cache";
+
 
 interface ImportacionesTableProps {
   importaciones: Importacion[];
@@ -65,7 +68,6 @@ function getStatusVariant(status?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO') {
 
 const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: ImportacionesTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { deleteImportacion } = useDynamicData();
   const { toast } = useToast();
 
   const filteredImportaciones = React.useMemo(() => 
@@ -78,7 +80,8 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
   
   const handleDelete = async (id: string) => {
     try {
-        await deleteImportacion(id);
+        await dataService.deleteImportacion(id);
+        revalidatePath('/importaciones');
         toast({
             title: "Importación Eliminada",
             description: "El registro de importación ha sido eliminado correctamente.",

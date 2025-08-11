@@ -42,11 +42,13 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Eye, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type Equipo } from "@/context/data-context";
+import type { Equipo } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { EquipoDetailsDialog } from "./equipo-details-dialog";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import * as dataService from "@/services/data-service";
+import { revalidatePath } from "next/cache";
 
 
 interface EquiposTableProps {
@@ -87,7 +89,6 @@ function getCalibrationStatus(dateString: string): { message: string, color: str
 
 const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { deleteEquipo } = useDynamicData();
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
 
@@ -102,7 +103,8 @@ const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) 
   
   const handleDelete = async (equipoId: string) => {
     try {
-        await deleteEquipo(equipoId);
+        await dataService.deleteEquipo(equipoId);
+        revalidatePath('/equipos');
         toast({
             title: "Equipo Eliminado",
             description: "El equipo ha sido eliminado correctamente.",

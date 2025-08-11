@@ -17,12 +17,13 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import { findUserByUsername } from "@/services/user-service";
-import { useDynamicData } from "@/context/data-context";
+import * as dataService from "@/services/data-service";
 import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
+import type { Ensayo, Recen, Equipo, NoConformidad } from "@/context/data-context";
 
 export type DashboardFilterParams = {
   month?: string;
@@ -34,7 +35,12 @@ export type DashboardFilterParams = {
 }
 
 export default function DashboardPage() {
-  const { ensayos, isLoading, recentActivity, equipos, noConformidades } = useDynamicData();
+  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
+  const [recentActivity, setRecentActivity] = React.useState<RecentActivity[]>([]);
+  const [equipos, setEquipos] = React.useState<Equipo[]>([]);
+  const [noConformidades, setNoConformidades] = React.useState<NoConformidad[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
   const searchParams = useSearchParams();
   
   const month = searchParams.get('month') || 'last_12_months';
@@ -66,12 +72,21 @@ export default function DashboardPage() {
 
 
   React.useEffect(() => {
-    async function loadUserAndFilters() {
+    async function loadData() {
+        setIsLoading(true);
         const userData = await findUserByUsername(username);
         setUser(userData);
+
+        const { ensayos: fetchedEnsayos, recentActivity: fetchedActivity, equipos: fetchedEquipos, noConformidades: fetchedNCs } = await dataService.getInitialData();
+        setEnsayos(fetchedEnsayos);
+        setRecentActivity(fetchedActivity);
+        setEquipos(fetchedEquipos);
+        setNoConformidades(fetchedNCs);
+
+        setIsLoading(false);
     }
     if (username) {
-      loadUserAndFilters();
+      loadData();
     }
   }, [username]);
   

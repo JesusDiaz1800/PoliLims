@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
-import { DataProvider } from '@/context/data-context';
 import { findUserByUsername } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
 
@@ -34,16 +33,14 @@ export default async function AppLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <DataProvider>
-                <ChatWidgetProvider>
-                    <SidebarProvider>
-                        <AppShell user={user}>
-                            {children}
-                        </AppShell>
-                    </SidebarProvider>
-                    <ChatWidget />
-                </ChatWidgetProvider>
-            </DataProvider>
+            <ChatWidgetProvider>
+                <SidebarProvider>
+                    <AppShell user={user}>
+                        {children}
+                    </AppShell>
+                </SidebarProvider>
+                <ChatWidget />
+            </ChatWidgetProvider>
         </ThemeProvider>
     );
 }
