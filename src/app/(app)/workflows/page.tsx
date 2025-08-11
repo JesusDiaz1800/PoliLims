@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GitBranch, ChevronRight, CheckCircle, AlertTriangle, FlaskConical, CircleDot, FileCheck, Circle, Info } from "lucide-react";
-import { useDynamicData, type Ensayo, type RecentActivity } from "@/context/data-context";
+import type { Ensayo, RecentActivity } from "@/context/data-context";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -18,6 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
+import * as dataService from "@/services/data-service";
 
 const workflowSteps = [
     { id: 'Recibida', label: 'Muestra Recibida', icon: Circle, statuses: ['Recibida'] },
@@ -90,8 +91,21 @@ const HistoryItem = ({ activity }: { activity: RecentActivity }) => {
 
 
 export default function WorkflowsPage() {
-    const { ensayos, recentActivity, isLoading } = useDynamicData();
+    const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
+    const [recentActivity, setRecentActivity] = React.useState<RecentActivity[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
     const [selectedEnsayoId, setSelectedEnsayoId] = React.useState<string | null>(null);
+
+     React.useEffect(() => {
+        async function loadData() {
+            setIsLoading(true);
+            const initialData = await dataService.getInitialData();
+            setEnsayos(initialData.ensayos);
+            setRecentActivity(initialData.recentActivity);
+            setIsLoading(false);
+        }
+        loadData();
+    }, []);
 
     const productEnsayos = React.useMemo(() => 
         ensayos.filter(e => e.tipo.startsWith('Tubería'))
