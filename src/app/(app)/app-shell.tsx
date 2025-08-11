@@ -278,13 +278,13 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   {
     label: "Ensayos",
-    icon: Science,
+    icon: HardHat,
     subMenu: ensayosSubMenu,
     href: "/ensayos",
   },
   {
     label: "Informes",
-    icon: Description,
+    icon: FileText,
     href: "/reports",
     subItems: [
       { href: "/reports/generador", label: "Generador de Informes", icon: FilePlus2 },
@@ -293,13 +293,13 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   },
   {
     label: "Biblioteca",
-    icon: LibraryBooks,
+    icon: Library,
     href: "/biblioteca",
     subItems: [{ href: "/biblioteca/documentos", label: "Documentos", icon: Library }],
   },
   {
     label: "Asistentes",
-    icon: Build,
+    icon: Code2,
     href: "/asistentes",
      subItems: [
       { href: "/soporte", label: "Soporte de Laboratorio", icon: MessageSquarePlus, onClick: toggleChat },
@@ -310,30 +310,14 @@ const menuItems = (toggleChat: () => void): MenuItem[] => [
   {
     label: "Procesos de Gestión",
     icon: Factory, // Usando un icono más representativo
-    subMenu: [
-        { href: "/equipos", label: 'Gestión de Equipos', icon: Build },
-        { href: "/auditorias", label: 'Auditorías', icon: Assessment },
-        { href: "/control-ambiental", label: 'Control Ambiental', icon: Eco },
-        { href: "/no-conformidades", label: 'No Conformidades', icon: ReportProblem },
-        { href: "/proveedores/gestion", label: 'Proveedores', icon: LocalShipping },
-        { href: "/workflows", label: 'Flujos de Trabajo', icon: GitBranch },
-        { href: "/administracion/formacion", label: 'Formación y Competencia', icon: School },
-        { href: "/administracion/incertidumbre", label: 'Calculadora de Incertidumbre', icon: Calculator },
-        { href: "/importaciones", label: 'Control de Importaciones', icon: Ship },
-        { href: "/portal", label: 'Portal de Clientes', icon: Users },
-    ],
+    subMenu: gestionSubMenu,
     href: "/procesos",
   },
   { type: "separator" },
   {
     label: "Administración",
     icon: Settings,
-    subMenu: [
-      { href: "/administracion/usuarios", label: "Gestión de Usuarios", icon: Users },
-      { href: "/administracion/permisos", label: "Roles y Permisos", icon: ShieldCheck },
-      { href: "/administracion/configuracion", label: "Configuración", icon: Settings },
-      { href: "/administracion/basedatos", label: "Base de Datos", icon: Database },
-    ],
+    subMenu: administracionSubMenu,
     href: "/admin",
   },
 ];
@@ -381,7 +365,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
-        className="dark:bg-card"
+        className="bg-card dark:bg-card"
         role="navigation"
         aria-label="Main sidebar"
       >

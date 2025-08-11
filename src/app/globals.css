@@ -50,43 +50,42 @@ body {
   }
  
   .dark {
-    --background: 240 10% 3.9%; /* Near black */
-    --foreground: 0 0% 98%; /* White text */
- 
-    --card: 240 4% 9%; /* Dark gray card */
-    --card-foreground: 0 0% 98%;
- 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
- 
-    /* Primary */
-    --primary: 207 44% 55%; /* Lighter blue for dark mode */
-    --primary-foreground: 210 40% 98%;
- 
-    /* Secondary */
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
- 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
- 
-    /* Accent */
-    --accent: 195 27% 46%; /* Darker Accent */
-    --accent-foreground: 0 0% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 207 44% 55%;
+    --background: 224 71.4% 4.1%; /* #09090B */
+    --foreground: 210 20% 98%; /* #fafafa */
     
+    --card: 224 71.4% 6.1%; /* Slightly lighter than background */
+    --card-foreground: 210 20% 98%;
+    
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    
+    --primary: 217.2 91.2% 59.8%; /* Bright Blue for accents */
+    --primary-foreground: 210 20% 98%;
+    
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 215.4 20.2% 65.1%;
+    
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 217.2 91.2% 59.8%;
+    
+    --radius: 0.5rem;
+
     /* Chart Colors (Dark Theme) */
-    --chart-1: 207 44% 55%;
-    --chart-2: 195 27% 46%;
-    --chart-3: 38 78% 61%; /* Gold accent works in dark mode too */
-    --chart-4: 240 5% 64.9%;
-    --chart-5: 0 0% 98%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 173 80% 40%;
+    --chart-3: 38 78% 61%;
+    --chart-4: 28 80% 56%;
+    --chart-5: 0 0% 80%;
   }
 }
  
