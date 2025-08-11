@@ -56,27 +56,3 @@ export default function Loading() {
     </div>
   );
 }
-
-// Add keyframes to tailwind.config.ts or globals.css if they don't exist
-// This is a comment for the developer, the model should handle the config file.
-/* In tailwind.config.ts:
-extend: {
-  keyframes: {
-    ...
-    'spin-slow': {
-      '0%': { transform: 'rotate(0deg)' },
-      '100%': { transform: 'rotate(360deg)' },
-    },
-    orbit: {
-      '0%': { transform: 'rotate(0deg) translateX(40px) rotate(0deg)', opacity: 1 },
-      '50%': { transform: 'rotate(180deg) translateX(40px) rotate(-180deg)', opacity: 0.7 },
-      '100%': { transform: 'rotate(360deg) translateX(40px) rotate(-360deg)', opacity: 1 },
-    }
-  },
-  animation: {
-    ...
-    'spin-slow': 'spin-slow 3s linear infinite',
-    'orbit': 'orbit 2s linear infinite',
-  }
-}
-*/
