@@ -98,47 +98,49 @@ export function GestionProveedorForm({ proveedorToEdit, onFormSubmit }: GestionP
   };
 
   return (
-    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
-      <div className="space-y-6 pr-3">
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Información General</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Proveedor</FormLabel><FormControl><Input placeholder="Ej: Laboratorios Acme S.A." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                <FormField control={form.control} name="tipo" render={({ field }) => (<FormItem><FormLabel>Tipo de Proveedor</FormLabel><FormControl><Input placeholder="Ej: Calibración, Materia Prima" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                <FormField control={form.control} name="estado" render={({ field }) => (<FormItem><FormLabel>Estado</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Activo">Activo</SelectItem><SelectItem value="En evaluación">En evaluación</SelectItem><SelectItem value="Inactivo">Inactivo</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
-            </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6 pr-3">
+          <div className="space-y-4">
+              <h3 className="text-lg font-medium">Información General</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Proveedor</FormLabel><FormControl><Input placeholder="Ej: Laboratorios Acme S.A." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                  <FormField control={form.control} name="tipo" render={({ field }) => (<FormItem><FormLabel>Tipo de Proveedor</FormLabel><FormControl><Input placeholder="Ej: Calibración, Materia Prima" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                  <FormField control={form.control} name="estado" render={({ field }) => (<FormItem><FormLabel>Estado</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Activo">Activo</SelectItem><SelectItem value="En evaluación">En evaluación</SelectItem><SelectItem value="Inactivo">Inactivo</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
+              </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+              <h3 className="text-lg font-medium">Información de Contacto</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="contacto_nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Contacto</FormLabel><FormControl><Input placeholder="Nombre y Apellido" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                  <FormField control={form.control} name="contacto_email" render={({ field }) => (<FormItem><FormLabel>Email de Contacto</FormLabel><FormControl><Input type="email" placeholder="contacto@empresa.com" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                  <FormField control={form.control} name="contacto_telefono" render={({ field }) => (<FormItem><FormLabel>Teléfono de Contacto</FormLabel><FormControl><Input placeholder="+56 9 1234 5678" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+              </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+              <h3 className="text-lg font-medium">Documentación y Cumplimiento</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="certificacionesISO" render={({ field }) => (<FormItem><FormLabel>Certificaciones ISO</FormLabel><FormControl><Input placeholder="Ej: ISO 9001, ISO 17025" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+                  <FormField control={form.control} name="contratoUrl" render={({ field }) => (<FormItem><FormLabel>URL del Contrato</FormLabel><FormControl><Input placeholder="https://ejemplo.com/contrato.pdf" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+              </div>
+          </div>
+          
+          <Separator />
+          
+          <div className="space-y-4">
+              <h3 className="text-lg font-medium">Observaciones</h3>
+              <FormField control={form.control} name="observaciones" render={({ field }) => (<FormItem><FormControl><Textarea placeholder="Añada cualquier nota relevante sobre el proveedor..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
+          </div>
+
+          <div className="flex justify-end pt-4"><Button type="submit"><Save className="mr-2 h-4 w-4" />{isEditing ? 'Guardar Cambios' : 'Registrar Proveedor'}</Button></div>
         </div>
-
-        <Separator />
-
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Información de Contacto</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <FormField control={form.control} name="contacto_nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Contacto</FormLabel><FormControl><Input placeholder="Nombre y Apellido" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                 <FormField control={form.control} name="contacto_email" render={({ field }) => (<FormItem><FormLabel>Email de Contacto</FormLabel><FormControl><Input type="email" placeholder="contacto@empresa.com" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                 <FormField control={form.control} name="contacto_telefono" render={({ field }) => (<FormItem><FormLabel>Teléfono de Contacto</FormLabel><FormControl><Input placeholder="+56 9 1234 5678" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-            </div>
-        </div>
-
-        <Separator />
-
-         <div className="space-y-4">
-            <h3 className="text-lg font-medium">Documentación y Cumplimiento</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField control={form.control} name="certificacionesISO" render={({ field }) => (<FormItem><FormLabel>Certificaciones ISO</FormLabel><FormControl><Input placeholder="Ej: ISO 9001, ISO 17025" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                <FormField control={form.control} name="contratoUrl" render={({ field }) => (<FormItem><FormLabel>URL del Contrato</FormLabel><FormControl><Input placeholder="https://ejemplo.com/contrato.pdf" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-             </div>
-        </div>
-        
-        <Separator />
-        
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium">Observaciones</h3>
-            <FormField control={form.control} name="observaciones" render={({ field }) => (<FormItem><FormControl><Textarea placeholder="Añada cualquier nota relevante sobre el proveedor..." {...field} /></FormControl><FormMessage /></FormItem>)}/>
-        </div>
-
-        <div className="flex justify-end pt-4"><Button type="submit"><Save className="mr-2 h-4 w-4" />{isEditing ? 'Guardar Cambios' : 'Registrar Proveedor'}</Button></div>
-      </div>
+      </form>
     </Form>
   );
 }
