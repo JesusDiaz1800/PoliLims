@@ -272,7 +272,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
 
   return (
-    <Form {...form}>
+    <form onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -639,6 +639,6 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
         </Button>
       </CardFooter>
       </div>
-    </Form>
+    </form>
   );
 }
