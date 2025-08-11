@@ -16,8 +16,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useDynamicData, type Auditoria, type User } from "@/context/data-context";
+import type { Auditoria, User } from "@/context/data-context";
 import { Textarea } from "@/components/ui/textarea";
+import * as dataService from "@/services/data-service";
 
 interface AuditoriaFormProps {
   auditoriaToEdit: Auditoria | null;
@@ -41,7 +42,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: AuditoriaFormProps) {
   const { toast } = useToast();
-  const { addAuditoria, updateAuditoria } = useDynamicData();
   const isEditing = !!auditoriaToEdit;
 
   const defaultValues = React.useMemo(() => ({
@@ -74,14 +74,14 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
 
     try {
       if (isEditing && auditoriaToEdit) {
-        await updateAuditoria(auditoriaToEdit.id, auditoriaData);
+        await dataService.updateAuditoria(auditoriaToEdit.id, auditoriaData as any);
         toast({
           title: "Auditoría Actualizada",
           description: `La auditoría ${auditoriaToEdit.id} ha sido actualizada.`,
         });
       } else {
         const { id, ...newAuditoriaData } = auditoriaData;
-        await addAuditoria(newAuditoriaData as Omit<Auditoria, 'id'>);
+        await dataService.addAuditoria(newAuditoriaData as any);
         toast({
           title: "Auditoría Planificada",
           description: "La nueva auditoría ha sido registrada en el sistema.",
@@ -102,7 +102,7 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
   
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField control={form.control} name="tipo" render={({ field }) => (<FormItem><FormLabel>Tipo de Auditoría</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Interna">Interna</SelectItem><SelectItem value="Externa - Proveedor">Externa - Proveedor</SelectItem><SelectItem value="Externa - Certificación">Externa - Certificación</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
           <FormField control={form.control} name="estado" render={({ field }) => (<FormItem><FormLabel>Estado</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Planificada">Planificada</SelectItem><SelectItem value="En Curso">En Curso</SelectItem><SelectItem value="Finalizada">Finalizada</SelectItem><SelectItem value="Cancelada">Cancelada</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
