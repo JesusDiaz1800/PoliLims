@@ -162,7 +162,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
         </SidebarMenuButton>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <SidebarMenu className="pl-4">
+        <SidebarMenu className="pl-2">
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
@@ -364,7 +364,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu className="px-2 py-4">
+            <SidebarMenu>
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
@@ -428,7 +428,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter className="p-2 border-t border-white/20 dark:border-border">
+        <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
