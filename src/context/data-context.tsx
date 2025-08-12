@@ -2,10 +2,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
+import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
 
 // --- STATIC DATA (loaded once from client) ---
 interface StaticDataContextType {
@@ -300,13 +302,77 @@ interface DynamicDataContextType extends InitialData {
     addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
     updateProveedor: (id: string, updatedData: Partial<Proveedor>) => Promise<void>;
     deleteProveedor: (id: string) => Promise<void>;
+    filteredEnsayos: Ensayo[];
+    totalFilteredAssays: number;
+    approvalPercentage: number;
+    pendingAssays: number;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
 
 export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
+    const searchParams = useSearchParams();
     const [data, setData] = useState<InitialData>(initialData);
     const [isLoaded, setIsLoaded] = useState(true);
+
+    const month = searchParams.get('month') || 'last_12_months';
+    const analyst = searchParams.get('analyst') || 'all';
+    const status = searchParams.get('status') || 'all';
+    const type = searchParams.get('type') || 'all';
+    const supplier = searchParams.get('supplier') || 'all';
+    const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
+    const filteredEnsayos = useMemo(() => {
+        if (!data.ensayos) return [];
+
+        const now = new Date();
+        let startDate: Date;
+
+        switch (month) {
+            case 'last_30_days': startDate = subDays(now, 30); break;
+            case 'this_month': startDate = startOfMonth(now); break;
+            case 'last_month': startDate = startOfMonth(subMonths(now, 1)); break;
+            case 'last_3_months': startDate = subMonths(now, 3); break;
+            case 'last_12_months': startDate = subMonths(now, 12); break;
+            default: startDate = subMonths(now, 12);
+        }
+
+        const endDate = month === 'last_month' ? endOfMonth(subMonths(now, 1)) : now;
+        
+        return data.ensayos.filter(e => {
+            try {
+                const ensayoDate = parse(e.fecha, 'dd-MM-yyyy', new Date());
+                if(isNaN(ensayoDate.getTime())) return false;
+                const dateMatch = isWithinInterval(ensayoDate, { start: startDate, end: endDate });
+                const analystMatch = analyst === 'all' || e.analista === analyst;
+                const typeMatch = type === 'all' || e.tipo === type;
+                const supplierMatch = supplier === 'all' || e.proveedor === supplier;
+                const statusMatch = status === 'all' || 
+                    (status === 'aprobado' && e.estado === 'Aprobado') ||
+                    (status === 'pendiente' && pendingStatuses.includes(e.estado)) ||
+                    (status === 'rechazado' && e.estado === 'Rechazado');
+
+                return dateMatch && analystMatch && typeMatch && supplierMatch && statusMatch;
+            } catch {
+                return false;
+            }
+        });
+    }, [data.ensayos, month, analyst, status, type, supplier]);
+
+    const { totalFilteredAssays, approvalPercentage, pendingAssays } = useMemo(() => {
+        const total = filteredEnsayos.length;
+        if (total === 0) return { totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+        
+        const approvedCount = filteredEnsayos.filter(e => e.estado === 'Aprobado').length;
+        const pendingCount = filteredEnsayos.filter(e => pendingStatuses.includes(e.estado)).length;
+        
+        return {
+            totalFilteredAssays: total,
+            approvalPercentage: (approvedCount / total) * 100,
+            pendingAssays: pendingCount,
+        };
+    }, [filteredEnsayos]);
+
 
     const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
         const newEnsayo = await dataService.addEnsayo(ensayo);
@@ -415,7 +481,11 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         addProveedor,
         updateProveedor,
         deleteProveedor,
-    }), [data, isLoaded, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor]);
+        filteredEnsayos,
+        totalFilteredAssays,
+        approvalPercentage,
+        pendingAssays,
+    }), [data, isLoaded, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
 
     return (
         <DynamicDataContext.Provider value={value}>

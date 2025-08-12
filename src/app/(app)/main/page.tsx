@@ -2,12 +2,10 @@
 "use client";
 
 import * as React from "react";
-import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle, AlertOctagon, Calendar, Download, Users, Briefcase, BarChart } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon } from "lucide-react";
 
 import { StatsCard } from "@/components/main/stats-card";
-import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
-import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
@@ -21,18 +19,25 @@ import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData } from "@/context/data-context";
+import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
+import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 
 export default function MainPage() {
-  const { ensayos, recentActivity, equipos, noConformidades, isLoaded } = useDynamicData();
   const searchParams = useSearchParams();
-  
-  const month = searchParams.get('month') || 'last_12_months';
-  const analyst = searchParams.get('analyst') || 'all';
-  const status = searchParams.get('status') || 'all';
-  const type = searchParams.get('type') || 'all';
-  const supplier = searchParams.get('supplier') || 'all';
   const username = searchParams.get('user') || 'jdiaz';
 
+  const { 
+    ensayos, 
+    recentActivity, 
+    equipos, 
+    noConformidades, 
+    isLoaded,
+    filteredEnsayos,
+    totalFilteredAssays,
+    approvalPercentage,
+    pendingAssays,
+  } = useDynamicData();
+  
   const [user, setUser] = React.useState<User | null>(null);
   
   React.useEffect(() => {
@@ -63,12 +68,6 @@ export default function MainPage() {
       return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
   }, [ensayos, isLoaded]);
 
-  const {
-    filteredEnsayos,
-    totalFilteredAssays,
-    approvalPercentage,
-    pendingAssays,
-  } = useDynamicData();
 
   if (!isLoaded || !user) {
     return <Loading />;
@@ -87,7 +86,6 @@ export default function MainPage() {
             analysts={allAnalysts}
             assayTypes={assayTypes}
             suppliers={suppliers}
-            defaultValues={{ month, analyst, status, type, supplier }}
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
             <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
@@ -133,3 +131,4 @@ export default function MainPage() {
     </div>
   );
 }
+
