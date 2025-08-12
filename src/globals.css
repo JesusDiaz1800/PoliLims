@@ -1,0 +1,194 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 210 20% 98%; 
+    --foreground: 224 71.4% 4.1%;
+ 
+    --card: 210 20% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+ 
+    --popover: 210 20% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+ 
+    --primary: 216 84% 51%; /* SteelBlue */
+    --primary-foreground: 210 20% 98%;
+ 
+    --secondary: 215 28% 93%;
+    --secondary-foreground: 224 71.4% 4.1%;
+ 
+    --muted: 215 28% 93%;
+    --muted-foreground: 215 20% 65.1%;
+ 
+    --accent: 215 28% 93%; 
+    --accent-foreground: 224 71.4% 4.1%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 20% 89%;
+    --input: 215 20% 89%;
+    --ring: 216 84% 51%;
+ 
+    --radius: 0.5rem;
+
+    --chart-1: 216 84% 51%; /* primary */
+    --chart-2: 142 76% 36%; /* green */
+    --chart-3: 38 92% 50%; /* orange */
+    --chart-4: 0 84% 60%; /* red */
+    --chart-5: 262 74% 60%; /* violet */
+  }
+ 
+  .dark {
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222 84% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 18%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 173 80% 40%;
+    --chart-3: 38 78% 61%;
+    --chart-4: 0 72% 51%;
+    --chart-5: 262 83% 58%;
+  }
+
+  .dashboard-futurista {
+    --background: 224 71.4% 4.1%; /* Deep navy */
+    --foreground: 210 40% 98%;
+    --card: 222 84% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 188 100% 50%; /* Bright Cyan */
+    --primary-foreground: 224 71.4% 4.1%;
+    --secondary: 217 33% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 300 100% 50%; /* Neon Magenta */
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 188 100% 50%; /* Bright Cyan for rings */
+
+    /* Chart colors for the futuristic theme */
+    --chart-1: linear-gradient(to top, hsl(188, 100%, 40%), hsl(188, 100%, 60%));
+    --chart-2: linear-gradient(to top, hsl(142, 76%, 35%), hsl(142, 76%, 55%));
+    --chart-3: linear-gradient(to top, hsl(38, 92%, 50%), hsl(38, 92%, 65%));
+    --chart-4: linear-gradient(to top, hsl(0, 84%, 60%), hsl(0, 84%, 75%));
+    --chart-5: linear-gradient(to top, hsl(300, 100%, 50%), hsl(300, 100%, 65%));
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .dashboard-futurista {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dashboard-futurista .card-glass {
+      background-color: hsl(var(--card) / 0.6);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border: 1px solid;
+      border-image-slice: 1;
+      border-image-source: linear-gradient(to right bottom, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
+  }
+
+  .dashboard-futurista .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      background-image: 
+          radial-gradient(circle at 15% 50%, hsl(var(--primary) / 0.1), transparent 30%),
+          radial-gradient(circle at 85% 30%, hsl(var(--accent) / 0.08), transparent 25%);
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 2px; /* Reduced width to fix overlap */
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary) / 0.3);
+  border-radius: 1px; /* Adjusted radius */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary) / 0.5);
+}
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg) translateX(40px) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg) translateX(40px) rotate(-180deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(360deg) translateX(40px) rotate(-360deg);
+    opacity: 1;
+  }
+}
+

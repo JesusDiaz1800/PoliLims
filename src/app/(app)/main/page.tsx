@@ -89,7 +89,7 @@ export default function MainPage() {
        <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <SidebarTrigger className="md:flex" />
+                    <SidebarTrigger />
                     <WelcomeBanner user={user} />
                 </div>
                  <Collapsible>
@@ -162,3 +162,4 @@ export default function MainPage() {
     </div>
   );
 }
+

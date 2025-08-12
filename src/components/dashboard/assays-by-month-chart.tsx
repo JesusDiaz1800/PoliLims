@@ -35,7 +35,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
         monthlyData[monthKey] = {
             total: 0,
             name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            fill: `hsl(var(--chart-${((11 - i) % 5) + 1}))`
+            fill: `url(#color-chart-${((11 - i) % 5) + 1})`
         };
     }
 
@@ -68,6 +68,16 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
       <CardContent className="h-[calc(100%-4rem)] pb-0">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                 <defs>
+                    <linearGradient id="color-chart-1" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                    </linearGradient>
+                    <linearGradient id="color-chart-2" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                    </linearGradient>
+                </defs>
                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                 <Tooltip
@@ -80,7 +90,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
                       fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} fill="url(#color-chart-1)" />
                 <ReferenceLine 
                     y={average} 
                     label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
@@ -94,3 +104,4 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
   )
 }
 export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);
+

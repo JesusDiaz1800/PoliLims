@@ -42,6 +42,16 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
         <CardContent className="h-[calc(100%-4rem)] pb-0">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                    <defs>
+                        <linearGradient id="color-received" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
+                        </linearGradient>
+                         <linearGradient id="color-completed" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                        </linearGradient>
+                    </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                     <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                     <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
@@ -56,8 +66,8 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
                         }}
                     />
                     <Legend iconSize={10} wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
-                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-1))"}} />
-                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-2))"}}/>
+                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="url(#color-received)" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-1))"}} />
+                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="url(#color-completed)" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-2))"}}/>
                 </LineChart>
             </ResponsiveContainer>
         </CardContent>
@@ -65,3 +75,4 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
   )
 }
 export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);
+
