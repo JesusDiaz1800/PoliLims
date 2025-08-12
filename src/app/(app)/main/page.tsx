@@ -1,104 +1,225 @@
-import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
+
+"use client";
+
+import * as React from "react";
+import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle, AlertOctagon, Calendar, Download, Users, Briefcase, BarChart } from "lucide-react";
+import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear, subYears } from 'date-fns';
+
+import { StatsCard as OldStatsCard } from "@/components/dashboard/stats-card";
 import { StatsCard } from "@/components/main/stats-card";
+import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
+import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
+import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
+import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
+import { EquipmentStatusChart } from "@/components/dashboard/equipment-status-chart";
+import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
+import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
+import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
+import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
+import { findUserByUsername } from "@/services/user-service";
+import { useSearchParams } from 'next/navigation';
+import Loading from '../loading';
+import type { User } from "@/services/user-service";
+import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
+import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
+import { useDynamicData } from "@/context/data-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function MainPage() {
+  const { ensayos, recentActivity, equipos, noConformidades, isLoaded } = useDynamicData();
+  const searchParams = useSearchParams();
+  
+  const month = searchParams.get('month') || 'last_12_months';
+  const analyst = searchParams.get('analyst') || 'all';
+  const status = searchParams.get('status') || 'all';
+  const type = searchParams.get('type') || 'all';
+  const supplier = searchParams.get('supplier') || 'all';
+  const username = searchParams.get('user') || 'main_dashboard_user';
+
+  const [user, setUser] = React.useState<User | null>(null);
+  
+  React.useEffect(() => {
+    async function loadUser() {
+        const userData = await findUserByUsername(username);
+        setUser(userData);
+    }
+    if (username) {
+      loadUser();
+    }
+  }, [username]);
+
+  const allAnalysts = React.useMemo(() => {
+    if (!isLoaded) return [];
+    const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
+    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+  }, [ensayos, isLoaded]);
+
+  const assayTypes = React.useMemo(() => {
+    if (!isLoaded) return [];
+    const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
+    return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
+  }, [ensayos, isLoaded]);
+  
+  const suppliers = React.useMemo(() => {
+      if (!isLoaded) return [];
+      const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
+      return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
+  }, [ensayos, isLoaded]);
+
+  const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
+  const {
+    filteredEnsayos,
+    totalFilteredAssays,
+    approvalPercentage,
+    pendingAssays,
+  } = React.useMemo(() => {
+    if (!isLoaded) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+    
+    const now = new Date();
+    
+    const filtered = ensayos.filter(ensayo => {
+      let ensayoDate;
+      try {
+        ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
+      } catch (error) {
+        console.warn(`Invalid date format for ensayo ${ensayo.id}: ${ensayo.fecha}`);
+        return false;
+      }
+      
+      let dateRange = { start: subYears(now, 10), end: now };
+      if (month === 'last_30_days') {
+          dateRange = { start: subDays(now, 29), end: now };
+      } else if (month === 'this_month') {
+          dateRange = { start: startOfMonth(now), end: endOfMonth(now) };
+      } else if (month === 'last_month') {
+          const lastMonthStart = startOfMonth(subMonths(now, 1));
+          const lastMonthEnd = endOfMonth(subMonths(now, 1));
+          dateRange = { start: lastMonthStart, end: lastMonthEnd };
+      } else if (month === 'last_3_months') {
+          dateRange = { start: subMonths(now, 3), end: now };
+      } else if (month === 'last_12_months') {
+          dateRange = { start: subYears(now, 1), end: now };
+      }
+
+      const isDateInRange = isWithinInterval(ensayoDate, dateRange);
+      const filterByAnalyst = analyst === 'all' || ensayo.analista === analyst;
+
+      let filterByStatus = true;
+      if (status !== 'all') {
+          if (status === 'pendiente') {
+              filterByStatus = pendingStatuses.includes(ensayo.estado);
+          } else {
+              filterByStatus = ensayo.estado.toLowerCase().replace(/\s/g, '_') === status;
+          }
+      }
+      
+      const filterByType = type === 'all' || ensayo.tipo === type;
+      const filterBySupplier = supplier === 'all' || ensayo.proveedor === supplier;
+      
+      return isDateInRange && filterByAnalyst && filterByStatus && filterByType && filterBySupplier;
+    });
+
+    const totalFiltered = filtered.length;
+    const approved = filtered.filter(e => e.estado === "Aprobado").length;
+    const rejected = filtered.filter(e => e.estado === "Rechazado").length;
+    const finished = approved + rejected;
+    
+    const pending = filtered.filter(e => pendingStatuses.includes(e.estado)).length;
+    
+    const approval = finished > 0 ? (approved / finished) * 100 : 0;
+    
+    return {
+        filteredEnsayos: filtered,
+        totalFilteredAssays: totalFiltered,
+        approvalPercentage: approval,
+        pendingAssays: pending,
+    }
+  }, [ensayos, month, analyst, status, type, supplier, isLoaded]);
+
+  if (!isLoaded || !user) {
+    return <Loading />;
+  }
+  
+  const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
+  const totalEquipment = equipos.length;
+  const openNcCount = noConformidades.filter(nc => nc.estado !== "Cerrada").length;
+
   return (
     <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
-      <div className="background-overlay"></div>
-      <div className="relative z-10">
-        <div className="flex items-center justify-between space-y-2 mb-6">
-            <div className="flex items-center gap-2">
-                <SidebarTrigger className="text-white hover:text-white/80" />
-                <h1 className="text-3xl font-bold tracking-tight font-headline text-white">
-                Main Dashboard
-                </h1>
+       <div className="background-overlay"></div>
+       <div className="relative z-10">
+            <div className="flex items-center justify-between space-y-2 mb-6">
+                <div className="flex items-center gap-2">
+                    <SidebarTrigger className="text-white hover:text-white/80" />
+                    <h1 className="text-3xl font-bold tracking-tight font-headline text-white">
+                        Dashboard Principal
+                    </h1>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Button variant="outline" className="bg-card/50 border-border/50 hover:bg-card/70 text-white">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        <span>Julio 2025</span>
+                    </Button>
+                    <Button className="bg-primary/90 text-primary-foreground hover:bg-primary">
+                        <Download className="mr-2 h-4 w-4" />
+                        Exportar
+                    </Button>
+                </div>
             </div>
-            <div className="flex items-center space-x-2">
-            <Button variant="outline" className="bg-card/50 border-border/50 hover:bg-card/70 text-white">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Julio 2025</span>
-            </Button>
-            <Button className="bg-primary/90 text-primary-foreground hover:bg-primary">
-                <Download className="mr-2 h-4 w-4" />
-                Exportar
-            </Button>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+                <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} trend="+5.2% vs. mes anterior" trendDirection="up" icon={Target} />
+                <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} trend="+1.2% vs. mes anterior" trendDirection="up" icon={Percent} />
+                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} trend="-3.4% vs. mes anterior" trendDirection="down" icon={Hourglass} />
+                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} trend="Estable" trendDirection="up" icon={Beaker} />
+                <StatsCard title="NC Abiertas" value={openNcCount.toString()} trend="+2 nuevas esta semana" trendDirection="up" icon={AlertOctagon} />
+            </div>
+
+            <div className="grid grid-cols-12 gap-6 mt-6">
+                <div className="col-span-12 lg:col-span-8">
+                <AssaysByMonthChart data={ensayos} />
+                </div>
+                <div className="col-span-12 lg:col-span-4">
+                    <RecentActivityList initialActivity={recentActivity}/>
+                </div>
+            </div>
+            
+            <div className="grid grid-cols-12 gap-6 lg:items-start">
+                <div className="col-span-12 lg:col-span-8">
+                    <ThroughputTrendChart data={filteredEnsayos} />
+                </div>
+                <div className="col-span-12 lg:col-span-4">
+                    <EquipmentAlertsCard equipos={equipos} />
+                </div>
+            </div>
+            
+            <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                    <AssaysByTypeChart data={filteredEnsayos} />
+                </div>
+                <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                <SampleStatusChart data={filteredEnsayos} />
+                </div>
+                <div className="col-span-12 md:col-span-12 lg:col-span-4">
+                <WorkloadDistributionChart data={filteredEnsayos} />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-12 lg:col-span-8">
+                    <NonConformitiesByMonthChart data={noConformidades} />
+                </div>
+                <div className="col-span-12 lg:col-span-4">
+                    <NonConformitiesByTypeChart data={noConformidades} />
+                </div>
             </div>
         </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <StatsCard
-            title="Ingresos Totales"
-            value="$45,231.89"
-            icon={DollarSign}
-            trend="+20.1% desde el mes pasado"
-            trendDirection="up"
-            />
-            <StatsCard
-            title="Suscripciones"
-            value="+2350"
-            icon={Users}
-            trend="+180.1% desde el mes pasado"
-            trendDirection="up"
-            />
-            <StatsCard
-            title="Ventas"
-            value="+12,234"
-            icon={Briefcase}
-            trend="+19% desde el mes pasado"
-            trendDirection="up"
-            />
-            <StatsCard
-            title="Tasa de Aprobación"
-            value="92.8%"
-            icon={BarChart}
-            trend="-1.2% desde la semana pasada"
-            trendDirection="down"
-            />
-        </div>
-
-        <div className="grid grid-cols-12 gap-6 mt-6">
-            <Card className="col-span-12 lg:col-span-7 card-glass">
-            <CardHeader>
-                <CardTitle>Rendimiento General</CardTitle>
-                <CardDescription>
-                Análisis de los últimos 12 meses.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[350px] flex items-center justify-center">
-                {/* Placeholder for Bar Chart */}
-                <div className="text-muted-foreground">Bar Chart Placeholder</div>
-            </CardContent>
-            </Card>
-            <Card className="col-span-12 lg:col-span-5 card-glass">
-            <CardHeader>
-                <CardTitle>Distribución de Ensayos</CardTitle>
-                <CardDescription>
-                Distribución por tipo de ensayo este mes.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="h-[350px] flex items-center justify-center">
-                {/* Placeholder for Donut Chart */}
-                <div className="text-muted-foreground">Donut Chart Placeholder</div>
-            </CardContent>
-            </Card>
-        </div>
-
-        <Card className="card-glass mt-6">
-            <CardHeader>
-            <CardTitle>Ensayos Recientes</CardTitle>
-            <CardDescription>
-                Listado de los últimos ensayos procesados en el laboratorio.
-            </CardDescription>
-            </CardHeader>
-            <CardContent>
-            {/* Placeholder for Advanced Table */}
-            <div className="text-muted-foreground h-48 flex items-center justify-center">Advanced Table Placeholder</div>
-            </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
+
+    

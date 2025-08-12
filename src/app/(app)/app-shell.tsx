@@ -200,7 +200,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
-    '/main': 'Main Dashboard',
+    '/main': 'Dashboard Principal',
     '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
@@ -237,7 +237,6 @@ const pageTitles: Record<string, string> = {
 
 const menuItems = (toggleChat: () => void): any[] => [
     { href: '/main', label: 'Dashboard Principal', icon: Home },
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -373,7 +372,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
-                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
+                    !["/dashboard", "/ensayos/control-rutinario", "/main"].some((p) =>
                     item.href?.startsWith(p)
                     );
 
@@ -400,7 +399,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
                 const isActive =
                     pathname === item.href ||
-                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+                    (item.href && item.href !== "/main" && pathname.startsWith(item.href));
 
                 return (
                     <SidebarMenuItem key={item.href || index}>
@@ -481,12 +480,9 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             role="banner"
             >
             <div className="flex items-center gap-2">
-                <SidebarTrigger aria-label="Toggle sidebar" />
-                <h1
-                className="text-xl font-semibold font-headline text-foreground"
-                tabIndex={-1}
-                >
-                {getPageTitle()}
+                <SidebarTrigger />
+                 <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                    {pageTitle}
                 </h1>
             </div>
             </header>
@@ -494,7 +490,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className="min-w-full p-4 sm:p-6 custom-scrollbar"
+                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && "p-4 sm:p-6")}
                 role="main"
                 tabIndex={-1}
             >
@@ -505,3 +501,5 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     </div>
   );
 }
+
+    
