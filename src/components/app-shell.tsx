@@ -133,18 +133,20 @@ const reportsSubMenu = [
 function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
   const defaultOpen = isSearchActive || pathname.startsWith(item.href);
+  const isActive = pathname.startsWith(item.href);
 
   return (
     <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
-          isActive={pathname.startsWith(item.href)}
+          className="w-full justify-between group/button text-white hover:bg-white/10 data-[active=true]:bg-white/10"
+          isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
         >
           <div className="flex items-center gap-3 flex-1">
+             {isActive && !isSearchActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
             <item.icon className="size-5 shrink-0" />
             <span className="truncate">{item.label}</span>
           </div>
