@@ -178,7 +178,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white hover:bg-white/10 dark:hover:bg-muted data-[active=true]:bg-white/10"
+                    className="w-full justify-start text-white hover:bg-white/10 data-[active=true]:bg-white/10"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -407,7 +407,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
                     className="
-                      text-white dark:text-foreground
+                      text-white
                       hover:bg-white/10
                       dark:hover:bg-muted
                       data-[active=true]:bg-white/10
