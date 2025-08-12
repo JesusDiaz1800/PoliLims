@@ -364,7 +364,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu className="px-2 py-4">
+            <SidebarMenu className="px-2 py-2">
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
