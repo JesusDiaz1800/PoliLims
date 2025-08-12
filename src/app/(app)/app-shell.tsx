@@ -202,7 +202,6 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 
 const pageTitles: Record<string, string> = {
     '/main': 'Dashboard',
-    '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -373,7 +372,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
-                    !["/main"].some((p) =>
+                    !["/main", "/ensayos/control-rutinario"].some((p) =>
                     item.href?.startsWith(p)
                     );
 
@@ -474,14 +473,14 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         </SidebarFooter>
       </Sidebar>
 
-      <div className="flex flex-col flex-1 h-screen overflow-hidden">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden ml-1">
         {pathname !== '/main' && (
             <header
             className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
             role="banner"
             >
             <div className="flex items-center gap-2">
-                <SidebarTrigger />
+                <SidebarTrigger aria-label="Toggle sidebar" />
                  <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
                     {pageTitle}
                 </h1>
