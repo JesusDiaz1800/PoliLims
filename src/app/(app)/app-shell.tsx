@@ -342,7 +342,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       >
         <SidebarContent>
           <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-56 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+            <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
@@ -368,7 +368,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu className="pb-2">
+            <SidebarMenu className="px-2 pb-2">
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
@@ -458,11 +458,8 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               className="h-9 w-9 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
-              {user?.avatarUrl ? (
-                <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
-              ) : (
-                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
-              )}
+              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
             </Avatar>
 
             <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
