@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,7 +15,7 @@ type StatsCardProps = {
 export function StatsCard({ title, value, icon: Icon, trend, trendDirection }: StatsCardProps) {
     const isPositive = trendDirection === "up";
     return (
-        <Card className="transition-all hover:shadow-lg hover:-translate-y-1">
+        <Card className="card-glass transition-all hover:shadow-lg hover:-translate-y-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
                 <Icon className="h-5 w-5 text-muted-foreground" />

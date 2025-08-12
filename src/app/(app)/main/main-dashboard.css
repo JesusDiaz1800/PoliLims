@@ -1,4 +1,3 @@
-
 /* Estilos específicos para el Dashboard Futurista */
 .dashboard-futurista {
     --background: #0F172A; /* slate-900 */
@@ -33,4 +32,3 @@
     backdrop-filter: blur(12px);
     border: 1px solid hsl(var(--border) / 0.3);
 }
-

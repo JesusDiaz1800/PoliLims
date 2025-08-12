@@ -1,4 +1,3 @@
-
 "use client";
 
 import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
@@ -33,7 +32,6 @@ export default function MainPage() {
           icon={DollarSign}
           trend="+20.1% desde el mes pasado"
           trendDirection="up"
-          variant="glass"
         />
         <StatsCard
           title="Suscripciones"
@@ -41,7 +39,6 @@ export default function MainPage() {
           icon={Users}
           trend="+180.1% desde el mes pasado"
           trendDirection="up"
-          variant="glass"
         />
         <StatsCard
           title="Ventas"
@@ -49,7 +46,6 @@ export default function MainPage() {
           icon={Briefcase}
           trend="+19% desde el mes pasado"
           trendDirection="up"
-          variant="glass"
         />
         <StatsCard
           title="Tasa de Aprobación"
@@ -57,12 +53,11 @@ export default function MainPage() {
           icon={BarChart}
           trend="-1.2% desde la semana pasada"
           trendDirection="down"
-          variant="glass"
         />
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <Card className="col-span-12 lg:col-span-7">
+        <Card className="col-span-12 lg:col-span-7 card-glass">
           <CardHeader>
             <CardTitle>Rendimiento General</CardTitle>
             <CardDescription>
@@ -74,7 +69,7 @@ export default function MainPage() {
              <div className="text-muted-foreground">Bar Chart Placeholder</div>
           </CardContent>
         </Card>
-        <Card className="col-span-12 lg:col-span-5">
+        <Card className="col-span-12 lg:col-span-5 card-glass">
            <CardHeader>
             <CardTitle>Distribución de Ensayos</CardTitle>
             <CardDescription>
@@ -88,7 +83,7 @@ export default function MainPage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="card-glass">
         <CardHeader>
           <CardTitle>Ensayos Recientes</CardTitle>
           <CardDescription>
