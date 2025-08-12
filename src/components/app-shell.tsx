@@ -50,6 +50,7 @@ import {
   Layers3,
   SlidersHorizontal,
   BookCheck,
+  FileText,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
