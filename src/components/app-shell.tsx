@@ -49,7 +49,9 @@ import {
   History,
   Truck,
   BookCheck,
-  FileText
+  FileText,
+  SlidersHorizontal,
+  Search,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -57,6 +59,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
+import { Input } from "./ui/input";
 
 const ensayosSubMenu = [
     { 
@@ -128,11 +131,12 @@ const reportsSubMenu = [
 ];
 
 
-function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item: any; pathname: string; disabled?: boolean; userQuery: string }) {
+function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
+  const defaultOpen = isSearchActive || pathname.startsWith(item.href);
 
   return (
-    <Collapsible key={item.label} defaultOpen={pathname.startsWith(item.href)} className="w-full" disabled={disabled}>
+    <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
@@ -165,7 +169,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item:
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
+                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
               }
               const isSubItemActive = pathname === subItem.href;
 
@@ -273,6 +277,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
   const userQuery = searchParams.toString();
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
@@ -293,6 +298,35 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     }
   };
 
+  const filterMenu = (menu: any[], term: string): any[] => {
+    if (!term) return menu;
+    const lowerCaseTerm = term.toLowerCase();
+
+    return menu.reduce((acc: any[], item: any) => {
+      if (item.type === 'separator') {
+        return acc;
+      }
+      
+      const labelMatch = item.label.toLowerCase().includes(lowerCaseTerm);
+
+      if (item.subMenu || item.subItems) {
+        const subItems = item.subMenu || item.subItems;
+        const filteredSub = filterMenu(subItems, term);
+        if (filteredSub.length > 0) {
+          acc.push({ ...item, subMenu: filteredSub, subItems: filteredSub });
+        } else if (labelMatch) {
+          // Keep parent if it matches, even if children don't
+          acc.push({ ...item, subMenu: [], subItems: []});
+        }
+      } else if (labelMatch) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  };
+
+  const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
@@ -308,6 +342,19 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
+          <div className="px-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-white/50" />
+                <Input
+                  type="search"
+                  placeholder="Buscar en el menú..."
+                  className="w-full rounded-lg bg-white/10 pl-8 h-9 border-0 text-white placeholder:text-white/50 focus:bg-white/20 focus:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+
           {isInspectorView && (
             <Alert className="m-2 border-cyan-600/30 bg-cyan-600/10 text-cyan-300 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-cyan-400">
               <Info className="h-4 w-4 text-cyan-500" />
@@ -319,7 +366,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           )}
 
           <SidebarMenu>
-            {menuItems(() => setIsOpen(true)).map((item, index) => {
+            {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
               const isDisabled =
                 isInspectorView &&
                 !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
@@ -342,6 +389,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     pathname={pathname}
                     disabled={isDisabled}
                     userQuery={userQuery}
+                    isSearchActive={!!searchTerm}
                   />
                 );
               }
@@ -381,7 +429,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
-            })}
+            }) : (
+              <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
+                <p>No se encontraron resultados para "{searchTerm}"</p>
+              </div>
+            )}
           </SidebarMenu>
         </SidebarContent>
 
