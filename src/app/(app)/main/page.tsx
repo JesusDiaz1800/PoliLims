@@ -1,68 +1,99 @@
+
 "use client";
 
+import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
+import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, CreditCard, DollarSign, Users } from "lucide-react";
 
 export default function MainPage() {
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="flex-1 space-y-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Main Dashboard</h2>
+        <h1 className="text-3xl font-bold tracking-tight font-headline">
+          Main Dashboard
+        </h1>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>Julio 2025</span>
+          </Button>
+          <Button>
+            <Download className="mr-2 h-4 w-4" />
+            Exportar
+          </Button>
+        </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Revenue
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <StatsCard
+          title="Ingresos Totales"
+          value="$45,231.89"
+          icon={DollarSign}
+          trend="+20.1% desde el mes pasado"
+          trendDirection="up"
+        />
+        <StatsCard
+          title="Suscripciones"
+          value="+2350"
+          icon={Users}
+          trend="+180.1% desde el mes pasado"
+          trendDirection="up"
+        />
+        <StatsCard
+          title="Ventas"
+          value="+12,234"
+          icon={Briefcase}
+          trend="+19% desde el mes pasado"
+          trendDirection="up"
+        />
+        <StatsCard
+          title="Tasa de Aprobación"
+          value="92.8%"
+          icon={BarChart}
+          trend="-1.2% desde la semana pasada"
+          trendDirection="down"
+        />
+      </div>
+
+      <div className="grid grid-cols-12 gap-6">
+        <Card className="col-span-12 lg:col-span-7">
+          <CardHeader>
+            <CardTitle>Rendimiento General</CardTitle>
+            <CardDescription>
+              Análisis de los últimos 12 meses.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
+          <CardContent className="h-[350px] flex items-center justify-center">
+             {/* Placeholder for Bar Chart */}
+             <div className="text-muted-foreground">Bar Chart Placeholder</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Subscriptions
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+        <Card className="col-span-12 lg:col-span-5">
+           <CardHeader>
+            <CardTitle>Distribución de Ensayos</CardTitle>
+            <CardDescription>
+              Distribución por tipo de ensayo este mes.
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
-            <p className="text-xs text-muted-foreground">
-              +180.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+12,234</div>
-            <p className="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
+          <CardContent className="h-[350px] flex items-center justify-center">
+            {/* Placeholder for Donut Chart */}
+            <div className="text-muted-foreground">Donut Chart Placeholder</div>
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Ensayos Recientes</CardTitle>
+          <CardDescription>
+            Listado de los últimos ensayos procesados en el laboratorio.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+           {/* Placeholder for Advanced Table */}
+           <div className="text-muted-foreground h-48 flex items-center justify-center">Advanced Table Placeholder</div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
