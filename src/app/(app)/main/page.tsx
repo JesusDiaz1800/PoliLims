@@ -82,77 +82,101 @@ export default function MainPage() {
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
+  const InteractiveCard = ({ children }: { children: React.ReactNode }) => (
+    <div className="transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-glow">
+        {children}
+    </div>
+  );
+
   return (
     <div className="relative flex-1 space-y-6 min-h-screen">
        <div className="background-overlay"></div>
-       <div className="relative z-10 space-y-6">
-        <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-                 <SidebarTrigger className="md:flex" />
-                 <WelcomeBanner user={user} />
+       <div className="relative z-10 space-y-4">
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <SidebarTrigger className="md:flex" />
+                    <WelcomeBanner user={user} />
+                </div>
+                 <Collapsible>
+                    <CollapsibleTrigger asChild>
+                        <Button variant="outline" className="h-9 text-xs gap-2">
+                            <SlidersHorizontal className="h-4 w-4"/>
+                            Filtros
+                        </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                        <DashboardFilters
+                            analysts={allAnalysts}
+                            assayTypes={assayTypes}
+                            suppliers={suppliers}
+                        />
+                    </CollapsibleContent>
+                </Collapsible>
             </div>
-        </div>
+            
+            <div className="grid grid-cols-12 gap-6">
+                
+                {/* Main large chart */}
+                <div className="col-span-12 lg:col-span-8">
+                     <InteractiveCard>
+                        <ThroughputTrendChart data={filteredEnsayos} />
+                    </InteractiveCard>
+                </div>
 
-        <Collapsible>
-          <div className="flex items-center justify-end mb-4">
-              <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="h-9 text-xs gap-2">
-                    <SlidersHorizontal className="h-4 w-4"/>
-                    Filtros
-                  </Button>
-              </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent>
-             <DashboardFilters
-                analysts={allAnalysts}
-                assayTypes={assayTypes}
-                suppliers={suppliers}
-              />
-          </CollapsibleContent>
-        </Collapsible>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
-            <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
-            <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-            <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
-            <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
-            <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
-          </div>
+                {/* Side stacked cards */}
+                <div className="col-span-12 lg:col-span-4 space-y-6">
+                    <InteractiveCard>
+                        <EquipmentAlertsCard equipos={equipos || []} />
+                    </InteractiveCard>
+                     <InteractiveCard>
+                        <RecentActivityList initialActivity={recentActivity || []}/>
+                    </InteractiveCard>
+                </div>
+                
+                 {/* KPI Cards Row */}
+                <div className="col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
+                    <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
+                    <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
+                    <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
+                    <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
+                </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <AssaysByMonthChart data={ensayos || []} />
-            </div>
-            <div>
-              <RecentActivityList initialActivity={recentActivity || []}/>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-3">
-              <ThroughputTrendChart data={filteredEnsayos} />
-            </div>
-            <div className="lg:col-span-2">
-              <EquipmentAlertsCard equipos={equipos || []} />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AssaysByTypeChart data={filteredEnsayos} />
-            <SampleStatusChart data={filteredEnsayos} />
-            <WorkloadDistributionChart data={filteredEnsayos} />
-          </div>
+                {/* Medium size charts */}
+                 <div className="col-span-12 lg:col-span-6">
+                     <InteractiveCard>
+                        <AssaysByMonthChart data={ensayos || []} />
+                    </InteractiveCard>
+                </div>
+                 <div className="col-span-12 lg:col-span-6">
+                     <InteractiveCard>
+                        <NonConformitiesByMonthChart data={noConformidades || []} />
+                    </InteractiveCard>
+                </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            <div className="md:col-span-3">
-              <NonConformitiesByMonthChart data={noConformidades || []} />
+                {/* Small size charts */}
+                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                     <InteractiveCard>
+                        <AssaysByTypeChart data={filteredEnsayos} />
+                    </InteractiveCard>
+                </div>
+                <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                     <InteractiveCard>
+                        <SampleStatusChart data={filteredEnsayos} />
+                    </InteractiveCard>
+                </div>
+                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                     <InteractiveCard>
+                        <WorkloadDistributionChart data={filteredEnsayos} />
+                    </InteractiveCard>
+                </div>
+                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
+                     <InteractiveCard>
+                        <NonConformitiesByTypeChart data={noConformidades || []} />
+                    </InteractiveCard>
+                </div>
             </div>
-            <div className="md:col-span-2">
-              <NonConformitiesByTypeChart data={noConformidades || []} />
-            </div>
-          </div>
         </div>
     </div>
   );
 }
-
