@@ -48,10 +48,7 @@ import {
   CalendarCheck,
   History,
   Truck,
-  Layers3,
-  SlidersHorizontal,
-  BookCheck,
-  FileText,
+  BookCheck
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -80,29 +77,45 @@ const ensayosSubMenu = [
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
 
+const procesosGestionSubMenu = [
+  {
+    label: "Gestión de Equipos",
+    icon: BookCheck,
+    href: "/equipos",
+    subItems: [
+      { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+      { href: "/equipos/control", label: "Control de Equipos", icon: History },
+      { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+    ],
+  },
+  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+  {
+    label: "Proveedores",
+    icon: Truck,
+    href: "/proveedores",
+    subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+  },
+  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
+  { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+  { href: "/portal", label: "Portal de Clientes", icon: Users },
+];
+
+
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
-    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
     { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
-const operacionesSubMenu = [
-    { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
-    { href: '/portal', label: 'Portal de Clientes', icon: Users },
-];
-
-const equiposSubMenu = [
-    { href: '/equipos', label: 'Inventario de Equipos', icon: ClipboardList },
-    { href: '/equipos/control', label: 'Control de Equipos', icon: History },
-    { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
-];
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
@@ -111,10 +124,6 @@ const bibliotecaSubMenu = [
 const reportsSubMenu = [
     { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
     { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
-];
-
-const proveedoresSubMenu = [
-    { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
 ];
 
 
@@ -227,19 +236,10 @@ const menuItems = (toggleChat: () => void): any[] => [
         href: '/ensayos'
     },
     { 
-        label: 'Gestión de Equipos', 
-        icon: ClipboardCheck,
-        subMenu: equiposSubMenu,
-        href: '/equipos',
-    },
-    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
-    { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
-    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
-    {
-        label: 'Operaciones de Gestión',
+        label: 'Procesos de Gestión', 
         icon: GitBranch,
-        subMenu: operacionesSubMenu,
-        href: '/operaciones'
+        subMenu: procesosGestionSubMenu,
+        href: '/gestion',
     },
      { 
         label: 'Informes y Certificados', 
@@ -247,13 +247,6 @@ const menuItems = (toggleChat: () => void): any[] => [
         subMenu: reportsSubMenu,
         href: '/reports',
     },
-    { 
-        label: 'Proveedores', 
-        icon: Truck,
-        subMenu: proveedoresSubMenu,
-        href: '/proveedores',
-    },
-    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 
         label: 'Biblioteca', 
         icon: Library,
