@@ -409,9 +409,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     className="
                       text-white
                       hover:bg-white/10
-                      dark:hover:bg-muted
                       data-[active=true]:bg-white/10
-                      data-[active=true]:dark:text-foreground
                       relative
                     "
                   >
