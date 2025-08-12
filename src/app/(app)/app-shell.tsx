@@ -440,6 +440,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
+                className="px-3"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">

@@ -5,7 +5,6 @@
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import type { DashboardFilterParams } from "@/app/(app)/dashboard/page";
 import type { Ensayo } from "@/context/data-context";
 
 
