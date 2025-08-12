@@ -323,7 +323,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-          <SidebarMenu>
+          <SidebarMenu className="p-2">
             {menuItems(() => setIsOpen(true)).map((item, index) => {
               const isDisabled =
                 isInspectorView &&
