@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -63,7 +62,7 @@ export function ChatWidget() {
         <Button
             onClick={() => setIsOpen(true)}
             size="icon"
-            className="h-14 w-14 rounded-full shadow-lg"
+            className="h-14 w-14 rounded-full text-white bg-gradient-to-br from-cyan-400 to-blue-600 hover:from-cyan-500 hover:to-blue-700 shadow-lg hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300"
         >
             <MessageSquarePlus className="h-7 w-7" />
             <span className="sr-only">Abrir Chat de Soporte</span>
