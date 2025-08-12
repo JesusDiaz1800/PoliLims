@@ -341,7 +341,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
-          <div className="px-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+          <div className="pl-3 pr-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-white/50" />
                 <Input
