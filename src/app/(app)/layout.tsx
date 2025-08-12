@@ -4,26 +4,27 @@ import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
-import { findUserByUsername } from '@/services/user-service';
+import { findUserByUsername, type User } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
 import { DynamicDataProvider } from '@/context/data-context';
 import { getInitialData } from '@/services/data-service';
-import React, { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import Loading from './loading';
 
-// Este componente ahora es un Client Component para usar hooks como usePathname.
-// Los datos se siguen obteniendo del servidor en el layout superior o en la misma página.
+// Este componente ahora es un Client Component para usar hooks como usePathname y useSearchParams.
 
 export default function AppLayout({ 
     children,
-    user,
     initialData,
 }: { 
     children: React.ReactNode,
-    user: Awaited<ReturnType<typeof findUserByUsername>>,
     initialData: Awaited<ReturnType<typeof getInitialData>>
 }) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const [user, setUser] = useState<User | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (pathname === '/main') {
@@ -38,6 +39,26 @@ export default function AppLayout({
             document.body.classList.remove('dashboard-futurista');
         };
     }, [pathname]);
+
+    useEffect(() => {
+        async function loadUser() {
+            const username = searchParams.get('user');
+            if (username) {
+                const userData = await findUserByUsername(username);
+                setUser(userData);
+            } else {
+                // Fallback a un usuario por defecto si no hay ninguno en la URL
+                const defaultUser = await findUserByUsername('jdiaz');
+                setUser(defaultUser);
+            }
+            setIsLoading(false);
+        }
+        loadUser();
+    }, [searchParams]);
+
+    if (isLoading || !user) {
+        return <Loading />;
+    }
 
     return (
         <ThemeProvider
