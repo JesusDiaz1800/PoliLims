@@ -200,7 +200,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
-    '/main': 'Dashboard Principal',
+    '/main': 'Dashboard',
     '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
@@ -236,7 +236,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Dashboard Principal', icon: Home },
+    { href: '/main', label: 'Dashboard', icon: Home },
     {
         label: 'Ensayos',
         icon: TestTube,

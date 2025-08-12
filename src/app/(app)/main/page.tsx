@@ -5,7 +5,6 @@ import * as React from "react";
 import { Activity, Beaker, CheckCircle, ClipboardList, Target, Percent, Hourglass, AlertTriangle, AlertOctagon, Calendar, Download, Users, Briefcase, BarChart } from "lucide-react";
 import { subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO, getYear, startOfYear, endOfYear, subYears } from 'date-fns';
 
-import { StatsCard as OldStatsCard } from "@/components/dashboard/stats-card";
 import { StatsCard } from "@/components/main/stats-card";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -152,26 +151,9 @@ export default function MainPage() {
     <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
        <div className="background-overlay"></div>
        <div className="relative z-10">
-            <div className="flex items-center justify-between space-y-2 mb-6">
-                <div className="flex items-center gap-2">
-                    <SidebarTrigger className="text-white hover:text-white/80" />
-                    <h1 className="text-3xl font-bold tracking-tight font-headline text-white">
-                        Dashboard Principal
-                    </h1>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button variant="outline" className="bg-card/50 border-border/50 hover:bg-card/70 text-white">
-                        <Calendar className="mr-2 h-4 w-4" />
-                        <span>Julio 2025</span>
-                    </Button>
-                    <Button className="bg-primary/90 text-primary-foreground hover:bg-primary">
-                        <Download className="mr-2 h-4 w-4" />
-                        Exportar
-                    </Button>
-                </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <WelcomeBanner user={user} />
+          
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mt-6">
                 <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} trend="+5.2% vs. mes anterior" trendDirection="up" icon={Target} />
                 <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} trend="+1.2% vs. mes anterior" trendDirection="up" icon={Percent} />
                 <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} trend="-3.4% vs. mes anterior" trendDirection="down" icon={Hourglass} />
@@ -221,5 +203,3 @@ export default function MainPage() {
     </div>
   );
 }
-
-    
