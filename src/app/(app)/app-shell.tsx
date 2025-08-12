@@ -475,20 +475,22 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-          role="banner"
-        >
-        <div className="flex items-center gap-2">
-            <SidebarTrigger aria-label="Toggle sidebar" />
-            <h1
-            className="text-xl font-semibold font-headline text-foreground"
-            tabIndex={-1}
-            >
-             {!isMainDashboard ? getPageTitle() : ''}
-            </h1>
-        </div>
-        </header>
+        {!isMainDashboard && (
+          <header
+            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+            role="banner"
+          >
+            <div className="flex items-center gap-2">
+              <SidebarTrigger aria-label="Toggle sidebar" />
+              <h1
+                className="text-xl font-semibold font-headline text-foreground"
+                tabIndex={-1}
+              >
+                {getPageTitle()}
+              </h1>
+            </div>
+          </header>
+        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
