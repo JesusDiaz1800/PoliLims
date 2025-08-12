@@ -17,13 +17,6 @@ export interface User {
  * replaced with a call to an authentication service or a user database.
  */
 const users: Record<string, User> = {
-    "main_dashboard_user": {
-        username: "main_dashboard_user",
-        fullName: "Usuario Principal",
-        role: "Jefe de Calidad",
-        initials: "UP",
-        avatarUrl: "https://placehold.co/40x40/00E5FF/0F172A?text=UP"
-    },
     "jdiaz": {
         username: "jdiaz",
         fullName: "Jesus Diaz",
@@ -119,7 +112,7 @@ const users: Record<string, User> = {
  */
 export async function findUserByUsername(username: string): Promise<User> {
     // This simulates an async API call to fetch a user.
-    return users[username] || users["main_dashboard_user"];
+    return users[username] || users["jefe.calidad"];
 }
 
 /**
@@ -131,5 +124,3 @@ export async function getAllUsers(): Promise<User[]> {
     // This simulates an async API call to fetch all users.
     return Object.values(users);
 }
-
-    
