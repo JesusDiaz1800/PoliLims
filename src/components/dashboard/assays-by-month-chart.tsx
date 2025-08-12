@@ -20,6 +20,9 @@ const CustomCursor = (props: any) => {
 
 const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) => {
   const {chartData, average} = React.useMemo(() => {
+    if (!allData) {
+        return { chartData: [], average: 0 };
+    }
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
 
