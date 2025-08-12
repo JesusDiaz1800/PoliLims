@@ -286,7 +286,9 @@ export default function SeguimientoEnsayosPage() {
     setTimeout(() => {
         iframe.contentWindow?.focus();
         iframe.contentWindow?.print();
-        document.body.removeChild(iframe);
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
     }, 500);
   }
   
