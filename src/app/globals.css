@@ -9,47 +9,47 @@ body {
 
 @layer base {
   :root {
-    --background: 210 20% 98%; /* Lighter, cleaner background */
-    --foreground: 222.2 47.4% 11.2%;
+    --background: 210 20% 98%; 
+    --foreground: 224 71.4% 4.1%;
  
     --card: 210 20% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 224 71.4% 4.1%;
  
     --popover: 210 20% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 224 71.4% 4.1%;
  
-    --primary: 217 91% 60%; /* Brighter, more modern blue */
-    --primary-foreground: 210 40% 98%;
+    --primary: 216 84% 51%; /* SteelBlue */
+    --primary-foreground: 210 20% 98%;
  
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 215 28% 93%;
+    --secondary-foreground: 224 71.4% 4.1%;
  
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 215 28% 93%;
+    --muted-foreground: 215 20% 65.1%;
  
-    --accent: 210 40% 96.1%; /* Subtle accent for hover states */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 215 28% 93%; 
+    --accent-foreground: 224 71.4% 4.1%;
  
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
+    --border: 215 20% 89%;
+    --input: 215 20% 89%;
+    --ring: 216 84% 51%;
  
     --radius: 0.5rem;
 
-    --chart-1: 217 91% 60%; /* primary */
-    --chart-2: 173 80% 40%; /* green */
-    --chart-3: 38 78% 61%; /* orange */
+    --chart-1: 216 84% 51%; /* primary */
+    --chart-2: 142 76% 36%; /* green */
+    --chart-3: 38 92% 50%; /* orange */
     --chart-4: 0 84% 60%; /* red */
-    --chart-5: 262 83% 58%; /* violet */
+    --chart-5: 262 74% 60%; /* violet */
   }
  
   .dark {
-    --background: 222 84% 4.9%; /* Deep dark blue */
+    --background: 222 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 222 84% 8%; /* Slightly lighter dark blue for cards */
+    --card: 222 84% 8%;
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
@@ -72,6 +72,28 @@ body {
     --chart-4: 0 72% 51%;
     --chart-5: 262 83% 58%;
   }
+
+  .dashboard-futurista {
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222 84% 8%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 188 100% 50%;
+    --primary-foreground: 222 84% 4.9%;
+    --secondary: 217 33% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 300 100% 50%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 188 100% 50%;
+  }
 }
  
 @layer base {
@@ -80,6 +102,30 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  .dashboard-futurista {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .dashboard-futurista .card-glass {
+      background-color: hsl(var(--card) / 0.5);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border: 1px solid hsl(var(--border) / 0.3);
+  }
+
+  .dashboard-futurista .background-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      background-image: 
+          radial-gradient(circle at 15% 50%, hsl(var(--primary) / 0.1), transparent 30%),
+          radial-gradient(circle at 85% 30%, hsl(var(--accent) / 0.08), transparent 25%);
   }
 }
 

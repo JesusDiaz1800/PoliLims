@@ -1,13 +1,12 @@
 import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
 import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import './main-dashboard.css';
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function MainPage() {
   return (
-    <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-[calc(100vh-theme(space.12))]">
+    <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
       <div className="background-overlay"></div>
       <div className="relative z-10">
         <div className="flex items-center justify-between space-y-2 mb-6">
