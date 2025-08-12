@@ -20,7 +20,7 @@ import {
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "16rem"
+const SIDEBAR_WIDTH = "15rem"
 const SIDEBAR_WIDTH_MOBILE = "16rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
@@ -317,8 +317,8 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-[#1C3664] data-[active=true]:dark:bg-primary data-[active=true]:dark:text-blue-200",
-        ghost: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-[#1C3664] data-[active=true]:dark:bg-primary data-[active=true]:dark:text-blue-200",
+        default: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/70 data-[active=true]:text-[#1C3664] data-[active=true]:dark:bg-primary data-[active=true]:dark:text-blue-200",
+        ghost: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/70 data-[active=true]:text-[#1C3664] data-[active=true]:dark:bg-primary data-[active=true]:dark:text-blue-200",
       },
       size: {
         default: "h-10 px-3 text-sm",
