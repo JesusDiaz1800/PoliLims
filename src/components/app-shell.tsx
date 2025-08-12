@@ -337,13 +337,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         "
       >
         <SidebarContent>
-          <div className="py-4 px-3 overflow-hidden transition-all duration-300">
+          <div className="py-4 px-2 overflow-hidden transition-all duration-300">
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
-          <div className="px-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+          <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-white/50" />
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
                 <Input
                   type="search"
                   placeholder="Buscar en el menú..."
