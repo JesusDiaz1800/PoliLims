@@ -342,7 +342,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       >
         <SidebarContent>
           <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-56 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+            <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
@@ -473,7 +473,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         </SidebarFooter>
       </Sidebar>
 
-      <div className="flex flex-col flex-1 h-screen overflow-hidden ml-1">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden">
         {pathname !== '/main' && (
             <header
             className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
