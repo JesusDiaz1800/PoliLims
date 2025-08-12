@@ -51,19 +51,19 @@ export default function MainPage() {
   }, [username]);
 
   const allAnalysts = React.useMemo(() => {
-    if (!isLoaded) return [];
+    if (!isLoaded || !ensayos) return [];
     const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
     return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
   }, [ensayos, isLoaded]);
 
   const assayTypes = React.useMemo(() => {
-    if (!isLoaded) return [];
+    if (!isLoaded || !ensayos) return [];
     const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
     return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
   }, [ensayos, isLoaded]);
   
   const suppliers = React.useMemo(() => {
-      if (!isLoaded) return [];
+      if (!isLoaded || !ensayos) return [];
       const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
       return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
   }, [ensayos, isLoaded]);
@@ -76,7 +76,7 @@ export default function MainPage() {
     approvalPercentage,
     pendingAssays,
   } = React.useMemo(() => {
-    if (!isLoaded) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+    if (!isLoaded || !ensayos) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
     
     const now = new Date();
     
