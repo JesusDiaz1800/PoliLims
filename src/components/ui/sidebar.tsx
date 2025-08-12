@@ -264,7 +264,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-1", className)}
+      className={cn("flex flex-col gap-1 px-2", className)}
       {...props}
     />
   )
@@ -293,7 +293,7 @@ const SidebarMenu = React.forwardRef<
   <ul
     ref={ref}
     data-sidebar="menu"
-    className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+    className={cn("flex w-full min-w-0 flex-col gap-1 px-2 py-4", className)}
     {...props}
   />
 ))
@@ -317,12 +317,12 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
-        ghost: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
+        default: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:bg-accent data-[active=true]:dark:text-foreground",
+        ghost: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:bg-accent data-[active=true]:dark:text-foreground",
       },
       size: {
         default: "h-10 px-3 text-sm",
-        sm: "h-9 px-3 text-sm",
+        sm: "h-9 px-2 text-sm",
         lg: "h-12 px-3 text-base",
       },
     },

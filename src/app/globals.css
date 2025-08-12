@@ -90,13 +90,13 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
-  width: 8px;
+  width: 2px; /* Reduced width to fix overlap */
   background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: hsl(var(--primary) / 0.3);
-  border-radius: 4px;
+  border-radius: 1px; /* Adjusted radius */
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
