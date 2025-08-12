@@ -1,4 +1,3 @@
-
 import type {Config} from 'tailwindcss';
 const { fontFamily } = require("tailwindcss/defaultTheme")
 
@@ -20,7 +19,7 @@ export default {
     extend: {
       fontFamily: {
         body: ['var(--font-inter)', ...fontFamily.sans],
-        headline: ['var(--font-space-grotesk)', ...fontFamily.sans],
+        headline: ['var(--font-orbitron)', ...fontFamily.sans],
       },
       boxShadow: {
         'glow': '0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)',
