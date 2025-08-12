@@ -59,7 +59,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 
 const ensayosSubMenu = [
     { 
@@ -201,7 +201,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 
 const pageTitles: Record<string, string> = {
     '/main': 'Main Dashboard',
-    '/dashboard': 'Dashboard Legacy',
+    '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -236,8 +236,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Main Dashboard', icon: Home },
-    { href: '/dashboard', label: 'Dashboard Legacy', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -282,10 +281,8 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const isInspectorView = user?.role === "Inspector de Calidad";
   const userQuery = searchParams.toString();
   const [searchTerm, setSearchTerm] = React.useState("");
-  const isMainDashboard = pathname === '/main';
 
   const getPageTitle = React.useCallback(() => {
-    if (isMainDashboard) return null;
     const title = pageTitles[pathname];
     if (title) return title;
 
@@ -294,7 +291,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     }
 
     return "Dashboard";
-  }, [pathname, isMainDashboard]);
+  }, [pathname]);
 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
     if (onClick) {
@@ -477,24 +474,20 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        {!isMainDashboard && (
-            <header
-            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-            role="banner"
+        <header
+          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+          role="banner"
+        >
+          <div className="flex items-center gap-2">
+            <SidebarTrigger aria-label="Toggle sidebar" />
+            <h1
+              className="text-xl font-semibold font-headline text-foreground"
+              tabIndex={-1}
             >
-            <div className="flex items-center gap-2">
-                <SidebarTrigger aria-label="Toggle sidebar" />
-                {pageTitle && (
-                    <h1
-                        className="text-xl font-semibold font-headline text-foreground"
-                        tabIndex={-1}
-                    >
-                        {pageTitle}
-                    </h1>
-                )}
-            </div>
-            </header>
-        )}
+              {getPageTitle()}
+            </h1>
+          </div>
+        </header>
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
