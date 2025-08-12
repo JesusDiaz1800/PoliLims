@@ -74,25 +74,32 @@ body {
   }
 
   .dashboard-futurista {
-    --background: 0 0% 4%;
+    --background: 224 71.4% 4.1%; /* Deep navy */
     --foreground: 210 40% 98%;
     --card: 222 84% 8%;
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 188 100% 50%; /* Cian brillante */
-    --primary-foreground: 222 84% 4.9%;
+    --primary: 188 100% 50%; /* Bright Cyan */
+    --primary-foreground: 224 71.4% 4.1%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
-    --accent: 300 100% 50%; /* Magenta Neón */
+    --accent: 300 100% 50%; /* Neon Magenta */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
     --border: 217 33% 25%;
     --input: 217 33% 25%;
-    --ring: 188 100% 50%;
+    --ring: 188 100% 50%; /* Bright Cyan for rings */
+
+    /* Chart colors for the futuristic theme */
+    --chart-1: 188 100% 50%; /* Cyan */
+    --chart-2: 142 76% 45%; /* Green */
+    --chart-3: 38 92% 55%; /* Orange */
+    --chart-4: 0 84% 65%; /* Red */
+    --chart-5: 300 100% 50%; /* Magenta */
   }
 }
  
@@ -110,10 +117,12 @@ body {
   }
 
   .dashboard-futurista .card-glass {
-      background-color: hsl(var(--card) / 0.5);
+      background-color: hsl(var(--card) / 0.6);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
-      border: 1px solid hsl(var(--border) / 0.3);
+      border: 1px solid;
+      border-image-slice: 1;
+      border-image-source: linear-gradient(to right bottom, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
   }
 
   .dashboard-futurista .background-overlay {
