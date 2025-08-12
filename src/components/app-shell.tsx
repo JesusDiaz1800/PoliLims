@@ -52,6 +52,7 @@ import {
   FileText,
   SlidersHorizontal,
   Search,
+  Beaker,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -64,11 +65,11 @@ import { Input } from "./ui/input";
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: Construction,
+      icon: SlidersHorizontal,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Cylinder },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Cylinder },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Beaker },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
@@ -315,7 +316,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         if (filteredSub.length > 0) {
           acc.push({ ...item, subMenu: filteredSub, subItems: filteredSub });
         } else if (labelMatch) {
-          // Keep parent if it matches, even if children don't
           acc.push({ ...item, subMenu: [], subItems: []});
         }
       } else if (labelMatch) {
