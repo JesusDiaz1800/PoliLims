@@ -83,28 +83,24 @@ export default function MainPage() {
     <div className="relative flex-1 space-y-6 min-h-screen">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-6">
-          <div className="flex justify-between items-center">
-            <WelcomeBanner user={user} />
-            <Collapsible>
-                <CollapsibleTrigger asChild>
-                    <Button variant="outline" className="h-9">
-                        <SlidersHorizontal className="mr-2 h-4 w-4"/>
-                        Filtros
-                    </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                    {/* El contenido de los filtros se mostrará aquí cuando esté abierto */}
-                </CollapsibleContent>
-            </Collapsible>
-          </div>
-
-          <CollapsibleContent>
-             <DashboardFilters
-                analysts={allAnalysts}
-                assayTypes={assayTypes}
-                suppliers={suppliers}
-              />
-          </CollapsibleContent>
+          <Collapsible>
+            <div className="flex justify-between items-center">
+              <WelcomeBanner user={user} />
+              <CollapsibleTrigger asChild>
+                  <Button variant="outline" className="h-9">
+                      <SlidersHorizontal className="mr-2 h-4 w-4"/>
+                      Filtros
+                  </Button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent>
+              <DashboardFilters
+                  analysts={allAnalysts}
+                  assayTypes={assayTypes}
+                  suppliers={suppliers}
+                />
+            </CollapsibleContent>
+          </Collapsible>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
             <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
