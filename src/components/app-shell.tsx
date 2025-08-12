@@ -146,7 +146,6 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
           aria-disabled={disabled}
         >
           <div className="flex items-center gap-3 flex-1">
-             {isActive && !isSearchActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
             <item.icon className="size-5 shrink-0" />
             <span className="truncate">{item.label}</span>
           </div>
@@ -186,7 +185,6 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     aria-disabled={disabled}
                   >
                     <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                      {isSubItemActive && <div className="absolute left-[-1rem] top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                       <span>{subItem.label}</span>
                     </Link>
@@ -419,7 +417,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                       href={`${item.href}?${userQuery}`}
                       onClick={(e) => handleMenuClick(e, item.onClick)}
                     >
-                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
                       <div className="flex items-center gap-3">
                         <item.icon className="size-5 shrink-0" aria-hidden="true" />
                         <span className="truncate">{item.label}</span>
@@ -507,3 +504,5 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     </div>
   );
 }
+
+    
