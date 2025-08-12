@@ -116,6 +116,7 @@ const proveedoresSubMenu = [
     { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
 ];
 
+
 function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item: any; pathname: string; disabled?: boolean; userQuery: string }) {
   const subMenuItems = item.subMenu || item.subItems;
 
