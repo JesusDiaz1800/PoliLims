@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -49,8 +50,7 @@ import {
   Truck,
   Layers3,
   SlidersHorizontal,
-  BookCheck,
-  FileText,
+  BookCheck
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -151,7 +151,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item:
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
-                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1" />;
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
                 return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
