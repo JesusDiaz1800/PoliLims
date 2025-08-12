@@ -148,9 +148,9 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="dashboard-futurista relative flex-1 space-y-6 min-h-screen">
+    <div className="relative flex-1 space-y-6 min-h-screen">
        <div className="background-overlay"></div>
-       <div className="relative z-10 p-6 space-y-6">
+       <div className="relative z-10 space-y-6">
           <WelcomeBanner user={user} />
           
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">

@@ -16,8 +16,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   }
 
   return (
-    <Card className="bg-card/30 backdrop-blur-sm border-white/10">
-      <CardHeader>
+    <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
         <div className="flex items-center gap-4">
             <Hand className="h-8 w-8 text-primary" />
             <div>
@@ -25,8 +24,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
                 <CardDescription className="text-base text-muted-foreground">Aquí tienes un resumen del estado actual del laboratorio.</CardDescription>
             </div>
         </div>
-      </CardHeader>
-    </Card>
+    </div>
   );
 }
 export const WelcomeBanner = React.memo(WelcomeBannerInternal);

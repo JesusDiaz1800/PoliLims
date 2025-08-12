@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowUp } from "lucide-react";
@@ -14,7 +13,7 @@ type StatsCardProps = {
 export function StatsCard({ title, value, icon: Icon, trend, trendDirection }: StatsCardProps) {
     const isPositive = trendDirection === "up";
     return (
-        <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
+        <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
                 <Icon className="h-5 w-5 text-muted-foreground" />

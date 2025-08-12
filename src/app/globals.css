@@ -74,19 +74,19 @@ body {
   }
 
   .dashboard-futurista {
-    --background: 222 84% 4.9%;
+    --background: 0 0% 4%;
     --foreground: 210 40% 98%;
     --card: 222 84% 8%;
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 188 100% 50%;
+    --primary: 188 100% 50%; /* Cian brillante */
     --primary-foreground: 222 84% 4.9%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 18%;
     --muted-foreground: 215 20% 65%;
-    --accent: 300 100% 50%;
+    --accent: 300 100% 50%; /* Magenta Neón */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
