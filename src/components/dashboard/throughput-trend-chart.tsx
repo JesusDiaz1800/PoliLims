@@ -75,4 +75,3 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
   )
 }
 export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);
-

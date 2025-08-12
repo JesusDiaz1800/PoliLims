@@ -76,4 +76,3 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   )
 }
 export const AssaysByTypeChart = React.memo(AssaysByTypeChartInternal);
-

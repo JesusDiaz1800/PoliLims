@@ -109,57 +109,68 @@ export default function MainPage() {
                 </Collapsible>
             </div>
             
+            {/* KPIs Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
+                <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
+                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
+                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
+                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
+            </div>
+
+            {/* Main Charts Row */}
             <div className="grid grid-cols-12 gap-4">
-                
-                <div className="col-span-12 lg:col-span-8">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[270px]">
+                <div className="col-span-12 lg:col-span-7">
+                    <Card className="card-glass transition-all hover:shadow-glow h-[300px]">
                         <ThroughputTrendChart data={filteredEnsayos} />
                     </Card>
                 </div>
-
-                <div className="col-span-12 lg:col-span-4 space-y-4">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 flex-1">
-                        <EquipmentAlertsCard equipos={equipos || []} />
+                <div className="col-span-12 lg:col-span-5">
+                     <Card className="card-glass transition-all hover:shadow-glow h-[300px]">
+                        <AssaysByMonthChart data={ensayos || []} />
                     </Card>
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 flex-1">
+                </div>
+            </div>
+
+            {/* Secondary Charts & Lists Row */}
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-12 lg:col-span-3">
+                     <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
+                        <AssaysByTypeChart data={filteredEnsayos} />
+                    </Card>
+                </div>
+                <div className="col-span-12 lg:col-span-3">
+                    <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
+                        <SampleStatusChart data={filteredEnsayos} />
+                    </Card>
+                </div>
+                <div className="col-span-12 lg:col-span-3">
+                    <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
+                        <WorkloadDistributionChart data={filteredEnsayos} />
+                    </Card>
+                </div>
+                <div className="col-span-12 lg:col-span-3">
+                    <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
                         <RecentActivityList initialActivity={recentActivity || []}/>
                     </Card>
                 </div>
-                
-                 <div className="col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
-                    <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-                    <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
-                    <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
-                    <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
-                </div>
-
-                 <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
-                        <AssaysByTypeChart data={filteredEnsayos} />
-                    </Card>
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
-                        <SampleStatusChart data={filteredEnsayos} />
-                    </Card>
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
-                        <WorkloadDistributionChart data={filteredEnsayos} />
-                    </Card>
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
-                        <NonConformitiesByTypeChart data={noConformidades || []} />
+            </div>
+             
+             {/* Third Row with other charts */}
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-12 lg:col-span-4">
+                     <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
+                        <EquipmentAlertsCard equipos={equipos || []} />
                     </Card>
                 </div>
-                 <div className="col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
-                        <AssaysByMonthChart data={ensayos || []} />
-                    </Card>
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                 <div className="col-span-12 lg:col-span-8">
+                     <Card className="card-glass transition-all hover:shadow-glow h-[280px]">
                         <NonConformitiesByMonthChart data={noConformidades || []} />
                     </Card>
                 </div>
-
             </div>
+
         </div>
     </div>
   );
 }
-
