@@ -17,13 +17,12 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import { findUserByUsername } from "@/services/user-service";
-import * as dataService from "@/services/data-service";
 import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
-import type { Ensayo, RecentActivity, Equipo, NoConformidad } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context";
 
 export type DashboardFilterParams = {
   month?: string;
@@ -35,12 +34,7 @@ export type DashboardFilterParams = {
 }
 
 export default function DashboardPage() {
-  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
-  const [recentActivity, setRecentActivity] = React.useState<RecentActivity[]>([]);
-  const [equipos, setEquipos] = React.useState<Equipo[]>([]);
-  const [noConformidades, setNoConformidades] = React.useState<NoConformidad[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-
+  const { ensayos, recentActivity, equipos, noConformidades, isLoaded } = useDynamicData();
   const searchParams = useSearchParams();
   
   const month = searchParams.get('month') || 'last_12_months';
@@ -52,54 +46,43 @@ export default function DashboardPage() {
 
   const [user, setUser] = React.useState<User | null>(null);
   
-  const allAnalysts = React.useMemo(() => {
-    if (isLoading) return [];
-    const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
-    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
-  }, [ensayos, isLoading]);
-
-  const assayTypes = React.useMemo(() => {
-    if (isLoading) return [];
-    const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
-    return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
-  }, [ensayos, isLoading]);
-  
-  const suppliers = React.useMemo(() => {
-      if (isLoading) return [];
-      const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
-      return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
-  }, [ensayos, isLoading]);
-
-
   React.useEffect(() => {
-    async function loadData() {
-        setIsLoading(true);
+    async function loadUser() {
         const userData = await findUserByUsername(username);
         setUser(userData);
-
-        const { ensayos: fetchedEnsayos, recentActivity: fetchedActivity, equipos: fetchedEquipos, noConformidades: fetchedNCs } = await dataService.getInitialData();
-        setEnsayos(fetchedEnsayos);
-        setRecentActivity(fetchedActivity);
-        setEquipos(fetchedEquipos);
-        setNoConformidades(fetchedNCs);
-
-        setIsLoading(false);
     }
     if (username) {
-      loadData();
+      loadUser();
     }
   }, [username]);
+
+  const allAnalysts = React.useMemo(() => {
+    if (!isLoaded) return [];
+    const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
+    return [{ value: "all", label: "Todos los Analistas" }, ...Array.from(analystSet).map(a => ({ value: a, label: a }))];
+  }, [ensayos, isLoaded]);
+
+  const assayTypes = React.useMemo(() => {
+    if (!isLoaded) return [];
+    const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
+    return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
+  }, [ensayos, isLoaded]);
   
+  const suppliers = React.useMemo(() => {
+      if (!isLoaded) return [];
+      const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
+      return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
+  }, [ensayos, isLoaded]);
+
   const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
-  // Memoize filtered data and calculations to improve performance
   const {
     filteredEnsayos,
     totalFilteredAssays,
     approvalPercentage,
     pendingAssays,
   } = React.useMemo(() => {
-    if (isLoading) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+    if (!isLoaded) return { filteredEnsayos: [], totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
     
     const now = new Date();
     
@@ -160,9 +143,9 @@ export default function DashboardPage() {
         approvalPercentage: approval,
         pendingAssays: pending,
     }
-  }, [ensayos, month, analyst, status, type, supplier, isLoading]);
+  }, [ensayos, month, analyst, status, type, supplier, isLoaded]);
 
-  if (isLoading || !user) {
+  if (!isLoaded || !user) {
     return <Loading />;
   }
   
@@ -229,5 +212,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

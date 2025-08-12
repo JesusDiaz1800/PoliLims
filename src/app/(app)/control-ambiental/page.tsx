@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from 'react';
-import type { CondicionAmbiental } from '@/context/data-context';
+import { useDynamicData, type CondicionAmbiental } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { AmbientalStatsCard } from '@/components/ambiental/ambiental-stats-card';
@@ -11,40 +11,18 @@ import { RegistroAmbientalForm } from '@/components/ambiental/registro-ambiental
 import { Monitor, Thermometer, Droplets, Settings } from 'lucide-react';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import * as dataService from "@/services/data-service";
 
 export default function ControlAmbientalPage() {
-    const [condicionesAmbientales, setCondicionesAmbientales] = React.useState<CondicionAmbiental[]>([]);
-    const [isLoading, setIsLoading] = React.useState(true);
+    const { condicionesAmbientales, addCondicionAmbiental, addRecentActivity, isLoaded } = useDynamicData();
     const [zonaSeleccionada, setZonaSeleccionada] = React.useState('Laboratorio Principal');
 
-    React.useEffect(() => {
-        async function loadData() {
-            setIsLoading(true);
-            const data = await dataService.getInitialData();
-            setCondicionesAmbientales(data.condicionesAmbientales);
-            setIsLoading(false);
-        }
-        loadData();
-    }, []);
-
-    const addCondicionAmbiental = async (data: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => {
-        const newRecord = await dataService.addCondicionAmbiental(data);
-        setCondicionesAmbientales(prev => [...prev, newRecord]);
-    };
-    
-    const addRecentActivity = async (activity: { user: string; action: string }) => {
-        await dataService.addRecentActivity(activity);
-    };
-
-    if (isLoading) {
+    if (!isLoaded) {
         return <Loading />;
     }
 
     const zonas = Array.from(new Set(condicionesAmbientales.map(c => c.zona)));
 
     const datosZonaSeleccionada = condicionesAmbientales.filter(c => c.zona === zonaSeleccionada);
-    const ultimaLectura = datosZonaSeleccionada.sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
 
     const limites: { [key: string]: { temp: { min: number, max: number }, hum: { min: number, max: number } } } = {
         'Laboratorio Principal': { temp: { min: 18, max: 25 }, hum: { min: 30, max: 60 } },
@@ -144,4 +122,3 @@ export default function ControlAmbientalPage() {
         </div>
     );
 }
-

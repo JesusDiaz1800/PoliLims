@@ -4,28 +4,13 @@
 import * as React from 'react';
 import Loading from '@/app/(app)/loading';
 import { ControlEventosTable } from '@/components/equipos/control-eventos-table';
-import * as dataService from "@/services/data-service";
-import type { Equipo, ControlEvento } from '@/context/data-context';
+import { useDynamicData } from '@/context/data-context';
 
 
 export default function EquiposPage() {
-  const [equipos, setEquipos] = React.useState<Equipo[]>([]);
-  const [controles, setControles] = React.useState<ControlEvento[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  
-  React.useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      const data = await dataService.getInitialData();
-      setEquipos(data.equipos);
-      setControles(data.controles);
-      setIsLoading(false);
-    }
-    loadData();
-  }, []);
+  const { equipos, controles, isLoaded } = useDynamicData();
 
-
-  if (isLoading) {
+  if (!isLoaded) {
     return <Loading />;
   }
   

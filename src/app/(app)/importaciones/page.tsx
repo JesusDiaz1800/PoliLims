@@ -6,24 +6,13 @@ import Loading from '@/app/(app)/loading';
 import { ImportacionesTable } from '@/components/importaciones/importaciones-table';
 import { ImportacionDialog } from '@/components/importaciones/importacion-dialog';
 import type { Importacion } from '@/context/data-context';
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from '@/context/data-context';
 
 
 export default function ImportacionesPage() {
-  const [importaciones, setImportaciones] = React.useState<Importacion[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { importaciones, isLoaded } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedImportacion, setSelectedImportacion] = React.useState<Importacion | null>(null);
-
-  React.useEffect(() => {
-    async function loadData() {
-        setIsLoading(true);
-        const data = await dataService.getInitialData();
-        setImportaciones(data.importaciones);
-        setIsLoading(false);
-    }
-    loadData();
-  }, []);
 
   const handleOpenDialog = (importacion?: Importacion) => {
     setSelectedImportacion(importacion || null);
@@ -35,7 +24,7 @@ export default function ImportacionesPage() {
     setIsDialogOpen(false);
   };
 
-  if (isLoading) {
+  if (!isLoaded) {
     return <Loading />;
   }
 
