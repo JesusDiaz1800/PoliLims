@@ -140,7 +140,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button text-white hover:bg-white/10 data-[active=true]:bg-white/20"
+          className="w-full justify-between group/button text-white hover:bg-white/10 data-[active=true]:bg-white/80"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -179,7 +179,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white hover:bg-white/10 data-[active=true]:bg-white/20"
+                    className="w-full justify-start text-white hover:bg-white/10 data-[active=true]:bg-white/80"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -409,7 +409,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     className="
                       text-white
                       hover:bg-white/10
-                      data-[active=true]:bg-white/20
+                      data-[active=true]:bg-white/80
                       relative
                     "
                   >
@@ -504,5 +504,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     </div>
   );
 }
+
+    
 
     
