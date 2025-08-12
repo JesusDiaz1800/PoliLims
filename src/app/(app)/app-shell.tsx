@@ -473,7 +473,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         </SidebarFooter>
       </Sidebar>
 
-      <div className="flex flex-col flex-1 h-screen overflow-hidden ml-1">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden">
         {pathname !== '/main' && (
             <header
             className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
