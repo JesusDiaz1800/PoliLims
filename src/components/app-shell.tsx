@@ -59,7 +59,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 
 const ensayosSubMenu = [
     { 
@@ -201,7 +201,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 
 const pageTitles: Record<string, string> = {
     '/main': 'Main Dashboard',
-    '/dashboard': 'Dashboard Legacy',
+    '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -236,8 +236,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Main Dashboard', icon: Home },
-    { href: '/dashboard', label: 'Dashboard Legacy', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -329,6 +328,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   };
 
   const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+  const pageTitle = getPageTitle();
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">

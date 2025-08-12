@@ -42,7 +42,7 @@ export default function DashboardPage() {
   const status = searchParams.get('status') || 'all';
   const type = searchParams.get('type') || 'all';
   const supplier = searchParams.get('supplier') || 'all';
-  const username = searchParams.get('user') || 'jdiaz';
+  const username = searchParams.get('user') || 'jefe.calidad';
 
   const [user, setUser] = React.useState<User | null>(null);
   
