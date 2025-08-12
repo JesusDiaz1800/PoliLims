@@ -317,13 +317,13 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "hover:bg-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
-        ghost: "hover:bg-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
+        default: "hover:bg-white/10 data-[active=true]:bg-white/80",
+        ghost: "hover:bg-white/10 data-[active=true]:bg-white/80",
       },
       size: {
-        default: "h-10 px-3 text-sm font-medium gap-3",
-        sm: "h-9 px-3 text-sm gap-2",
-        lg: "h-12 px-3 text-base gap-4",
+        default: "h-10 px-3 text-sm font-medium",
+        sm: "h-9 px-3 text-sm",
+        lg: "h-12 px-3 text-base",
       },
     },
     defaultVariants: {
