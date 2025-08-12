@@ -14,6 +14,8 @@ interface NonConformitiesByMonthChartProps {
 
 const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesByMonthChartProps) => {
   const chartData = React.useMemo(() => {
+    if (!allData) return [];
+    
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
 
