@@ -1,7 +1,8 @@
 
-import { BarChart, Briefcase, Calendar, DollarSign, Download, Users, SidebarTrigger } from "lucide-react";
+import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
 import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import './main-dashboard.css';
 
