@@ -12,6 +12,7 @@ interface NonConformitiesByTypeChartProps {
 
 const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChartProps) => {
   const chartData = React.useMemo(() => {
+    if (!data) return [];
     const typeCounts = data.reduce((acc, nc) => {
       acc[nc.tipo] = (acc[nc.tipo] || 0) + 1;
       return acc;
