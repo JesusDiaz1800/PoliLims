@@ -140,7 +140,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
+          className="w-full justify-between group/button data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -179,7 +179,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start gap-2"
+                    className="w-full justify-start gap-2 data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -406,6 +406,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label, side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
+                    className="data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
                   >
                     <Link
                       href={`${item.href}?${userQuery}`}
