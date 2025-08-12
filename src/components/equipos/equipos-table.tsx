@@ -86,7 +86,7 @@ function getCalibrationStatus(dateString: string): { message: string, color: str
     return null;
 }
 
-const EquiposTableInternal = ({ equipos, onAddNew, onEdit }: EquiposTableProps) => {
+const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit }: EquiposTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
