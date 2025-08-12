@@ -6,7 +6,7 @@ import './main-dashboard.css';
 
 export default function MainPage() {
   return (
-    <div className="dashboard-futurista relative flex-1 space-y-6">
+    <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
       <div className="background-overlay"></div>
       <div className="relative z-10">
         <div className="flex items-center justify-between space-y-2">
