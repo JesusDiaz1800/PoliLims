@@ -247,7 +247,7 @@ const SidebarContent = React.forwardRef<
       ref={ref}
       data-sidebar="content"
       className={cn(
-        "flex-grow overflow-y-auto overflow-x-hidden p-2 custom-scrollbar",
+        "flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar",
         className
       )}
       {...props}
@@ -264,7 +264,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-1 p-2", className)}
+      className={cn("flex flex-col gap-1", className)}
       {...props}
     />
   )
@@ -317,8 +317,8 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:dark:bg-primary",
-        ghost: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:dark:bg-primary",
+        default: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
+        ghost: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
       },
       size: {
         default: "h-10 px-3 text-sm",

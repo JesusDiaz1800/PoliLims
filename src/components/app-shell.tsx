@@ -140,7 +140,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
+          className="w-full justify-between group/button"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -179,7 +179,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start gap-2 data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
+                    className="w-full justify-start gap-2"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
@@ -337,7 +337,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         "
       >
         <SidebarContent>
-          <div className="py-4 px-2 overflow-hidden transition-all duration-300">
+          <div className="px-2 py-4 overflow-hidden transition-all duration-300">
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
@@ -364,7 +364,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-          <SidebarMenu>
+          <SidebarMenu className="px-2 py-4">
             {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
               const isDisabled =
                 isInspectorView &&
@@ -406,7 +406,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     tooltip={{ content: item.label, side: "right", align: "center" }}
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
-                    className="data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground"
                   >
                     <Link
                       href={`${item.href}?${userQuery}`}
@@ -436,7 +435,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
