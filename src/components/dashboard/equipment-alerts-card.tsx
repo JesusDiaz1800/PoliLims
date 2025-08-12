@@ -71,44 +71,43 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
 
   return (
     <>
-    <Card className="card-glass">
+    <>
       <CardHeader>
         <div className="flex items-center gap-3">
-          <AlertTriangle className="h-6 w-6 text-destructive" />
+          <AlertTriangle className="h-5 w-5 text-destructive" />
           <div>
-            <CardTitle>Equipos que Requieren Atención</CardTitle>
-            <CardDescription>Calibraciones próximas, vencidas o mantenimientos.</CardDescription>
+            <CardTitle>Alertas de Equipos</CardTitle>
+            <CardDescription className="text-xs">Atención requerida.</CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[170px] pr-4">
-          <div className="space-y-4">
+      <CardContent className="h-[calc(100%-4.5rem)] pb-2">
+        <ScrollArea className="h-full pr-2">
+          <div className="space-y-3">
             {equiposConAlerta.length > 0 ? (
               equiposConAlerta.map(equipo => {
                 const alert = getAlertDetails(equipo);
                 return (
-                  <div key={equipo.id} className="flex items-center justify-between">
+                  <div key={equipo.id} className="flex items-center justify-between text-xs">
                     <div>
                       <p className="font-semibold">{equipo.nombre}</p>
-                      <p className={cn("text-sm font-medium", alert.color)}>{alert.message}</p>
+                      <p className={cn("font-medium", alert.color)}>{alert.message}</p>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => handleViewDetails(equipo)}>
+                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => handleViewDetails(equipo)}>
                         Ver
                     </Button>
                   </div>
                 );
               })
             ) : (
-              <div className="text-center text-sm text-muted-foreground pt-10">
-                <p>¡Todo en orden!</p>
+              <div className="text-center text-xs text-muted-foreground h-full flex items-center justify-center">
                 <p>No hay equipos que requieran atención inmediata.</p>
               </div>
             )}
           </div>
         </ScrollArea>
       </CardContent>
-    </Card>
+    </>
 
     {selectedEquipo && (
         <EquipoDetailsDialog
@@ -129,4 +128,3 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
   );
 }
 export const EquipmentAlertsCard = React.memo(EquipmentAlertsCardInternal);
-    

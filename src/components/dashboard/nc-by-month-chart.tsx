@@ -47,32 +47,31 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   }, [allData]);
 
   return (
-    <Card className="card-glass">
+    <>
       <CardHeader>
-        <CardTitle>Tendencia de No Conformidades</CardTitle>
-        <CardDescription>Volumen de no conformidades registradas mensualmente durante los últimos 12 meses.</CardDescription>
+        <CardTitle>No Conformidades por Mes</CardTitle>
+        <CardDescription>Volumen de NCs registradas en los últimos 12 meses.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+      <CardContent className="h-[calc(100%-4rem)] pb-0">
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
                     cursor={{ fill: 'hsla(var(--accent), 0.3)' }}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--background))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
+                      color: 'hsl(var(--foreground))',
+                      fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="total" name="No Conformidades" radius={[4, 4, 0, 0]} fill="hsl(var(--chart-5))"/>
+                <Bar dataKey="total" name="No Conformidades" radius={[2, 2, 0, 0]} fill="hsl(var(--chart-5))"/>
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
-    </Card>
+    </>
   )
 }
 export const NonConformitiesByMonthChart = React.memo(NonConformitiesByMonthChartInternal);
-
-    

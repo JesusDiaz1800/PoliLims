@@ -27,21 +27,21 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
   }, [data]);
 
   return (
-    <Card className="card-glass">
+    <>
       <CardHeader>
-        <CardTitle>Origen de No Conformidades</CardTitle>
+        <CardTitle>Origen de NCs</CardTitle>
         <CardDescription>Distribución de NC según su origen.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
+      <CardContent className="h-[calc(100%-4rem)] pb-0">
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={chartData}
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={80}
-              innerRadius={50}
+              outerRadius={60}
+              innerRadius={35}
               paddingAngle={5}
               dataKey="value"
                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
@@ -50,7 +50,7 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
                 const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
 
                 return (
-                  <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-sm font-bold">
+                  <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
                     {`${(percent * 100).toFixed(0)}%`}
                   </text>
                 );
@@ -61,18 +61,16 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
               ))}
             </Pie>
              <Legend 
-                iconSize={10} 
+                iconSize={8} 
                 layout="horizontal" 
                 verticalAlign="bottom" 
                 align="center"
-                wrapperStyle={{ paddingBottom: '20px' }}
+                wrapperStyle={{ paddingBottom: '10px', fontSize: '10px' }}
             />
           </PieChart>
         </ResponsiveContainer>
       </CardContent>
-    </Card>
+    </>
   )
 }
 export const NonConformitiesByTypeChart = React.memo(NonConformitiesByTypeChartInternal);
-
-    

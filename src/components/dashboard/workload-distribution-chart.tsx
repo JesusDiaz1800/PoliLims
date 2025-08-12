@@ -39,19 +39,19 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
 
 
   return (
-    <Card className="h-full flex flex-col card-glass">
+    <>
       <CardHeader>
-        <CardTitle>Registros por Analista</CardTitle>
-        <CardDescription>Número de ensayos registrados por analista en el período seleccionado.</CardDescription>
+        <CardTitle>Carga de Trabajo</CardTitle>
+        <CardDescription>Ensayos por analista en el período.</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow">
+      <CardContent className="h-[calc(100%-4rem)] pb-0">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 40 }}>
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 25 }}>
                 <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={12} 
+                    fontSize={10} 
                     tickLine={false} 
                     axisLine={false}
                     angle={-45}
@@ -59,27 +59,27 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                     interval={0}
                     dy={10}
                  />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--background))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
+                      color: 'hsl(var(--foreground))',
+                      fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="value" name="Ensayos" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}/>
             </BarChart>
           </ResponsiveContainer>
         ) : (
            <div className="flex items-center justify-center h-full">
-             <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar con los filtros actuales.</p>
+             <p className="text-xs text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar con los filtros actuales.</p>
            </div>
         )}
       </CardContent>
-    </Card>
+    </>
   )
 }
 export const WorkloadDistributionChart = React.memo(WorkloadDistributionChartInternal);
-    

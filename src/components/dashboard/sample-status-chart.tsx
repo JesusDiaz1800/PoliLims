@@ -46,15 +46,15 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
 
 
   return (
-    <Card className="card-glass">
+    <>
         <CardHeader>
-            <CardTitle>Análisis de Ensayos por Estado</CardTitle>
-            <CardDescription>Distribución porcentual de los ensayos según su estado actual.</CardDescription>
+            <CardTitle>Estado de Ensayos</CardTitle>
+            <CardDescription>Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
-        <CardContent>
-             <div className="flex items-center gap-4">
-                 <div className="w-1/2">
-                    <ResponsiveContainer width="100%" height={150}>
+        <CardContent className="h-[calc(100%-4rem)] pb-0">
+             <div className="flex items-center gap-2 h-full">
+                 <div className="w-1/2 h-full">
+                    <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <style>
                                 {
@@ -81,8 +81,8 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
-                                outerRadius={60}
-                                innerRadius={40}
+                                outerRadius={50}
+                                innerRadius={30}
                                 paddingAngle={5}
                                 dataKey="value"
                                 label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
@@ -105,23 +105,22 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                 </div>
                 <div className="w-1/2 space-y-2">
                     {chartData.map((item) => (
-                        <div key={item.name} className="flex items-center justify-between">
+                        <div key={item.name} className="flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2">
-                                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.fill }}></span>
-                                <span className="text-sm text-muted-foreground">{item.name}</span>
+                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.fill }}></span>
+                                <span className="text-muted-foreground">{item.name}</span>
                             </div>
-                            <span className="font-semibold text-sm">{item.value}</span>
+                            <span className="font-semibold">{item.value}</span>
                         </div>
                     ))}
-                    <div className="flex items-center justify-between border-t pt-2 mt-2">
-                        <span className="text-sm font-semibold text-muted-foreground">Total</span>
+                    <div className="flex items-center justify-between border-t pt-1 mt-1 text-xs">
+                        <span className="font-semibold text-muted-foreground">Total</span>
                         <span className="font-bold">{total}</span>
                     </div>
                 </div>
             </div>
         </CardContent>
-    </Card>
+    </>
   )
 }
 export const SampleStatusChart = React.memo(SampleStatusChartInternal);
-    

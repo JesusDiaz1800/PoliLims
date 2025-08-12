@@ -34,34 +34,34 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
 
 
   return (
-    <Card className="card-glass">
+    <>
         <CardHeader>
             <CardTitle>Tendencia de Rendimiento</CardTitle>
             <CardDescription>Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
         </CardHeader>
-        <CardContent>
-            <ResponsiveContainer width="100%" height={210}>
-                <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+        <CardContent className="h-[calc(100%-4rem)] pb-0">
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                     <Tooltip
                         cursor={{fill: 'hsla(var(--accent), 0.3)'}}
                         contentStyle={{
                           backgroundColor: 'hsl(var(--background))',
                           borderColor: 'hsl(var(--border))',
                           borderRadius: 'var(--radius)',
-                          color: 'hsl(var(--foreground))'
+                          color: 'hsl(var(--foreground))',
+                          fontSize: '12px'
                         }}
                     />
-                    <Legend iconSize={12} wrapperStyle={{fontSize: '14px', paddingTop: '10px'}}/>
-                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={{r: 4, fill: "hsl(var(--chart-1))"}} />
-                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{r: 4, fill: "hsl(var(--chart-2))"}}/>
+                    <Legend iconSize={10} wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
+                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-1))"}} />
+                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-2))"}}/>
                 </LineChart>
             </ResponsiveContainer>
         </CardContent>
-    </Card>
+    </>
   )
 }
 export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);
-    

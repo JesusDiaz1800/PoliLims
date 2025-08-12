@@ -60,37 +60,37 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
   }, [allData]);
 
   return (
-    <Card className="card-glass">
+    <>
       <CardHeader>
-        <CardTitle>Total de Ensayos por Mes</CardTitle>
-        <CardDescription>Volumen de ensayos registrados mensualmente durante los últimos 12 meses.</CardDescription>
+        <CardTitle>Ensayos por Mes</CardTitle>
+        <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+      <CardContent className="h-[calc(100%-4rem)] pb-0">
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--background))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
+                      color: 'hsl(var(--foreground))',
+                      fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="total" name="Ensayos" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} />
                 <ReferenceLine 
                     y={average} 
-                    label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                    label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
                     stroke="hsl(var(--muted-foreground))" 
                     strokeDasharray="3 3" 
                 />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
-    </Card>
+    </>
   )
 }
 export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);
-    

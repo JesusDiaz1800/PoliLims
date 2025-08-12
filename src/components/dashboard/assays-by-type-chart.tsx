@@ -34,31 +34,31 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
     }, [allData]);
 
   return (
-    <Card className="card-glass">
+    <>
       <CardHeader>
         <CardTitle>Ensayos por Tipo</CardTitle>
-        <CardDescription>Distribución de la cantidad de ensayos según su tipo.</CardDescription>
+        <CardDescription>Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} hide />
-                <YAxis dataKey="name" type="category" width={120} stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+      <CardContent className="h-[calc(100%-4rem)] pb-0">
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
+                <YAxis dataKey="name" type="category" width={80} stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
                       backgroundColor: 'hsl(var(--background))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
+                      color: 'hsl(var(--foreground))',
+                      fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="value" name="Cantidad" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="value" name="Cantidad" radius={[0, 2, 2, 0]} barSize={12}/>
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
-    </Card>
+    </>
   )
 }
 export const AssaysByTypeChart = React.memo(AssaysByTypeChartInternal);
-    

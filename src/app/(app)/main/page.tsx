@@ -84,7 +84,7 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="relative flex-1 space-y-6 min-h-screen">
+    <div className="relative flex-1 space-y-4 min-h-screen">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-4">
             <div className="flex justify-between items-center">
@@ -109,24 +109,24 @@ export default function MainPage() {
                 </Collapsible>
             </div>
             
-            <div className="grid grid-cols-12 gap-6">
+            <div className="grid grid-cols-12 gap-4">
                 
                 <div className="col-span-12 lg:col-span-8">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
+                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[270px]">
                         <ThroughputTrendChart data={filteredEnsayos} />
                     </Card>
                 </div>
 
-                <div className="col-span-12 lg:col-span-4 space-y-6">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
+                <div className="col-span-12 lg:col-span-4 space-y-4">
+                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 flex-1">
                         <EquipmentAlertsCard equipos={equipos || []} />
                     </Card>
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
+                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 flex-1">
                         <RecentActivityList initialActivity={recentActivity || []}/>
                     </Card>
                 </div>
                 
-                 <div className="col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                 <div className="col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
                     <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
                     <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
@@ -134,37 +134,29 @@ export default function MainPage() {
                     <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
                 </div>
 
-                 <div className="col-span-12 lg:col-span-6">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
-                        <AssaysByMonthChart data={ensayos || []} />
+                 <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                        <AssaysByTypeChart data={filteredEnsayos} />
+                    </Card>
+                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                        <SampleStatusChart data={filteredEnsayos} />
+                    </Card>
+                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                        <WorkloadDistributionChart data={filteredEnsayos} />
+                    </Card>
+                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                        <NonConformitiesByTypeChart data={noConformidades || []} />
                     </Card>
                 </div>
-                 <div className="col-span-12 lg:col-span-6">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
+                 <div className="col-span-12 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
+                        <AssaysByMonthChart data={ensayos || []} />
+                    </Card>
+                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 h-[250px]">
                         <NonConformitiesByMonthChart data={noConformidades || []} />
                     </Card>
                 </div>
 
-                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
-                        <AssaysByTypeChart data={filteredEnsayos} />
-                    </Card>
-                </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-3">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
-                        <SampleStatusChart data={filteredEnsayos} />
-                    </Card>
-                </div>
-                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
-                     <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
-                        <WorkloadDistributionChart data={filteredEnsayos} />
-                    </Card>
-                </div>
-                 <div className="col-span-12 md:col-span-6 lg:col-span-3">
-                    <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1">
-                        <NonConformitiesByTypeChart data={noConformidades || []} />
-                    </Card>
-                </div>
             </div>
         </div>
     </div>
