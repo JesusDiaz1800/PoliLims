@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -166,7 +167,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
-                return <SidebarSeparator key={\`sub-sep-\${index}\`} className="my-1 bg-white/20 dark:bg-gray-700" />;
+                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
                 return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
@@ -184,7 +185,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={\`\${subItem.href}?\${userQuery}\`} className="relative">
+                    <Link href={`${subItem.href}?${userQuery}`} className="relative">
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                       <span className="text-sm">{subItem.label}</span>
                     </Link>
@@ -281,6 +282,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const isInspectorView = user?.role === "Inspector de Calidad";
   const userQuery = searchParams.toString();
   const [searchTerm, setSearchTerm] = React.useState("");
+  const isMainDashboard = pathname === '/main';
 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
@@ -378,7 +380,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 if (item.type === "separator") {
                     return (
                     <SidebarSeparator
-                        key={\`sep-\${index}\`}
+                        key={`sep-${index}`}
                         className="my-2 bg-white/20 dark:bg-gray-700"
                     />
                     );
@@ -412,7 +414,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         className="px-3"
                     >
                         <Link
-                        href={\`\${item.href}?\${userQuery}\`}
+                        href={`${item.href}?${userQuery}`}
                         onClick={(e) => handleMenuClick(e, item.onClick)}
                         >
                         <div className="flex items-center gap-3">
@@ -455,7 +457,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           <div className="flex items-center gap-3 px-1 py-1">
             <Avatar
               className="h-9 w-9 border-2 border-white/30 dark:border-border"
-              aria-label={\`Avatar de \${user?.fullName ?? "usuario"}\`}
+              aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
               {user?.avatarUrl ? (
                 <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
@@ -473,20 +475,22 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-          role="banner"
-        >
-          <div className="flex items-center gap-2">
-            <SidebarTrigger aria-label="Toggle sidebar" />
-            <h1
-              className="text-xl font-semibold font-headline text-foreground"
-              tabIndex={-1}
+        {!isMainDashboard && (
+            <header
+            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+            role="banner"
             >
-              {getPageTitle()}
-            </h1>
-          </div>
-        </header>
+            <div className="flex items-center gap-2">
+                <SidebarTrigger aria-label="Toggle sidebar" />
+                <h1
+                className="text-xl font-semibold font-headline text-foreground"
+                tabIndex={-1}
+                >
+                {getPageTitle()}
+                </h1>
+            </div>
+            </header>
+        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main

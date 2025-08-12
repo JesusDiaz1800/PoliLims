@@ -1,18 +1,22 @@
-import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
+import { BarChart, Briefcase, Calendar, DollarSign, Download, Users, Sidebar } from "lucide-react";
 import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import './main-dashboard.css';
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function MainPage() {
   return (
     <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
       <div className="background-overlay"></div>
       <div className="relative z-10">
-        <div className="flex items-center justify-between space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">
-            Main Dashboard
-            </h1>
+        <div className="flex items-center justify-between space-y-2 mb-6">
+            <div className="flex items-center gap-2">
+                <SidebarTrigger className="text-white hover:text-white/80" />
+                <h1 className="text-3xl font-bold tracking-tight font-headline">
+                Main Dashboard
+                </h1>
+            </div>
             <div className="flex items-center space-x-2">
             <Button variant="outline" className="bg-card/50 border-border/50 hover:bg-card/70">
                 <Calendar className="mr-2 h-4 w-4" />
