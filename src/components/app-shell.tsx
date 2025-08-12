@@ -364,7 +364,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu>
+            <SidebarMenu className="px-2 py-4">
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
@@ -406,7 +406,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         tooltip={{ content: item.label, side: "right", align: "center" }}
                         disabled={isDisabled}
                         aria-disabled={isDisabled}
-                        className="data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground dark:data-[active=true]:text-foreground"
                     >
                         <Link
                         href={`${item.href}?${userQuery}`}
@@ -428,15 +427,14 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter>
-          <SidebarMenu>
+        <SidebarFooter className="px-2 py-2">
+          <SidebarMenu className="p-0">
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white/80 dark:text-foreground/80 data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground dark:data-[active=true]:text-foreground hover:bg-white/10 hover:text-white dark:hover:bg-muted dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
