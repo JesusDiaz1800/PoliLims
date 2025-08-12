@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  Construction,
-  Cylinder,
   TestTube,
   Recycle,
   ClipboardCheck,
@@ -180,12 +178,13 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white dark:hover:bg-muted data-[active=true]:text-white"
+                    className="w-full justify-start text-white hover:bg-white/10 dark:hover:bg-muted data-[active=true]:bg-white/10"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={`${subItem.href}?${userQuery}`}>
+                    <Link href={`${subItem.href}?${userQuery}`} className="relative">
+                      {isSubItemActive && <div className="absolute left-[-1rem] top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                       <span>{subItem.label}</span>
                     </Link>
@@ -408,10 +407,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     disabled={isDisabled}
                     aria-disabled={isDisabled}
                     className="
-                      text-white/80 dark:text-foreground/80
-                      hover:bg-white/10 hover:text-white
+                      text-white dark:text-foreground
+                      hover:bg-white/10
                       dark:hover:bg-muted
-                      data-[active=true]:text-white
+                      data-[active=true]:bg-white/10
                       data-[active=true]:dark:text-foreground
                       relative
                     "
@@ -445,7 +444,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white/80 dark:text-foreground/80 hover:bg-white/10 dark:hover:bg-muted hover:text-white dark:hover:text-foreground"
+                className="text-white hover:bg-white/10 dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
