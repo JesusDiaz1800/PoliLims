@@ -51,6 +51,7 @@ import {
   SlidersHorizontal,
   Search,
   Beaker,
+  Home,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -140,7 +141,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
+          className="w-full justify-between group/button px-3"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -199,6 +200,8 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
+    '/main': 'Main Dashboard',
+    '/dashboard': 'Dashboard Legacy',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -233,7 +236,8 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/main', label: 'Main Dashboard', icon: Home },
+    { href: '/dashboard', label: 'Dashboard Legacy', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -330,15 +334,15 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
         className="
-          bg-[#1C3664] text-white
+          bg-gradient-to-b from-[#1C3664] to-[#162A4F] text-white
           dark:bg-card
           shadow-lg
           transition-colors duration-300
         "
       >
         <SidebarContent>
-          <div className="px-2 py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+          <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
+            <Logo className="w-56 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
@@ -364,7 +368,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu className="px-2 pb-2">
+            <SidebarMenu className="pb-2">
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
@@ -406,6 +410,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         tooltip={{ content: item.label, side: "right", align: "center" }}
                         disabled={isDisabled}
                         aria-disabled={isDisabled}
+                        className="px-3"
                     >
                         <Link
                         href={`${item.href}?${userQuery}`}
