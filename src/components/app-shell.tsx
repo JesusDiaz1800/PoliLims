@@ -60,6 +60,7 @@ import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const ensayosSubMenu = [
     { 
@@ -200,8 +201,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
-    '/main': 'Main Dashboard',
-    '/dashboard': 'Dashboard',
+    '/main': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -236,8 +236,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Dashboard Principal', icon: Home },
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -373,7 +372,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
-                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
+                    !["/main", "/ensayos/control-rutinario"].some((p) =>
                     item.href?.startsWith(p)
                     );
 
@@ -400,7 +399,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
                 const isActive =
                     pathname === item.href ||
-                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+                    (item.href && item.href !== "/main" && pathname.startsWith(item.href));
 
                 return (
                     <SidebarMenuItem key={item.href || index}>
@@ -474,7 +473,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         </SidebarFooter>
       </Sidebar>
 
-      <div className="flex flex-col flex-1 h-screen overflow-hidden">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden ml-1">
         {pathname !== '/main' && (
             <header
             className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
@@ -482,11 +481,8 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             >
             <div className="flex items-center gap-2">
                 <SidebarTrigger aria-label="Toggle sidebar" />
-                <h1
-                className="text-xl font-semibold font-headline text-foreground"
-                tabIndex={-1}
-                >
-                {getPageTitle()}
+                 <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                    {pageTitle}
                 </h1>
             </div>
             </header>
@@ -494,7 +490,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className="min-w-full p-4 sm:p-6 custom-scrollbar"
+                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && "p-4 sm:p-6")}
                 role="main"
                 tabIndex={-1}
             >

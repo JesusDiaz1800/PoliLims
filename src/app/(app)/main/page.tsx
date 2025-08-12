@@ -36,7 +36,7 @@ export default function MainPage() {
   const status = searchParams.get('status') || 'all';
   const type = searchParams.get('type') || 'all';
   const supplier = searchParams.get('supplier') || 'all';
-  const username = searchParams.get('user') || 'main_dashboard_user';
+  const username = searchParams.get('user') || 'jdiaz';
 
   const [user, setUser] = React.useState<User | null>(null);
   

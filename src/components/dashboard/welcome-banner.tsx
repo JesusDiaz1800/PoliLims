@@ -21,7 +21,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
         <div className="flex items-center gap-4">
             <Hand className="h-8 w-8 text-primary" />
             <div>
-                <CardTitle className="text-2xl">Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</CardTitle>
+                <CardTitle className="text-2xl">¡Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</CardTitle>
                 <CardDescription className="text-base text-muted-foreground">Aquí tienes un resumen del estado actual del laboratorio.</CardDescription>
             </div>
         </div>
