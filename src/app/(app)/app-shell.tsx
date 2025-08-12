@@ -60,6 +60,7 @@ import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const ensayosSubMenu = [
     { 
@@ -236,7 +237,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Dashboard', icon: Home },
+    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -372,7 +373,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
-                    !["/dashboard", "/ensayos/control-rutinario", "/main"].some((p) =>
+                    !["/main"].some((p) =>
                     item.href?.startsWith(p)
                     );
 
@@ -501,5 +502,3 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     </div>
   );
 }
-
-    
