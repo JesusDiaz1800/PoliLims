@@ -1,4 +1,3 @@
-
 import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "lucide-react";
 import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
