@@ -1,3 +1,4 @@
+
 /* Estilos específicos para el Dashboard Futurista */
 .dashboard-futurista {
     /* Paleta de colores Dark Mode Futurista */
@@ -25,7 +26,6 @@
 .dashboard-futurista {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    min-height: 100%;
 }
 
 .dashboard-futurista .card-glass {

@@ -285,6 +285,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const isMainDashboard = pathname === '/main';
 
   const getPageTitle = React.useCallback(() => {
+    if (isMainDashboard) return null;
     const title = pageTitles[pathname];
     if (title) return title;
 
@@ -293,7 +294,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     }
 
     return "Dashboard";
-  }, [pathname]);
+  }, [pathname, isMainDashboard]);
 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
     if (onClick) {
@@ -330,6 +331,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   };
 
   const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+  const pageTitle = getPageTitle();
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
@@ -475,22 +477,24 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        <header
-          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-          role="banner"
-        >
-          <div className="flex items-center gap-2">
-            <SidebarTrigger aria-label="Toggle sidebar" />
-            {!isMainDashboard && (
-              <h1
-                className="text-xl font-semibold font-headline text-foreground"
-                tabIndex={-1}
-              >
-                {getPageTitle()}
-              </h1>
-            )}
-          </div>
-        </header>
+        {!isMainDashboard && (
+            <header
+            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+            role="banner"
+            >
+            <div className="flex items-center gap-2">
+                <SidebarTrigger aria-label="Toggle sidebar" />
+                {pageTitle && (
+                    <h1
+                        className="text-xl font-semibold font-headline text-foreground"
+                        tabIndex={-1}
+                    >
+                        {pageTitle}
+                    </h1>
+                )}
+            </div>
+            </header>
+        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
