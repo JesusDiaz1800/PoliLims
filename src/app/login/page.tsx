@@ -18,7 +18,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
        <div className="absolute inset-0 -z-10 h-full w-full bg-card dark:bg-gray-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
        
-      <Card className="w-full max-w-md shadow-2xl">
+      <Card className="w-full max-w-md shadow-2xl animate-in fade-in-0 slide-in-from-bottom-2 duration-700">
         <CardHeader className="text-center space-y-4 pt-8">
             <div className="mx-auto h-14 w-36">
               <LogoAlt />
