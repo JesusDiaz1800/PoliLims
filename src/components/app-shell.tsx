@@ -440,6 +440,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
+                className="px-3"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
@@ -453,16 +454,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
           <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
-          <div className="flex items-center gap-3 px-1 py-1">
+          <div className="flex items-center gap-3 px-3 py-1">
             <Avatar
               className="h-9 w-9 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
-              {user?.avatarUrl ? (
-                <AvatarImage src={user.avatarUrl} alt={user?.fullName ?? "User"} />
-              ) : (
-                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
-              )}
+              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
             </Avatar>
 
             <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
