@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react";
@@ -45,7 +46,7 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
 
 
   return (
-    <Card>
+    <Card className="card-glass">
         <CardHeader>
             <CardTitle>Análisis de Ensayos por Estado</CardTitle>
             <CardDescription>Distribución porcentual de los ensayos según su estado actual.</CardDescription>
@@ -123,6 +124,4 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   )
 }
 export const SampleStatusChart = React.memo(SampleStatusChartInternal);
-    
-
     

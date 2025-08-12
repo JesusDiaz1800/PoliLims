@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -39,7 +40,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
 
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col card-glass">
       <CardHeader>
         <CardTitle>Registros por Analista</CardTitle>
         <CardDescription>Número de ensayos registrados por analista en el período seleccionado.</CardDescription>
@@ -82,6 +83,4 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   )
 }
 export const WorkloadDistributionChart = React.memo(WorkloadDistributionChartInternal);
-    
-
     

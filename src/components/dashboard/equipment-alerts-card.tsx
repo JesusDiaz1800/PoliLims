@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -70,7 +71,7 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
 
   return (
     <>
-    <Card>
+    <Card className="card-glass">
       <CardHeader>
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-6 w-6 text-destructive" />
@@ -128,6 +129,4 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
   );
 }
 export const EquipmentAlertsCard = React.memo(EquipmentAlertsCardInternal);
-    
-
     

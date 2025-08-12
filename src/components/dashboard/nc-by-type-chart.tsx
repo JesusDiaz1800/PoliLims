@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react";
@@ -26,7 +27,7 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
   }, [data]);
 
   return (
-    <Card>
+    <Card className="card-glass">
       <CardHeader>
         <CardTitle>Origen de No Conformidades</CardTitle>
         <CardDescription>Distribución de NC según su origen.</CardDescription>

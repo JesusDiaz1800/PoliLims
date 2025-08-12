@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -46,7 +47,7 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   }, [allData]);
 
   return (
-    <Card>
+    <Card className="card-glass">
       <CardHeader>
         <CardTitle>Tendencia de No Conformidades</CardTitle>
         <CardDescription>Volumen de no conformidades registradas mensualmente durante los últimos 12 meses.</CardDescription>

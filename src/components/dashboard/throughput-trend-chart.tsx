@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react";
@@ -33,7 +34,7 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
 
 
   return (
-    <Card>
+    <Card className="card-glass">
         <CardHeader>
             <CardTitle>Tendencia de Rendimiento</CardTitle>
             <CardDescription>Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
@@ -63,6 +64,4 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
   )
 }
 export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);
-    
-
     

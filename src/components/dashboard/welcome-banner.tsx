@@ -16,7 +16,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   }
 
   return (
-    <Card className="bg-card">
+    <Card className="bg-card/30 backdrop-blur-sm border-white/10">
       <CardHeader>
         <div className="flex items-center gap-4">
             <Hand className="h-8 w-8 text-primary" />

@@ -46,7 +46,7 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
     const activityList = initialActivity || [];
 
     return (
-        <Card className="h-full flex flex-col">
+        <Card className="h-full flex flex-col card-glass">
             <CardHeader>
                 <CardTitle>Actividad Reciente</CardTitle>
                 <CardDescription>Un registro de las acciones más recientes.</CardDescription>

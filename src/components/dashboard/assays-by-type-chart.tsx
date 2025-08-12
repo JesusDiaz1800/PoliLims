@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -33,7 +34,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
     }, [allData]);
 
   return (
-    <Card>
+    <Card className="card-glass">
       <CardHeader>
         <CardTitle>Ensayos por Tipo</CardTitle>
         <CardDescription>Distribución de la cantidad de ensayos según su tipo.</CardDescription>
@@ -60,6 +61,4 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   )
 }
 export const AssaysByTypeChart = React.memo(AssaysByTypeChartInternal);
-    
-
     
