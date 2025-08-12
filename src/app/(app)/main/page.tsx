@@ -5,10 +5,11 @@ import { BarChart, Briefcase, Calendar, DollarSign, Download, Users } from "luci
 import { StatsCard } from "@/components/main/stats-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import './main-dashboard.css';
 
 export default function MainPage() {
   return (
-    <div className="flex-1 space-y-6">
+    <div className="dashboard-futurista flex-1 space-y-6">
       <div className="flex items-center justify-between space-y-2">
         <h1 className="text-3xl font-bold tracking-tight font-headline">
           Main Dashboard
@@ -32,6 +33,7 @@ export default function MainPage() {
           icon={DollarSign}
           trend="+20.1% desde el mes pasado"
           trendDirection="up"
+          variant="glass"
         />
         <StatsCard
           title="Suscripciones"
@@ -39,6 +41,7 @@ export default function MainPage() {
           icon={Users}
           trend="+180.1% desde el mes pasado"
           trendDirection="up"
+          variant="glass"
         />
         <StatsCard
           title="Ventas"
@@ -46,6 +49,7 @@ export default function MainPage() {
           icon={Briefcase}
           trend="+19% desde el mes pasado"
           trendDirection="up"
+          variant="glass"
         />
         <StatsCard
           title="Tasa de Aprobación"
@@ -53,6 +57,7 @@ export default function MainPage() {
           icon={BarChart}
           trend="-1.2% desde la semana pasada"
           trendDirection="down"
+          variant="glass"
         />
       </div>
 
