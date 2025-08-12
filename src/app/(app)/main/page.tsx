@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
 
 import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -21,6 +21,8 @@ import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-ch
 import { useDynamicData } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 
 export default function MainPage() {
   const searchParams = useSearchParams();
@@ -81,12 +83,29 @@ export default function MainPage() {
     <div className="relative flex-1 space-y-6 min-h-screen">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-6">
-          <WelcomeBanner user={user} />
-          <DashboardFilters
-            analysts={allAnalysts}
-            assayTypes={assayTypes}
-            suppliers={suppliers}
-          />
+          <div className="flex justify-between items-center">
+            <WelcomeBanner user={user} />
+            <Collapsible>
+                <CollapsibleTrigger asChild>
+                    <Button variant="outline" className="h-9">
+                        <SlidersHorizontal className="mr-2 h-4 w-4"/>
+                        Filtros
+                    </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    {/* El contenido de los filtros se mostrará aquí cuando esté abierto */}
+                </CollapsibleContent>
+            </Collapsible>
+          </div>
+
+          <CollapsibleContent>
+             <DashboardFilters
+                analysts={allAnalysts}
+                assayTypes={assayTypes}
+                suppliers={suppliers}
+              />
+          </CollapsibleContent>
+
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
             <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
             <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
@@ -131,4 +150,3 @@ export default function MainPage() {
     </div>
   );
 }
-
