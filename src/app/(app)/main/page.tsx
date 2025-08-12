@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, PanelLeft } from "lucide-react";
 
 import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -23,6 +23,7 @@ import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export default function MainPage() {
   const searchParams = useSearchParams();
@@ -41,6 +42,7 @@ export default function MainPage() {
   } = useDynamicData();
   
   const [user, setUser] = React.useState<User | null>(null);
+  const { toggleSidebar } = useSidebar();
   
   React.useEffect(() => {
     async function loadUser() {
@@ -86,12 +88,18 @@ export default function MainPage() {
           <Collapsible>
             <div className="flex justify-between items-center">
               <WelcomeBanner user={user} />
-              <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="h-9">
-                      <SlidersHorizontal className="mr-2 h-4 w-4"/>
-                      Filtros
-                  </Button>
-              </CollapsibleTrigger>
+              <div className="flex items-center gap-2">
+                 <Button onClick={toggleSidebar} variant="outline" size="icon" className="h-9 w-9">
+                    <PanelLeft className="h-4 w-4" />
+                    <span className="sr-only">Contraer menú</span>
+                </Button>
+                <CollapsibleTrigger asChild>
+                    <Button variant="outline" className="h-9">
+                        <SlidersHorizontal className="mr-2 h-4 w-4"/>
+                        Filtros
+                    </Button>
+                </CollapsibleTrigger>
+              </div>
             </div>
             <CollapsibleContent>
               <DashboardFilters
