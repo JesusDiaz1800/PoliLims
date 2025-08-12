@@ -1,22 +1,23 @@
 /* Estilos específicos para el Dashboard Futurista */
 .dashboard-futurista {
-    --background: 222 84% 4.9%; /* slate-950 */
-    --foreground: 210 40% 98%; /* slate-50 */
-    --card: 222 84% 8%; /* slate-900 */
+    /* Paleta de colores Dark Mode Futurista */
+    --background: 222 84% 4.9%; /* #0A0F1A - slate-950 */
+    --foreground: 210 40% 98%; /* #F8FAFC - slate-50 */
+    --card: 222 84% 8%; /* #0F172A - slate-900 */
     --card-foreground: 210 40% 98%;
     --popover: 222 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 188 100% 50%; /* cian brillante - #00E5FF */
+    --primary: 188 100% 50%; /* #00E5FF - cian brillante */
     --primary-foreground: 222 84% 4.9%;
-    --secondary: 217 33% 18%; /* slate-800 */
+    --secondary: 217 33% 18%; /* #212C47 - slate-800 */
     --secondary-foreground: 210 40% 98%;
     --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%; /* slate-400 */
-    --accent: 300 100% 50%; /* magenta neón - #FF00FF */
+    --muted-foreground: 215 20% 65%; /* #8A9CB0 - slate-400 */
+    --accent: 300 100% 50%; /* #FF00FF - magenta neón */
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
+    --destructive: 0 63% 31%; /* #B91C1C - */
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 25%; /* slate-700/800 */
+    --border: 217 33% 25%; /* #344159 - slate-700/800 */
     --input: 217 33% 25%;
     --ring: 188 100% 50%;
 }
