@@ -66,21 +66,30 @@ export interface RecentActivity {
 }
 
 export interface Equipo {
-    id: string;
-    nombre: string;
+    id: string; // id_instrumento
+    nombre: string; // nombre_instrumento
     marca?: string;
     modelo?: string;
     numero_serie?: string;
     ubicacion?: string;
     criticidad?: 'Alta' | 'Media' | 'Baja';
     estado: 'Activo' | 'En Mantenimiento' | 'Inactivo' | 'Requiere Calibración';
-    fecha_puesta_marcha?: string;
-    proxima_calibracion: string;
+    fecha_puesta_marcha?: string; // fecha_adquisicion
+    ultima_calibracion?: string; // timestamp
+    proxima_calibracion: string; // timestamp
     observaciones?: string;
     fotoUrl?: string;
     manual_url?: string;
     procedimiento_url?: string;
     ensayos_asociados?: string[];
+    historial_mantenimiento?: {
+        fecha: string; // timestamp
+        descripcion: string;
+        tecnico_id: string;
+        costo?: number;
+    }[];
+    documentos_calibracion?: string[]; // URLs a Cloud Storage
+    autorizado_para_uso?: boolean;
 }
 
 export interface ControlEvento {
@@ -223,6 +232,52 @@ export interface Auditoria {
     objetivos?: string;
     estado: 'Planificada' | 'En Curso' | 'Finalizada' | 'Cancelada';
     hallazgos?: Hallazgo[];
+}
+
+export interface MovimientoInventario {
+    fecha: string; // timestamp
+    tipo_movimiento: 'ingreso' | 'salida' | 'ajuste';
+    cantidad: number;
+    usuario_id: string;
+}
+
+export interface ItemInventario {
+    id: string; // id_item
+    nombre: string; // nombre_item
+    tipo: 'reactivo' | 'material_consumible' | 'estandar_referencia'; // tipo_item
+    cantidad_disponible: number;
+    unidades: string;
+    ubicacion: string; // ubicacion_almacen
+    fecha_vencimiento?: string; // timestamp
+    proveedor_id?: string;
+    registro_movimientos: MovimientoInventario[];
+}
+
+export interface Usuario {
+    uid: string; // UID de Firebase
+    nombre_completo: string;
+    email: string;
+    rol: 'administrador' | 'gerente_laboratorio' | 'analista' | 'tecnico' | 'cliente';
+    laboratorio_id?: string;
+    fecha_creacion_cuenta: string; // timestamp
+    ultimo_acceso: string; // timestamp
+    registros_formacion: {
+        curso: string;
+        fecha_finalizacion: string; // timestamp
+        aprobado: boolean;
+        pnt_asociados: string[];
+    }[];
+}
+
+export interface Pnt {
+    id: string; // id_pnt
+    nombre: string;
+    version: string;
+    fecha_aprobacion: string; // timestamp
+    contenido: string; // Texto o URL a Cloud Storage
+    autor_id: string; // referencia a usuarios
+    instrumentos_asociados: string[]; // referencias a equipos
+    ensayos_asociados: string[];
 }
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
