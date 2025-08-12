@@ -330,7 +330,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
         className="
-          bg-[#1C3664] text-white
+          bg-gradient-to-b from-[#1C3664] to-[#162A4F] text-white
           dark:bg-card
           shadow-lg
           transition-colors duration-300
