@@ -1,5 +1,4 @@
 
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,13 +35,13 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Contraseña</Label>
-                <Link href="#" className="text-sm text-primary hover:underline">
+                <Link href="#" className="text-sm hover:underline" style={{ color: '#1C3664' }}>
                   ¿Olvidó su contraseña?
                 </Link>
               </div>
               <Input name="password" id="password" type="password" required defaultValue="password" />
             </div>
-            <Button type="submit" className="w-full !mt-8 h-11 text-base font-semibold">
+            <Button type="submit" className="w-full !mt-8 h-11 text-base font-semibold" style={{ backgroundColor: '#1C3664' }}>
                 Ingresar al Sistema
             </Button>
           </form>
