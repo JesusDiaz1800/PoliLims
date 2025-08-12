@@ -140,7 +140,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
-          className="w-full justify-between group/button"
+          className="w-full justify-between group/button px-3"
           isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
@@ -336,7 +336,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           transition-colors duration-300
         "
       >
-        <SidebarContent className="p-0">
+        <SidebarContent>
           <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
             <Logo className="w-56 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
@@ -364,7 +364,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-            <SidebarMenu className="px-2 pb-2">
+            <SidebarMenu className="pb-2">
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
@@ -406,6 +406,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         tooltip={{ content: item.label, side: "right", align: "center" }}
                         disabled={isDisabled}
                         aria-disabled={isDisabled}
+                        className="px-3"
                     >
                         <Link
                         href={`${item.href}?${userQuery}`}
