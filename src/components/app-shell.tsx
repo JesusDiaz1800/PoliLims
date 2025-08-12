@@ -162,7 +162,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
         </SidebarMenuButton>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <SidebarMenu className="pl-4">
+        <SidebarMenu className="pl-2">
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
@@ -435,7 +435,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white hover:bg-white/10 dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground"
+                className="text-white/80 dark:text-foreground/80 data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground dark:data-[active=true]:text-foreground hover:bg-white/10 hover:text-white dark:hover:bg-muted dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
