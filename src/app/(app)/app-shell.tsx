@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
-  Construction,
-  Cylinder,
   TestTube,
   Recycle,
   ClipboardCheck,
@@ -48,9 +46,11 @@ import {
   CalendarCheck,
   History,
   Truck,
-  Layers3,
+  BookCheck,
+  FileText,
   SlidersHorizontal,
-  BookCheck
+  Search,
+  Beaker,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -58,15 +58,16 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { User } from "@/services/user-service";
 import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
+import { Input } from "./ui/input";
 
 const ensayosSubMenu = [
     { 
       label: 'Tuberías', 
-      icon: Construction,
+      icon: SlidersHorizontal,
       href: '/ensayos/tuberias',
       subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Cylinder },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Cylinder },
+        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
+        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Beaker },
       ]
     },
     { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
@@ -79,29 +80,45 @@ const ensayosSubMenu = [
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
 
+const procesosGestionSubMenu = [
+  {
+    label: "Gestión de Equipos",
+    icon: BookCheck,
+    href: "/equipos",
+    subItems: [
+      { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+      { href: "/equipos/control", label: "Control de Equipos", icon: History },
+      { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+    ],
+  },
+  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+  {
+    label: "Proveedores",
+    icon: Truck,
+    href: "/proveedores",
+    subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+  },
+  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
+  { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+  { href: "/portal", label: "Portal de Clientes", icon: Users },
+];
+
+
 const administracionSubMenu = [
     { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-    { href: '/administracion/formacion', label: 'Formación y Competencia', icon: GraduationCap },
     { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
     { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
     { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
-    { href: '/administracion/incertidumbre', label: 'Calculadora de Incertidumbre', icon: Calculator },
     { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
     { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
     { type: 'separator' },
     { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
 ];
 
-const operacionesSubMenu = [
-    { href: '/importaciones', label: 'Control de Importaciones', icon: Ship },
-    { href: '/portal', label: 'Portal de Clientes', icon: Users },
-];
-
-const equiposSubMenu = [
-    { href: '/equipos', label: 'Inventario de Equipos', icon: ClipboardList },
-    { href: '/equipos/control', label: 'Control de Equipos', icon: History },
-    { href: '/equipos/programa', label: 'Programa', icon: CalendarCheck },
-];
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
@@ -112,27 +129,25 @@ const reportsSubMenu = [
     { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
 
-const proveedoresSubMenu = [
-    { href: '/proveedores/gestion', label: 'Gestión de Proveedores', icon: ClipboardList },
-];
 
-
-function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item: any; pathname: string; disabled?: boolean; userQuery: string }) {
+function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
+  const defaultOpen = isSearchActive || pathname.startsWith(item.href);
+  const isActive = pathname.startsWith(item.href);
 
   return (
-    <Collapsible key={item.label} defaultOpen={pathname.startsWith(item.href)} className="w-full" disabled={disabled}>
+    <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
       <CollapsibleTrigger asChild disabled={disabled}>
         <SidebarMenuButton
           variant="ghost"
           className="w-full justify-between group/button"
-          isActive={pathname.startsWith(item.href)}
+          isActive={isActive}
           disabled={disabled}
           aria-disabled={disabled}
         >
           <div className="flex items-center gap-3 flex-1">
             <item.icon className="size-5 shrink-0" />
-            <span className="truncate">{item.label}</span>
+            <span className="truncate text-sm">{item.label}</span>
           </div>
           <svg
             className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
@@ -147,14 +162,14 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item:
         </SidebarMenuButton>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <SidebarMenu className="pl-4">
+        <SidebarMenu className="pl-2">
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} />;
+                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
               }
               const isSubItemActive = pathname === subItem.href;
 
@@ -164,14 +179,14 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery }: { item:
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="w-full justify-start text-white/80 hover:bg-white/10 hover:text-white dark:hover:bg-muted data-[active=true]:text-white"
+                    className="w-full justify-start gap-2"
                     isActive={isSubItemActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={`${subItem.href}?${userQuery}`}>
+                    <Link href={`${subItem.href}?${userQuery}`} className="relative">
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                      <span>{subItem.label}</span>
+                      <span className="text-sm">{subItem.label}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -226,19 +241,10 @@ const menuItems = (toggleChat: () => void): any[] => [
         href: '/ensayos'
     },
     { 
-        label: 'Gestión de Equipos', 
-        icon: ClipboardCheck,
-        subMenu: equiposSubMenu,
-        href: '/equipos',
-    },
-    { href: '/auditorias', label: 'Auditorías', icon: ClipboardCheck },
-    { href: '/control-ambiental', label: 'Control Ambiental', icon: Thermometer },
-    { href: '/no-conformidades', label: 'No Conformidades', icon: AlertOctagon },
-    {
-        label: 'Operaciones de Gestión',
+        label: 'Procesos de Gestión', 
         icon: GitBranch,
-        subMenu: operacionesSubMenu,
-        href: '/operaciones'
+        subMenu: procesosGestionSubMenu,
+        href: '/gestion',
     },
      { 
         label: 'Informes y Certificados', 
@@ -246,13 +252,6 @@ const menuItems = (toggleChat: () => void): any[] => [
         subMenu: reportsSubMenu,
         href: '/reports',
     },
-    { 
-        label: 'Proveedores', 
-        icon: Truck,
-        subMenu: proveedoresSubMenu,
-        href: '/proveedores',
-    },
-    { href: '/workflows', label: 'Flujos de Trabajo', icon: GitBranch },
     { 
         label: 'Biblioteca', 
         icon: Library,
@@ -278,6 +277,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
   const userQuery = searchParams.toString();
+  const [searchTerm, setSearchTerm] = React.useState("");
 
   const getPageTitle = React.useCallback(() => {
     const title = pageTitles[pathname];
@@ -298,6 +298,34 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     }
   };
 
+  const filterMenu = (menu: any[], term: string): any[] => {
+    if (!term) return menu;
+    const lowerCaseTerm = term.toLowerCase();
+
+    return menu.reduce((acc: any[], item: any) => {
+      if (item.type === 'separator') {
+        return acc;
+      }
+      
+      const labelMatch = item.label.toLowerCase().includes(lowerCaseTerm);
+
+      if (item.subMenu || item.subItems) {
+        const subItems = item.subMenu || item.subItems;
+        const filteredSub = filterMenu(subItems, term);
+        if (filteredSub.length > 0) {
+          acc.push({ ...item, subMenu: filteredSub, subItems: filteredSub });
+        } else if (labelMatch) {
+          acc.push({ ...item, subMenu: [], subItems: []});
+        }
+      } else if (labelMatch) {
+        acc.push(item);
+      }
+      return acc;
+    }, []);
+  };
+
+  const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
       <Sidebar
@@ -308,10 +336,23 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           transition-colors duration-300
         "
       >
-        <SidebarContent>
-          <div className="py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
+        <SidebarContent className="p-0">
+          <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
+            <Logo className="w-56 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
+
+          <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
+                <Input
+                  type="search"
+                  placeholder="Buscar en el menú..."
+                  className="w-full rounded-lg bg-white/10 pl-8 h-9 border-0 text-white placeholder:text-white/50 focus:bg-white/20 focus:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
 
           {isInspectorView && (
             <Alert className="m-2 border-cyan-600/30 bg-cyan-600/10 text-cyan-300 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-cyan-400">
@@ -323,98 +364,93 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-          <SidebarMenu className="p-2">
-            {menuItems(() => setIsOpen(true)).map((item, index) => {
-              const isDisabled =
-                isInspectorView &&
-                !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
-                  item.href?.startsWith(p)
-                );
+            <SidebarMenu className="px-2 pb-2">
+                {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
+                const isDisabled =
+                    isInspectorView &&
+                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
+                    item.href?.startsWith(p)
+                    );
 
-              if (item.type === "separator") {
+                if (item.type === "separator") {
+                    return (
+                    <SidebarSeparator
+                        key={`sep-${index}`}
+                        className="my-2 bg-white/20 dark:bg-gray-700"
+                    />
+                    );
+                }
+                if (item.subMenu) {
+                    return (
+                    <NavCollapsible
+                        key={item.label}
+                        item={item}
+                        pathname={pathname}
+                        disabled={isDisabled}
+                        userQuery={userQuery}
+                        isSearchActive={!!searchTerm}
+                    />
+                    );
+                }
+
+                const isActive =
+                    pathname === item.href ||
+                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+
                 return (
-                  <SidebarSeparator
-                    key={`sep-${index}`}
-                    className="my-2 bg-white/20 dark:bg-gray-700"
-                  />
-                );
-              }
-              if (item.subMenu) {
-                return (
-                  <NavCollapsible
-                    key={item.label}
-                    item={item}
-                    pathname={pathname}
-                    disabled={isDisabled}
-                    userQuery={userQuery}
-                  />
-                );
-              }
-
-              const isActive =
-                pathname === item.href ||
-                (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
-
-              return (
-                <SidebarMenuItem key={item.href || index}>
-                  <SidebarMenuButton
-                    asChild
-                    variant="ghost"
-                    isActive={isActive}
-                    tooltip={{ content: item.label, side: "right", align: "center" }}
-                    disabled={isDisabled}
-                    aria-disabled={isDisabled}
-                    className="
-                      text-white/80 dark:text-foreground/80
-                      hover:bg-white/10 hover:text-white
-                      dark:hover:bg-muted
-                      data-[active=true]:text-white
-                      data-[active=true]:dark:text-foreground
-                      relative
-                    "
-                  >
-                    <Link
-                      href={`${item.href}?${userQuery}`}
-                      onClick={(e) => handleMenuClick(e, item.onClick)}
+                    <SidebarMenuItem key={item.href || index}>
+                    <SidebarMenuButton
+                        asChild
+                        variant="ghost"
+                        isActive={isActive}
+                        tooltip={{ content: item.label, side: "right", align: "center" }}
+                        disabled={isDisabled}
+                        aria-disabled={isDisabled}
                     >
-                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-white dark:bg-primary rounded-r-full"></div>}
-                      <div className="flex items-center gap-3">
-                        <item.icon className="size-5 shrink-0" aria-hidden="true" />
-                        <span className="truncate">{item.label}</span>
-                      </div>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
+                        <Link
+                        href={`${item.href}?${userQuery}`}
+                        onClick={(e) => handleMenuClick(e, item.onClick)}
+                        >
+                        <div className="flex items-center gap-3">
+                            <item.icon className="size-5 shrink-0" aria-hidden="true" />
+                            <span className="truncate text-sm">{item.label}</span>
+                        </div>
+                        </Link>
+                    </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+                }) : (
+                <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
+                    <p>No se encontraron resultados para "{searchTerm}"</p>
+                </div>
+                )}
+            </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter className="px-3 py-2 border-t border-white/20 dark:border-border">
-          <SidebarMenu>
+        <SidebarFooter className="px-2 py-2">
+          <SidebarMenu className="p-0">
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white/80 dark:text-foreground/80 hover:bg-white/10 dark:hover:bg-muted hover:text-white dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
-                    <LogOut className="size-5 shrink-0" aria-hidden="true" />
-                    <span className="truncate">Cerrar Sesión</span>
+                    <LogOut className="size-4 shrink-0" aria-hidden="true" />
+                    <span className="truncate text-sm">Cerrar Sesión</span>
                   </div>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <SidebarSeparator className="my-2 bg-white/20 dark:bg-border" />
+          <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
-          <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
+          <div className="flex items-center gap-3 px-1 py-1">
             <Avatar
-              className="h-10 w-10 border-2 border-white/30 dark:border-border"
+              className="h-9 w-9 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
               {user?.avatarUrl ? (
