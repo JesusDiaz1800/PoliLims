@@ -313,12 +313,12 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center overflow-hidden rounded-md text-left outline-none ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-ring active:bg-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&_div]:gap-0",
+  "peer/menu-button flex w-full items-center overflow-hidden rounded-md text-left outline-none ring-offset-background transition-colors focus-visible:ring-2 focus-visible:ring-ring active:bg-foreground/10 disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-10 group-data-[state=collapsed]/sidebar-wrapper:w-10 group-data-[state=collapsed]/sidebar-wrapper:px-0 group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&>.lucide-chevron-down]:hidden group-data-[state=collapsed]/sidebar-wrapper:[&_div]:gap-0",
   {
     variants: {
       variant: {
-        default: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
-        ghost: "text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
+        default: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
+        ghost: "text-white/80 hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground data-[active=true]:dark:text-foreground",
       },
       size: {
         default: "h-10 px-3 text-sm",
