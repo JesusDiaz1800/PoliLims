@@ -43,7 +43,7 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
         setIsClient(true);
     }, []);
 
-    const activityList = initialActivity;
+    const activityList = initialActivity || [];
 
     return (
         <Card className="h-full flex flex-col">
