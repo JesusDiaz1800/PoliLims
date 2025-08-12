@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowUp } from "lucide-react";
@@ -6,12 +7,13 @@ type StatsCardProps = {
   title: string;
   value: string;
   icon: React.ElementType;
-  trend: string;
-  trendDirection: "up" | "down";
+  description: string;
 };
 
-export function StatsCard({ title, value, icon: Icon, trend, trendDirection }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, description }: StatsCardProps) {
+    const trendDirection = description.startsWith('+') ? 'up' : 'down';
     const isPositive = trendDirection === "up";
+
     return (
         <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -23,9 +25,9 @@ export function StatsCard({ title, value, icon: Icon, trend, trendDirection }: S
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <span className={cn("flex items-center gap-0.5", isPositive ? "text-green-400" : "text-red-400")}>
                         {isPositive ? <ArrowUp className="h-3 w-3"/> : <ArrowDown className="h-3 w-3"/>}
-                        {trend.split(' ')[0]}
+                        {description.split(' ')[0]}
                     </span>
-                    <span className="text-muted-foreground/80">{trend.substring(trend.indexOf(' '))}</span>
+                    <span className="text-muted-foreground/80">{description.substring(description.indexOf(' '))}</span>
                 </div>
             </CardContent>
         </Card>

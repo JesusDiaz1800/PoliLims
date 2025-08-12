@@ -61,6 +61,7 @@ import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const ensayosSubMenu = [
     { 
@@ -455,18 +456,18 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
           <div className="flex items-center gap-3 px-1 py-1">
-            <Avatar
-              className="h-9 w-9 border-2 border-white/30 dark:border-border"
-              aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
-            >
-              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
-              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
-            </Avatar>
+              <Avatar
+                className="h-9 w-9 border-2 border-white/30 dark:border-border"
+                aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
+              >
+                <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+              </Avatar>
 
-            <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <span className="font-semibold truncate text-white dark:text-foreground">{user?.fullName ?? "Usuario"}</span>
-              <span className="text-white/70 dark:text-muted-foreground text-xs truncate">{user?.role ?? ""}</span>
-            </div>
+              <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                <span className="font-semibold truncate text-white dark:text-foreground">{user?.fullName ?? "Usuario"}</span>
+                <span className="text-white/70 dark:text-muted-foreground text-xs truncate">{user?.role ?? ""}</span>
+              </div>
           </div>
         </SidebarFooter>
       </Sidebar>
@@ -481,6 +482,21 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
                 {pageTitle}
             </h1>
+        </div>
+        <div className="flex items-center gap-4">
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Buscar..." className="pl-9" />
+            </div>
+            <ThemeToggle />
+            <Button variant="outline" size="icon">
+                <Bell className="h-5 w-5"/>
+                <span className="sr-only">Notificaciones</span>
+            </Button>
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+            </Avatar>
         </div>
         </header>
         
