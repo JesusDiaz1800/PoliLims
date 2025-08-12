@@ -364,67 +364,67 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </Alert>
           )}
 
-          <SidebarMenu className="px-2 py-4">
-            {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
-              const isDisabled =
-                isInspectorView &&
-                !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
-                  item.href?.startsWith(p)
-                );
+            <SidebarMenu className="px-2 py-4">
+                {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
+                const isDisabled =
+                    isInspectorView &&
+                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
+                    item.href?.startsWith(p)
+                    );
 
-              if (item.type === "separator") {
+                if (item.type === "separator") {
+                    return (
+                    <SidebarSeparator
+                        key={`sep-${index}`}
+                        className="my-2 bg-white/20 dark:bg-gray-700"
+                    />
+                    );
+                }
+                if (item.subMenu) {
+                    return (
+                    <NavCollapsible
+                        key={item.label}
+                        item={item}
+                        pathname={pathname}
+                        disabled={isDisabled}
+                        userQuery={userQuery}
+                        isSearchActive={!!searchTerm}
+                    />
+                    );
+                }
+
+                const isActive =
+                    pathname === item.href ||
+                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
+
                 return (
-                  <SidebarSeparator
-                    key={`sep-${index}`}
-                    className="my-2 bg-white/20 dark:bg-gray-700"
-                  />
-                );
-              }
-              if (item.subMenu) {
-                return (
-                  <NavCollapsible
-                    key={item.label}
-                    item={item}
-                    pathname={pathname}
-                    disabled={isDisabled}
-                    userQuery={userQuery}
-                    isSearchActive={!!searchTerm}
-                  />
-                );
-              }
-
-              const isActive =
-                pathname === item.href ||
-                (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
-
-              return (
-                <SidebarMenuItem key={item.href || index}>
-                  <SidebarMenuButton
-                    asChild
-                    variant="ghost"
-                    isActive={isActive}
-                    tooltip={{ content: item.label, side: "right", align: "center" }}
-                    disabled={isDisabled}
-                    aria-disabled={isDisabled}
-                  >
-                    <Link
-                      href={`${item.href}?${userQuery}`}
-                      onClick={(e) => handleMenuClick(e, item.onClick)}
+                    <SidebarMenuItem key={item.href || index}>
+                    <SidebarMenuButton
+                        asChild
+                        variant="ghost"
+                        isActive={isActive}
+                        tooltip={{ content: item.label, side: "right", align: "center" }}
+                        disabled={isDisabled}
+                        aria-disabled={isDisabled}
                     >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="size-5 shrink-0" aria-hidden="true" />
-                        <span className="truncate text-sm">{item.label}</span>
-                      </div>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            }) : (
-              <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
-                <p>No se encontraron resultados para "{searchTerm}"</p>
-              </div>
-            )}
-          </SidebarMenu>
+                        <Link
+                        href={`${item.href}?${userQuery}`}
+                        onClick={(e) => handleMenuClick(e, item.onClick)}
+                        >
+                        <div className="flex items-center gap-3">
+                            <item.icon className="size-5 shrink-0" aria-hidden="true" />
+                            <span className="truncate text-sm">{item.label}</span>
+                        </div>
+                        </Link>
+                    </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+                }) : (
+                <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
+                    <p>No se encontraron resultados para "{searchTerm}"</p>
+                </div>
+                )}
+            </SidebarMenu>
         </SidebarContent>
 
         <SidebarFooter className="p-2 border-t border-white/20 dark:border-border">
@@ -435,6 +435,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
+                className="text-white hover:bg-white/10 dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
