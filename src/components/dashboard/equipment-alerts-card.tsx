@@ -28,7 +28,7 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
   }, []);
 
   const equiposConAlerta = React.useMemo(() => {
-    if (!isClient) return [];
+    if (!isClient || !equipos) return [];
     return equipos
         .filter(equipo => {
             if (equipo.estado === 'En Mantenimiento' || equipo.estado === 'Requiere Calibración') {
