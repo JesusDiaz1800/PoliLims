@@ -143,9 +143,9 @@ export default function MainPage() {
     return <Loading />;
   }
   
-  const operationalEquipment = equipos.filter(e => e.estado === "Activo").length;
-  const totalEquipment = equipos.length;
-  const openNcCount = noConformidades.filter(nc => nc.estado !== "Cerrada").length;
+  const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
+  const totalEquipment = (equipos || []).length;
+  const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
     <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
@@ -203,3 +203,4 @@ export default function MainPage() {
     </div>
   );
 }
+
