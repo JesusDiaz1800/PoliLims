@@ -161,46 +161,45 @@ export default function MainPage() {
                 <StatsCard title="NC Abiertas" value={openNcCount.toString()} trend="+2 nuevas esta semana" trendDirection="up" icon={AlertOctagon} />
             </div>
 
-            <div className="grid grid-cols-12 gap-6 mt-6">
-                <div className="col-span-12 lg:col-span-8">
-                <AssaysByMonthChart data={ensayos} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <div className="lg:col-span-2">
+                    <AssaysByMonthChart data={ensayos || []} />
                 </div>
-                <div className="col-span-12 lg:col-span-4">
-                    <RecentActivityList initialActivity={recentActivity}/>
+                <div>
+                    <RecentActivityList initialActivity={recentActivity || []}/>
                 </div>
             </div>
             
-            <div className="grid grid-cols-12 gap-6 lg:items-start">
-                <div className="col-span-12 lg:col-span-8">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
+                <div className="lg:col-span-3">
                     <ThroughputTrendChart data={filteredEnsayos} />
                 </div>
-                <div className="col-span-12 lg:col-span-4">
-                    <EquipmentAlertsCard equipos={equipos} />
+                <div className="lg:col-span-2">
+                    <EquipmentAlertsCard equipos={equipos || []} />
                 </div>
             </div>
             
-            <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-12 md:col-span-6 lg:col-span-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                <div >
                     <AssaysByTypeChart data={filteredEnsayos} />
                 </div>
-                <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                <SampleStatusChart data={filteredEnsayos} />
+                <div>
+                    <SampleStatusChart data={filteredEnsayos} />
                 </div>
-                <div className="col-span-12 md:col-span-12 lg:col-span-4">
-                <WorkloadDistributionChart data={filteredEnsayos} />
+                <div>
+                    <WorkloadDistributionChart data={filteredEnsayos} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-12 lg:col-span-8">
-                    <NonConformitiesByMonthChart data={noConformidades} />
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
+                <div className="md:col-span-3">
+                    <NonConformitiesByMonthChart data={noConformidades || []} />
                 </div>
-                <div className="col-span-12 lg:col-span-4">
-                    <NonConformitiesByTypeChart data={noConformidades} />
+                <div className="md:col-span-2">
+                    <NonConformitiesByTypeChart data={noConformidades || []} />
                 </div>
             </div>
         </div>
     </div>
   );
 }
-
