@@ -341,7 +341,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
-          <div className="pl-3 pr-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+          <div className="px-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-white/50" />
                 <Input
@@ -427,7 +427,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter className="px-3 py-2 border-t border-white/20 dark:border-border">
+        <SidebarFooter className="p-2 border-t border-white/20 dark:border-border">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -435,11 +435,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white/80 dark:text-foreground/80 hover:bg-white/10 dark:hover:bg-muted hover:text-white dark:hover:text-foreground"
+                className="text-white dark:text-foreground hover:bg-white/10 dark:hover:bg-muted"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
-                    <LogOut className="size-5 shrink-0" aria-hidden="true" />
+                    <LogOut className="size-4 shrink-0" aria-hidden="true" />
                     <span className="truncate">Cerrar Sesión</span>
                   </div>
                 </Link>
@@ -447,11 +447,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             </SidebarMenuItem>
           </SidebarMenu>
 
-          <SidebarSeparator className="my-2 bg-white/20 dark:bg-border" />
+          <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
-          <div className="flex items-center gap-3 group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:py-2">
+          <div className="flex items-center gap-3 px-1 py-1">
             <Avatar
-              className="h-10 w-10 border-2 border-white/30 dark:border-border"
+              className="h-9 w-9 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
             >
               {user?.avatarUrl ? (
