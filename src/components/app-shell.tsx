@@ -454,7 +454,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
           <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
-          <div className="flex items-center gap-3 px-3 py-1">
+          <div className="flex items-center gap-3 px-2 py-1">
             <Avatar
               className="h-9 w-9 border-2 border-white/30 dark:border-border"
               aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
