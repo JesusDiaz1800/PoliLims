@@ -148,12 +148,12 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="dashboard-futurista relative flex-1 space-y-6 -m-6 p-6 min-h-screen">
+    <div className="dashboard-futurista relative flex-1 space-y-6 min-h-screen">
        <div className="background-overlay"></div>
-       <div className="relative z-10">
+       <div className="relative z-10 p-6 space-y-6">
           <WelcomeBanner user={user} />
           
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <StatsCard title="Total Ensayos (Período)" value={totalFilteredAssays.toString()} trend="+5.2% vs. mes anterior" trendDirection="up" icon={Target} />
                 <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} trend="+1.2% vs. mes anterior" trendDirection="up" icon={Percent} />
                 <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} trend="-3.4% vs. mes anterior" trendDirection="down" icon={Hourglass} />
@@ -161,7 +161,7 @@ export default function MainPage() {
                 <StatsCard title="NC Abiertas" value={openNcCount.toString()} trend="+2 nuevas esta semana" trendDirection="up" icon={AlertOctagon} />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
                     <AssaysByMonthChart data={ensayos || []} />
                 </div>
@@ -170,7 +170,7 @@ export default function MainPage() {
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="lg:col-span-3">
                     <ThroughputTrendChart data={filteredEnsayos} />
                 </div>
@@ -179,7 +179,7 @@ export default function MainPage() {
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div >
                     <AssaysByTypeChart data={filteredEnsayos} />
                 </div>
@@ -191,7 +191,7 @@ export default function MainPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                 <div className="md:col-span-3">
                     <NonConformitiesByMonthChart data={noConformidades || []} />
                 </div>
