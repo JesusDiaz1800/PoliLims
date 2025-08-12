@@ -147,7 +147,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
         >
           <div className="flex items-center gap-3 flex-1">
             <item.icon className="size-5 shrink-0" />
-            <span className="truncate">{item.label}</span>
+            <span className="truncate text-sm">{item.label}</span>
           </div>
           <svg
             className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
@@ -186,7 +186,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                   >
                     <Link href={`${subItem.href}?${userQuery}`} className="relative">
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                      <span>{subItem.label}</span>
+                      <span className="text-sm">{subItem.label}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -337,13 +337,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         "
       >
         <SidebarContent>
-          <div className="py-4 overflow-hidden transition-all duration-300">
+          <div className="py-4 px-3 overflow-hidden transition-all duration-300">
             <Logo className="w-48 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
           </div>
 
           <div className="px-3 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
               <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-white/50" />
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-white/50" />
                 <Input
                   type="search"
                   placeholder="Buscar en el menú..."
@@ -413,7 +413,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className="size-5 shrink-0" aria-hidden="true" />
-                        <span className="truncate">{item.label}</span>
+                        <span className="truncate text-sm">{item.label}</span>
                       </div>
                     </Link>
                   </SidebarMenuButton>
@@ -435,12 +435,12 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 size="sm"
                 variant="ghost"
                 tooltip={{ content: "Cerrar Sesión", side: "right", align: "center" }}
-                className="text-white dark:text-foreground hover:bg-white/10 dark:hover:bg-muted"
+                className="text-white hover:bg-white/10 dark:text-foreground dark:hover:bg-muted"
               >
                 <Link href="/login" aria-label="Cerrar sesión">
                   <div className="flex items-center gap-3">
                     <LogOut className="size-4 shrink-0" aria-hidden="true" />
-                    <span className="truncate">Cerrar Sesión</span>
+                    <span className="truncate text-sm">Cerrar Sesión</span>
                   </div>
                 </Link>
               </SidebarMenuButton>
