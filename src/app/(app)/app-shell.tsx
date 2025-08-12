@@ -51,6 +51,7 @@ import {
   SlidersHorizontal,
   Search,
   Beaker,
+  Home,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -199,6 +200,8 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
+    '/main': 'Main Dashboard',
+    '/dashboard': 'Dashboard Legacy',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -233,7 +236,8 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/main', label: 'Main Dashboard', icon: Home },
+    { href: '/dashboard', label: 'Dashboard Legacy', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
