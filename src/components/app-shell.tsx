@@ -162,7 +162,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
         </SidebarMenuButton>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <SidebarMenu className="pl-2">
+        <SidebarMenu className="pl-4">
           {subMenuItems &&
             subMenuItems.map((subItem: any, index: number) => {
               if (subItem.type === "separator") {
@@ -406,6 +406,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         tooltip={{ content: item.label, side: "right", align: "center" }}
                         disabled={isDisabled}
                         aria-disabled={isDisabled}
+                        className="data-[active=true]:bg-white/80 data-[active=true]:text-accent-foreground dark:data-[active=true]:text-foreground"
                     >
                         <Link
                         href={`${item.href}?${userQuery}`}
