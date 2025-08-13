@@ -163,7 +163,7 @@ export default function MainPage() {
                     <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
                 </Card>
                  <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle>Estado de Ensayos</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
                 </Card>
                 <Card className="card-glass h-full">
@@ -194,5 +194,3 @@ export default function MainPage() {
       </div>
   );
 }
-
-    
