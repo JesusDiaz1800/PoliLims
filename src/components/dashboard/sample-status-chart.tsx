@@ -47,11 +47,11 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   return (
     <>
         <CardHeader className="p-4 pb-0">
-            <CardTitle className="text-base">Estado de Ensayos</CardTitle>
-            <CardDescription className="text-sm">Distribución porcentual de ensayos.</CardDescription>
+            <CardTitle className="text-lg">Estado de Ensayos</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
-        <CardContent className="h-[calc(100%-4rem)] pb-2 flex flex-col items-center justify-center">
-             <div className="w-full h-full">
+        <CardContent className="h-[calc(100%-5rem)] pb-2 flex flex-col items-center justify-center">
+             <div className="w-full h-full flex-1">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                         <Pie

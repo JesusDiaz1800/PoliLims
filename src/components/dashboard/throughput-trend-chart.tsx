@@ -35,10 +35,10 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
   return (
     <>
         <CardHeader className="p-4 pb-0">
-            <CardTitle className="text-base">Tendencia de Rendimiento</CardTitle>
-            <CardDescription className="text-sm">Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
+            <CardTitle className="text-lg">Tendencia de Rendimiento</CardTitle>
+            <CardDescription className="text-sm text-muted-foreground">Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
         </CardHeader>
-        <CardContent className="h-[calc(100%-4rem)] pb-2">
+        <CardContent className="h-[calc(100%-5rem)] pb-2">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>

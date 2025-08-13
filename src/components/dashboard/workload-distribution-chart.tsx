@@ -40,13 +40,13 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-base">Carga de Trabajo</CardTitle>
-        <CardDescription className="text-sm">Ensayos por analista en el período.</CardDescription>
+        <CardTitle className="text-lg">Carga de Trabajo</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">Ensayos por analista en el período.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[calc(100%-5rem)] pb-2">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 5 }}>
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 

@@ -121,7 +121,6 @@ export default function MainPage() {
                 </Card>
             </div>
             
-            {/* KPIs Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
                 <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
@@ -130,38 +129,35 @@ export default function MainPage() {
                 <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
             </div>
 
-            {/* Main Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <Card className="lg:col-span-7 min-h-[300px] card-glass">
+                <Card className="lg:col-span-7 h-[300px] card-glass">
                     <ThroughputTrendChart data={filteredEnsayos} />
                 </Card>
-                <Card className="lg:col-span-5 min-h-[300px] card-glass">
+                <Card className="lg:col-span-5 h-[300px] card-glass">
                     <AssaysByMonthChart data={ensayos || []} />
                 </Card>
             </div>
 
-            {/* Secondary Charts & Lists Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                <Card className="min-h-[280px] card-glass">
+                <Card className="h-[280px] card-glass">
                     <AssaysByTypeChart data={filteredEnsayos} />
                 </Card>
-                <Card className="min-h-[280px] card-glass">
+                <Card className="h-[280px] card-glass">
                     <SampleStatusChart data={filteredEnsayos} />
                 </Card>
-                <Card className="min-h-[280px] card-glass">
+                <Card className="h-[280px] card-glass">
                     <WorkloadDistributionChart data={filteredEnsayos} />
                 </Card>
-                <Card className="min-h-[280px] card-glass">
+                <Card className="h-[280px] card-glass">
                     <RecentActivityList initialActivity={recentActivity || []}/>
                 </Card>
             </div>
              
-             {/* Third Row with other charts */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <Card className="lg:col-span-4 min-h-[280px] card-glass">
+                <Card className="lg:col-span-4 h-[280px] card-glass">
                     <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
-                 <Card className="lg:col-span-8 min-h-[280px] card-glass">
+                 <Card className="lg:col-span-8 h-[280px] card-glass">
                     <NonConformitiesByMonthChart data={noConformidades || []} />
                 </Card>
             </div>
@@ -170,3 +166,4 @@ export default function MainPage() {
     </div>
   );
 }
+

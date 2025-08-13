@@ -48,10 +48,10 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-base">No Conformidades por Mes</CardTitle>
-        <CardDescription className="text-sm">Volumen de NCs registradas en los últimos 12 meses.</CardDescription>
+        <CardTitle className="text-lg">No Conformidades por Mes</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">Volumen de NCs registradas en los últimos 12 meses.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[calc(100%-5rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
