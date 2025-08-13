@@ -1,8 +1,9 @@
+
 "use client";
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, TrendingUp, Info } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, Info } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -212,11 +213,11 @@ export default function MainPage() {
                 </Card>
                 <Card className="card-glass h-full">
                     <CardHeader>
-                        <CardTitle>No Conformidades por Tipo</CardTitle>
-                        <CardDescription>Distribución de NCs.</CardDescription>
+                        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
+                        <CardDescription>Días desde recepción a finalización por ensayo.</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[240px]">
-                        <NonConformitiesByTypeChart data={noConformidades || []} />
+                       <AssayTurnaroundTimeChart data={ensayos || []} />
                     </CardContent>
                 </Card>
             </div>
@@ -224,3 +225,5 @@ export default function MainPage() {
       </div>
   );
 }
+
+    
