@@ -62,6 +62,7 @@ import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "./ui/button";
 
 const ensayosSubMenu = [
     { 
@@ -473,21 +474,38 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        <header
-        className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-        role="banner"
-        >
-        <div className="flex items-center gap-2">
-            {pathname !== '/main' && <SidebarTrigger aria-label="Toggle sidebar" />}
-              <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
-                {pageTitle}
-            </h1>
+        {pathname !== '/main' && (
+          <header
+          className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+          role="banner"
+          >
+          <div className="flex items-center gap-2">
+              <SidebarTrigger aria-label="Toggle sidebar" />
+                <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                  {pageTitle}
+              </h1>
+          </div>
+           <div className="flex items-center gap-4">
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Buscar..." className="pl-9" />
+            </div>
+            <ThemeToggle />
+            <Button variant="outline" size="icon">
+                <Bell className="h-5 w-5"/>
+                <span className="sr-only">Notificaciones</span>
+            </Button>
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+            </Avatar>
         </div>
-        </header>
+          </header>
+        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && "p-4 sm:p-6")}
+                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && "p-6 md:p-10")}
                 role="main"
                 tabIndex={-1}
             >
