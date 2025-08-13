@@ -44,8 +44,8 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
     };
 
     return (
-        <div className="p-2 pt-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 w-full">
+        <div className="p-2 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 w-full">
                 <Select value={month} onValueChange={handleFilterChange("month")}>
                     <SelectTrigger className="w-full h-9 text-xs">
                         <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -70,7 +70,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
                         ))}
                     </SelectContent>
                 </Select>
-                    <Select value={status} onValueChange={handleFilterChange("status")}>
+                 <Select value={status} onValueChange={handleFilterChange("status")}>
                     <SelectTrigger className="w-full h-9 text-xs">
                         <Package className="mr-2 h-4 w-4 text-muted-foreground" />
                         <SelectValue placeholder="Filtrar por estado" />
@@ -82,7 +82,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
                         <SelectItem value="rechazado">Rechazado</SelectItem>
                     </SelectContent>
                 </Select>
-                    <Select value={type} onValueChange={handleFilterChange("type")}>
+                <Select value={type} onValueChange={handleFilterChange("type")}>
                     <SelectTrigger className="w-full h-9 text-xs">
                         <TestTube className="mr-2 h-4 w-4 text-muted-foreground" />
                         <SelectValue placeholder="Filtrar por tipo" />
@@ -94,7 +94,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
                     </SelectContent>
                 </Select>
                 <Select value={supplier} onValueChange={handleFilterChange("supplier")}>
-                    <SelectTrigger className="w-full h-9 text-xs sm:col-span-2 xl:col-span-1">
+                    <SelectTrigger className="w-full h-9 text-xs lg:col-span-2">
                         <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
                         <SelectValue placeholder="Filtrar por proveedor" />
                     </SelectTrigger>

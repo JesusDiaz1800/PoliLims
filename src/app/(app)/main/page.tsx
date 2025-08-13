@@ -90,16 +90,17 @@ export default function MainPage() {
     <div className="relative flex-1 space-y-4">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="lg:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                <div className="lg:col-span-3">
                     <WelcomeBanner user={user} />
                 </div>
-                <Card>
+                <Card className="lg:col-span-2">
                     <Collapsible
                         open={isFiltersOpen}
                         onOpenChange={setIsFiltersOpen}
+                        className="p-2"
                     >
-                        <div className="flex items-center justify-between p-2">
+                        <div className="flex items-center justify-between">
                             <h4 className="text-sm font-semibold pl-2">
                                 Filtros del Dashboard
                             </h4>
