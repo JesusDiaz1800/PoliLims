@@ -61,6 +61,7 @@ import { Logo } from "@/components/logo";
 import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const ensayosSubMenu = [
     { 
@@ -455,36 +456,34 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
           <SidebarSeparator className="my-1 bg-white/20 dark:bg-border" />
 
           <div className="flex items-center gap-3 px-1 py-1">
-            <Avatar
-              className="h-9 w-9 border-2 border-white/30 dark:border-border"
-              aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
-            >
-              <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
-              <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
-            </Avatar>
+              <Avatar
+                className="h-9 w-9 border-2 border-white/30 dark:border-border"
+                aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
+              >
+                <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
+                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+              </Avatar>
 
-            <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <span className="font-semibold truncate text-white dark:text-foreground">{user?.fullName ?? "Usuario"}</span>
-              <span className="text-white/70 dark:text-muted-foreground text-xs truncate">{user?.role ?? ""}</span>
-            </div>
+              <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                <span className="font-semibold truncate text-white dark:text-foreground">{user?.fullName ?? "Usuario"}</span>
+                <span className="text-white/70 dark:text-muted-foreground text-xs truncate">{user?.role ?? ""}</span>
+              </div>
           </div>
         </SidebarFooter>
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        {pathname !== '/main' && (
-            <header
-            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-            role="banner"
-            >
-            <div className="flex items-center gap-2">
-                <SidebarTrigger aria-label="Toggle sidebar" />
-                 <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
-                    {pageTitle}
-                </h1>
-            </div>
-            </header>
-        )}
+        <header
+        className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+        role="banner"
+        >
+        <div className="flex items-center gap-2">
+            {pathname !== '/main' && <SidebarTrigger aria-label="Toggle sidebar" />}
+              <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                {pageTitle}
+            </h1>
+        </div>
+        </header>
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main

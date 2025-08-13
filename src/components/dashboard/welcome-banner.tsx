@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/ca
 import { Hand } from "lucide-react";
 import type { User } from "@/services/user-service";
 import React from "react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface WelcomeBannerProps {
   user: User | null;
@@ -18,6 +19,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   return (
     <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
         <div className="flex items-center gap-4">
+            <SidebarTrigger aria-label="Toggle sidebar" />
             <Hand className="h-8 w-8 text-primary" />
             <div>
                 <CardTitle className="text-2xl">¡Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</CardTitle>
