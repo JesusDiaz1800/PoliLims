@@ -1,13 +1,11 @@
-
 "use client";
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, TrendingUp, Info } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
-import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
@@ -22,6 +20,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -118,7 +117,7 @@ export default function MainPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-8">
+                <div className="lg:col-span-7">
                     <Card className="card-glass h-full">
                         <CardHeader>
                             <CardTitle>Ensayos por Mes</CardTitle>
@@ -129,7 +128,7 @@ export default function MainPage() {
                         </CardContent>
                     </Card>
                 </div>
-                 <div className="lg:col-span-4 space-y-4">
+                 <div className="lg:col-span-5 space-y-4">
                     <Card className="card-glass">
                          <Collapsible
                             open={isFiltersOpen}
@@ -172,7 +171,7 @@ export default function MainPage() {
                 <Card className="card-glass h-full">
                     <CardHeader>
                         <CardTitle>Estados de Muestras</CardTitle>
-                        <CardDescription>Distribución porcentual de los estados actuales.</CardDescription>
+                        <CardDescription>Distribución porcentual.</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[240px]">
                         <SampleStatusChart data={filteredEnsayos} />
@@ -181,7 +180,7 @@ export default function MainPage() {
                  <Card className="card-glass h-full">
                     <CardHeader>
                         <CardTitle>Carga de Trabajo</CardTitle>
-                        <CardDescription>Distribución de la cantidad de ensayos por analista.</CardDescription>
+                        <CardDescription>Distribución por analista.</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[240px]">
                         <WorkloadDistributionChart data={filteredEnsayos} />
@@ -190,7 +189,7 @@ export default function MainPage() {
                  <Card className="card-glass h-full">
                     <CardHeader>
                         <CardTitle>Distribución de Ensayos</CardTitle>
-                        <CardDescription>Cantidad de ensayos por cada tipo de producto.</CardDescription>
+                        <CardDescription>Cantidad por tipo de producto.</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[240px]">
                         <AssaysByTypeChart data={filteredEnsayos} />
@@ -198,23 +197,28 @@ export default function MainPage() {
                 </Card>
             </div>
              
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-4">
-                    <Card className="h-[340px] card-glass">
-                        <EquipmentAlertsCard equipos={equipos || []} />
-                    </Card>
-                </div>
-                <div className="lg:col-span-8">
-                     <Card className="card-glass h-full">
-                        <CardHeader>
-                            <CardTitle>Tiempos de Respuesta Promedio</CardTitle>
-                            <CardDescription>Promedio de días para completar cada tipo de ensayo.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="h-[240px]">
-                           <AssayTurnaroundTimeChart data={ensayos || []} />
-                        </CardContent>
-                    </Card>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card className="card-glass h-full">
+                    <EquipmentAlertsCard equipos={equipos || []} />
+                </Card>
+                 <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>Tendencia de Rendimiento</CardTitle>
+                        <CardDescription>Muestras recibidas vs. completadas en 30 días.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                       <ThroughputTrendChart data={ensayos || []} />
+                    </CardContent>
+                </Card>
+                <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>No Conformidades por Tipo</CardTitle>
+                        <CardDescription>Distribución de NCs.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                        <NonConformitiesByTypeChart data={noConformidades || []} />
+                    </CardContent>
+                </Card>
             </div>
         </div>
       </div>
