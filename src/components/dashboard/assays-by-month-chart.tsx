@@ -50,13 +50,13 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
   return (
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <defs>
-              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
-              </linearGradient>
-          </defs>
           <BarChart data={chartData}>
+              <defs>
+                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
+                  </linearGradient>
+              </defs>
               <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
               <Tooltip

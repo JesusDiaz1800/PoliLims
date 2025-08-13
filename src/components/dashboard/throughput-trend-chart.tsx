@@ -69,8 +69,8 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
                     }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="received" name="Recibidas" stroke="url(#colorReceived)" strokeWidth={3} dot={false} />
-                <Line type="monotone" dataKey="completed" name="Completadas" stroke="url(#colorCompleted)" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={false} />
             </LineChart>
         </ResponsiveContainer>
     </div>
