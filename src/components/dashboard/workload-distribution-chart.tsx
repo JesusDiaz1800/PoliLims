@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -44,20 +43,20 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
         <CardTitle>Carga de Trabajo</CardTitle>
         <CardDescription>Ensayos por analista en el período.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-0">
+      <CardContent className="h-[calc(100%-6rem)] pb-2">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 25 }}>
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                 <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={10} 
+                    fontSize={11} 
                     tickLine={false} 
                     axisLine={false}
-                    angle={-45}
+                    angle={-40}
                     textAnchor="end"
                     interval={0}
-                    dy={10}
+                    height={40}
                  />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip

@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -39,11 +38,11 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
         <CardTitle>Ensayos por Tipo</CardTitle>
         <CardDescription>Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-0">
+      <CardContent className="h-[calc(100%-6rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+            <BarChart data={chartData} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
-                <YAxis dataKey="name" type="category" width={80} stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis dataKey="name" type="category" width={90} stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{

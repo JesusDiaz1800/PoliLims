@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -51,7 +50,7 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
             <CardTitle>Estado de Ensayos</CardTitle>
             <CardDescription>Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
-        <CardContent className="h-[calc(100%-4rem)] pb-0">
+        <CardContent className="h-[calc(100%-6rem)] pb-2">
              <div className="flex items-center gap-2 h-full">
                  <div className="w-1/2 h-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -62,23 +61,14 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                                 cy="50%"
                                 labelLine={false}
                                 outerRadius={50}
-                                innerRadius={30}
+                                innerRadius={35}
                                 paddingAngle={5}
                                 dataKey="value"
-                                label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                                    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                                    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-                                    return (
-                                        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
-                                            {`${(percent * 100).toFixed(0)}%`}
-                                        </text>
-                                    );
-                                }}
                             >
                                 {chartData.map((entry) => (
                                     <Cell key={entry.name} fill={entry.fill} stroke={entry.fill} />
                                 ))}
+                                <Label value={total} position="center" fill="hsl(var(--foreground))" className="text-xl font-bold font-headline"/>
                             </Pie>
                         </PieChart>
                     </ResponsiveContainer>
@@ -93,10 +83,6 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                             <span className="font-semibold">{item.value}</span>
                         </div>
                     ))}
-                    <div className="flex items-center justify-between border-t pt-1 mt-1 text-xs">
-                        <span className="font-semibold text-muted-foreground">Total</span>
-                        <span className="font-bold">{total}</span>
-                    </div>
                 </div>
             </div>
         </CardContent>
