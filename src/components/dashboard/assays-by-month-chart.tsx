@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell, LabelList } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
@@ -48,7 +48,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 15, right: 10, left: -10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorUv1" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
@@ -80,6 +80,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                 {chartData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={`url(#colorUv${(index % 3) + 1})`} />
                 ))}
+                 <LabelList dataKey="total" position="top" fill="hsl(var(--foreground))" fontSize={12} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>

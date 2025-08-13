@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell, LabelList } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
 
@@ -61,7 +61,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
   return (
     <div className="w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorTurnaround1" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
@@ -89,6 +89,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                   {chartData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "url(#colorTurnaround1)" : "url(#colorTurnaround2)"} />
                   ))}
+                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => value.toFixed(1)} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>

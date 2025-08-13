@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell, LabelList } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 interface WorkloadDistributionChartProps {
@@ -33,7 +33,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
   return (
     <div className="h-[240px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 15, right: 10, left: -20, bottom: 5 }}>
                <defs>
                   <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
@@ -53,7 +53,9 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
               />
-              <Bar dataKey="value" name="Registros" radius={[4, 4, 0, 0]} fill="url(#colorWorkload)" activeBar={<Rectangle fillOpacity={0.8} />}/>
+              <Bar dataKey="value" name="Registros" radius={[4, 4, 0, 0]} fill="url(#colorWorkload)" activeBar={<Rectangle fillOpacity={0.8} />}>
+                <LabelList dataKey="value" position="top" fill="hsl(var(--foreground))" fontSize={12} />
+              </Bar>
           </BarChart>
       </ResponsiveContainer>
     </div>

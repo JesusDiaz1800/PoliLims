@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell, Rectangle, LabelList } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 
@@ -28,7 +28,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
     return (
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorType1" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
@@ -68,6 +68,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={`url(#colorType${(index % 5) + 1})`} />
                   ))}
+                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>
