@@ -49,8 +49,9 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
                   }}
+                  labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
               />
               <Bar dataKey="value" name="Registros" radius={[4, 4, 0, 0]} fill="url(#colorWorkload)" activeBar={<Rectangle fillOpacity={0.8} />}/>
           </BarChart>
