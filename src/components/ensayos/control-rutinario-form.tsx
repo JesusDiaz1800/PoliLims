@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -17,10 +16,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
-import { TipoProducto } from "@/lib/matriz-datos"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
-import { Combobox } from "../ui/combobox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import * as dataService from "@/services/data-service"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip"
@@ -29,9 +26,7 @@ interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
   maquinistas: { value: string; label: string }[]
   maquinas: { value: string; label: string }[]
-  productos: { value: string, label: string }[]
   marcas: { value: string; label: string }[]
-  matrizProductos: TipoProducto[];
   onFormSubmit: () => void;
 }
 
@@ -82,7 +77,7 @@ const defaultFormValues: Partial<FormValues> = {
 };
 
 
-export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, productos, marcas, matrizProductos, onFormSubmit }: ControlRutinarioFormProps) {
+export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marcas, onFormSubmit }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
   const hasAlerts = Object.values(alerts).some(Boolean);
@@ -94,55 +89,10 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const { watch, setValue, control } = form
 
-  const watchedProductoCode = watch("producto");
-  const watchedDiametro = watch("diametro");
-  const watchedEspesorMin = watch("espesor_min");
-  const watchedEspesorMax = watch("espesor_max");
-  const watchedOvalidad = watch("ovalidad");
-  const watchedPesoKgm = watch("peso_kg_m");
-  
   const watchedPesoMuestra = watch("peso_muestra");
   const watchedLargo = watch("largo");
   
-  React.useEffect(() => {
-    if (matrizProductos.length === 0 || !watchedProductoCode) {
-      setAlerts({});
-      return;
-    };
-    
-    const productoParaValidacion = matrizProductos.find(p => p.code === watchedProductoCode);
-
-    if (productoParaValidacion) {
-        setValue("color_tuberia", productoParaValidacion.color_tuberia || "");
-        setValue("color_linea", productoParaValidacion.color_linea || "");
-        
-        const newAlerts: ValidationAlerts = {}
-        if (watchedDiametro !== undefined && watchedDiametro !== null) {
-            if (productoParaValidacion.diametro_max !== null && watchedDiametro > productoParaValidacion.diametro_max) newAlerts.diametro = "Diámetro sobre el máximo"
-            else if (productoParaValidacion.diametro_min !== null && watchedDiametro < productoParaValidacion.diametro_min) newAlerts.diametro = "Diámetro bajo el mínimo"
-        }
-        if (watchedEspesorMin !== undefined && watchedEspesorMin !== null) {
-            if (productoParaValidacion.espesor_min_norma !== null && watchedEspesorMin < productoParaValidacion.espesor_min_norma) newAlerts.espesor_min = "Espesor mínimo bajo norma"
-            else if (productoParaValidacion.espesor_max_norma !== null && watchedEspesorMin > productoParaValidacion.espesor_max_norma) newAlerts.espesor_min = "Espesor mínimo sobre el máximo normado"
-        }
-        if (watchedEspesorMax !== undefined && watchedEspesorMax !== null) {
-            if (productoParaValidacion.espesor_max_norma !== null && watchedEspesorMax > productoParaValidacion.espesor_max_norma) newAlerts.espesor_max = "Espesor máximo sobre norma"
-            else if (productoParaValidacion.espesor_min_norma !== null && watchedEspesorMax < productoParaValidacion.espesor_min_norma) newAlerts.espesor_max = "Espesor máximo bajo el mínimo normado"
-        }
-        if (watchedOvalidad !== undefined && watchedOvalidad !== null && productoParaValidacion.ovalidad_norma !== null) {
-            if (watchedOvalidad > productoParaValidacion.ovalidad_norma) newAlerts.ovalidad = "Ovalidad sobre norma"
-        }
-        if (watchedPesoKgm !== undefined && watchedPesoKgm !== null && productoParaValidacion.peso_min_teorico !== null && productoParaValidacion.peso_max_teorico !== null) {
-            if (watchedPesoKgm < productoParaValidacion.peso_min_teorico) newAlerts.peso_kg_m = "Peso bajo el mínimo teórico"
-            else if (watchedPesoKgm > productoParaValidacion.peso_max_teorico) newAlerts.peso_kg_m = "Peso sobre el máximo teórico"
-        }
-        setAlerts(newAlerts)
-    } else {
-        setAlerts({})
-    }
-  }, [watchedProductoCode, watchedDiametro, watchedEspesorMin, watchedEspesorMax, watchedOvalidad, watchedPesoKgm, setValue, matrizProductos])
   
-
   React.useEffect(() => {
     if (watchedPesoMuestra !== undefined && watchedLargo !== undefined && watchedLargo > 0) {
         const pesoCalculado = (watchedPesoMuestra / watchedLargo) / 10;
@@ -153,16 +103,6 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
 
   const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).some(Boolean) ? "No Conforme" : "Conforme";
-    const selectedProduct = productos.find(p => p.value === data.producto);
-
-    if (!selectedProduct) {
-        toast({
-            variant: "destructive",
-            title: "Error de Validación",
-            description: "Debe seleccionar un producto válido de la lista.",
-        });
-        return;
-    }
     
     const newRegistroData = {
         fecha: format(data.fecha_ingreso, "dd-MM-yyyy"),
@@ -170,7 +110,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         inspector: data.inspector,
         maquinista: data.maquinista,
         maquina: data.maquina,
-        producto: selectedProduct.label,
+        producto: data.producto,
         marca: data.marca,
         diametro: data.diametro,
         espesor_min: data.espesor_min,
@@ -191,21 +131,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
         
         toast({
           title: "Registro Guardado",
-          description: `El control para ${selectedProduct.label} ha sido registrado como ${resultado}.`,
+          description: `El control para ${data.producto} ha sido registrado como ${resultado}.`,
           variant: resultado === 'No Conforme' ? 'destructive' : 'default',
         });
 
-        await dataService.addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${selectedProduct.label}`});
+        await dataService.addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${data.producto}`});
         
         if (data.entregado_laboratorio) {
-            const productoInfo = matrizProductos.find(p => p.code === selectedProduct.value);
-            
             let tipoEnsayo = 'Tubería';
-            if (productoInfo?.material === 'PE100') {
-                tipoEnsayo = 'Tubería HDPE';
-            } else if (productoInfo?.material?.startsWith('PP')) {
-                tipoEnsayo = 'Tubería PP';
-            }
 
             const newEnsayo = {
                 id_muestra: newRegistro.id,
@@ -213,7 +146,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 analista: '', // Default analyst, lab will assign it
                 fecha: format(new Date(), "dd-MM-yyyy"), // Fecha del Ensayo es hoy
                 estado: 'Pendiente de Revisión' as const,
-                producto: selectedProduct.label,
+                producto: data.producto,
                 lote: `Lote-${format(data.fecha_ingreso, 'yyMMdd')}-${data.maquina}`,
                 observaciones: data.observaciones_visuales || '',
                 // Trazabilidad
@@ -230,7 +163,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
-            await dataService.addRecentActivity({ user: data.inspector, action: `envió una muestra de ${selectedProduct.label} a laboratorio.`});
+            await dataService.addRecentActivity({ user: data.inspector, action: `envió una muestra de ${data.producto} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);
@@ -343,13 +276,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             <FormItem>
                                 <FormLabel>Producto</FormLabel>
                                 <FormControl>
-                                    <Combobox
-                                        options={productos}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        placeholder="Buscar producto..."
-                                        notFoundText="No se encontró el producto."
-                                    />
+                                     <Input placeholder="Ej: Tubería HDPE 90mm PN-16" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -477,7 +404,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             <FormItem>
                             <FormLabel>Color de Tubería</FormLabel>
                             <FormControl>
-                                <Input placeholder="Autocompletado..." {...field} value={field.value ?? ''} readOnly className="bg-muted" />
+                                <Input placeholder="Ej: Negro, Verde" {...field} value={field.value ?? ''} />
                             </FormControl>
                             </FormItem>
                         )}
@@ -489,7 +416,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, produ
                             <FormItem>
                             <FormLabel>Color de Línea de Identificación</FormLabel>
                             <FormControl>
-                                <Input placeholder="Autocompletado..." {...field} value={field.value ?? ''} readOnly className="bg-muted"/>
+                                <Input placeholder="Ej: Azul, Roja" {...field} value={field.value ?? ''} />
                             </FormControl>
                             </FormItem>
                         )}

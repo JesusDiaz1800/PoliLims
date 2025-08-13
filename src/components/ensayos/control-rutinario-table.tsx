@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { MoreHorizontal, Search, CheckCircle, AlertCircle, TestTube, FilePlus, Trash2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EnsayosMecanicosDialog } from "@/components/ensayos/ensayos-mecanicos-dialog";
-import { TipoProducto } from "@/lib/matriz-datos";
 import type { Ensayo, Registro } from "@/context/data-context";
 import {
   AlertDialog,
@@ -35,16 +34,15 @@ import { useToast } from "@/hooks/use-toast";
 import { deleteRegistroAction } from "@/app/(app)/ensayos/control-rutinario/actions";
 
 
-export type EnrichedRegistro = Registro & { productoInfo?: TipoProducto };
+export type EnrichedRegistro = Registro & { productoInfo?: any };
 
 interface ControlRutinarioTableProps {
   registros: Registro[];
   ensayos: Ensayo[];
   onAddRecordClick: () => void;
-  matrizProductos: TipoProducto[];
 }
 
-const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick, matrizProductos }: ControlRutinarioTableProps) => {
+const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick }: ControlRutinarioTableProps) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<EnrichedRegistro | null>(null);
@@ -59,8 +57,7 @@ const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick, m
   }, [registros, searchTerm]);
 
   const handleOpenMecanicosDialog = (registro: Registro) => {
-    const productoInfo = matrizProductos.find(p => p.producto === registro.producto);
-    setSelectedRegistro({ ...registro, productoInfo });
+    setSelectedRegistro({ ...registro });
     setIsMecanicosDialogOpen(true);
   }
 

@@ -6,8 +6,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
-import type { TipoProducto } from '@/lib/matriz-datos';
-import type { SapProduct } from '@/services/sap-service';
 
 // --- DYNAMIC DATA (client-side state) ---
 export type Ensayo = {
