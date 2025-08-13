@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell, Legend } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip } from "recharts"
 import type { NoConformidad } from "@/context/data-context";
 
 interface NonConformitiesByTypeChartProps {
@@ -68,7 +68,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   ))}
               </Pie>
               <Legend 
-                  wrapperStyle={isModal ? { bottom: 20 } : {}}
+                wrapperStyle={isModal ? { bottom: 20 } : {}}
               />
           </PieChart>
       </ResponsiveContainer>

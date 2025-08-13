@@ -9,6 +9,7 @@ import type { RecentActivity } from "@/context/data-context";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { parseISO } from "date-fns";
+import { ChartCard } from "./chart-card";
 
 const getAvatarInfo = (name: string) => {
     const fallback = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
@@ -45,14 +46,10 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
     const activityList = initialActivity || [];
 
     return (
-        <>
-            <CardHeader className="p-4 pb-0">
-                <CardTitle className="text-lg">Actividad Reciente</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">Registro de las últimas acciones.</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[calc(100%-5rem)] pb-2">
+        <ChartCard title="Actividad Reciente">
+            <div className="h-[250px] -mt-6">
                 <ScrollArea className="h-full pr-2">
-                    <div className="space-y-4">
+                    <div className="space-y-4 p-4">
                         {activityList.length > 0 ? activityList.map((activity) => {
                             const avatar = getAvatarInfo(activity.user);
                             return (
@@ -74,8 +71,8 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
                         }) : <p className="text-xs text-muted-foreground text-center py-8">No hay actividad reciente.</p>}
                     </div>
                 </ScrollArea>
-            </CardContent>
-        </>
+            </div>
+        </ChartCard>
     );
 }
 

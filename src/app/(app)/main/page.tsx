@@ -82,6 +82,21 @@ export default function MainPage() {
     return <Loading />;
   }
   
+  const allAnalysts = Array.from(new Set(ensayos.map(e => e.analista).filter(Boolean)));
+  const allAssayTypes = Array.from(new Set(ensayos.map(e => e.tipo).filter(Boolean)));
+  const allSuppliers = Array.from(new Set(proveedores.map(p => p.nombre).filter(Boolean)));
+
+  const analystOptions = [{ value: 'all', label: 'Todos los Analistas' }, ...allAnalysts.map(a => ({ value: a, label: a }))];
+  const assayTypeOptions = [{ value: 'all', label: 'Todos los Tipos' }, ...allAssayTypes.map(t => ({ value: t, label: t }))];
+  const supplierOptions = [{ value: 'all', label: 'Todos los Proveedores' }, ...allSuppliers.map(s => ({ value: s, label: s }))];
+  
+  const assayOptions = [
+    { value: 'all', label: 'Todos los Ensayos' },
+    { value: 'meltIndexCalculado', label: 'Melt Index' },
+    { value: 'densidadCalculada', label: 'Densidad' },
+    { value: 'resistencia_traccion', label: 'Resistencia a la Tracción' },
+  ];
+
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
@@ -93,10 +108,10 @@ export default function MainPage() {
       <div className="relative z-10 p-8 pt-6">
         <WelcomeBanner user={user} />
         <DashboardFilters 
-          analysts={[]} 
-          assayTypes={[]} 
-          suppliers={[]} 
-          individualAssays={[]}
+          analysts={analystOptions} 
+          assayTypes={assayTypeOptions} 
+          suppliers={supplierOptions} 
+          individualAssays={assayOptions}
         />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mt-4">
           <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento"/>
@@ -109,9 +124,9 @@ export default function MainPage() {
           <ChartCard className="col-span-4" title="Ensayos por Mes" onExpand={() => setModalContent({ title: 'Ensayos por Mes', children: <AssaysByMonthChart data={ensayos || []} isModal /> })}>
             <AssaysByMonthChart data={ensayos || []} />
           </ChartCard>
-          <ChartCard className="col-span-3" title="Actividad Reciente">
+           <div className="col-span-3">
               <RecentActivityList initialActivity={recentActivity || []} />
-          </ChartCard>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             <ChartCard title="Ensayos por Tipo" onExpand={() => setModalContent({ title: 'Ensayos por Tipo', children: <AssaysByTypeChart data={filteredEnsayos} isModal /> })}>
@@ -136,9 +151,9 @@ export default function MainPage() {
            <ChartCard className="col-span-1 md:col-span-2 lg:col-span-4" title="Tendencia de Rendimiento" onExpand={() => setModalContent({ title: 'Tendencia de Rendimiento', children: <ThroughputTrendChart data={ensayos} isModal /> })}>
              <ThroughputTrendChart data={ensayos}/>
            </ChartCard>
-            <ChartCard className="col-span-1 md:col-span-2 lg:col-span-3" title="Alertas de Equipos">
+            <div className="col-span-1 md:col-span-2 lg:col-span-3">
               <EquipmentAlertsCard equipos={equipos} />
-           </ChartCard>
+           </div>
          </div>
       </div>
     </div>

@@ -4,7 +4,7 @@
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts"
 import type { Ensayo } from "@/context/data-context";
-import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
+import { format, subDays, eachDayOfInterval, parse, parseISO } from "date-fns";
 
 
 interface ThroughputTrendChartProps {
@@ -24,8 +24,17 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
         const formattedDayKey = format(day, "yyyy-MM-dd");
         const formattedDayLabel = format(day, "dd/MM");
         
-        const received = allData.filter(e => format(parseISO(e.fecha.split('-').reverse().join('-')), "yyyy-MM-dd") === formattedDayKey).length;
-        const completed = allData.filter(e => e.estado === 'Aprobado' && format(parseISO(e.fecha.split('-').reverse().join('-')), "yyyy-MM-dd") === formattedDayKey).length;
+        const received = allData.filter(e => {
+            try {
+                return format(parse(e.fecha_ingreso || e.fecha, 'dd-MM-yyyy', new Date()), "yyyy-MM-dd") === formattedDayKey
+            } catch { return false }
+        }).length;
+
+        const completed = allData.filter(e => {
+            try {
+                return e.estado === 'Aprobado' && format(parse(e.fecha, 'dd-MM-yyyy', new Date()), "yyyy-MM-dd") === formattedDayKey
+            } catch { return false }
+        }).length;
         
         return { day: formattedDayLabel, received, completed };
     });
