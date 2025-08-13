@@ -6,35 +6,40 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Expand } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ChartModal } from "./chart-modal";
 
 interface ChartCardProps {
   title: string;
-  description?: string;
-  onExpand?: () => void;
   children: React.ReactNode;
   className?: string;
+  isModal?: boolean;
 }
 
-export const ChartCard = ({ title, description, onExpand, children, className }: ChartCardProps) => {
+export const ChartCard = ({ title, children, className, isModal = false }: ChartCardProps) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const ChartContentComponent = isModal ? (
+    <div className="w-full h-full p-4">{children}</div>
+  ) : (
+    <div className="w-full h-[240px]">{children}</div>
+  );
+
   return (
-    <Card className={cn("card-glass relative", className)}>
-      {onExpand && (
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute top-2 right-2 h-7 w-7 text-muted-foreground hover:bg-white/10 hover:text-white z-10"
-            onClick={onExpand}
-          >
-            <Expand className="h-4 w-4" />
-          </Button>
-      )}
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
-      </CardHeader>
-      <CardContent>
-        {children}
-      </CardContent>
-    </Card>
+    <>
+      <Card className={cn("h-full card-glass relative group cursor-pointer", className)} onClick={() => setIsModalOpen(true)}>
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {ChartContentComponent}
+        </CardContent>
+         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <Expand className="h-4 w-4 text-white/70" />
+        </div>
+      </Card>
+      <ChartModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={title}>
+        <div className="w-full h-full p-4">{children}</div>
+      </ChartModal>
+    </>
   );
 };

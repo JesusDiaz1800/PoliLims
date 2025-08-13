@@ -25,33 +25,9 @@ import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaroun
 import { ChartModal } from "@/components/dashboard/chart-modal";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { ChartCard } from "@/components/dashboard/chart-card";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
-
-const ChartCard = ({ title, description, children, className }: { title: string; description: string; children: React.ReactNode, className?: string }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  return (
-    <>
-      <Card className="h-full card-glass relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
-        <CardHeader>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-        </CardHeader>
-        <CardContent className="h-[240px]">
-            {children}
-        </CardContent>
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Expand className="h-4 w-4 text-white/70" />
-        </div>
-      </Card>
-      <ChartModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={title}>
-        <div className="w-full h-full p-4">{children}</div>
-      </ChartModal>
-    </>
-  );
-};
-
 
 export default function MainPage() {
   const searchParams = useSearchParams();
@@ -146,9 +122,15 @@ export default function MainPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 <div className="lg:col-span-8">
-                    <ChartCard title="Ensayos por Mes" description="Volumen de ensayos en los últimos 12 meses.">
-                        <AssaysByMonthChart data={ensayos || []} />
-                    </ChartCard>
+                    <Card className="card-glass h-full">
+                        <CardHeader>
+                            <CardTitle>Ensayos por Mes</CardTitle>
+                            <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[240px]">
+                           <AssaysByMonthChart data={ensayos || []} />
+                        </CardContent>
+                    </Card>
                 </div>
                  <div className="lg:col-span-4">
                     <Card className="card-glass">
@@ -179,29 +161,59 @@ export default function MainPage() {
                         </Collapsible>
                     </Card>
                     <div className="mt-4">
-                        <ChartCard title="Estados de Muestras" description="Distribución porcentual de los estados actuales.">
-                             <SampleStatusChart data={filteredEnsayos} />
-                        </ChartCard>
+                        <Card className="card-glass">
+                            <CardHeader>
+                                <CardTitle>Estados de Muestras</CardTitle>
+                                <CardDescription>Distribución porcentual de los estados actuales.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="h-[240px]">
+                                <SampleStatusChart data={filteredEnsayos} />
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </div>
             
              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <ChartCard title="Tendencia de Rendimiento" description="Muestras Recibidas vs. Completadas (Últimos 30 días).">
-                    <ThroughputTrendChart data={ensayos || []} />
-                </ChartCard>
-                <ChartCard title="No Conformidades por Tipo" description="Distribución de las causas de no conformidad.">
-                    <NonConformitiesByTypeChart data={noConformidades || []} />
-                </ChartCard>
+                <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>Tendencia de Rendimiento</CardTitle>
+                        <CardDescription>Muestras Recibidas vs. Completadas (Últimos 30 días).</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                        <ThroughputTrendChart data={ensayos || []} />
+                    </CardContent>
+                </Card>
+                <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>No Conformidades por Tipo</CardTitle>
+                        <CardDescription>Distribución de las causas de no conformidad.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                        <NonConformitiesByTypeChart data={noConformidades || []} />
+                    </CardContent>
+                </Card>
             </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <ChartCard title="Distribución de Ensayos" description="Cantidad de ensayos por cada tipo de producto.">
-                    <AssaysByTypeChart data={filteredEnsayos} />
-                </ChartCard>
-                <ChartCard title="Carga de Trabajo" description="Distribución de la cantidad de ensayos por analista.">
-                     <WorkloadDistributionChart data={filteredEnsayos} />
-                </ChartCard>
+                <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>Distribución de Ensayos</CardTitle>
+                        <CardDescription>Cantidad de ensayos por cada tipo de producto.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                        <AssaysByTypeChart data={filteredEnsayos} />
+                    </CardContent>
+                </Card>
+                 <Card className="card-glass h-full">
+                    <CardHeader>
+                        <CardTitle>Carga de Trabajo</CardTitle>
+                        <CardDescription>Distribución de la cantidad de ensayos por analista.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[240px]">
+                        <WorkloadDistributionChart data={filteredEnsayos} />
+                    </CardContent>
+                </Card>
                 <Card className="card-glass h-[340px]">
                     <CardHeader>
                         <CardTitle>Actividad Reciente</CardTitle>
@@ -220,9 +232,15 @@ export default function MainPage() {
                     </Card>
                 </div>
                 <div className="lg:col-span-8">
-                     <ChartCard title="Tiempos de Respuesta Promedio" description="Promedio de días para completar cada tipo de ensayo.">
-                        <AssayTurnaroundTimeChart data={ensayos || []} />
-                    </ChartCard>
+                     <Card className="card-glass h-full">
+                        <CardHeader>
+                            <CardTitle>Tiempos de Respuesta Promedio</CardTitle>
+                            <CardDescription>Promedio de días para completar cada tipo de ensayo.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="h-[240px]">
+                           <AssayTurnaroundTimeChart data={ensayos || []} />
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
