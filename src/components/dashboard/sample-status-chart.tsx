@@ -32,8 +32,8 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
     });
     
     return [
-      { name: "Aprobado", value: statusCounts.Aprobado, color: "url(#colorStatusPurple)" },
-      { name: "Pendiente", value: statusCounts.Pendiente, color: "url(#colorStatusBlue)" },
+      { name: "Aprobado", value: statusCounts.Aprobado, color: "url(#colorStatusGreen)" },
+      { name: "Pendiente", value: statusCounts.Pendiente, color: "url(#colorStatusYellow)" },
       { name: "Rechazado", value: statusCounts.Rechazado, color: "url(#colorStatusRed)" },
     ].filter(d => d.value > 0);
   }, [data]);
@@ -61,17 +61,17 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
                <defs>
-                <linearGradient id="colorStatusPurple" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8A2BE2" stopOpacity={0.9}/>
-                    <stop offset="95%" stopColor="#4B0082" stopOpacity={0.7}/>
+                <linearGradient id="colorStatusGreen" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#059669" stopOpacity={0.7}/>
                 </linearGradient>
-                <linearGradient id="colorStatusBlue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00BFFF" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#0000CD" stopOpacity={0.6}/>
+                <linearGradient id="colorStatusYellow" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#D97706" stopOpacity={0.7}/>
                 </linearGradient>
                 <linearGradient id="colorStatusRed" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#DC143C" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8B0000" stopOpacity={0.6}/>
+                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#DC2626" stopOpacity={0.7}/>
                 </linearGradient>
               </defs>
               <Tooltip
