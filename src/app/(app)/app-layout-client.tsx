@@ -48,7 +48,7 @@ export default function AppLayoutClient({
             enableSystem
             disableTransitionOnChange
         >
-            <DynamicDataProvider initialData={initialData}>
+            <DynamicDataProvider initialData={initialData} user={user}>
                 <ChatWidgetProvider>
                     <SidebarProvider>
                         <AppShell user={user}>

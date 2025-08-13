@@ -6,6 +6,8 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
+import type { TipoProducto } from '@/lib/matriz-datos';
+import type { SapProduct } from '@/services/sap-service';
 
 // --- DYNAMIC DATA (client-side state) ---
 export type Ensayo = {
@@ -275,6 +277,7 @@ export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>
 
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
+    user: User | null;
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
     deleteEnsayo: (id: string) => Promise<void>;
@@ -299,7 +302,7 @@ interface DynamicDataContextType extends InitialData {
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
 
-export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
+export function DynamicDataProvider({ children, user, initialData }: { children: ReactNode, user: User | null, initialData: InitialData }) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const [data, setData] = useState<InitialData>(initialData);
@@ -310,7 +313,6 @@ export function DynamicDataProvider({ children, initialData }: { children: React
     const month = searchParams.get('month') || 'last_12_months';
     const analyst = isDashboard ? 'all' : (searchParams.get('analyst') || 'all');
     
-    // For status, we check the specific param from the URL, but default to 'all' on dashboard
     const statusParam = searchParams.get('status');
     const status = isDashboard ? 'all' : (statusParam || 'all');
     
@@ -466,6 +468,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
     const value = useMemo(() => ({
         ...data,
         isLoaded,
+        user,
         addEnsayo,
         updateEnsayo,
         deleteEnsayo,
@@ -486,7 +489,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         totalFilteredAssays,
         approvalPercentage,
         pendingAssays
-    }), [data, isLoaded, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
+    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
 
     return (
         <DynamicDataContext.Provider value={value}>

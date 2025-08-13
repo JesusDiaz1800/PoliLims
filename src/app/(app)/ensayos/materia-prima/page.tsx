@@ -8,24 +8,13 @@ import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
-import { findUserByUsername } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
 
 export default function MateriaPrimaPage() {
-  const { ensayos, isLoaded } = useDynamicData();
+  const { ensayos, user, isLoaded } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
-  const [user, setUser] = React.useState<User | null>(null);
-  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = React.useState('all');
-
-  React.useEffect(() => {
-    async function loadUser() {
-        const userData = await findUserByUsername(searchParams.get('user') || 'jdiaz');
-        setUser(userData);
-    }
-    loadUser();
-  }, [searchParams]);
 
   const materiaPrimaEnsayos = React.useMemo(() => {
     return ensayos.filter(e => e.tipo === 'Materia Prima');

@@ -3,6 +3,8 @@
 
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
+import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
+import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 
 
 // --- DEMO DATA ---
@@ -308,7 +310,23 @@ export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 't
  * It also applies some dynamic logic, like updating equipment status based on the current date.
  * @returns {Promise<object>} A promise that resolves to an object containing all initial data arrays.
  */
-export async function getInitialData() {
+export async function getInitialData(): Promise<{
+    ensayos: Ensayo[];
+    registros: Registro[];
+    recentActivity: RecentActivity[];
+    equipos: Equipo[];
+    controles: ControlEvento[];
+    noConformidades: NoConformidad[];
+    importaciones: Importacion[];
+    generatedReports: GeneratedReport[];
+    calculosIncertidumbre: CalculoIncertidumbre[];
+    proveedores: Proveedor[];
+    condicionesAmbientales: CondicionAmbiental[];
+    formacion: Formacion[];
+    auditorias: Auditoria[];
+    matrizProductos: TipoProducto[];
+    sapProducts: SapProduct[];
+}> {
     const today = new Date();
     // Dynamically update equipment status based on calibration date for realistic simulation.
     const updatedEquipos = demoEquipos.map(equipo => {
@@ -317,6 +335,11 @@ export async function getInitialData() {
         }
         return equipo;
     });
+
+    const [matrizProductos, sapProducts] = await Promise.all([
+        getMatrizProductos(),
+        getProductsFromSap()
+    ]);
 
     return {
         ensayos: demoEnsayos,
@@ -332,5 +355,7 @@ export async function getInitialData() {
         condicionesAmbientales: demoCondicionesAmbientales,
         formacion: demoFormacion,
         auditorias: demoAuditorias,
+        matrizProductos,
+        sapProducts,
     };
 }
