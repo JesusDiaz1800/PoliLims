@@ -1,9 +1,11 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import type { SapProduct } from '@/services/sap-service';
+import type { TipoProducto } from '@/lib/matriz-datos';
 
 // --- DYNAMIC DATA (client-side state) ---
 export type Ensayo = {

@@ -138,7 +138,7 @@ export default function MainPage() {
   return (
     <div className="relative flex-1 space-y-4">
        <div className="background-overlay"></div>
-       <div className="relative z-10 space-y-4">
+       <div className="relative z-10 space-y-4 p-6 md:p-10">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-2">
                     <WelcomeBanner user={user} />
