@@ -47,7 +47,7 @@ export default function MainPage() {
   } = useDynamicData();
   
   const [user, setUser] = React.useState<User | null>(null);
-  const [isFiltersOpen, setIsFiltersOpen] = React.useState(true);
+  const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
   
   React.useEffect(() => {
     async function loadUser() {
@@ -131,10 +131,10 @@ export default function MainPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <Card className="lg:col-span-7 h-[300px] card-glass">
+                <Card className="lg:col-span-6 h-[300px] card-glass">
                     <AssaysByMonthChart data={ensayos || []} />
                 </Card>
-                <Card className="lg:col-span-5 h-[300px] card-glass">
+                <Card className="lg:col-span-6 h-[300px] card-glass">
                     <ThroughputTrendChart data={filteredEnsayos} />
                 </Card>
             </div>
