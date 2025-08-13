@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip, Sector } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip } from "recharts"
 import type { NoConformidad } from "@/context/data-context";
 
 interface NonConformitiesByTypeChartProps {
@@ -19,30 +19,15 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
     }, {} as Record<string, number>);
 
     return [
-      { name: "Interna", value: typeCounts["Interna"] || 0, color: "hsl(var(--chart-1))" },
-      { name: "Reclamo Cliente", value: typeCounts["Reclamo de Cliente"] || 0, color: "hsl(var(--chart-2))" },
-      { name: "Auditoría", value: typeCounts["Auditoría"] || 0, color: "hsl(var(--chart-3))" },
+      { name: "Interna", value: typeCounts["Interna"] || 0, color: "url(#colorNc1)" },
+      { name: "Reclamo Cliente", value: typeCounts["Reclamo de Cliente"] || 0, color: "url(#colorNc2)" },
+      { name: "Auditoría", value: typeCounts["Auditoría"] || 0, color: "url(#colorNc3)" },
     ].filter(item => item.value > 0);
   }, [data]);
   
   const height = isModal ? 500 : 250;
   const totalNC = React.useMemo(() => chartData.reduce((sum, item) => sum + item.value, 0), [chartData]);
   
-  const RADIAN = Math.PI / 180;
-  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
-    if (!percent || percent < 0.05) return null; // Don't render label for very small slices
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
-
-
   return (
     <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
@@ -77,7 +62,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={renderCustomizedLabel}
+                  label={false} // Se eliminan las etiquetas sobre los segmentos
                   outerRadius={isModal ? 150 : 80}
                   innerRadius={isModal ? 90 : 50}
                   paddingAngle={5}
@@ -85,21 +70,19 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   strokeWidth={2}
               >
                   {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={`url(#colorNc${index + 1})`} stroke={entry.color} />
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color.replace('url(#colorNc','').replace(')','')} />
                   ))}
               </Pie>
               <Legend 
                 verticalAlign="bottom"
                 wrapperStyle={{ bottom: isModal ? 20 : 0 }}
-                formatter={(value) => <span className="text-white">{value}</span>}
+                formatter={(value, entry) => <span className="text-white">{value}: {entry.payload?.value}</span>}
               />
           </PieChart>
       </ResponsiveContainer>
-       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center">
-              <p className="text-2xl font-bold font-headline">{totalNC}</p>
-              <p className="text-xs text-muted-foreground -mt-1">Total NCs</p>
-          </div>
+       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <p className="text-2xl font-bold font-headline">{totalNC}</p>
+          <p className="text-xs text-muted-foreground -mt-1">Total NCs</p>
       </div>
     </div>
   )
