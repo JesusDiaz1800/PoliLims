@@ -6,8 +6,6 @@ import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
 import { findUserByUsername, type User } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
-import { DynamicDataProvider } from '@/context/data-context';
-import { getInitialData } from '@/services/data-service';
 import React, { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Loading from './loading';
@@ -16,10 +14,8 @@ import Loading from './loading';
 
 export default function AppLayoutClient({ 
     children,
-    initialData,
 }: { 
     children: React.ReactNode,
-    initialData: Awaited<ReturnType<typeof getInitialData>>
 }) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -67,16 +63,14 @@ export default function AppLayoutClient({
             enableSystem
             disableTransitionOnChange
         >
-            <DynamicDataProvider initialData={initialData}>
-                <ChatWidgetProvider>
-                    <SidebarProvider>
-                        <AppShell user={user}>
-                            {children}
-                        </AppShell>
-                    </SidebarProvider>
-                    <ChatWidget />
-                </ChatWidgetProvider>
-            </DynamicDataProvider>
+            <ChatWidgetProvider>
+                <SidebarProvider>
+                    <AppShell user={user}>
+                        {children}
+                    </AppShell>
+                </SidebarProvider>
+                <ChatWidget />
+            </ChatWidgetProvider>
         </ThemeProvider>
     );
 }

@@ -1,5 +1,6 @@
 import { getInitialData } from '@/services/data-service';
 import AppLayoutClient from './app-layout-client';
+import { DynamicDataProvider } from '@/context/data-context';
 
 // This is a Server Component responsible for fetching initial data.
 export default async function AppLayout({ 
@@ -10,8 +11,10 @@ export default async function AppLayout({
     const initialData = await getInitialData();
 
     return (
-        <AppLayoutClient initialData={initialData}>
-            {children}
-        </AppLayoutClient>
+        <DynamicDataProvider initialData={initialData}>
+            <AppLayoutClient>
+                {children}
+            </AppLayoutClient>
+        </DynamicDataProvider>
     );
 }
