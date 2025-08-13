@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
 import { subMonths, isAfter, parse } from 'date-fns';
 
-import { StatsCard } from "@/components/main/stats-card";
+import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
@@ -16,7 +16,6 @@ import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
-import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -186,6 +185,15 @@ export default function MainPage() {
                     </div>
                 </div>
             </div>
+            
+             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <ChartCard title="Tendencia de Rendimiento" description="Muestras Recibidas vs. Completadas (Últimos 30 días).">
+                    <ThroughputTrendChart data={ensayos || []} />
+                </ChartCard>
+                <ChartCard title="No Conformidades por Tipo" description="Distribución de las causas de no conformidad.">
+                    <NonConformitiesByTypeChart data={noConformidades || []} />
+                </ChartCard>
+            </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <ChartCard title="Distribución de Ensayos" description="Cantidad de ensayos por cada tipo de producto.">
@@ -211,13 +219,8 @@ export default function MainPage() {
                         <EquipmentAlertsCard equipos={equipos || []} />
                     </Card>
                 </div>
-                <div className="lg:col-span-4">
-                    <ChartCard title="No Conformidades" description="Tendencia de NCs en los últimos 6 meses.">
-                        <NonConformitiesByTypeChart data={noConformidades || []} />
-                    </ChartCard>
-                </div>
-                 <div className="lg:col-span-4">
-                     <ChartCard title="Tiempos de Respuesta" description="Promedio de días para completar cada tipo de ensayo.">
+                <div className="lg:col-span-8">
+                     <ChartCard title="Tiempos de Respuesta Promedio" description="Promedio de días para completar cada tipo de ensayo.">
                         <AssayTurnaroundTimeChart data={ensayos || []} />
                     </ChartCard>
                 </div>

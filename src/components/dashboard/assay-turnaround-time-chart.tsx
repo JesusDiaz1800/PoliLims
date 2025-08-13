@@ -56,10 +56,10 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
             .filter(item => item.value > 0);
     }, [allData]);
     
-    const height = isModal ? 500 : 250;
+    const height = isModal ? 500 : 240;
 
   return (
-    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+    <div className="w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
