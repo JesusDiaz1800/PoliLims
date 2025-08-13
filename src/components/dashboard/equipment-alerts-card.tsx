@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -81,7 +80,7 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
+      <CardContent className="h-[calc(100%-4rem)] pb-2">
         <ScrollArea className="h-full pr-2">
           <div className="space-y-3">
             {equiposConAlerta.length > 0 ? (

@@ -23,7 +23,6 @@ import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
-import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
@@ -90,11 +89,9 @@ export default function MainPage() {
     <div className="relative flex-1 space-y-4">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                <div className="lg:col-span-2">
-                    <WelcomeBanner user={user} />
-                </div>
-                <Card className="lg:col-span-2 card-glass">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <WelcomeBanner user={user} />
+                <Card className="card-glass">
                     <Collapsible
                         open={isFiltersOpen}
                         onOpenChange={setIsFiltersOpen}
@@ -133,36 +130,36 @@ export default function MainPage() {
 
             {/* Main Charts Row */}
             <div className="grid grid-cols-12 gap-4">
-                <Card className="col-span-12 lg:col-span-7 h-[300px] card-glass">
+                <Card className="col-span-12 lg:col-span-7 min-h-[300px] card-glass">
                     <ThroughputTrendChart data={filteredEnsayos} />
                 </Card>
-                <Card className="col-span-12 lg:col-span-5 h-[300px] card-glass">
+                <Card className="col-span-12 lg:col-span-5 min-h-[300px] card-glass">
                     <AssaysByMonthChart data={ensayos || []} />
                 </Card>
             </div>
 
             {/* Secondary Charts & Lists Row */}
             <div className="grid grid-cols-12 gap-4">
-                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
+                <Card className="col-span-12 lg:col-span-3 min-h-[280px] card-glass">
                     <AssaysByTypeChart data={filteredEnsayos} />
                 </Card>
-                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
+                <Card className="col-span-12 lg:col-span-3 min-h-[280px] card-glass">
                     <SampleStatusChart data={filteredEnsayos} />
                 </Card>
-                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
+                <Card className="col-span-12 lg:col-span-3 min-h-[280px] card-glass">
                     <WorkloadDistributionChart data={filteredEnsayos} />
                 </Card>
-                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
+                <Card className="col-span-12 lg:col-span-3 min-h-[280px] card-glass">
                     <RecentActivityList initialActivity={recentActivity || []}/>
                 </Card>
             </div>
              
              {/* Third Row with other charts */}
             <div className="grid grid-cols-12 gap-4">
-                <Card className="col-span-12 lg:col-span-4 h-[280px] card-glass">
+                <Card className="col-span-12 lg:col-span-4 min-h-[280px] card-glass">
                     <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
-                 <Card className="col-span-12 lg:col-span-8 h-[280px] card-glass">
+                 <Card className="col-span-12 lg:col-span-8 min-h-[280px] card-glass">
                     <NonConformitiesByMonthChart data={noConformidades || []} />
                 </Card>
             </div>

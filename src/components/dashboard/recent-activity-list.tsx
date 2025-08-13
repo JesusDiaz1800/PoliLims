@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -51,7 +50,7 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
                 <CardTitle>Actividad Reciente</CardTitle>
                 <CardDescription className="text-sm">Registro de las últimas acciones.</CardDescription>
             </CardHeader>
-            <CardContent className="h-[calc(100%-5rem)] pb-2">
+            <CardContent className="h-[calc(100%-4rem)] pb-2">
                 <ScrollArea className="h-full pr-2">
                     <div className="space-y-4">
                         {activityList.length > 0 ? activityList.map((activity) => {
