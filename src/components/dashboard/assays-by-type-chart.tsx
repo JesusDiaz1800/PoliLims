@@ -31,8 +31,8 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
           <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorByType" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="var(--chart-3)" stopOpacity={0.8}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
                   </linearGradient>
               </defs>
               <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -46,7 +46,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Cantidad" fill="url(#colorByType)" radius={[0, 4, 4, 0]} activeBar={<Rectangle fill="var(--chart-3)" />} />
+              <Bar dataKey="value" name="Cantidad" fill="url(#colorByType)" radius={[0, 4, 4, 0]} activeBar={<Rectangle fill="hsl(var(--chart-3))" />} />
           </BarChart>
       </ResponsiveContainer>
     </div>

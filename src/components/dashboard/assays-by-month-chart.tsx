@@ -50,11 +50,11 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 30, left: -10, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                   </linearGradient>
               </defs>
               <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -68,7 +68,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="total" name="Ensayos" fill="url(#colorTotal)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="var(--chart-1)" />} />
+              <Bar dataKey="total" name="Ensayos" fill="url(#colorTotal)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary))" />} />
           </BarChart>
       </ResponsiveContainer>
     </div>

@@ -38,8 +38,8 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
           <BarChart data={chartData}>
               <defs>
                   <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
                   </linearGradient>
               </defs>
               <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -53,7 +53,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Ensayos" fill="url(#colorWorkload)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="var(--chart-2)" />} />
+              <Bar dataKey="value" name="Ensayos" fill="url(#colorWorkload)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--chart-2))" />} />
           </BarChart>
       </ResponsiveContainer>
     </div>

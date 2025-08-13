@@ -93,13 +93,6 @@ body {
     --border: 217 33% 25%;
     --input: 217 33% 25%;
     --ring: 188 100% 50%; /* Bright Cyan for rings */
-
-    /* Chart colors for the futuristic theme */
-    --chart-1: linear-gradient(to top, hsl(188, 100%, 40%), hsl(188, 100%, 60%));
-    --chart-2: linear-gradient(to top, hsl(142, 76%, 35%), hsl(142, 76%, 55%));
-    --chart-3: linear-gradient(to top, hsl(38, 92%, 50%), hsl(38, 92%, 65%));
-    --chart-4: linear-gradient(to top, hsl(0, 84%, 60%), hsl(0, 84%, 75%));
-    --chart-5: linear-gradient(to top, hsl(300, 100%, 50%), hsl(300, 100%, 65%));
   }
 }
  
@@ -191,4 +184,3 @@ input[type=number] {
     opacity: 1;
   }
 }
-
