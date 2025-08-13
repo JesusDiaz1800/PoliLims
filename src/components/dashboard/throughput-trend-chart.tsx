@@ -3,16 +3,16 @@
 
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 
 
 interface ThroughputTrendChartProps {
     data: Ensayo[];
+    isModal?: boolean;
 }
 
-const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartProps) => {
+const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: ThroughputTrendChartProps) => {
   const chartData = React.useMemo(() => {
     const now = new Date();
     const interval = eachDayOfInterval({
@@ -31,35 +31,40 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
     });
   }, [allData]);
 
+  const height = isModal ? 500 : 250;
 
   return (
-    <Card>
-        <CardHeader>
-            <CardTitle>Tendencia de Rendimiento</CardTitle>
-            <CardDescription>Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
-        </CardHeader>
-        <CardContent className="h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
-                    <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                    <Tooltip
-                        cursor={{fill: 'hsla(var(--accent), 0.3)'}}
-                        contentStyle={{
-                          backgroundColor: 'hsl(var(--card))',
-                          borderColor: 'hsl(var(--border))',
-                          borderRadius: 'var(--radius)',
-                          color: 'hsl(var(--card-foreground))'
-                        }}
-                    />
-                    <Legend />
-                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={2} />
-                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={2} />
-                </LineChart>
-            </ResponsiveContainer>
-        </CardContent>
-    </Card>
+    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+        <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                <defs>
+                    <linearGradient id="colorReceived" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
+                    </linearGradient>
+                    <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0.1}/>
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
+                <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                    cursor={{fill: 'hsla(var(--primary), 0.1)'}}
+                    contentStyle={{
+                        backgroundColor: 'hsl(var(--card) / 0.8)',
+                        backdropFilter: 'blur(4px)',
+                        border: '1px solid hsl(var(--border) / 0.3)',
+                        borderRadius: 'var(--radius)',
+                    }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="received" name="Recibidas" stroke="url(#colorReceived)" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="completed" name="Completadas" stroke="url(#colorCompleted)" strokeWidth={3} dot={false} />
+            </LineChart>
+        </ResponsiveContainer>
+    </div>
   )
 }
 export const ThroughputTrendChart = React.memo(ThroughputTrendChartInternal);

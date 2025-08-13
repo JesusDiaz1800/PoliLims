@@ -3,16 +3,16 @@
 
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
 
 interface AssaysByMonthChartProps {
     data: Ensayo[];
+    isModal?: boolean;
 }
 
-const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) => {
+const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysByMonthChartProps) => {
   const chartData = React.useMemo(() => {
     if (!allData) {
         return [];
@@ -45,30 +45,33 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
     return Object.values(monthlyData);
   }, [allData]);
 
+  const height = isModal ? 500 : 250;
+
   return (
-    <>
-      <CardHeader>
-        <CardTitle>Ensayos por Mes</CardTitle>
-        <CardDescription>Volumen total de ensayos en los últimos 12 meses.</CardDescription>
-      </CardHeader>
-      <CardContent className="h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
-                <Tooltip
-                    cursor={{fill: 'hsl(var(--accent))'}}
-                    contentStyle={{
-                        backgroundColor: 'hsl(var(--background))',
-                        borderColor: 'hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                    }}
-                />
-                <Bar dataKey="total" name="Ensayos" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary) / 0.8)" />} />
-            </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </>
+    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+      <ResponsiveContainer width="100%" height="100%">
+          <defs>
+              <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
+              </linearGradient>
+          </defs>
+          <BarChart data={chartData}>
+              <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+              <Tooltip
+                  cursor={{fill: 'hsla(var(--primary), 0.1)'}}
+                  contentStyle={{
+                      backgroundColor: 'hsl(var(--card) / 0.8)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid hsl(var(--border) / 0.3)',
+                      borderRadius: 'var(--radius)',
+                  }}
+              />
+              <Bar dataKey="total" name="Ensayos" fill="url(#colorTotal)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="var(--chart-1)" />} />
+          </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);

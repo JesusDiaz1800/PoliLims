@@ -3,12 +3,12 @@
 
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
 
 interface AssayTurnaroundTimeChartProps {
     data: Ensayo[];
+    isModal?: boolean;
 }
 
 const assayChecks: { name: string, field: keyof Ensayo }[] = [
@@ -19,7 +19,7 @@ const assayChecks: { name: string, field: keyof Ensayo }[] = [
     { name: "TIO", field: "tio_tiempo" },
 ];
 
-const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTimeChartProps) => {
+const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: AssayTurnaroundTimeChartProps) => {
     const chartData = React.useMemo(() => {
         const turnarounds: { [key: string]: number[] } = {};
 
@@ -55,31 +55,34 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
             }))
             .filter(item => item.value > 0);
     }, [allData]);
+    
+    const height = isModal ? 500 : 250;
 
   return (
-    <>
-      <CardHeader>
-        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
-        <CardDescription>Promedio de días por tipo de ensayo.</CardDescription>
-      </CardHeader>
-      <CardContent className="h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
-                <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
-                <Tooltip
-                    cursor={{fill: 'hsl(var(--accent))'}}
-                    contentStyle={{
-                        backgroundColor: 'hsl(var(--background))',
-                        borderColor: 'hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                    }}
-                />
-                <Bar dataKey="value" name="Días" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary) / 0.8)" />} />
-            </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </>
+    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+      <ResponsiveContainer width="100%" height="100%">
+          <defs>
+              <linearGradient id="colorTurnaround" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.1}/>
+                  <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.8}/>
+              </linearGradient>
+          </defs>
+          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+              <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
+              <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
+              <Tooltip
+                  cursor={{fill: 'hsla(var(--primary), 0.1)'}}
+                  contentStyle={{
+                      backgroundColor: 'hsl(var(--card) / 0.8)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid hsl(var(--border) / 0.3)',
+                      borderRadius: 'var(--radius)',
+                  }}
+              />
+              <Bar dataKey="value" name="Días" fill="url(#colorTurnaround)" radius={[0, 4, 4, 0]} activeBar={<Rectangle fill="var(--chart-1)" />} />
+          </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 export const AssayTurnaroundTimeChart = React.memo(AssayTurnaroundTimeChartInternal);

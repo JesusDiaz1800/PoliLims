@@ -3,15 +3,15 @@
 
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
 
 interface WorkloadDistributionChartProps {
     data: Ensayo[];
+    isModal?: boolean;
 }
 
-const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributionChartProps) => {
+const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: WorkloadDistributionChartProps) => {
   const chartData = React.useMemo(() => {
     if (!allData) return [];
     const analystCounts = allData.reduce((acc, ensayo) => {
@@ -30,31 +30,33 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
         .sort((a, b) => b.value - a.value);
   }, [allData]);
 
+  const height = isModal ? 500 : 250;
 
   return (
-    <>
-      <CardHeader>
-        <CardTitle>Distribución de Carga de Trabajo</CardTitle>
-        <CardDescription>Cantidad de ensayos por analista.</CardDescription>
-      </CardHeader>
-      <CardContent className="h-[250px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
-                <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <Tooltip
-                    cursor={{fill: 'hsl(var(--accent))'}}
-                    contentStyle={{
-                        backgroundColor: 'hsl(var(--background))',
-                        borderColor: 'hsl(var(--border))',
-                        borderRadius: 'var(--radius)',
-                    }}
-                />
-                <Bar dataKey="value" name="Ensayos" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--chart-2) / 0.8)" />} />
-            </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </>
+    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+      <ResponsiveContainer width="100%" height="100%">
+          <defs>
+              <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0.1}/>
+              </linearGradient>
+          </defs>
+          <BarChart data={chartData}>
+              <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+              <Tooltip
+                  cursor={{fill: 'hsla(var(--primary), 0.1)'}}
+                  contentStyle={{
+                      backgroundColor: 'hsl(var(--card) / 0.8)',
+                      backdropFilter: 'blur(4px)',
+                      border: '1px solid hsl(var(--border) / 0.3)',
+                      borderRadius: 'var(--radius)',
+                  }}
+              />
+              <Bar dataKey="value" name="Ensayos" fill="url(#colorWorkload)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="var(--chart-2)" />} />
+          </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
 export const WorkloadDistributionChart = React.memo(WorkloadDistributionChartInternal);
