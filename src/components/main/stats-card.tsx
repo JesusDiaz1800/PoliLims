@@ -15,11 +15,9 @@ type StatsCardProps = {
 };
 
 export function StatsCard({ title, value, icon: Icon, description, href }: StatsCardProps) {
-    const trendDirection = description.startsWith('+') ? 'up' : 'down';
-    const isPositive = trendDirection === "up";
 
-    const cardContent = (
-        <Card className={cn("card-glass", href && "hover:bg-accent hover:text-accent-foreground")}>
+    const cardInnerContent = (
+        <Card className="card-glass h-full w-full transition-all duration-300 group-focus-visible:ring-2 group-focus-visible:ring-ring group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-background group-active:scale-[0.98]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{title}</CardTitle>
                 <Icon className="h-4 w-4 text-muted-foreground" />
@@ -32,8 +30,12 @@ export function StatsCard({ title, value, icon: Icon, description, href }: Stats
     );
 
     if (href) {
-        return <Link href={href} className="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">{cardContent}</Link>;
+        return (
+            <Link href={href} className="group focus:outline-none rounded-lg">
+                {cardInnerContent}
+            </Link>
+        );
     }
 
-    return cardContent;
+    return cardInnerContent;
 }
