@@ -100,8 +100,8 @@ export default function MainPage() {
                         onOpenChange={setIsFiltersOpen}
                         className="p-2"
                     >
-                        <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-semibold pl-2">
+                        <div className="flex items-center justify-center">
+                            <h4 className="flex-1 text-sm font-semibold text-center ml-9">
                                 Filtros del Dashboard
                             </h4>
                             <CollapsibleTrigger asChild>
