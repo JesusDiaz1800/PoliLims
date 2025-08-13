@@ -320,6 +320,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
     const status = searchParams.get('status') || 'all';
     const type = searchParams.get('type') || 'all';
     const supplier = searchParams.get('supplier') || 'all';
+    const assay = searchParams.get('assay') || 'all';
     const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
     const filteredEnsayos = useMemo(() => {
@@ -343,6 +344,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
             try {
                 const ensayoDate = parse(e.fecha, 'dd-MM-yyyy', new Date());
                 if(isNaN(ensayoDate.getTime())) return false;
+
                 const dateMatch = isWithinInterval(ensayoDate, { start: startDate, end: endDate });
                 const analystMatch = analyst === 'all' || e.analista === analyst;
                 const typeMatch = type === 'all' || e.tipo === type;
@@ -351,13 +353,14 @@ export function DynamicDataProvider({ children, initialData }: { children: React
                     (status === 'aprobado' && e.estado === 'Aprobado') ||
                     (status === 'pendiente' && pendingStatuses.includes(e.estado)) ||
                     (status === 'rechazado' && e.estado === 'Rechazado');
+                const assayMatch = assay === 'all' || (e[assay] !== null && e[assay] !== undefined && e[assay] !== '');
 
-                return dateMatch && analystMatch && typeMatch && supplierMatch && statusMatch;
+                return dateMatch && analystMatch && typeMatch && supplierMatch && statusMatch && assayMatch;
             } catch {
                 return false;
             }
         });
-    }, [data.ensayos, month, analyst, status, type, supplier]);
+    }, [data.ensayos, month, analyst, status, type, supplier, assay]);
 
     const { totalFilteredAssays, approvalPercentage, pendingAssays } = useMemo(() => {
         const total = filteredEnsayos.length;

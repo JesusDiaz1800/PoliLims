@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, TestTube } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,7 +23,7 @@ import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
-import { useDynamicData } from "@/context/data-context";
+import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card } from "@/components/ui/card";
@@ -76,6 +76,15 @@ export default function MainPage() {
       const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
       return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
   }, [ensayos, isLoaded]);
+  
+  const individualAssays = React.useMemo(() => [
+      { value: "all", label: "Todos los Ensayos" },
+      { value: "meltIndexCalculado", label: "Melt Index" },
+      { value: "densidadCalculada", label: "Densidad" },
+      { value: "resistencia_traccion", label: "Tracción" },
+      { value: "negroHumoCalculado", label: "% Negro de Humo" },
+      { value: "tio_tiempo", label: "TIO" },
+  ], []);
 
 
   if (!isLoaded || !user) {
@@ -116,6 +125,7 @@ export default function MainPage() {
                                 analysts={allAnalysts}
                                 assayTypes={assayTypes}
                                 suppliers={suppliers}
+                                individualAssays={individualAssays}
                             />
                         </CollapsibleContent>
                     </Collapsible>

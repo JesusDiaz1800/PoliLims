@@ -3,7 +3,7 @@
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from 'react';
-import { Calendar as CalendarIcon, User, Package, TestTube, Truck } from "lucide-react";
+import { Calendar as CalendarIcon, User, Package, TestTube, Truck, Beaker } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,14 +11,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import type { Ensayo } from "@/context/data-context";
 
 interface DashboardFiltersProps {
     analysts: { value: string, label: string }[];
     assayTypes: { value: string, label: string }[];
     suppliers: { value: string, label: string }[];
+    individualAssays: { value: keyof Ensayo | 'all', label: string }[];
 }
 
-export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardFiltersProps) {
+export function DashboardFilters({ analysts, assayTypes, suppliers, individualAssays }: DashboardFiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -29,6 +31,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
     const status = searchParams.get('status') || 'all';
     const type = searchParams.get('type') || 'all';
     const supplier = searchParams.get('supplier') || 'all';
+    const assay = searchParams.get('assay') || 'all';
 
     const createQueryString = useCallback(
         (name: string, value: string) => {
@@ -39,7 +42,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
         [searchParams]
     );
 
-    const handleFilterChange = (filterName: 'month' | 'analyst' | 'status' | 'type' | 'supplier') => (value: string) => {
+    const handleFilterChange = (filterName: 'month' | 'analyst' | 'status' | 'type' | 'supplier' | 'assay') => (value: string) => {
         router.push(`${pathname}?${createQueryString(filterName, value)}`);
     };
 
@@ -93,8 +96,19 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
                         ))}
                     </SelectContent>
                 </Select>
+                 <Select value={assay} onValueChange={handleFilterChange("assay")}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <Beaker className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por ensayo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {individualAssays.map(assay => (
+                            <SelectItem key={assay.value} value={assay.value}>{assay.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
                 <Select value={supplier} onValueChange={handleFilterChange("supplier")}>
-                    <SelectTrigger className="w-full h-9 text-xs lg:col-span-2">
+                    <SelectTrigger className="w-full h-9 text-xs">
                         <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
                         <SelectValue placeholder="Filtrar por proveedor" />
                     </SelectTrigger>
