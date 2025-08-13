@@ -23,6 +23,8 @@ import { Card } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
+import { ChartCard } from "@/components/dashboard/chart-card";
+import { ChartModal } from "@/components/dashboard/chart-modal";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -33,9 +35,12 @@ export default function MainPage() {
     recentActivity, 
     equipos, 
     noConformidades, 
+    proveedores,
     isLoaded,
     user,
   } = useDynamicData();
+
+  const [modalContent, setModalContent] = React.useState<{ title: string; children: React.ReactNode } | null>(null);
 
   const filteredEnsayos = React.useMemo(() => {
     const now = new Date();
@@ -94,6 +99,23 @@ export default function MainPage() {
     return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
   }, [ensayos, isLoaded]);
 
+  const allSuppliers = React.useMemo(() => {
+    if (!isLoaded || !proveedores) return [];
+    const supplierSet = new Set(proveedores.map(s => s.nombre).filter(Boolean));
+    return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
+  }, [proveedores, isLoaded]);
+
+  const assayOptions = [
+    { value: 'all', label: 'Todos los Ensayos' },
+    { value: 'meltIndexCalculado', label: 'Melt Index (Producto Terminado)' },
+    { value: 'meltIndexVariacion', label: 'Variación de Melt Index (%)' },
+    { value: 'densidadCalculada', label: 'Densidad' },
+    { value: 'negroHumoCalculado', label: '% Negro de Humo' },
+    { value: 'resistencia_traccion', label: 'Resistencia a la Tracción' },
+    { value: 'elongacion_rotura', label: 'Elongación de Ruptura' },
+    { value: 'tio_tiempo', label: 'Tiempo de Inducción a la Oxidación (TIO)' },
+  ];
+
   if (!isLoaded || !user) {
     return <Loading />;
   }
@@ -103,35 +125,47 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <WelcomeBanner user={user} />
-      <DashboardFilters analysts={allAnalysts} assayTypes={assayTypes} />
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
-        <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-        <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
-        <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
-        <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
+    <div className="flex-1 space-y-4">
+      <div className="absolute top-0 left-0 right-0 bottom-0 z-0 background-overlay"></div>
+      <div className="relative z-10 p-8 pt-6">
+        <WelcomeBanner user={user} />
+        <DashboardFilters 
+          analysts={allAnalysts} 
+          assayTypes={assayTypes} 
+          suppliers={allSuppliers} 
+          individualAssays={assayOptions}
+        />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5 mt-4">
+          <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento"/>
+          <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
+          <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href="/ensayos/seguimiento?status=pendiente" />
+          <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos"/>
+          <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta"/>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
+          <ChartCard className="col-span-4" title="Ensayos por Mes" onExpand={() => setModalContent({ title: 'Ensayos por Mes', children: <AssaysByMonthChart data={ensayos || []} /> })}>
+            <AssaysByMonthChart data={ensayos || []} />
+          </ChartCard>
+          <Card className="col-span-3 card-glass">
+              <RecentActivityList initialActivity={recentActivity || []} />
+          </Card>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <ChartCard title="Ensayos por Tipo" onExpand={() => setModalContent({ title: 'Ensayos por Tipo', children: <AssaysByTypeChart data={filteredEnsayos} /> })}>
+              <AssaysByTypeChart data={filteredEnsayos} />
+            </ChartCard>
+            <ChartCard title="Estado de Muestras" onExpand={() => setModalContent({ title: 'Estado de Muestras', children: <SampleStatusChart data={filteredEnsayos} /> })}>
+              <SampleStatusChart data={filteredEnsayos} />
+            </ChartCard>
+            <ChartCard title="Carga de Trabajo" onExpand={() => setModalContent({ title: 'Carga de Trabajo por Analista', children: <WorkloadDistributionChart data={filteredEnsayos} /> })}>
+              <WorkloadDistributionChart data={filteredEnsayos} />
+            </ChartCard>
+        </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <AssaysByMonthChart data={ensayos || []} />
-        </Card>
-        <Card className="col-span-3">
-            <RecentActivityList initialActivity={recentActivity || []} />
-        </Card>
-      </div>
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Card>
-            <AssaysByTypeChart data={filteredEnsayos} />
-          </Card>
-          <Card>
-            <SampleStatusChart data={filteredEnsayos} />
-          </Card>
-          <Card>
-             <WorkloadDistributionChart data={filteredEnsayos} />
-          </Card>
-       </div>
+      <ChartModal isOpen={!!modalContent} onClose={() => setModalContent(null)} title={modalContent?.title || ''}>
+        {modalContent?.children}
+      </ChartModal>
     </div>
   );
 }
+

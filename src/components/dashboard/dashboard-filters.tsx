@@ -102,7 +102,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, individualAs
                         <SelectValue placeholder="Filtrar por ensayo" />
                     </SelectTrigger>
                     <SelectContent>
-                        {individualAssays.map(assay => (
+                        {individualAssays && individualAssays.map(assay => (
                             <SelectItem key={assay.value} value={assay.value}>{assay.label}</SelectItem>
                         ))}
                     </SelectContent>
@@ -113,7 +113,7 @@ export function DashboardFilters({ analysts, assayTypes, suppliers, individualAs
                         <SelectValue placeholder="Filtrar por proveedor" />
                     </SelectTrigger>
                     <SelectContent>
-                        {suppliers.map(supplier => (
+                        {suppliers && suppliers.map(supplier => (
                             <SelectItem key={supplier.value} value={supplier.value}>{supplier.label}</SelectItem>
                         ))}
                     </SelectContent>
