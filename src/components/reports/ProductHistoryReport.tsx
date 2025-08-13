@@ -93,7 +93,7 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
                             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                             <XAxis dataKey="fecha" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} domain={['dataMin - (dataMax-dataMin)*0.1', 'dataMax + (dataMax-dataMin)*0.1']} tickFormatter={(v) => typeof v === 'number' ? v.toFixed(2) : v}/>
-                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}/>
+                            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', color: 'hsl(var(--card-foreground))' }}/>
                             <Legend verticalAlign="top" height={36} formatter={() => parameterLabel || ''} />
                             <Line type="monotone" dataKey="valor" name={parameterLabel} stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 3 }} />
                         </LineChart>

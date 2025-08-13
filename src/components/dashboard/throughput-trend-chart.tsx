@@ -57,10 +57,10 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
                     <Tooltip
                         cursor={{fill: 'hsla(var(--accent), 0.3)'}}
                         contentStyle={{
-                          backgroundColor: 'hsl(var(--background))',
+                          backgroundColor: 'hsl(var(--card))',
                           borderColor: 'hsl(var(--border))',
                           borderRadius: 'var(--radius)',
-                          color: 'hsl(var(--foreground))',
+                          color: 'hsl(var(--card-foreground))',
                           fontSize: '12px'
                         }}
                     />

@@ -60,10 +60,10 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                 <Tooltip
                     cursor={<CustomCursor />}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--background))',
+                      backgroundColor: 'hsl(var(--card))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))',
+                      color: 'hsl(var(--card-foreground))',
                       fontSize: '12px'
                     }}
                 />
