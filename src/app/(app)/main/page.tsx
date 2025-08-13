@@ -151,7 +151,7 @@ export default function MainPage() {
                             </CollapsibleContent>
                         </Collapsible>
                     </CardHeader>
-                    <CardContent className="h-[200px]">
+                    <CardContent className="h-[240px]">
                         <RecentActivityList initialActivity={recentActivity || []}/>
                     </CardContent>
                 </Card>
