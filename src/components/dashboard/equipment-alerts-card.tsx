@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { AlertTriangle, Edit } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Equipo } from "@/context/data-context";
 import { isPast, differenceInDays, parse } from 'date-fns';
@@ -58,6 +58,9 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
     }
     const calDate = parse(equipo.proxima_calibracion, 'dd-MM-yyyy', new Date());
     const days = differenceInDays(calDate, new Date());
+    if (days < 0) {
+        return { message: `Calibración vencida por ${Math.abs(days)} días`, color: "text-red-600 dark:text-red-400" };
+    }
     return { message: `Calibración en ${days} días`, color: "text-orange-600 dark:text-orange-400" };
   };
   
@@ -74,23 +77,19 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
 
   return (
     <>
-    <CardHeader>
-        <CardTitle>Alertas de Equipos</CardTitle>
-        <CardDescription>Equipos que requieren atención inmediata.</CardDescription>
-    </CardHeader>
-    <CardContent className="h-[250px] -mt-2">
-        <ScrollArea className="h-full pr-4">
-        <div className="space-y-4">
+    <CardContent className="h-[240px] pt-0">
+        <ScrollArea className="h-full pr-2">
+        <div className="space-y-3">
             {equiposConAlerta.length > 0 ? (
             equiposConAlerta.map(equipo => {
                 const alert = getAlertDetails(equipo);
                 return (
                 <div key={equipo.id} className="flex items-center justify-between text-sm">
-                    <div>
-                    <p className="font-semibold">{equipo.nombre}</p>
-                    <p className={cn("font-medium", alert.color)}>{alert.message}</p>
+                    <div className="flex-1 overflow-hidden">
+                        <p className="font-semibold truncate">{equipo.nombre}</p>
+                        <p className={cn("font-medium", alert.color)}>{alert.message}</p>
                     </div>
-                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => handleViewDetails(equipo)}>
+                    <Button variant="outline" size="sm" className="h-7 text-xs ml-2" onClick={() => handleViewDetails(equipo)}>
                         Ver
                     </Button>
                 </div>
@@ -124,3 +123,4 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
   );
 }
 export const EquipmentAlertsCard = React.memo(EquipmentAlertsCardInternal);
+

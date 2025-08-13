@@ -171,8 +171,11 @@ export default function MainPage() {
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
                  <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
+                    <CardHeader>
+                        <CardTitle>Alertas de Equipos</CardTitle>
+                        <CardDescription>Equipos que requieren atención inmediata.</CardDescription>
+                    </CardHeader>
+                    <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
             </div>
              
@@ -194,4 +197,5 @@ export default function MainPage() {
       </div>
   );
 }
+
 
