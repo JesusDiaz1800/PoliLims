@@ -19,12 +19,12 @@ export function StatsCard({ title, value, icon: Icon, description, href }: Stats
     const isPositive = trendDirection === "up";
 
     const cardContent = (
-        <Card className={cn("card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-from-bottom-4 duration-500", href && "hover:border-primary/50")}>
+        <Card className={cn("card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-from-bottom-4 duration-500 flex flex-col h-full", href && "hover:border-primary/50")}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
                 <Icon className="h-5 w-5 text-muted-foreground" />
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-col flex-grow justify-end">
                 <div className="text-2xl font-bold font-headline">{value}</div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <span className={cn("flex items-center gap-0.5", isPositive ? "text-green-400" : "text-red-400")}>
