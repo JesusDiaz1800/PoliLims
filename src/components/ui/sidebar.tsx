@@ -322,7 +322,7 @@ const sidebarMenuButtonVariants = cva(
       },
       size: {
         default: "h-10 px-3 text-sm",
-        sm: "h-9 px-2 text-sm",
+        sm: "h-auto min-h-9 px-2 py-2 text-sm",
         lg: "h-12 px-3 text-base",
       },
     },
