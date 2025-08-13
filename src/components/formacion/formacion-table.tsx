@@ -44,13 +44,13 @@ import { cn } from "@/lib/utils";
 import type { Formacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
-import { deleteFormacionAction } from "@/app/(app)/administracion/formacion/actions";
 
 
 interface FormacionTableProps {
   data: Formacion[];
   onAddNew: () => void;
   onEdit: (record: Formacion) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 function getStatusVariant(status: Formacion["resultado"]) {
@@ -67,7 +67,7 @@ function getStatusVariant(status: Formacion["resultado"]) {
   }
 }
 
-const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps) => {
+const FormacionTableInternal = ({ data, onAddNew, onEdit, onDelete }: FormacionTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
 
@@ -80,19 +80,19 @@ const FormacionTableInternal = ({ data, onAddNew, onEdit }: FormacionTableProps)
     ), [data, searchTerm]);
   
   const handleDelete = async (id: string) => {
-    const result = await deleteFormacionAction(id);
-    if (result.success) {
+    try {
+        await onDelete(id);
         toast({
             title: "Registro Eliminado",
             description: "La actividad de formación ha sido eliminada.",
         });
-    } else {
-         toast({
+    } catch (error) {
+        toast({
             variant: "destructive",
             title: "Error al Eliminar",
             description: "No se pudo eliminar el registro.",
         });
-        console.error("Failed to delete training record", result.message);
+        console.error("Failed to delete training record", error);
     }
   };
   

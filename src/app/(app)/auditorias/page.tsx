@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -21,7 +20,7 @@ const AuditoriasPage = () => {
   const [users, setUsers] = React.useState<User[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
   
-  const { auditorias, isLoaded: isAuditoriasLoaded } = useDynamicData();
+  const { auditorias, isLoaded: isAuditoriasLoaded, deleteAuditoria } = useDynamicData();
 
   /**
    * @callback loadUsers
@@ -73,6 +72,7 @@ const AuditoriasPage = () => {
         auditorias={auditorias}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteAuditoria}
       />
       <AuditoriaDialog
         isOpen={isDialogOpen}

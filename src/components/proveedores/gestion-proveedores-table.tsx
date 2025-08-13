@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -42,7 +41,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useDynamicData, type Proveedor } from "@/context/data-context";
+import type { Proveedor } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -50,6 +49,7 @@ interface GestionProveedoresTableProps {
   proveedores: Proveedor[];
   onAddNew: () => void;
   onEdit: (proveedor: Proveedor) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 function getStatusVariant(status: Proveedor["estado"]) {
@@ -65,9 +65,8 @@ function getStatusVariant(status: Proveedor["estado"]) {
   }
 }
 
-const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: GestionProveedoresTableProps) => {
+const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit, onDelete }: GestionProveedoresTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const { deleteProveedor } = useDynamicData();
   const { toast } = useToast();
 
   const filteredProveedores = React.useMemo(() => 
@@ -79,7 +78,7 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
   
   const handleDelete = async (proveedorId: string) => {
     try {
-        await deleteProveedor(proveedorId);
+        await onDelete(proveedorId);
         toast({
             title: "Proveedor Eliminado",
             description: "El proveedor ha sido eliminado correctamente.",
@@ -90,7 +89,6 @@ const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit }: Gest
             title: "Error al Eliminar",
             description: "No se pudo eliminar el proveedor. Intente de nuevo.",
         });
-        console.error("Failed to delete proveedor", error);
     }
   };
 

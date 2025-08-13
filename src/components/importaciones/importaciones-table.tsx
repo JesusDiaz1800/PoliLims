@@ -43,13 +43,13 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Importacion } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
-import { deleteImportacionAction } from "@/app/(app)/importaciones/actions";
 
 
 interface ImportacionesTableProps {
   importaciones: Importacion[];
   onAddNew: () => void;
   onEdit: (importacion: Importacion) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 function getStatusVariant(status?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO') {
@@ -65,7 +65,7 @@ function getStatusVariant(status?: 'CADUCADO' | 'VIGENTE' | 'EN TRANSITO') {
   }
 }
 
-const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: ImportacionesTableProps) => {
+const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit, onDelete }: ImportacionesTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
 
@@ -78,17 +78,17 @@ const ImportacionesTableInternal = ({ importaciones, onAddNew, onEdit }: Importa
     ), [importaciones, searchTerm]);
   
   const handleDelete = async (id: string) => {
-    const result = await deleteImportacionAction(id);
-    if (result.success) {
+    try {
+        await onDelete(id);
         toast({
             title: "Importación Eliminada",
-            description: result.message,
+            description: "El registro de importación ha sido eliminado correctamente.",
         });
-    } else {
+    } catch (error) {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: result.message,
+            description: "No se pudo eliminar el registro. Intente de nuevo.",
         });
     }
   };

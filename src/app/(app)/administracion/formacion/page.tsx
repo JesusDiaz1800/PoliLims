@@ -1,14 +1,13 @@
-
 "use client";
 
 import * as React from 'react';
 import type { Formacion } from '@/context/data-context';
-import * as userService from "@/services/user-service";
 import Loading from '@/app/(app)/loading';
 import { FormacionTable } from '@/components/formacion/formacion-table';
 import { FormacionDialog } from '@/components/formacion/formacion-dialog';
 import type { User } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
+import * as userService from "@/services/user-service";
 
 /**
  * @component FormacionPage
@@ -17,7 +16,7 @@ import { useDynamicData } from '@/context/data-context';
  * the creation and editing of records through a dialog.
  */
 export default function FormacionPage() {
-  const { formacion, isLoaded: isDataLoaded } = useDynamicData();
+  const { formacion, isLoaded: isDataLoaded, deleteFormacion } = useDynamicData();
   const [users, setUsers] = React.useState<User[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -64,6 +63,7 @@ export default function FormacionPage() {
         data={formacion}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteFormacion}
       />
       <FormacionDialog
         isOpen={isDialogOpen}

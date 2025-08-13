@@ -31,8 +31,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from "@/hooks/use-toast";
-import { deleteRegistroAction } from "@/app/(app)/ensayos/control-rutinario/actions";
-
 
 export type EnrichedRegistro = Registro & { productoInfo?: any };
 
@@ -40,9 +38,10 @@ interface ControlRutinarioTableProps {
   registros: Registro[];
   ensayos: Ensayo[];
   onAddRecordClick: () => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
-const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick }: ControlRutinarioTableProps) => {
+const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick, onDelete }: ControlRutinarioTableProps) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [selectedRegistro, setSelectedRegistro] = React.useState<EnrichedRegistro | null>(null);
@@ -67,17 +66,17 @@ const ControlRutinarioTableInternal = ({ registros, ensayos, onAddRecordClick }:
   }
 
   const handleDelete = async (registroId: string) => {
-      const result = await deleteRegistroAction(registroId);
-      if (result.success) {
-          toast({
-              title: "Registro Eliminado",
-              description: result.message,
-          });
-      } else {
+      try {
+        await onDelete(registroId);
+        toast({
+            title: "Registro Eliminado",
+            description: "El registro ha sido eliminado correctamente.",
+        });
+      } catch (error) {
           toast({
               variant: "destructive",
               title: "Error al Eliminar",
-              description: result.message,
+              description: "No se pudo eliminar el registro. Intente de nuevo.",
           });
       }
   };

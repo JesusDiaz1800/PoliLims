@@ -47,13 +47,12 @@ import { useToast } from "@/hooks/use-toast";
 import { EquipoDetailsDialog } from "./equipo-details-dialog";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { deleteEquipoAction } from "@/app/(app)/equipos/actions";
-
 
 interface EquiposTableProps {
   equipos: Equipo[];
   onAddNew: () => void;
   onEdit: (equipo: Equipo) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 function getStatusVariant(status: Equipo["estado"]) {
@@ -86,7 +85,7 @@ function getCalibrationStatus(dateString: string): { message: string, color: str
     return null;
 }
 
-const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit }: EquiposTableProps) => {
+const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: EquiposTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
@@ -101,17 +100,17 @@ const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit }: EquiposTablePr
     ), [equipos, searchTerm]);
   
   const handleDelete = async (equipoId: string) => {
-    const result = await deleteEquipoAction(equipoId);
-    if (result.success) {
+    try {
+        await onDelete(equipoId);
         toast({
             title: "Equipo Eliminado",
-            description: result.message,
+            description: "El equipo ha sido eliminado correctamente.",
         });
-    } else {
-         toast({
+    } catch(error) {
+        toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: result.message,
+            description: "No se pudo eliminar el equipo. Intente de nuevo.",
         });
     }
   };

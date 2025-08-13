@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -10,7 +9,7 @@ import { useDynamicData } from '@/context/data-context';
 
 
 export default function ImportacionesPage() {
-  const { importaciones, isLoaded } = useDynamicData();
+  const { importaciones, isLoaded, deleteImportacion } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedImportacion, setSelectedImportacion] = React.useState<Importacion | null>(null);
 
@@ -34,6 +33,7 @@ export default function ImportacionesPage() {
         importaciones={importaciones}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteImportacion}
       />
       <ImportacionDialog
         isOpen={isDialogOpen}

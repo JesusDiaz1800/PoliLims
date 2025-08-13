@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -14,7 +13,7 @@ import { useDynamicData } from '@/context/data-context';
  * from the dynamic data context and handles the creation and editing of suppliers through a dialog.
  */
 export default function GestionProveedoresPage() {
-  const { proveedores, isLoaded } = useDynamicData();
+  const { proveedores, isLoaded, deleteProveedor } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedProveedor, setSelectedProveedor] = React.useState<Proveedor | null>(null);
   
@@ -48,6 +47,7 @@ export default function GestionProveedoresPage() {
         proveedores={proveedores}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteProveedor}
       />
       <GestionProveedorDialog
         isOpen={isDialogOpen}

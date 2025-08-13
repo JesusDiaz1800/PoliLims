@@ -44,12 +44,12 @@ import { cn } from "@/lib/utils";
 import type { Auditoria } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
-import { deleteAuditoriaAction } from "@/app/(app)/auditorias/actions";
 
 interface AuditoriasTableProps {
   auditorias: Auditoria[];
   onAddNew: () => void;
   onEdit: (auditoria: Auditoria) => void;
+  onDelete: (id: string) => Promise<void>;
 }
 
 /**
@@ -79,7 +79,7 @@ function getStatusVariant(status: Auditoria["estado"]) {
  * and actions like editing and deleting audits. It's memoized for performance.
  * @param {AuditoriasTableProps} props - The props for the component.
  */
-const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTableProps) => {
+const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit, onDelete }: AuditoriasTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
 
@@ -99,17 +99,17 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
    * @param {string} auditoriaId - The ID of the audit to delete.
    */
   const handleDelete = async (auditoriaId: string) => {
-    const result = await deleteAuditoriaAction(auditoriaId);
-    if (result.success) {
+    try {
+        await onDelete(auditoriaId);
         toast({
             title: "Auditoría Eliminada",
-            description: result.message,
+            description: "La auditoría ha sido eliminada correctamente.",
         });
-    } else {
+    } catch (error) {
          toast({
             variant: "destructive",
             title: "Error al Eliminar",
-            description: result.message,
+            description: "No se pudo eliminar la auditoría. Intente de nuevo.",
         });
     }
   };
@@ -224,5 +224,3 @@ const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit }: AuditoriasTab
 };
 
 export const AuditoriasTable = React.memo(AuditoriasTableInternal);
-
-    

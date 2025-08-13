@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -9,7 +8,7 @@ import type { Equipo } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
 
 export default function EquiposPage() {
-  const { equipos, isLoaded } = useDynamicData();
+  const { equipos, isLoaded, deleteEquipo } = useDynamicData();
   const [isEquipoDialogOpen, setIsEquipoDialogOpen] = React.useState(false);
   const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
 
@@ -33,6 +32,7 @@ export default function EquiposPage() {
         equipos={equipos}
         onAddNew={() => handleOpenEquipoDialog()}
         onEdit={handleOpenEquipoDialog}
+        onDelete={deleteEquipo}
       />
       <EquipoDialog
         isOpen={isEquipoDialogOpen}
