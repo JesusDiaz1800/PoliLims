@@ -10,12 +10,13 @@ import { ChartModal } from "./chart-modal";
 
 interface ChartCardProps {
   title: string;
+  description: string;
   children: React.ReactNode;
   className?: string;
   isModal?: boolean;
 }
 
-export const ChartCard = ({ title, children, className, isModal = false }: ChartCardProps) => {
+export const ChartCard = ({ title, description, children, className, isModal = false }: ChartCardProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const ChartContentComponent = isModal ? (
@@ -29,6 +30,7 @@ export const ChartCard = ({ title, children, className, isModal = false }: Chart
       <Card className={cn("h-full card-glass relative group cursor-pointer", className)} onClick={() => setIsModalOpen(true)}>
         <CardHeader>
           <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
           {ChartContentComponent}

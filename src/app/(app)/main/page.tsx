@@ -3,8 +3,7 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
-import { subMonths, isAfter, parse } from 'date-fns';
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -15,17 +14,14 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import Loading from '../loading';
-import type { User } from "@/services/user-service";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
-import { ChartModal } from "@/components/dashboard/chart-modal";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChartCard } from "@/components/dashboard/chart-card";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -64,6 +60,7 @@ export default function MainPage() {
 
             return analystFilter && typeFilter && statusFilter;
         } catch (error) {
+            console.error("Error filtering assays:", error)
             return false;
         }
     });
@@ -132,7 +129,7 @@ export default function MainPage() {
                         </CardContent>
                     </Card>
                 </div>
-                 <div className="lg:col-span-4">
+                 <div className="lg:col-span-4 space-y-4">
                     <Card className="card-glass">
                          <Collapsible
                             open={isFiltersOpen}
@@ -160,49 +157,25 @@ export default function MainPage() {
                             </CollapsibleContent>
                         </Collapsible>
                     </Card>
-                    <div className="mt-4">
-                        <Card className="card-glass">
-                            <CardHeader>
-                                <CardTitle>Estados de Muestras</CardTitle>
-                                <CardDescription>Distribución porcentual de los estados actuales.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="h-[240px]">
-                                <SampleStatusChart data={filteredEnsayos} />
-                            </CardContent>
-                        </Card>
-                    </div>
+                    <Card className="card-glass">
+                        <CardHeader>
+                            <CardTitle>Actividad Reciente</CardTitle>
+                        </CardHeader>
+                        <CardContent className="h-[250px]">
+                            <RecentActivityList initialActivity={recentActivity || []}/>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
             
-             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 <Card className="card-glass h-full">
                     <CardHeader>
-                        <CardTitle>Tendencia de Rendimiento</CardTitle>
-                        <CardDescription>Muestras Recibidas vs. Completadas (Últimos 30 días).</CardDescription>
+                        <CardTitle>Estados de Muestras</CardTitle>
+                        <CardDescription>Distribución porcentual de los estados actuales.</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[240px]">
-                        <ThroughputTrendChart data={ensayos || []} />
-                    </CardContent>
-                </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader>
-                        <CardTitle>No Conformidades por Tipo</CardTitle>
-                        <CardDescription>Distribución de las causas de no conformidad.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[240px]">
-                        <NonConformitiesByTypeChart data={noConformidades || []} />
-                    </CardContent>
-                </Card>
-            </div>
-
-             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <Card className="card-glass h-full">
-                    <CardHeader>
-                        <CardTitle>Distribución de Ensayos</CardTitle>
-                        <CardDescription>Cantidad de ensayos por cada tipo de producto.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[240px]">
-                        <AssaysByTypeChart data={filteredEnsayos} />
+                        <SampleStatusChart data={filteredEnsayos} />
                     </CardContent>
                 </Card>
                  <Card className="card-glass h-full">
@@ -214,13 +187,13 @@ export default function MainPage() {
                         <WorkloadDistributionChart data={filteredEnsayos} />
                     </CardContent>
                 </Card>
-                <Card className="card-glass h-[340px]">
+                 <Card className="card-glass h-full">
                     <CardHeader>
-                        <CardTitle>Actividad Reciente</CardTitle>
-                        <CardDescription>Últimas acciones realizadas en el sistema.</CardDescription>
+                        <CardTitle>Distribución de Ensayos</CardTitle>
+                        <CardDescription>Cantidad de ensayos por cada tipo de producto.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[250px] -mt-4">
-                        <RecentActivityList initialActivity={recentActivity || []}/>
+                    <CardContent className="h-[240px]">
+                        <AssaysByTypeChart data={filteredEnsayos} />
                     </CardContent>
                 </Card>
             </div>
