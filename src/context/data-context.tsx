@@ -2,7 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
 import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
@@ -312,15 +312,19 @@ const DynamicDataContext = createContext<DynamicDataContextType | undefined>(und
 
 export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
     const searchParams = useSearchParams();
+    const pathname = usePathname();
     const [data, setData] = useState<InitialData>(initialData);
     const [isLoaded, setIsLoaded] = useState(true);
 
+    const isDashboard = pathname === '/main';
+
     const month = searchParams.get('month') || 'last_12_months';
-    const analyst = searchParams.get('analyst') || 'all';
-    const status = searchParams.get('status') || 'all';
-    const type = searchParams.get('type') || 'all';
-    const supplier = searchParams.get('supplier') || 'all';
-    const assay = searchParams.get('assay') || 'all';
+    const analyst = isDashboard ? 'all' : (searchParams.get('analyst') || 'all');
+    const status = isDashboard ? 'all' : (searchParams.get('status') || 'all');
+    const type = isDashboard ? 'all' : (searchParams.get('type') || 'all');
+    const supplier = isDashboard ? 'all' : (searchParams.get('supplier') || 'all');
+    const assay = isDashboard ? 'all' : (searchParams.get('assay') || 'all');
+    
     const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
     const filteredEnsayos = useMemo(() => {
