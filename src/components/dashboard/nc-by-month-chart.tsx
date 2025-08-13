@@ -19,14 +19,14 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
     const now = new Date();
     const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
 
-    for (let i = 11; i >= 0; i--) {
+    for (let i = 5; i >= 0; i--) {
         const d = subMonths(now, i);
         const monthKey = format(d, 'yyyy-MM');
         const monthLabel = format(d, 'MMM yy', { locale: es });
         monthlyData[monthKey] = {
             total: 0,
             name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            fill: `hsl(var(--chart-${((11 - i) % 5) + 1}))`
+            fill: `hsl(var(--chart-${((5 - i) % 5) + 1}))`
         };
     }
 
@@ -48,8 +48,8 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">No Conformidades por Mes</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Volumen de NCs registradas en los últimos 12 meses.</CardDescription>
+        <CardTitle className="text-lg">No Conformidades</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">Volumen de NCs en los últimos 6 meses.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">

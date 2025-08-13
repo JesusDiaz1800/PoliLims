@@ -27,6 +27,7 @@ import { useDynamicData } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card } from "@/components/ui/card";
+import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 
 
 export default function MainPage() {
@@ -157,8 +158,11 @@ export default function MainPage() {
                 <Card className="lg:col-span-4 h-[280px] card-glass">
                     <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
-                 <Card className="lg:col-span-8 h-[280px] card-glass">
+                 <Card className="lg:col-span-4 h-[280px] card-glass">
                     <NonConformitiesByMonthChart data={noConformidades || []} />
+                </Card>
+                 <Card className="lg:col-span-4 h-[280px] card-glass">
+                    <AssayTurnaroundTimeChart data={ensayos || []} />
                 </Card>
             </div>
 
