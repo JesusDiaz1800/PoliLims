@@ -1,14 +1,9 @@
-
 "use client";
 
 import * as React from "react";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, TestTube } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon } from "lucide-react";
+import { subMonths, isAfter, parse } from 'date-fns';
 
 import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -26,8 +21,9 @@ import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
-import { useSearchParams } from "next/navigation";
-import { subMonths, isAfter, parse } from 'date-fns';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { SlidersHorizontal } from "lucide-react";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -135,9 +131,10 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="relative flex-1 space-y-4 dashboard-futurista">
-       <div className="background-overlay"></div>
-       <div className="relative z-10 space-y-4">
+    <div className="p-6 md:p-10">
+      <div className="relative flex-1 space-y-4 dashboard-futurista">
+        <div className="background-overlay"></div>
+        <div className="relative z-10 space-y-4">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-2">
                     <WelcomeBanner user={user} />
@@ -216,6 +213,7 @@ export default function MainPage() {
             </div>
 
         </div>
+      </div>
     </div>
   );
 }
