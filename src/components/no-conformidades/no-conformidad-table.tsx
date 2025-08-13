@@ -50,6 +50,7 @@ interface NoConformidadTableProps {
   incidencias: NoConformidad[];
   onAddNew: () => void;
   onEdit: (incidencia: NoConformidad) => void;
+  onDelete: (id: string) => Promise<void>;
   initialStatusFilter?: string;
 }
 
@@ -75,10 +76,9 @@ function getStatusVariant(status: NoConformidad["estado"]) {
 
 const statusOptions = ['Todos', 'Abierta', 'En Investigación', 'Resuelta', 'Cerrada'];
 
-const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, initialStatusFilter }: NoConformidadTableProps) => {
+const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, onDelete, initialStatusFilter }: NoConformidadTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState(initialStatusFilter === 'abierta' ? 'Abierta' : 'Todos');
-  const { deleteIncidencia } = useDynamicData();
   const { toast } = useToast();
 
   const filteredIncidencias = React.useMemo(() => 
@@ -92,7 +92,7 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, initialStat
   
   const handleDelete = async (incidenciaId: string) => {
     try {
-        await deleteIncidencia(incidenciaId);
+        await onDelete(incidenciaId);
         toast({
             title: "Incidencia Eliminada",
             description: "La no conformidad ha sido eliminada correctamente.",

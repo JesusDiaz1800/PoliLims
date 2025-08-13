@@ -14,7 +14,7 @@ import { useSearchParams } from 'next/navigation';
  * including non-conformities, equipment, and assays, to populate the table and dialog forms.
  */
 export default function NoConformidadesPage() {
-  const { noConformidades, equipos, ensayos, isLoaded } = useDynamicData();
+  const { noConformidades, equipos, ensayos, isLoaded, deleteIncidencia } = useDynamicData();
   const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedIncidencia, setSelectedIncidencia] = React.useState<NoConformidad | null>(null);
@@ -68,6 +68,7 @@ export default function NoConformidadesPage() {
         incidencias={noConformidades}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteIncidencia}
         initialStatusFilter={initialStatusFilter}
       />
       <NoConformidadDialog
