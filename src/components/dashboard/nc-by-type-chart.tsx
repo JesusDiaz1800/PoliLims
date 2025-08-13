@@ -29,7 +29,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
   const totalNC = React.useMemo(() => chartData.reduce((sum, item) => sum + item.value, 0), [chartData]);
   
   return (
-    <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
+    <div className="h-full w-full relative">
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
               <defs>
