@@ -19,8 +19,8 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
     }, {} as Record<string, number>);
 
     return [
-      { name: "Interna", value: typeCounts["Interna"] || 0, color: "hsl(var(--chart-2))" },
-      { name: "Reclamo Cliente", value: typeCounts["Reclamo de Cliente"] || 0, color: "hsl(var(--chart-5))" },
+      { name: "Interna", value: typeCounts["Interna"] || 0, color: "hsl(var(--chart-1))" },
+      { name: "Reclamo Cliente", value: typeCounts["Reclamo de Cliente"] || 0, color: "hsl(var(--chart-2))" },
       { name: "Auditoría", value: typeCounts["Auditoría"] || 0, color: "hsl(var(--chart-3))" },
     ].filter(item => item.value > 0);
   }, [data]);
@@ -49,16 +49,16 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
           <PieChart>
               <defs>
                   <linearGradient id="colorNc1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorNc2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorNc3" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
                   </linearGradient>
               </defs>
               <Tooltip

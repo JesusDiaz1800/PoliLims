@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
@@ -50,9 +50,17 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
               <defs>
-                  <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorUv1" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
+                  </linearGradient>
+                  <linearGradient id="colorUv2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                  </linearGradient>
+                   <linearGradient id="colorUv3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
                   </linearGradient>
               </defs>
               <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -66,7 +74,11 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="total" name="Ensayos" fill="url(#colorUv)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fillOpacity={0.8} />} />
+              <Bar dataKey="total" name="Ensayos" radius={[4, 4, 0, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
+                {chartData.map((_entry, index) => (
+                    <Cell key={`cell-${index}`} fill={`url(#colorUv${(index % 3) + 1})`} />
+                ))}
+              </Bar>
           </BarChart>
       </ResponsiveContainer>
     </div>

@@ -46,16 +46,6 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
         <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-                <defs>
-                    <linearGradient id="colorReceived" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1}/>
-                    </linearGradient>
-                    <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
-                    </linearGradient>
-                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
                 <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
@@ -69,7 +59,7 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
                     }}
                 />
                 <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '10px' }}/>
-                <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-4))" strokeWidth={3} dot={false} />
                 <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={false} />
             </LineChart>
         </ResponsiveContainer>

@@ -25,38 +25,30 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
 
     const height = isModal ? 500 : 250;
     
-    const colors = [
-        "hsl(var(--chart-1))", 
-        "hsl(var(--chart-2))", 
-        "hsl(var(--chart-3))", 
-        "hsl(var(--chart-4))",
-        "hsl(var(--chart-5))",
-    ];
-
-  return (
+    return (
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorType1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[0]} stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor={colors[0]} stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorType2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[1]} stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor={colors[1]} stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorType3" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[2]} stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor={colors[2]} stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorType4" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[3]} stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor={colors[3]} stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorType5" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={colors[4]} stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor={colors[4]} stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.2}/>
                   </linearGradient>
               </defs>
               <XAxis dataKey="name" stroke="#888888" fontSize={10} tickLine={false} axisLine={false} interval={0} />

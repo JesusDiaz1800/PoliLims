@@ -21,13 +21,10 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
         return acc;
     }, {} as Record<string, number>);
 
-    const colors = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
-
     return Object.entries(analystCounts)
         .map(([name, value], index) => ({
             name: name,
             value,
-            color: colors[index % colors.length]
         }))
         .sort((a, b) => b.value - a.value);
   }, [allData]);
@@ -54,12 +51,11 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
               <defs>
-                {chartData.map((entry, index) => (
-                    <linearGradient key={`gradient-${index}`} id={`colorAnalyst${index}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={entry.color} stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor={entry.color} stopOpacity={0.1}/>
-                    </linearGradient>
-                ))}
+                <linearGradient id="colorAnalyst1" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/><stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/></linearGradient>
+                <linearGradient id="colorAnalyst2" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/><stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/></linearGradient>
+                <linearGradient id="colorAnalyst3" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/><stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/></linearGradient>
+                <linearGradient id="colorAnalyst4" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/><stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.2}/></linearGradient>
+                <linearGradient id="colorAnalyst5" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/><stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.2}/></linearGradient>
               </defs>
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
@@ -83,7 +79,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                   strokeWidth={2}
               >
                   {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={`url(#colorAnalyst${index})`} stroke={entry.color} />
+                      <Cell key={`cell-${index}`} fill={`url(#colorAnalyst${(index % 5) + 1})`} stroke={`hsl(var(--chart-${(index % 5) + 1}))`} />
                   ))}
               </Pie>
               <Legend 

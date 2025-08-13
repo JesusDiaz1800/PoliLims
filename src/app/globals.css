@@ -93,6 +93,11 @@ body {
     --border: 217 33% 25%;
     --input: 217 33% 25%;
     --ring: 188 100% 50%; /* Bright Cyan for rings */
+    --chart-1: 221 83% 53%; /* Indigo */
+    --chart-2: 262 83% 58%; /* Violet */
+    --chart-3: 217 91% 60%; /* Blue */
+    --chart-4: 188 100% 50%; /* Cyan */
+    --chart-5: 300 100% 50%; /* Magenta */
   }
 }
  

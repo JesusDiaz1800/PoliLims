@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
 
@@ -63,9 +63,13 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
-                  <linearGradient id="colorTurnaround" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.1}/>
+                  <linearGradient id="colorTurnaround1" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.4}/>
+                  </linearGradient>
+                   <linearGradient id="colorTurnaround2" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.4}/>
                   </linearGradient>
               </defs>
               <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
@@ -79,7 +83,11 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Días" fill="url(#colorTurnaround)" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />} />
+              <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
+                  {chartData.map((_entry, index) => (
+                    <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "url(#colorTurnaround1)" : "url(#colorTurnaround2)"} />
+                  ))}
+              </Bar>
           </BarChart>
       </ResponsiveContainer>
     </div>
