@@ -40,7 +40,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle>Carga de Trabajo</CardTitle>
+        <CardTitle className="text-base">Carga de Trabajo</CardTitle>
         <CardDescription className="text-sm">Ensayos por analista en el período.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] pb-2">

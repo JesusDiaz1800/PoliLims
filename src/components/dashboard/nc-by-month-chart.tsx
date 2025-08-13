@@ -48,7 +48,7 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle>No Conformidades por Mes</CardTitle>
+        <CardTitle className="text-base">No Conformidades por Mes</CardTitle>
         <CardDescription className="text-sm">Volumen de NCs registradas en los últimos 12 meses.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] pb-2">

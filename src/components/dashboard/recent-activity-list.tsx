@@ -47,7 +47,7 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
     return (
         <>
             <CardHeader className="p-4 pb-0">
-                <CardTitle>Actividad Reciente</CardTitle>
+                <CardTitle className="text-base">Actividad Reciente</CardTitle>
                 <CardDescription className="text-sm">Registro de las últimas acciones.</CardDescription>
             </CardHeader>
             <CardContent className="h-[calc(100%-4rem)] pb-2">

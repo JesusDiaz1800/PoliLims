@@ -75,7 +75,7 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 text-destructive" />
           <div>
-            <CardTitle>Alertas de Equipos</CardTitle>
+            <CardTitle className="text-base">Alertas de Equipos</CardTitle>
             <CardDescription className="text-sm">Atención requerida.</CardDescription>
           </div>
         </div>

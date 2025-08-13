@@ -35,7 +35,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle>Ensayos por Tipo</CardTitle>
+        <CardTitle className="text-base">Ensayos por Tipo</CardTitle>
         <CardDescription className="text-sm">Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] pb-2">

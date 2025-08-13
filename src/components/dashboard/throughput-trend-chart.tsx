@@ -35,7 +35,7 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
   return (
     <>
         <CardHeader className="p-4 pb-0">
-            <CardTitle>Tendencia de Rendimiento</CardTitle>
+            <CardTitle className="text-base">Tendencia de Rendimiento</CardTitle>
             <CardDescription className="text-sm">Muestras recibidas vs. completadas en los últimos 30 días.</CardDescription>
         </CardHeader>
         <CardContent className="h-[calc(100%-4rem)] pb-2">

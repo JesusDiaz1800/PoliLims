@@ -61,7 +61,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle>Ensayos por Mes</CardTitle>
+        <CardTitle className="text-base">Ensayos por Mes</CardTitle>
         <CardDescription className="text-sm">Volumen de ensayos en los últimos 12 meses.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-4rem)] pb-2">

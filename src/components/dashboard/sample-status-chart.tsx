@@ -47,7 +47,7 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   return (
     <>
         <CardHeader className="p-4 pb-0">
-            <CardTitle>Estado de Ensayos</CardTitle>
+            <CardTitle className="text-base">Estado de Ensayos</CardTitle>
             <CardDescription className="text-sm">Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
         <CardContent className="h-[calc(100%-4rem)] pb-2 flex flex-col items-center justify-center">
