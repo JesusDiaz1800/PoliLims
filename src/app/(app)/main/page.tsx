@@ -121,7 +121,7 @@ export default function MainPage() {
                         <CardTitle>Ensayos por Mes</CardTitle>
                         <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px]">
+                    <CardContent className="h-[250px]">
                        <AssaysByMonthChart data={ensayos || []} />
                     </CardContent>
                 </Card>
@@ -133,7 +133,7 @@ export default function MainPage() {
                             className="w-full"
                         >
                             <div className="flex items-center justify-between">
-                                <CardTitle>Filtros & Actividad</CardTitle>
+                                <CardTitle>Filtros &amp; Actividad</CardTitle>
                                 <CollapsibleTrigger asChild>
                                     <Button variant="ghost" size="sm" className="w-9 p-0">
                                     <SlidersHorizontal className="h-4 w-4" />
@@ -151,28 +151,28 @@ export default function MainPage() {
                             </CollapsibleContent>
                         </Collapsible>
                     </CardHeader>
-                    <CardContent className="h-[250px]">
+                    <CardContent className="h-[200px]">
                         <RecentActivityList initialActivity={recentActivity || []}/>
                     </CardContent>
                 </Card>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
+                 <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
+                </Card>
+                 <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
                 </Card>
                 <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
-                </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
+                 <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
                 </Card>
             </div>
              
