@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip, Sector } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 
@@ -21,29 +21,46 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
         return acc;
     }, {} as Record<string, number>);
 
+    const colors = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
+
     return Object.entries(analystCounts)
-        .map(([name, value]) => ({
+        .map(([name, value], index) => ({
             name: name,
-            shortName: name.split(' ')[0], // Show only first name for the axis
-            value
+            value,
+            color: colors[index % colors.length]
         }))
         .sort((a, b) => b.value - a.value);
   }, [allData]);
 
   const height = isModal ? 500 : 250;
+  const totalAnalysts = chartData.length;
+  
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+    if (!percent || percent < 0.05) return null;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
-    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+    <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
+          <PieChart>
               <defs>
-                  <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
-                  </linearGradient>
+                {chartData.map((entry, index) => (
+                    <linearGradient key={`gradient-${index}`} id={`colorAnalyst${index}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={entry.color} stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor={entry.color} stopOpacity={0.1}/>
+                    </linearGradient>
+                ))}
               </defs>
-              <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -53,9 +70,34 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Ensayos" fill="url(#colorWorkload)" radius={[4, 4, 0, 0]} />
-          </BarChart>
+              <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={isModal ? 150 : 80}
+                  innerRadius={isModal ? 90 : 50}
+                  paddingAngle={5}
+                  dataKey="value"
+                  strokeWidth={2}
+              >
+                  {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={`url(#colorAnalyst${index})`} stroke={entry.color} />
+                  ))}
+              </Pie>
+              <Legend 
+                verticalAlign="bottom"
+                wrapperStyle={{ bottom: isModal ? 20 : 0 }}
+              />
+          </PieChart>
       </ResponsiveContainer>
+       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+              <p className="text-2xl font-bold font-headline">{totalAnalysts}</p>
+              <p className="text-xs text-muted-foreground -mt-1">Analistas</p>
+          </div>
+      </div>
     </div>
   )
 }

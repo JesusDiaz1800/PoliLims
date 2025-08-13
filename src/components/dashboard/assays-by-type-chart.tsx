@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip, Sector } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 
@@ -18,25 +18,43 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
             return acc;
         }, {} as Record<string, number>);
 
+        const colors = ["hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--chart-1))"];
+        
         return Object.entries(typeCounts)
-            .map(([name, value]) => ({ name, value }))
+            .map(([name, value], index) => ({ name, value, color: colors[index % colors.length] }))
             .sort((a, b) => b.value - a.value);
     }, [allData]);
 
+    const totalAssays = React.useMemo(() => chartData.reduce((sum, item) => sum + item.value, 0), [chartData]);
     const height = isModal ? 500 : 250;
+    
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+        if (!percent || percent < 0.05) return null;
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        return (
+        <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+            {`${(percent * 100).toFixed(0)}%`}
+        </text>
+        );
+    };
+
 
   return (
-    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+    <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-              <defs>
-                  <linearGradient id="colorTypes" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
-                  </linearGradient>
+          <PieChart>
+             <defs>
+                {chartData.map((entry, index) => (
+                    <linearGradient key={`gradient-${index}`} id={`colorType${index}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={entry.color} stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor={entry.color} stopOpacity={0.1}/>
+                    </linearGradient>
+                ))}
               </defs>
-              <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis dataKey="name" type="category" width={100} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -46,9 +64,34 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Cantidad" fill="url(#colorTypes)" radius={[0, 4, 4, 0]} />
-          </BarChart>
+              <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={isModal ? 150 : 80}
+                  innerRadius={isModal ? 90 : 50}
+                  paddingAngle={5}
+                  dataKey="value"
+                  strokeWidth={2}
+              >
+                  {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={`url(#colorType${index})`} stroke={entry.color} />
+                  ))}
+              </Pie>
+              <Legend 
+                verticalAlign="bottom"
+                wrapperStyle={{ bottom: isModal ? 20 : 0 }}
+              />
+          </PieChart>
       </ResponsiveContainer>
+       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+              <p className="text-2xl font-bold font-headline">{totalAssays}</p>
+              <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
+          </div>
+      </div>
     </div>
   )
 }
