@@ -1,11 +1,11 @@
+
 "use client";
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
-import { subMonths, isAfter, parse } from 'date-fns';
 
-import { StatsCard } from "@/components/main/stats-card";
+import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
