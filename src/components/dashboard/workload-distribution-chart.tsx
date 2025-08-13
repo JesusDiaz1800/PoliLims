@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 interface WorkloadDistributionChartProps {
@@ -32,7 +32,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
   return (
     <div className="h-[240px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 30, left: -10, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                <defs>
                   <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
