@@ -101,6 +101,9 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
               <Legend 
                 verticalAlign="bottom"
                 wrapperStyle={{ bottom: isModal ? 20 : 0 }}
+                formatter={(value, entry) => (
+                    <span className="text-white/80">{value} ({entry.payload?.value})</span>
+                )}
               />
           </PieChart>
       </ResponsiveContainer>
