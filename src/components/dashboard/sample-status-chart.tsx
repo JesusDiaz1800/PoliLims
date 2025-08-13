@@ -117,3 +117,4 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
   )
 }
 export const SampleStatusChart = React.memo(SampleStatusChartInternal);
+
