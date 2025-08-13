@@ -72,35 +72,6 @@ body {
     --chart-4: 0 72% 51%;
     --chart-5: 262 83% 58%;
   }
-
-  .dashboard-futurista {
-    --background: 224 71.4% 4.1%; /* Deep navy */
-    --foreground: 210 40% 98%;
-    --card: 222 84% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 188 100% 50%; /* Bright Cyan */
-    --primary-foreground: 224 71.4% 4.1%;
-    --secondary: 217 33% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 300 100% 50%; /* Neon Magenta */
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 25%;
-    --input: 217 33% 25%;
-    --ring: 188 100% 50%; /* Bright Cyan for rings */
-
-    /* Chart colors for the futuristic theme */
-    --chart-1: 188 100% 50%; /* Cyan */
-    --chart-2: 142 76% 45%; /* Green */
-    --chart-3: 38 92% 55%; /* Orange */
-    --chart-4: 0 84% 65%; /* Red */
-    --chart-5: 300 100% 50%; /* Magenta */
-  }
 }
  
 @layer base {
@@ -109,32 +80,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-  }
-
-  .dashboard-futurista {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-  }
-
-  .dashboard-futurista .card-glass {
-      background-color: hsl(var(--card) / 0.6);
-      -webkit-backdrop-filter: blur(12px);
-      backdrop-filter: blur(12px);
-      border: 1px solid;
-      border-image-slice: 1;
-      border-image-source: linear-gradient(to right bottom, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
-  }
-
-  .dashboard-futurista .background-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 0;
-      background-image: 
-          radial-gradient(circle at 15% 50%, hsl(var(--primary) / 0.1), transparent 30%),
-          radial-gradient(circle at 85% 30%, hsl(var(--accent) / 0.08), transparent 25%);
   }
 }
 

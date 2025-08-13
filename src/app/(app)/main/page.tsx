@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon } from "lucide-react";
 import { subMonths, isAfter, parse } from 'date-fns';
 
 import { StatsCard } from "@/components/main/stats-card";
@@ -21,36 +21,13 @@ import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
-import { ChartModal } from "@/components/dashboard/chart-modal";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
+import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
+import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
-const ChartCard = ({ title, children }: { title: string; children: React.ReactNode }) => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
-  return (
-    <>
-      <div className="relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
-        <Card className="h-full card-glass">
-            {children}
-        </Card>
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <Expand className="h-4 w-4 text-white/70" />
-        </div>
-      </div>
-      <ChartModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={title}>
-        <div className="w-full h-full p-4">{children}</div>
-      </ChartModal>
-    </>
-  );
-};
-
-
 export default function MainPage() {
   const searchParams = useSearchParams();
-
   const { 
     ensayos, 
     recentActivity, 
@@ -59,24 +36,17 @@ export default function MainPage() {
     isLoaded,
     user,
   } = useDynamicData();
-  
-  const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
-  // --- Start of KPI Calculation Logic ---
   const filteredEnsayos = React.useMemo(() => {
     const now = new Date();
     const monthsParam = searchParams.get('month') || 'last_12_months';
     const analystParam = searchParams.get('analyst') || 'all';
     const statusParam = searchParams.get('status') || 'all';
     const typeParam = searchParams.get('type') || 'all';
-    const supplierParam = searchParams.get('supplier') || 'all';
-    const assayParam = searchParams.get('assay') || 'all';
 
     let dateLimit = subMonths(now, 12);
     if (monthsParam === 'last_30_days') dateLimit = subMonths(now, 1);
     if (monthsParam === 'this_month') dateLimit = new Date(now.getFullYear(), now.getMonth(), 1);
-    if (monthsParam === 'last_month') dateLimit = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    if (monthsParam === 'last_3_months') dateLimit = subMonths(now, 3);
 
     return ensayos.filter(e => {
         try {
@@ -86,21 +56,19 @@ export default function MainPage() {
             const dateFilter = isAfter(assayDate, dateLimit);
             const analystFilter = analystParam === 'all' || e.analista === analystParam;
             const typeFilter = typeParam === 'all' || e.tipo === typeParam;
-            const supplierFilter = supplierParam === 'all' || e.proveedor === supplierParam;
-            const assayFilter = assayParam === 'all' || (e[assayParam] !== null && e[assayParam] !== undefined);
             
             const statusFilter = statusParam === 'all' ||
                 (statusParam === 'aprobado' && e.estado === 'Aprobado') ||
                 (statusParam === 'rechazado' && e.estado === 'Rechazado') ||
                 (statusParam === 'pendiente' && pendingStatuses.includes(e.estado));
 
-            return dateFilter && analystFilter && typeFilter && statusFilter && supplierFilter && assayFilter;
+            return dateFilter && analystFilter && typeFilter && statusFilter;
         } catch (error) {
             return false;
         }
     });
   }, [ensayos, searchParams]);
-
+  
   const { totalFilteredAssays, approvalPercentage, pendingAssays } = React.useMemo(() => {
     const total = filteredEnsayos.length;
     if (total === 0) return { totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
@@ -113,8 +81,7 @@ export default function MainPage() {
 
     return { totalFilteredAssays: total, approvalPercentage: percentage, pendingAssays: pending };
   }, [filteredEnsayos]);
-  // --- End of KPI Calculation Logic ---
-
+  
   const allAnalysts = React.useMemo(() => {
     if (!isLoaded || !ensayos) return [];
     const analystSet = new Set(ensayos.map(e => e.analista).filter(Boolean));
@@ -126,22 +93,6 @@ export default function MainPage() {
     const typeSet = new Set(ensayos.map(e => e.tipo).filter(Boolean));
     return [{ value: "all", label: "Todos los Tipos" }, ...Array.from(typeSet).map(t => ({ value: t, label: t }))];
   }, [ensayos, isLoaded]);
-  
-  const suppliers = React.useMemo(() => {
-      if (!isLoaded || !ensayos) return [];
-      const supplierSet = new Set(ensayos.map(e => e.proveedor).filter(Boolean));
-      return [{ value: "all", label: "Todos los Proveedores" }, ...Array.from(supplierSet).map(s => ({ value: s, label: s }))];
-  }, [ensayos, isLoaded]);
-  
-  const individualAssays = React.useMemo(() => [
-      { value: "all", label: "Todos los Ensayos" },
-      { value: "meltIndexCalculado", label: "Melt Index" },
-      { value: "densidadCalculada", label: "Densidad" },
-      { value: "resistencia_traccion", label: "Tracción" },
-      { value: "negroHumoCalculado", label: "% Negro de Humo" },
-      { value: "tio_tiempo", label: "TIO" },
-  ], []);
-
 
   if (!isLoaded || !user) {
     return <Loading />;
@@ -152,92 +103,35 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="dashboard-futurista">
-        <div className="background-overlay" />
-        <div className="relative z-10 space-y-4">
-            <WelcomeBanner user={user} />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href={`/ensayos/seguimiento`} />
-                <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href={`/ensayos/seguimiento?status=pendiente`} />
-                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos" />
-                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-8">
-                <ChartCard title="Ensayos por Mes (Últimos 12 meses)">
-                <AssaysByMonthChart data={ensayos || []} />
-                </ChartCard>
-            </div>
-            <div className="lg:col-span-4">
-                <Card className="card-glass">
-                <Collapsible
-                    open={isFiltersOpen}
-                    onOpenChange={setIsFiltersOpen}
-                    className="p-4"
-                >
-                    <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold">
-                        Filtros del Dashboard
-                    </h4>
-                    <CollapsibleTrigger asChild>
-                        <Button variant="ghost" size="sm" className="w-9 p-0">
-                        <SlidersHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle</span>
-                        </Button>
-                    </CollapsibleTrigger>
-                    </div>
-                    <CollapsibleContent>
-                    <DashboardFilters
-                        analysts={allAnalysts}
-                        assayTypes={assayTypes}
-                        suppliers={suppliers}
-                        individualAssays={individualAssays}
-                    />
-                    </CollapsibleContent>
-                </Collapsible>
-                </Card>
-                <div className="mt-4">
-                <ChartCard title="Distribución de Estados de Muestras">
-                    <SampleStatusChart data={filteredEnsayos} />
-                </ChartCard>
-                </div>
-            </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <ChartCard title="Distribución de Tipos de Ensayo">
-                <AssaysByTypeChart data={filteredEnsayos} />
-            </ChartCard>
-            <ChartCard title="Distribución de Carga de Trabajo">
-                <WorkloadDistributionChart data={filteredEnsayos} />
-            </ChartCard>
-            <Card className="card-glass">
-                <RecentActivityList initialActivity={recentActivity || []} />
-            </Card>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            <div className="lg:col-span-4">
-                <Card className="h-[280px] card-glass">
-                <EquipmentAlertsCard equipos={equipos || []} />
-                </Card>
-            </div>
-            <div className="lg:col-span-4">
-                <ChartCard title="No Conformidades por Mes (Últimos 6 meses)">
-                <NonConformitiesByMonthChart data={noConformidades || []} />
-                </ChartCard>
-            </div>
-            <div className="lg:col-span-4">
-                <ChartCard title="Tiempo de Respuesta Promedio por Ensayo">
-                <AssayTurnaroundTimeChart data={ensayos || []} />
-                </ChartCard>
-            </div>
-            </div>
-        </div>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <WelcomeBanner user={user} />
+      <DashboardFilters analysts={allAnalysts} assayTypes={assayTypes} />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
+        <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
+        <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
+        <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
+        <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
+          <AssaysByMonthChart data={ensayos || []} />
+        </Card>
+        <Card className="col-span-3">
+            <RecentActivityList initialActivity={recentActivity || []} />
+        </Card>
+      </div>
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card>
+            <AssaysByTypeChart data={filteredEnsayos} />
+          </Card>
+          <Card>
+            <SampleStatusChart data={filteredEnsayos} />
+          </Card>
+          <Card>
+             <WorkloadDistributionChart data={filteredEnsayos} />
+          </Card>
+       </div>
     </div>
   );
 }
-
-    

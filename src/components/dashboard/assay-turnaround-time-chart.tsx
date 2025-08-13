@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
@@ -10,20 +10,6 @@ import { differenceInDays, parse } from "date-fns";
 interface AssayTurnaroundTimeChartProps {
     data: Ensayo[];
 }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-foreground text-xs">{label}</p>
-        <p className="text-xs text-muted-foreground">
-            Tiempo promedio: <span className="font-bold text-foreground">{payload[0].value.toFixed(1)} días</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
 
 const assayChecks: { name: string, field: keyof Ensayo }[] = [
     { name: "Melt Index", field: "meltIndexCalculado" },
@@ -63,45 +49,35 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
         });
 
         return Object.entries(turnarounds)
-            .map(([name, durations], index) => {
-                const avg = durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
-                return {
-                    name,
-                    value: avg,
-                    fill: `hsl(var(--chart-${(index % 5) + 1}))`
-                };
-            })
+            .map(nameAndDurations => ({
+                name: nameAndDurations[0],
+                value: nameAndDurations[1].length > 0 ? nameAndDurations[1].reduce((a, b) => a + b, 0) / nameAndDurations[1].length : 0,
+            }))
             .filter(item => item.value > 0)
             .sort((a, b) => a.value - b.value);
     }, [allData]);
 
   return (
     <>
-      <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">Tiempo de Respuesta</CardTitle>
+      <CardHeader>
+        <CardTitle>Tiempo de Respuesta Promedio</CardTitle>
         <CardDescription>Promedio de días por tipo de ensayo.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 25, left: -10, bottom: 0 }}>
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
-                <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
+                <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
                 <Tooltip
-                    cursor={false}
-                    content={<CustomTooltip />}
+                    cursor={{fill: 'hsl(var(--accent))'}}
+                    contentStyle={{
+                        backgroundColor: 'hsl(var(--background))',
+                        borderColor: 'hsl(var(--border))',
+                        borderRadius: 'var(--radius)',
+                    }}
                 />
-                <Bar dataKey="value" name="Días" radius={[0, 2, 2, 0]} barSize={12}>
-                    {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                    <LabelList 
-                        dataKey="value" 
-                        position="right" 
-                        offset={8}
-                        className="fill-foreground font-semibold"
-                        fontSize={10}
-                        formatter={(value: number) => value > 0 ? value.toFixed(1) : ''}
-                    />
+                <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} fill="hsl(var(--primary))">
+                    <LabelList dataKey="value" position="right" offset={8} className="fill-foreground font-semibold" formatter={(value: number) => value > 0 ? value.toFixed(1) : ''}/>
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
@@ -110,5 +86,3 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
   )
 }
 export const AssayTurnaroundTimeChart = React.memo(AssayTurnaroundTimeChartInternal);
-
-    

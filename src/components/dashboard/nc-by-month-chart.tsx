@@ -2,10 +2,10 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { NoConformidad } from "@/context/data-context";
-import { format, subMonths, parseISO } from "date-fns";
+import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
 
 interface NonConformitiesByMonthChartProps {
@@ -17,25 +17,23 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
     if (!allData) return [];
     
     const now = new Date();
-    const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
+    const monthlyData: { [key: string]: { total: number; name: string } } = {};
 
     for (let i = 5; i >= 0; i--) {
         const d = subMonths(now, i);
-        const monthKey = format(d, 'yyyy-MM');
-        const monthLabel = format(d, 'MMM yy', { locale: es });
-        monthlyData[monthKey] = {
+        const monthName = format(d, 'MMM', { locale: es });
+        monthlyData[getMonth(d)] = {
             total: 0,
-            name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            fill: `hsl(var(--chart-${((5 - i) % 5) + 1}))`
+            name: monthName.charAt(0).toUpperCase() + monthName.slice(1)
         };
     }
 
     allData.forEach(nc => {
         try {
             const ncDate = parseISO(nc.fecha_deteccion.split('-').reverse().join('-'));
-            const monthKey = format(ncDate, 'yyyy-MM');
-            if (monthlyData[monthKey]) {
-                monthlyData[monthKey].total++;
+            const month = getMonth(ncDate);
+            if (monthlyData[month]) {
+                monthlyData[month].total++;
             }
         } catch (e) {
             console.warn(`Invalid date format for NC ${nc.id}: ${nc.fecha_deteccion}`);
@@ -46,42 +44,29 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   }, [allData]);
 
   return (
-    <>
-      <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">No Conformidades</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Volumen de NCs en los últimos 6 meses.</CardDescription>
+    <Card>
+      <CardHeader>
+        <CardTitle>No Conformidades por Mes</CardTitle>
+        <CardDescription>Volumen de NCs en los últimos 6 meses.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
+      <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} allowDecimals={false} />
+            <BarChart data={chartData}>
+                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
-                    cursor={{ fill: 'hsla(var(--accent), 0.3)' }}
+                    cursor={{fill: 'hsl(var(--accent))'}}
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
-                      borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--card-foreground))',
-                      fontSize: '12px'
+                        backgroundColor: 'hsl(var(--background))',
+                        borderColor: 'hsl(var(--border))',
+                        borderRadius: 'var(--radius)',
                     }}
                 />
-                <Bar dataKey="total" name="No Conformidades" radius={[2, 2, 0, 0]} fill="hsl(var(--chart-5))">
-                    <LabelList 
-                        dataKey="total" 
-                        position="insideTop" 
-                        offset={8}
-                        className="fill-white font-bold"
-                        fontSize={10}
-                        formatter={(value: number) => (value > 0 ? value : '')}
-                    />
-                </Bar>
+                <Bar dataKey="total" name="No Conformidades" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
-    </>
+    </Card>
   )
 }
 export const NonConformitiesByMonthChart = React.memo(NonConformitiesByMonthChartInternal);
-
-    

@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -10,19 +10,6 @@ import type { Ensayo } from "@/context/data-context";
 interface WorkloadDistributionChartProps {
     data: Ensayo[];
 }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-foreground text-xs">{label}</p>
-        <p className="text-xs text-muted-foreground">Ensayos: <span className="font-bold text-foreground">{payload[0].value}</span></p>
-      </div>
-    );
-  }
-  return null;
-};
-
 
 const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributionChartProps) => {
   const chartData = React.useMemo(() => {
@@ -35,11 +22,10 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
     }, {} as Record<string, number>);
 
     return Object.entries(analystCounts)
-        .map(([name, value], index) => ({
+        .map(([name, value]) => ({
             name: name,
             shortName: name.split(' ')[0], // Show only first name for the axis
-            value,
-            fill: `hsl(var(--chart-${(index % 5) + 1}))`
+            value
         }))
         .sort((a, b) => b.value - a.value);
   }, [allData]);
@@ -47,46 +33,32 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
 
   return (
     <>
-      <CardHeader className="p-4 pb-0">
-        <CardTitle>Carga de Trabajo</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Ensayos por analista en el período.</CardDescription>
+      <CardHeader>
+        <CardTitle>Distribución de Carga de Trabajo</CardTitle>
+        <CardDescription>Cantidad de ensayos por analista.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[250px] w-full">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis 
-                    dataKey="shortName" 
-                    stroke="hsl(var(--muted-foreground))" 
-                    fontSize={11} 
-                    tickLine={false} 
-                    axisLine={false}
-                    interval={0}
-                    height={30}
-                 />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+            <BarChart data={chartData}>
+                <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
-                    cursor={false}
-                    content={<CustomTooltip />}
+                    cursor={{fill: 'hsl(var(--accent))'}}
+                    contentStyle={{
+                        backgroundColor: 'hsl(var(--background))',
+                        borderColor: 'hsl(var(--border))',
+                        borderRadius: 'var(--radius)',
+                    }}
                 />
-                <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}>
-                     {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                    <LabelList 
-                        dataKey="value" 
-                        position="insideTop" 
-                        offset={8}
-                        className="fill-white font-bold"
-                        fontSize={10}
-                        formatter={(value: number) => (value > 0 ? value : '')}
-                    />
+                <Bar dataKey="value" name="Ensayos" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} >
+                    <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-semibold"/>
                 </Bar>
             </BarChart>
           </ResponsiveContainer>
         ) : (
            <div className="flex items-center justify-center h-full">
-             <p className="text-xs text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar con los filtros actuales.</p>
+             <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar.</p>
            </div>
         )}
       </CardContent>
@@ -94,5 +66,3 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   )
 }
 export const WorkloadDistributionChart = React.memo(WorkloadDistributionChartInternal);
-
-    

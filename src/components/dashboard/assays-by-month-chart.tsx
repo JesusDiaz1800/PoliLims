@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, ReferenceLine, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
@@ -12,98 +12,59 @@ interface AssaysByMonthChartProps {
     data: Ensayo[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-foreground">{label}</p>
-        <p className="text-sm text-muted-foreground">
-            Ensayos: <span className="font-bold text-foreground">{payload[0].value}</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
-
-
 const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) => {
-  const {chartData, average} = React.useMemo(() => {
+  const chartData = React.useMemo(() => {
     if (!allData) {
-        return { chartData: [], average: 0 };
+        return [];
     }
     const now = new Date();
-    const monthlyData: { [key: string]: { total: number; name: string; fill: string } } = {};
+    const monthlyData: { [key: string]: { total: number; name: string } } = {};
 
-    // Initialize months for the last 12 months
+    // Initialize months
     for (let i = 11; i >= 0; i--) {
         const d = subMonths(now, i);
-        const monthKey = format(d, 'yyyy-MM');
-        const monthLabel = format(d, 'MMM yy', { locale: es });
-        monthlyData[monthKey] = {
+        const monthName = format(d, 'MMM', { locale: es });
+        monthlyData[getMonth(d)] = {
             total: 0,
-            name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            fill: `url(#color-chart-1)`
+            name: monthName.charAt(0).toUpperCase() + monthName.slice(1)
         };
     }
 
     allData.forEach(ensayo => {
         try {
             const ensayoDate = parseISO(ensayo.fecha.split('-').reverse().join('-'));
-            const monthKey = format(ensayoDate, 'yyyy-MM');
-            if (monthlyData[monthKey]) {
-                monthlyData[monthKey].total++;
+            const month = getMonth(ensayoDate);
+            if (monthlyData[month]) {
+                monthlyData[month].total++;
             }
         } catch (e) {
             console.warn(`Invalid date format for ensayo ${ensayo.id}: ${ensayo.fecha}`);
         }
     });
-    
-    const dataPoints = Object.values(monthlyData);
-    const totalAssays = dataPoints.reduce((sum, item) => sum + item.total, 0);
-    const avg = totalAssays > 0 ? totalAssays / dataPoints.length : 0;
-    
-    return { chartData: dataPoints, average: avg };
 
+    return Object.values(monthlyData);
   }, [allData]);
 
   return (
     <>
-      <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">Ensayos por Mes</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Volumen en los últimos 12 meses.</CardDescription>
+      <CardHeader>
+        <CardTitle>Ensayos por Mes</CardTitle>
+        <CardDescription>Volumen total de ensayos en los últimos 12 meses.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
+      <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                 <defs>
-                    <linearGradient id="color-chart-1" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
-                    </linearGradient>
-                </defs>
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+            <BarChart data={chartData}>
+                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                 <Tooltip
-                    cursor={{fill: 'hsla(var(--accent), 0.3)'}}
-                    content={<CustomTooltip />}
+                    cursor={{fill: 'hsl(var(--accent))'}}
+                    contentStyle={{
+                        backgroundColor: 'hsl(var(--background))',
+                        borderColor: 'hsl(var(--border))',
+                        borderRadius: 'var(--radius)',
+                    }}
                 />
-                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} fill="url(#color-chart-1)">
-                    <LabelList
-                        dataKey="total"
-                        position="insideTop"
-                        offset={8}
-                        className="fill-white font-bold"
-                        fontSize={10}
-                        formatter={(value: number) => (value > 0 ? value : '')}
-                    />
-                </Bar>
-                <ReferenceLine 
-                    y={average} 
-                    label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
-                    stroke="hsl(var(--muted-foreground))" 
-                    strokeDasharray="3 3" 
-                />
+                <Bar dataKey="total" name="Ensayos" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary) / 0.8)" />} />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -111,5 +72,3 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
   )
 }
 export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);
-
-    

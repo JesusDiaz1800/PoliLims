@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -10,21 +10,6 @@ import type { Ensayo } from "@/context/data-context";
 interface AssaysByTypeChartProps {
     data: Ensayo[];
 }
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-card-foreground text-xs">{label}</p>
-        <p className="text-xs text-muted-foreground">
-            Cantidad: <span className="font-bold text-foreground">{payload[0].value}</span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
-
 
 const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) => {
     const chartData = React.useMemo(() => {
@@ -34,41 +19,31 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
         }, {} as Record<string, number>);
 
         return Object.entries(typeCounts)
-            .map(([name, value], index) => ({
-                name,
-                value,
-                fill: `hsl(var(--chart-${(index % 5) + 1}))`
-            }))
+            .map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value);
     }, [allData]);
 
   return (
     <>
-      <CardHeader className="p-4 pb-0">
+      <CardHeader>
         <CardTitle>Ensayos por Tipo</CardTitle>
         <CardDescription>Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-                <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
-                <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} hide />
+                <YAxis dataKey="name" type="category" width={100} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
                 <Tooltip
-                    cursor={false}
-                    content={<CustomTooltip />}
+                    cursor={{fill: 'hsl(var(--accent))'}}
+                    contentStyle={{
+                        backgroundColor: 'hsl(var(--background))',
+                        borderColor: 'hsl(var(--border))',
+                        borderRadius: 'var(--radius)',
+                    }}
                 />
-                <Bar dataKey="value" name="Cantidad" radius={[0, 2, 2, 0]} barSize={12}>
-                     {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                    <LabelList 
-                        dataKey="value" 
-                        position="insideRight" 
-                        offset={8}
-                        className="fill-white font-bold"
-                        fontSize={10}
-                        formatter={(value: number) => (value > 0 ? value : '')}
-                    />
+                <Bar dataKey="value" name="Cantidad" radius={[0, 4, 4, 0]} fill="hsl(var(--chart-3))">
+                    <LabelList dataKey="value" position="right" offset={8} className="fill-foreground font-semibold"/>
                 </Bar>
             </BarChart>
         </ResponsiveContainer>
@@ -77,5 +52,3 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   )
 }
 export const AssaysByTypeChart = React.memo(AssaysByTypeChartInternal);
-
-    
