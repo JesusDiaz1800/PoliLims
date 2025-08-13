@@ -116,16 +116,16 @@ export default function MainPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
-                <Card className="card-glass h-full lg:col-span-7">
+                <Card className="card-glass lg:col-span-8">
                     <CardHeader>
                         <CardTitle>Ensayos por Mes</CardTitle>
                         <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[250px]">
+                    <CardContent className="h-[300px]">
                        <AssaysByMonthChart data={ensayos || []} />
                     </CardContent>
                 </Card>
-                <Card className="card-glass h-full lg:col-span-5">
+                <Card className="card-glass lg:col-span-4">
                     <CardHeader>
                         <Collapsible
                             open={isFiltersOpen}
@@ -162,16 +162,17 @@ export default function MainPage() {
                     <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
                 </Card>
-                 <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
-                </Card>
                 <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
                 <Card className="card-glass h-full">
-                    <EquipmentAlertsCard equipos={equipos || []} />
+                    <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
+                </Card>
+                <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
                 </Card>
             </div>
              

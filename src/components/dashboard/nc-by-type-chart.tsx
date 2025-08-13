@@ -47,6 +47,20 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
     <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
+              <defs>
+                  <linearGradient id="colorNc1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                  </linearGradient>
+                   <linearGradient id="colorNc2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.1}/>
+                  </linearGradient>
+                   <linearGradient id="colorNc3" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                  </linearGradient>
+              </defs>
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -69,12 +83,12 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   strokeWidth={2}
               >
                   {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
+                      <Cell key={`cell-${index}`} fill={`url(#colorNc${index + 1})`} stroke={entry.color} />
                   ))}
               </Pie>
               <Legend 
                 verticalAlign="bottom"
-                wrapperStyle={isModal ? { bottom: 20 } : {}}
+                wrapperStyle={{ bottom: isModal ? 20 : 0 }}
               />
           </PieChart>
       </ResponsiveContainer>
