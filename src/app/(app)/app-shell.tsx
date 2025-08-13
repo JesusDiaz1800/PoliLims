@@ -280,7 +280,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
-  const userQuery = searchParams.toString();
+  const userQuery = searchParams.get('user') ? `user=${searchParams.get('user')}` : '';
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const getPageTitle = React.useCallback(() => {
@@ -489,7 +489,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && 'p-6 md:p-10')}
+                className={cn("custom-scrollbar", pathname !== '/main' && 'p-6 md:p-10')}
                 role="main"
                 tabIndex={-1}
             >
