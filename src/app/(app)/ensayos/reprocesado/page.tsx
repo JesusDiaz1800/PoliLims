@@ -9,11 +9,10 @@ import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useSearchParams } from 'next/navigation';
 import { findUserByUsername } from '@/services/user-service';
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from '@/context/data-context';
 
 export default function ReprocesadoPage() {
-  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { ensayos, isLoaded } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [user, setUser] = React.useState<User | null>(null);
@@ -21,17 +20,11 @@ export default function ReprocesadoPage() {
   const [activeTab, setActiveTab] = React.useState('all');
 
    React.useEffect(() => {
-    async function loadData() {
-        setIsLoading(true);
-        const [userData, initialData] = await Promise.all([
-            findUserByUsername(searchParams.get('user') || 'jdiaz'),
-            dataService.getInitialData()
-        ]);
+    async function loadUser() {
+        const userData = await findUserByUsername(searchParams.get('user') || 'jdiaz');
         setUser(userData);
-        setEnsayos(initialData.ensayos);
-        setIsLoading(false);
     }
-    loadData();
+    loadUser();
   }, [searchParams]);
 
   const handleOpenFormDialog = (ensayo?: Ensayo, filterType: string = 'all') => {
@@ -57,7 +50,7 @@ export default function ReprocesadoPage() {
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
   ], []);
 
-  if (isLoading || !user) {
+  if (!isLoaded || !user) {
     return <Loading />;
   }
   

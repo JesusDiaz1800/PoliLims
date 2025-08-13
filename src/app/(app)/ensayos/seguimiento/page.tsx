@@ -38,6 +38,7 @@ import type { Ensayo, RecentActivity } from "@/context/data-context";
 import * as dataService from "@/services/data-service";
 import Loading from "../../loading";
 import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
+import { useDynamicData } from "@/context/data-context";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -159,11 +160,10 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
 export default function SeguimientoEnsayosPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { ensayos, isLoaded, filteredEnsayos: allFilteredEnsayos, updateEnsayo, addRecentActivity } = useDynamicData();
+
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
-  const [statusFilter, setStatusFilter] = React.useState("Todos");
   const [user, setUser] = React.useState<User | null>(null);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [reportData, setReportData] = React.useState<ReportData | null>(null);
@@ -172,21 +172,11 @@ export default function SeguimientoEnsayosPage() {
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
-    async function loadData() {
-        setIsLoading(true);
-        const [userData, initialData] = await Promise.all([
-            findUserByUsername(searchParams.get('user') || 'jdiaz'),
-            dataService.getInitialData()
-        ]);
+    async function loadUser() {
+        const userData = await findUserByUsername(searchParams.get('user') || 'jdiaz');
         setUser(userData);
-        setEnsayos(initialData.ensayos);
-        const urlStatus = searchParams.get('status');
-        if (urlStatus === 'pendiente') {
-          setStatusFilter('Pendiente');
-        }
-        setIsLoading(false);
     }
-    loadData();
+    loadUser();
   }, [searchParams]);
 
   const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
@@ -194,14 +184,10 @@ export default function SeguimientoEnsayosPage() {
   const ensayoTypes = React.useMemo(() => 
     ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
   [ensayos]);
-  
-  const statusOptions = ['Todos', 'Pendiente', 'Aprobado', 'Rechazado'];
-
 
   const filteredEnsayos = React.useMemo(() =>
-    ensayos
+    allFilteredEnsayos
       .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
-      .filter(ensayo => statusFilter === "Todos" || getStatusLabel(ensayo.estado) === statusFilter)
       .filter(ensayo =>
         ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (ensayo.producto && ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -209,7 +195,7 @@ export default function SeguimientoEnsayosPage() {
         (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase()))
       )
       .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime()),
-  [ensayos, filterType, searchTerm, statusFilter]);
+  [allFilteredEnsayos, filterType, searchTerm]);
   
   const handleRedirectToRegister = () => {
     router.push('/ensayos/control-rutinario');
@@ -228,11 +214,6 @@ export default function SeguimientoEnsayosPage() {
   const handleCloseApprovalDialog = async () => {
     setSelectedEnsayo(null);
     setIsApprovalDialogOpen(false);
-    // Reload data to reflect approval status change
-    setIsLoading(true);
-    const initialData = await dataService.getInitialData();
-    setEnsayos(initialData.ensayos);
-    setIsLoading(false);
   }
   
   const handleOpenReportDialog = (ensayo: Ensayo) => {
@@ -301,7 +282,7 @@ export default function SeguimientoEnsayosPage() {
     }, 500);
   }
   
-  if (isLoading || !user) {
+  if (!isLoaded || !user) {
     return <Loading />;
   }
 
@@ -335,17 +316,6 @@ export default function SeguimientoEnsayosPage() {
                       ))}
                   </SelectContent>
                 </Select>
-                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-full sm:w-auto">
-                      <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
-                      <SelectValue placeholder="Filtrar por estado" />
-                  </SelectTrigger>
-                  <SelectContent>
-                      {statusOptions.map(option => (
-                         <SelectItem key={option} value={option}>{option === "Todos" ? "Todos los estados" : option}</SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
                  <Button onClick={handleRedirectToRegister} className="w-full sm:w-auto">
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Registrar Nuevo Ensayo
@@ -373,8 +343,8 @@ export default function SeguimientoEnsayosPage() {
             onClose={handleCloseApprovalDialog}
             ensayo={selectedEnsayo}
             user={user}
-            updateEnsayo={dataService.updateEnsayo}
-            addRecentActivity={dataService.addRecentActivity}
+            updateEnsayo={updateEnsayo}
+            addRecentActivity={addRecentActivity}
         />
     )}
      {selectedEnsayo && user && (selectedEnsayo.tipo === 'Tubería HDPE' || selectedEnsayo.tipo === 'Tubería PP') && (

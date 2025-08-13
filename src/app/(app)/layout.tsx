@@ -1,3 +1,4 @@
+
 import { getInitialData } from '@/services/data-service';
 import AppLayoutClient from './app-layout-client';
 import { DynamicDataProvider } from '@/context/data-context';

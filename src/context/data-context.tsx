@@ -309,7 +309,11 @@ export function DynamicDataProvider({ children, initialData }: { children: React
 
     const month = searchParams.get('month') || 'last_12_months';
     const analyst = isDashboard ? 'all' : (searchParams.get('analyst') || 'all');
-    const status = isDashboard ? 'all' : (searchParams.get('status') || 'all');
+    
+    // For status, we check the specific param from the URL, but default to 'all' on dashboard
+    const statusParam = searchParams.get('status');
+    const status = isDashboard ? 'all' : (statusParam || 'all');
+    
     const type = isDashboard ? 'all' : (searchParams.get('type') || 'all');
     const supplier = isDashboard ? 'all' : (searchParams.get('supplier') || 'all');
     const assay = isDashboard ? 'all' : (searchParams.get('assay') || 'all');
@@ -345,7 +349,8 @@ export function DynamicDataProvider({ children, initialData }: { children: React
                 const statusMatch = status === 'all' || 
                     (status === 'aprobado' && e.estado === 'Aprobado') ||
                     (status === 'pendiente' && pendingStatuses.includes(e.estado)) ||
-                    (status === 'rechazado' && e.estado === 'Rechazado');
+                    (status === 'rechazado' && e.estado === 'Rechazado') ||
+                    (e.estado === status);
                 const assayMatch = assay === 'all' || (e[assay] !== null && e[assay] !== undefined && e[assay] !== '');
 
                 return dateMatch && analystMatch && typeMatch && supplierMatch && statusMatch && assayMatch;
