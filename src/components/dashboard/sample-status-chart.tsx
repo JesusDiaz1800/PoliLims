@@ -102,10 +102,8 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
                   ))}
               </Pie>
               <Legend 
-                layout="vertical" 
-                verticalAlign="middle" 
-                align="right"
-                wrapperStyle={{ right: isModal ? 20 : -10, fontSize: '14px', lineHeight: '24px' }}
+                verticalAlign="bottom" 
+                wrapperStyle={{ bottom: isModal ? 20 : -5, fontSize: '12px' }}
                 formatter={(value, entry) => (
                     <span className="text-white">{value}: {entry.payload?.value}</span>
                 )}

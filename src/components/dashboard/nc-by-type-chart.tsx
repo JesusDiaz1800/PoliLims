@@ -90,7 +90,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
               </Pie>
               <Legend 
                 verticalAlign="bottom"
-                wrapperStyle={{ bottom: isModal ? 20 : 0 }}
+                wrapperStyle={{ bottom: isModal ? 20 : -5, fontSize: '12px' }}
                 formatter={(value, entry) => <span className="text-white">{value}: {entry.payload?.value}</span>}
               />
           </PieChart>
