@@ -39,11 +39,11 @@ body {
  
     --radius: 0.5rem;
 
-    --chart-1: 216 84% 51%; /* primary */
-    --chart-2: 142 76% 36%; /* green */
-    --chart-3: 38 92% 50%; /* orange */
-    --chart-4: 0 84% 60%; /* red */
-    --chart-5: 262 74% 60%; /* violet */
+    --chart-1: 188 100% 50%; /* Bright Cyan */
+    --chart-2: 142 76% 50%; /* Neon Green */
+    --chart-3: 38 92% 55%;  /* Bright Orange */
+    --chart-4: 300 100% 55%; /* Neon Magenta */
+    --chart-5: 262 84% 60%; /* Bright Violet */
   }
  
   .dark {
@@ -66,11 +66,12 @@ body {
     --border: 217 33% 25%;
     --input: 217 33% 25%;
     --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 173 80% 40%;
-    --chart-3: 38 78% 61%;
-    --chart-4: 0 72% 51%;
-    --chart-5: 262 83% 58%;
+    
+    --chart-1: 188 100% 50%; /* Bright Cyan */
+    --chart-2: 142 76% 50%; /* Neon Green */
+    --chart-3: 38 92% 55%;  /* Bright Orange */
+    --chart-4: 300 100% 55%; /* Neon Magenta */
+    --chart-5: 262 84% 60%; /* Bright Violet */
   }
 
   .dashboard-futurista {
@@ -84,8 +85,6 @@ body {
     --primary-foreground: 224 71.4% 4.1%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 18%;
-    --muted-foreground: 215 20% 65%;
     --accent: 300 100% 50%; /* Neon Magenta */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 63% 31%;

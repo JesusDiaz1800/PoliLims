@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
@@ -11,6 +11,14 @@ interface AssaysByMonthChartProps {
     data: Ensayo[];
     isModal?: boolean;
 }
+
+const colors = [
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+];
 
 const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysByMonthChartProps) => {
   const chartData = React.useMemo(() => {
@@ -45,18 +53,10 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
     return Object.values(monthlyData);
   }, [allData]);
 
-  const height = isModal ? 500 : 250;
-
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
-              <defs>
-                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
-                  </linearGradient>
-              </defs>
               <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
               <Tooltip
@@ -68,7 +68,11 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="total" name="Ensayos" fill="url(#colorTotal)" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary))" />} />
+              <Bar dataKey="total" name="Ensayos" radius={[4, 4, 0, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
+                 {chartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                  ))}
+              </Bar>
           </BarChart>
       </ResponsiveContainer>
     </div>
