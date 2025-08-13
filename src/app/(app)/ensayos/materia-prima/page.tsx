@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from 'react';
@@ -7,7 +8,6 @@ import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
-import { useSearchParams } from 'next/navigation';
 import { useDynamicData } from '@/context/data-context';
 
 export default function MateriaPrimaPage() {

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
@@ -197,8 +197,8 @@ export default function SeguimientoEnsayosPage() {
       .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime()),
   [allFilteredEnsayos, filterType, searchTerm]);
   
-  const handleRedirectToRegister = () => {
-    router.push('/ensayos/control-rutinario');
+  const handleRedirectToRegister = (path: string) => {
+    router.push(path);
   }
 
   const handleEditClick = (ensayo: Ensayo) => {
@@ -316,10 +316,22 @@ export default function SeguimientoEnsayosPage() {
                       ))}
                   </SelectContent>
                 </Select>
-                 <Button onClick={handleRedirectToRegister} className="w-full sm:w-auto">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Registrar Nuevo Ensayo
-                </Button>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button className="w-full sm:w-auto">
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Registrar Nuevo Ensayo
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Seleccione el tipo de ensayo</DropdownMenuLabel>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuItem onSelect={() => handleRedirectToRegister('/ensayos/control-rutinario')}>Control Rutinario (Tuberías)</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleRedirectToRegister('/ensayos/materia-prima')}>Ensayo de Materia Prima</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleRedirectToRegister('/ensayos/reprocesado')}>Ensayo de Reprocesado</DropdownMenuItem>
+                    </DropdownMenuContent>
+                 </DropdownMenu>
             </div>
         </div>
       </CardHeader>
