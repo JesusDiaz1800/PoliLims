@@ -2,10 +2,9 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
 
-import { StatsCard } from "@/components/dashboard/stats-card";
+import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
@@ -51,7 +50,6 @@ const ChartCard = ({ title, children, className }: { title: string; children: Re
 
 
 export default function MainPage() {
-  const searchParams = useSearchParams();
 
   const { 
     ensayos, 
@@ -84,7 +82,7 @@ export default function MainPage() {
                 (statusParam === 'pendiente' && pendingStatuses.includes(e.estado));
 
             return analystFilter && typeFilter && statusFilter;
-        } catch (error) {
+        } catch (error) => {
             return false;
         }
     });
@@ -128,7 +126,7 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-      <div className="relative flex-1 space-y-4 dashboard-futurista">
+      <div className="relative flex-1 space-y-4 dashboard-futurista px-4 sm:px-6 lg:px-8 py-6">
         <div className="background-overlay"></div>
         <div className="relative z-10 space-y-4">
             <WelcomeBanner user={user} />
