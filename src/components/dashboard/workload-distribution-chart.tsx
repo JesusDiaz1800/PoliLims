@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -41,10 +40,10 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-base">Carga de Trabajo</CardTitle>
+        <CardTitle className="text-lg">Carga de Trabajo</CardTitle>
         <CardDescription className="text-xs">Ensayos por analista en el período.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-full pb-2">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>

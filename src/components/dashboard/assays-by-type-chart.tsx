@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -36,10 +35,10 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-base">Ensayos por Tipo</CardTitle>
+        <CardTitle className="text-lg">Ensayos por Tipo</CardTitle>
         <CardDescription className="text-xs">Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-full pb-2">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />

@@ -76,12 +76,12 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 text-destructive" />
           <div>
-            <CardTitle className="text-base">Alertas de Equipos</CardTitle>
+            <CardTitle className="text-lg">Alertas de Equipos</CardTitle>
             <CardDescription className="text-xs">Atención requerida.</CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-2">
+      <CardContent className="h-[calc(100%-4.5rem)] pb-2">
         <ScrollArea className="h-full pr-2">
           <div className="space-y-3">
             {equiposConAlerta.length > 0 ? (

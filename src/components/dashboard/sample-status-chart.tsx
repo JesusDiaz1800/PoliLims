@@ -48,10 +48,10 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   return (
     <>
         <CardHeader className="p-4 pb-0">
-            <CardTitle className="text-base">Estado de Ensayos</CardTitle>
+            <CardTitle className="text-lg">Estado de Ensayos</CardTitle>
             <CardDescription className="text-xs">Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
-        <CardContent className="h-[calc(100%-4rem)] pb-2">
+        <CardContent className="h-full pb-2">
              <div className="flex items-center gap-2 h-full">
                  <div className="w-1/2 h-full">
                     <ResponsiveContainer width="100%" height="100%">

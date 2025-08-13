@@ -48,10 +48,10 @@ const RecentActivityListInternal = ({ initialActivity }: RecentActivityListProps
     return (
         <>
             <CardHeader className="p-4 pb-0">
-                <CardTitle className="text-base">Actividad Reciente</CardTitle>
+                <CardTitle className="text-lg">Actividad Reciente</CardTitle>
                 <CardDescription className="text-xs">Registro de las últimas acciones.</CardDescription>
             </CardHeader>
-            <CardContent className="h-[calc(100%-4rem)] pb-2">
+            <CardContent className="h-[calc(100%-4.5rem)] pb-2">
                 <ScrollArea className="h-full pr-2">
                     <div className="space-y-4">
                         {activityList.length > 0 ? activityList.map((activity) => {
