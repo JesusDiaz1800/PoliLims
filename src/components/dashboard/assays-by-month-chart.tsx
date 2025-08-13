@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, ReferenceLine } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, ReferenceLine, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
@@ -89,7 +89,15 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
                       fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} fill="url(#color-chart-1)" />
+                <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} fill="url(#color-chart-1)">
+                    <LabelList
+                        dataKey="total"
+                        position="insideTop"
+                        offset={8}
+                        className="fill-white font-bold"
+                        fontSize={10}
+                    />
+                </Bar>
                 <ReferenceLine 
                     y={average} 
                     label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
