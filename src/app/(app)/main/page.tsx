@@ -1,11 +1,13 @@
-
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
+import { subMonths, isAfter, parse } from 'date-fns';
 
-import { StatsCard } from "@/components/main/stats-card";
+import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
+import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
@@ -13,12 +15,12 @@ import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
+import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
-import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
-import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { Card } from "@/components/ui/card";
+import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 import { ChartModal } from "@/components/dashboard/chart-modal";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
@@ -50,6 +52,7 @@ const ChartCard = ({ title, children, className }: { title: string; children: Re
 
 
 export default function MainPage() {
+  const searchParams = useSearchParams();
 
   const { 
     ensayos, 
@@ -82,7 +85,7 @@ export default function MainPage() {
                 (statusParam === 'pendiente' && pendingStatuses.includes(e.estado));
 
             return analystFilter && typeFilter && statusFilter;
-        } catch (error) => {
+        } catch (error) {
             return false;
         }
     });
