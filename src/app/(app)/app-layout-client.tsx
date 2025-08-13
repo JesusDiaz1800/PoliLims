@@ -4,23 +4,19 @@ import type { Metadata } from 'next';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppShell } from '@/components/app-shell';
 import { ThemeProvider } from '@/components/theme-provider';
-import { findUserByUsername, type User } from '@/services/user-service';
+import type { User } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
-import React, { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
-import Loading from './loading';
-
-// Este componente ahora es un Client Component para usar hooks como usePathname y useSearchParams.
+import React, { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function AppLayoutClient({ 
     children,
+    user,
 }: { 
     children: React.ReactNode,
+    user: User | null;
 }) {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (pathname === '/main') {
@@ -36,24 +32,10 @@ export default function AppLayoutClient({
         };
     }, [pathname]);
 
-    useEffect(() => {
-        async function loadUser() {
-            const username = searchParams.get('user');
-            if (username) {
-                const userData = await findUserByUsername(username);
-                setUser(userData);
-            } else {
-                // Fallback a un usuario por defecto si no hay ninguno en la URL
-                const defaultUser = await findUserByUsername('jdiaz');
-                setUser(defaultUser);
-            }
-            setIsLoading(false);
-        }
-        loadUser();
-    }, [searchParams]);
-
-    if (isLoading || !user) {
-        return <Loading />;
+    if (!user) {
+        // This should ideally not happen if layout logic is correct,
+        // but it's a safe fallback.
+        return null; 
     }
 
     return (

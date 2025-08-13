@@ -106,7 +106,7 @@ export default function MainPage() {
                     <WelcomeBanner user={user} />
                 </div>
                 <Card className="card-glass lg:col-span-2">
-                    <Collapsible
+                     <Collapsible
                         open={isFiltersOpen}
                         onOpenChange={setIsFiltersOpen}
                         className="p-2"

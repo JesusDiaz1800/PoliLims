@@ -10,13 +10,14 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ControlRutinarioForm } from "./control-rutinario-form";
-import { TipoProducto } from "@/lib/matriz-datos";
+import type { TipoProducto } from "@/lib/matriz-datos";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { SapProduct } from "@/services/sap-service";
 
 interface ControlRutinarioDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  productos: { value: string, label: string }[];
+  productos: SapProduct[];
   matrizProductos: TipoProducto[];
 }
 

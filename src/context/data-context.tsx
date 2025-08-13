@@ -3,20 +3,9 @@
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { getMatrizProductos, type TipoProducto } from "@/lib/matriz-datos";
-import { getProductsFromSap, type SapProduct } from "@/services/sap-service";
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
-
-// --- STATIC DATA (loaded once from client) ---
-interface StaticDataContextType {
-  productMatrix: TipoProducto[];
-  sapProducts: SapProduct[];
-  isLoaded: boolean;
-}
-
-const StaticDataContext = createContext<StaticDataContextType | undefined>(undefined);
 
 // --- DYNAMIC DATA (client-side state) ---
 export type Ensayo = {
@@ -491,7 +480,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         filteredEnsayos,
         totalFilteredAssays,
         approvalPercentage,
-        pendingAssays,
+        pendingAssays
     }), [data, isLoaded, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
 
     return (
