@@ -121,6 +121,18 @@ body {
       border: 1px solid;
       border-image-slice: 1;
       border-image-source: linear-gradient(to right bottom, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
+      transition: all 0.2s ease-in-out;
+  }
+
+  .dashboard-futurista .card-glass:hover {
+    border-image: none;
+    border: 1px solid hsl(var(--primary) / 0.8);
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2);
+  }
+
+  .dashboard-futurista .card-glass:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 5px hsl(var(--primary) / 0.5), 0 0 10px hsl(var(--primary) / 0.2);
   }
 
   .dashboard-futurista .background-overlay {
