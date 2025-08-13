@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
 
@@ -17,14 +17,6 @@ const assayChecks: { name: string, field: keyof Ensayo }[] = [
     { name: "Tracción", field: "resistencia_traccion" },
     { name: "% N.H.", field: "negroHumoCalculado" },
     { name: "TIO", field: "tio_tiempo" },
-];
-
-const colors = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
 ];
 
 const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: AssayTurnaroundTimeChartProps) => {
@@ -70,6 +62,12 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
     <div className="w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+              <defs>
+                  <linearGradient id="colorTurnaround" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.1}/>
+                  </linearGradient>
+              </defs>
               <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
               <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
               <Tooltip
@@ -81,11 +79,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
-                {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
-              </Bar>
+              <Bar dataKey="value" name="Días" fill="url(#colorTurnaround)" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />} />
           </BarChart>
       </ResponsiveContainer>
     </div>

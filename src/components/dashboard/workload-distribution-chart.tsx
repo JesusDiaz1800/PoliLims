@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 
 
@@ -10,14 +10,6 @@ interface WorkloadDistributionChartProps {
     data: Ensayo[];
     isModal?: boolean;
 }
-
-const colors = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-];
 
 const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: WorkloadDistributionChartProps) => {
   const chartData = React.useMemo(() => {
@@ -44,6 +36,12 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
+              <defs>
+                  <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                  </linearGradient>
+              </defs>
               <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <Tooltip
@@ -55,11 +53,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Ensayos" radius={[4, 4, 0, 0]}>
-                 {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                  ))}
-              </Bar>
+              <Bar dataKey="value" name="Ensayos" fill="url(#colorWorkload)" radius={[4, 4, 0, 0]} />
           </BarChart>
       </ResponsiveContainer>
     </div>
