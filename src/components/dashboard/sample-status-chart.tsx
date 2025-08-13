@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell, Label } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Label, Tooltip } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { Badge } from "../ui/badge";
@@ -15,6 +15,20 @@ interface SampleStatusChartProps {
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
 const statusOrder = ["Aprobado", "Pendiente", "Rechazado"];
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
+        <p className="font-bold text-foreground text-xs">{payload[0].name}</p>
+        <p className="text-xs text-muted-foreground">
+            Cantidad: <span className="font-bold text-foreground">{payload[0].value}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
   const chartData = React.useMemo(() => {
@@ -37,7 +51,7 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
     return [
         { name: 'Aprobado', value: statusCounts.Aprobado, fill: 'hsl(var(--chart-2))' },
         { name: 'Pendiente', value: statusCounts.Pendiente, fill: 'hsl(var(--chart-3))' },
-        { name: 'Rechazado', value: statusCounts.Rechazado, fill: 'hsl(var(--chart-5))' },
+        { name: 'Rechazado', value: statusCounts.Rechazado, fill: 'hsl(var(--chart-4))' },
     ].filter(d => d.value > 0);
   }, [data]);
   
@@ -54,6 +68,10 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
              <div className="w-full h-full flex-1">
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
+                         <Tooltip
+                            cursor={{ fill: 'transparent' }}
+                            content={<CustomTooltip />}
+                        />
                         <Pie
                             data={chartData}
                             cx="50%"

@@ -12,9 +12,18 @@ interface AssaysByMonthChartProps {
     data: Ensayo[];
 }
 
-const CustomCursor = (props: any) => {
-  const { x, y, width, height } = props;
-  return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
+        <p className="font-bold text-foreground">{label}</p>
+        <p className="text-sm text-muted-foreground">
+            Ensayos: <span className="font-bold text-foreground">{payload[0].value}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
 };
 
 
@@ -34,7 +43,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
         monthlyData[monthKey] = {
             total: 0,
             name: monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1),
-            fill: `url(#color-chart-${((11 - i) % 5) + 1})`
+            fill: `url(#color-chart-1)`
         };
     }
 
@@ -62,7 +71,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
     <>
       <CardHeader className="p-4 pb-0">
         <CardTitle className="text-lg">Ensayos por Mes</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Volumen de ensayos en los últimos 12 meses.</CardDescription>
+        <CardDescription className="text-sm text-muted-foreground">Volumen en los últimos 12 meses.</CardDescription>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
@@ -72,22 +81,12 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
                         <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
                     </linearGradient>
-                    <linearGradient id="color-chart-2" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
-                    </linearGradient>
                 </defs>
                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
                 <Tooltip
-                    cursor={<CustomCursor />}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
-                      borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--card-foreground))',
-                      fontSize: '12px'
-                    }}
+                    cursor={{fill: 'hsla(var(--accent), 0.3)'}}
+                    content={<CustomTooltip />}
                 />
                 <Bar dataKey="total" name="Ensayos" radius={[2, 2, 0, 0]} fill="url(#color-chart-1)">
                     <LabelList

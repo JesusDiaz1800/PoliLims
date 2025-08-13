@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -70,6 +70,9 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                     content={<CustomTooltip />}
                 />
                 <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}>
+                     {chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
                     <LabelList 
                         dataKey="value" 
                         position="insideTop" 
