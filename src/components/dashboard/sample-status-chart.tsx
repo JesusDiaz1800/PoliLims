@@ -81,6 +81,8 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
                   }}
+                  labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  itemStyle={{ color: 'hsl(var(--foreground))' }}
               />
               <Pie
                   data={chartData}
