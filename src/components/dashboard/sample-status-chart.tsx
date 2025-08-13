@@ -4,6 +4,7 @@
 import * as React from "react"
 import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip } from "recharts"
 import type { Ensayo } from "@/context/data-context";
+import { cn } from "@/lib/utils";
 
 interface SampleStatusChartProps {
     data: Ensayo[];
@@ -31,8 +32,8 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
     });
     
     return [
-      { name: "Aprobado", value: statusCounts.Aprobado, color: "url(#colorStatusGreen)" },
-      { name: "Pendiente", value: statusCounts.Pendiente, color: "url(#colorStatusYellow)" },
+      { name: "Aprobado", value: statusCounts.Aprobado, color: "url(#colorStatusPurple)" },
+      { name: "Pendiente", value: statusCounts.Pendiente, color: "url(#colorStatusBlue)" },
       { name: "Rechazado", value: statusCounts.Rechazado, color: "url(#colorStatusRed)" },
     ].filter(d => d.value > 0);
   }, [data]);
@@ -60,17 +61,17 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
                <defs>
-                <linearGradient id="colorStatusGreen" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="hsl(188 100% 50%)" stopOpacity={0.4}/>
+                <linearGradient id="colorStatusPurple" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8A2BE2" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#4B0082" stopOpacity={0.7}/>
                 </linearGradient>
-                <linearGradient id="colorStatusYellow" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
+                <linearGradient id="colorStatusBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#00BFFF" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#0000CD" stopOpacity={0.6}/>
                 </linearGradient>
                 <linearGradient id="colorStatusRed" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="hsl(300 100% 50%)" stopOpacity={0.4}/>
+                    <stop offset="5%" stopColor="#DC143C" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8B0000" stopOpacity={0.6}/>
                 </linearGradient>
               </defs>
               <Tooltip
@@ -97,12 +98,14 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
                   strokeWidth={2}
               >
                   {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color.replace('url(#','').replace(')','')} />
+                      <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color.replace('url(','').replace(')','')} />
                   ))}
               </Pie>
               <Legend 
-                verticalAlign="bottom"
-                wrapperStyle={{ bottom: isModal ? 20 : 5 }}
+                layout="vertical" 
+                verticalAlign="middle" 
+                align="right"
+                wrapperStyle={{ right: isModal ? 20 : -10, fontSize: '14px', lineHeight: '24px' }}
                 formatter={(value, entry) => (
                     <span className="text-white">{value}: {entry.payload?.value}</span>
                 )}
