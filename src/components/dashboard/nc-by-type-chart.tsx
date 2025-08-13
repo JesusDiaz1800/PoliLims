@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react";
@@ -72,6 +73,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   ))}
               </Pie>
               <Legend 
+                verticalAlign="bottom"
                 wrapperStyle={isModal ? { bottom: 20 } : {}}
               />
           </PieChart>
