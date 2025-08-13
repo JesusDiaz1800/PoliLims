@@ -102,19 +102,18 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
                 verticalAlign="bottom"
                 wrapperStyle={{ bottom: isModal ? 20 : 5 }}
                 formatter={(value, entry) => (
-                    <span className="text-white/80">{value} ({entry.payload?.value})</span>
+                    <span className="text-white/80">{value}: {entry.payload?.value}</span>
                 )}
               />
           </PieChart>
       </ResponsiveContainer>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center flex flex-col items-center justify-center">
-              <p className="text-2xl font-bold font-headline">{total}</p>
-              <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
-          </div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <p className="text-2xl font-bold font-headline">{total}</p>
+          <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
       </div>
     </div>
   )
 }
 export const SampleStatusChart = React.memo(SampleStatusChartInternal);
+
 
