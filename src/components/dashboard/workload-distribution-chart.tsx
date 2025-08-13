@@ -16,6 +16,18 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
+        <p className="font-bold text-card-foreground">{label}</p>
+        <p className="text-sm text-muted-foreground">Ensayos: {payload[0].value}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 
 const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributionChartProps) => {
   const chartData = React.useMemo(() => {
@@ -29,7 +41,8 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
 
     return Object.entries(analystCounts)
         .map(([name, value], index) => ({
-            name: name.split(' ')[0], // Show only first name
+            name: name,
+            shortName: name.split(' ')[0], // Show only first name for the axis
             value,
             fill: `hsl(var(--chart-${(index % 5) + 1}))`
         }))
@@ -48,7 +61,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis 
-                    dataKey="name" 
+                    dataKey="shortName" 
                     stroke="hsl(var(--muted-foreground))" 
                     fontSize={11} 
                     tickLine={false} 
@@ -59,13 +72,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
-                      borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))',
-                      fontSize: '12px'
-                    }}
+                    content={<CustomTooltip />}
                 />
                 <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}/>
             </BarChart>
