@@ -29,4 +29,3 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   );
 }
 export const WelcomeBanner = React.memo(WelcomeBannerInternal);
-    

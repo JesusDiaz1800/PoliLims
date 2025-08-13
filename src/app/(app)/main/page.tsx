@@ -41,8 +41,6 @@ export default function MainPage() {
   const filteredEnsayos = React.useMemo(() => {
     if (!isLoaded) return [];
     
-    // Temporarily disable filtering for demonstration if no search params exist
-    // In a real app, you might want to default to a specific range
     const analystParam = 'all';
     const statusParam = 'all';
     const typeParam = 'all';

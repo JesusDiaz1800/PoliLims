@@ -73,7 +73,7 @@ body {
     --chart-5: 262 83% 58%;
   }
 
-  .dashboard-futurista {
+  .dark {
     --background: 224 71.4% 4.1%; /* Deep navy */
     --foreground: 210 40% 98%;
     --card: 222 84% 8%;
@@ -111,12 +111,12 @@ body {
     @apply bg-background text-foreground;
   }
 
-  .dashboard-futurista {
+  .dark {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
 
-  .dashboard-futurista .card-glass {
+  .dark .card-glass {
       background-color: hsl(var(--card) / 0.6);
       -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
@@ -125,7 +125,7 @@ body {
       border-image-source: linear-gradient(to right bottom, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.5));
   }
 
-  .dashboard-futurista .background-overlay {
+  .dark .background-overlay {
       position: absolute;
       top: 0;
       left: 0;
