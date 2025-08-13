@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -10,11 +10,6 @@ import type { Ensayo } from "@/context/data-context";
 interface AssaysByTypeChartProps {
     data: Ensayo[];
 }
-
-const CustomCursor = (props: any) => {
-  const { x, y, width, height } = props;
-  return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
-};
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -59,10 +54,18 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
                 <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
                 <Tooltip
-                    cursor={<CustomCursor />}
+                    cursor={false}
                     content={<CustomTooltip />}
                 />
-                <Bar dataKey="value" name="Cantidad" radius={[0, 2, 2, 0]} barSize={12}/>
+                <Bar dataKey="value" name="Cantidad" radius={[0, 2, 2, 0]} barSize={12}>
+                    <LabelList 
+                        dataKey="value" 
+                        position="insideRight" 
+                        offset={8}
+                        className="fill-white font-bold"
+                        fontSize={10}
+                    />
+                </Bar>
             </BarChart>
         </ResponsiveContainer>
       </CardContent>

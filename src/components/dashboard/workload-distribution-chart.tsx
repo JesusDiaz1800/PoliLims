@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-card-foreground text-xs">{label}</p>
+        <p className="font-bold text-foreground text-xs">{label}</p>
         <p className="text-xs text-muted-foreground">Ensayos: <span className="font-bold text-foreground">{payload[0].value}</span></p>
       </div>
     );
@@ -69,7 +69,15 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                     cursor={false}
                     content={<CustomTooltip />}
                 />
-                <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}/>
+                <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}>
+                    <LabelList 
+                        dataKey="value" 
+                        position="insideTop" 
+                        offset={8}
+                        className="fill-white font-bold"
+                        fontSize={10}
+                    />
+                </Bar>
             </BarChart>
           </ResponsiveContainer>
         ) : (

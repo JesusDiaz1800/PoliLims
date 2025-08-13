@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { NoConformidad } from "@/context/data-context";
 import { format, subMonths, parseISO } from "date-fns";
@@ -66,7 +66,15 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
                       fontSize: '12px'
                     }}
                 />
-                <Bar dataKey="total" name="No Conformidades" radius={[2, 2, 0, 0]} fill="hsl(var(--chart-5))"/>
+                <Bar dataKey="total" name="No Conformidades" radius={[2, 2, 0, 0]} fill="hsl(var(--chart-5))">
+                    <LabelList 
+                        dataKey="total" 
+                        position="insideTop" 
+                        offset={8}
+                        className="fill-white font-bold"
+                        fontSize={10}
+                    />
+                </Bar>
             </BarChart>
         </ResponsiveContainer>
       </CardContent>
