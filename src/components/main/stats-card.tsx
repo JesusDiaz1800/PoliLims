@@ -1,4 +1,7 @@
 
+"use client";
+
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowUp } from "lucide-react";
@@ -8,14 +11,15 @@ type StatsCardProps = {
   value: string;
   icon: React.ElementType;
   description: string;
+  href?: string;
 };
 
-export function StatsCard({ title, value, icon: Icon, description }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, description, href }: StatsCardProps) {
     const trendDirection = description.startsWith('+') ? 'up' : 'down';
     const isPositive = trendDirection === "up";
 
-    return (
-        <Card className="card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+    const cardContent = (
+        <Card className={cn("card-glass transition-all hover:shadow-glow hover:-translate-y-1 animate-in fade-in-from-bottom-4 duration-500", href && "hover:border-primary/50")}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
                 <Icon className="h-5 w-5 text-muted-foreground" />
@@ -32,4 +36,10 @@ export function StatsCard({ title, value, icon: Icon, description }: StatsCardPr
             </CardContent>
         </Card>
     );
+
+    if (href) {
+        return <Link href={href} className="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">{cardContent}</Link>;
+    }
+
+    return cardContent;
 }

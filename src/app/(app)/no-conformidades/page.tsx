@@ -6,6 +6,7 @@ import Loading from '@/app/(app)/loading';
 import { NoConformidadDialog } from '@/components/no-conformidades/no-conformidad-dialog';
 import { NoConformidadTable } from '@/components/no-conformidades/no-conformidad-table';
 import { useDynamicData, type NoConformidad } from '@/context/data-context';
+import { useSearchParams } from 'next/navigation';
 
 /**
  * @component NoConformidadesPage
@@ -14,8 +15,11 @@ import { useDynamicData, type NoConformidad } from '@/context/data-context';
  */
 export default function NoConformidadesPage() {
   const { noConformidades, equipos, ensayos, isLoaded } = useDynamicData();
+  const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedIncidencia, setSelectedIncidencia] = React.useState<NoConformidad | null>(null);
+
+  const initialStatusFilter = searchParams.get('status') || undefined;
 
   /**
    * @function handleOpenDialog
@@ -64,6 +68,7 @@ export default function NoConformidadesPage() {
         incidencias={noConformidades}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        initialStatusFilter={initialStatusFilter}
       />
       <NoConformidadDialog
         isOpen={isDialogOpen}

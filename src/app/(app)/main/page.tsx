@@ -94,6 +94,7 @@ export default function MainPage() {
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
+  const userQuery = searchParams.toString();
 
   return (
     <div className="relative flex-1 space-y-4">
@@ -133,11 +134,11 @@ export default function MainPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} />
+                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href={`/ensayos/seguimiento?${userQuery}`} />
                 <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} />
-                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} />
-                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} />
+                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href={`/ensayos/seguimiento?status=pendiente&${userQuery}`} />
+                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href={`/equipos?${userQuery}`} />
+                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href={`/no-conformidades?status=abierta&${userQuery}`} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">

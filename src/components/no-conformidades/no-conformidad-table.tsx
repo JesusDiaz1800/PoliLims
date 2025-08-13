@@ -39,15 +39,18 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Search, FilePlus, Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDynamicData, type NoConformidad } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+
 
 interface NoConformidadTableProps {
   incidencias: NoConformidad[];
   onAddNew: () => void;
   onEdit: (incidencia: NoConformidad) => void;
+  initialStatusFilter?: string;
 }
 
 function getSeverityVariant(severity: NoConformidad["severidad"]) {
@@ -70,18 +73,22 @@ function getStatusVariant(status: NoConformidad["estado"]) {
   }
 }
 
-const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit }: NoConformidadTableProps) => {
+const statusOptions = ['Todos', 'Abierta', 'En Investigación', 'Resuelta', 'Cerrada'];
+
+const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, initialStatusFilter }: NoConformidadTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [statusFilter, setStatusFilter] = React.useState(initialStatusFilter === 'abierta' ? 'Abierta' : 'Todos');
   const { deleteIncidencia } = useDynamicData();
   const { toast } = useToast();
 
   const filteredIncidencias = React.useMemo(() => 
     incidencias.filter(
       (incidencia) =>
-        incidencia.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (statusFilter === 'Todos' || incidencia.estado === statusFilter) &&
+        (incidencia.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         incidencia.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        incidencia.responsable.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [incidencias, searchTerm]);
+        incidencia.responsable.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [incidencias, searchTerm, statusFilter]);
   
   const handleDelete = async (incidenciaId: string) => {
     try {
@@ -121,6 +128,17 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit }: NoConform
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+             <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Filtrar por estado" />
+                </SelectTrigger>
+                <SelectContent>
+                    {statusOptions.map(option => (
+                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             <Button onClick={onAddNew} className="w-full sm:w-auto">
               <FilePlus className="mr-2 h-4 w-4" />
               Registrar Incidencia
