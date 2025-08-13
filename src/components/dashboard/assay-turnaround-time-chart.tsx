@@ -81,6 +81,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
@@ -89,7 +90,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                   {chartData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "url(#colorTurnaround1)" : "url(#colorTurnaround2)"} />
                   ))}
-                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => value.toFixed(1)} />
+                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => (value > 0 ? value.toFixed(1) : '')} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>

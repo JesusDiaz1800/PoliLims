@@ -72,6 +72,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
@@ -80,7 +81,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                 {chartData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={`url(#colorUv${(index % 3) + 1})`} />
                 ))}
-                 <LabelList dataKey="total" position="top" fill="hsl(var(--foreground))" fontSize={12} />
+                 <LabelList dataKey="total" position="top" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => (value > 0 ? value : '')} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>

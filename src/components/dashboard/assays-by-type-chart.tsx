@@ -60,6 +60,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
                   labelStyle={{ color: 'hsl(var(--foreground))' }}
                   itemStyle={{ color: 'hsl(var(--foreground))' }}
@@ -68,7 +69,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={`url(#colorType${(index % 5) + 1})`} />
                   ))}
-                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} />
+                  <LabelList dataKey="value" position="right" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => (value > 0 ? value : '')} />
               </Bar>
           </BarChart>
       </ResponsiveContainer>
