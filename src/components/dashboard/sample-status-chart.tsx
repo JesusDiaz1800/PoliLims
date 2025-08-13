@@ -63,11 +63,23 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                             innerRadius={40}
                             paddingAngle={5}
                             dataKey="value"
+                            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+                                if (percent === 0) return null;
+                                const RADIAN = Math.PI / 180;
+                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                                return (
+                                <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+                                    {`${(percent * 100).toFixed(0)}%`}
+                                </text>
+                                );
+                            }}
                         >
                             {chartData.map((entry) => (
                                 <Cell key={entry.name} fill={entry.fill} stroke={entry.fill} />
                             ))}
-                            <Label value={total} position="center" fill="hsl(var(--foreground))" className="text-2xl font-bold font-headline"/>
                         </Pie>
                     </PieChart>
                 </ResponsiveContainer>
