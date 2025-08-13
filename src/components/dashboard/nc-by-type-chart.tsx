@@ -1,8 +1,7 @@
-
 "use client"
 
 import * as React from "react";
-import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip } from "recharts"
+import { Pie, PieChart, ResponsiveContainer, Cell, Legend, Tooltip, Sector } from "recharts"
 import type { NoConformidad } from "@/context/data-context";
 
 interface NonConformitiesByTypeChartProps {
@@ -26,25 +25,27 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
   }, [data]);
   
   const height = isModal ? 500 : 250;
+  const totalNC = React.useMemo(() => chartData.reduce((sum, item) => sum + item.value, 0), [chartData]);
+  
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+    if (!percent || percent < 0.05) return null; // Don't render label for very small slices
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
 
   return (
-    <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
+    <div className="h-[250px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-              <defs>
-                  <linearGradient id="colorNc1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
-                  </linearGradient>
-                  <linearGradient id="colorNc2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.1}/>
-                  </linearGradient>
-                  <linearGradient id="colorNc3" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
-                  </linearGradient>
-              </defs>
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -59,7 +60,10 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   cx="50%"
                   cy="50%"
                   labelLine={false}
+                  label={renderCustomizedLabel}
                   outerRadius={isModal ? 150 : 80}
+                  innerRadius={isModal ? 90 : 50}
+                  paddingAngle={5}
                   dataKey="value"
                   strokeWidth={2}
               >
@@ -72,6 +76,12 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
               />
           </PieChart>
       </ResponsiveContainer>
+       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="text-center">
+              <p className="text-2xl font-bold font-headline">{totalNC}</p>
+              <p className="text-xs text-muted-foreground -mt-1">Total NCs</p>
+          </div>
+      </div>
     </div>
   )
 }
