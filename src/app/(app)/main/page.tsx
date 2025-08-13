@@ -159,7 +159,7 @@ export default function MainPage() {
             
              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
                 <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
+                    <CardHeader><CardTitle>Registros por Analista</CardTitle><CardDescription>Cantidad de registros por analista.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
                 </Card>
                 <Card className="card-glass h-full">
