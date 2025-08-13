@@ -163,6 +163,7 @@ export default function SeguimientoEnsayosPage() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterType, setFilterType] = React.useState("Todos");
+  const [statusFilter, setStatusFilter] = React.useState("Todos");
   const [user, setUser] = React.useState<User | null>(null);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [reportData, setReportData] = React.useState<ReportData | null>(null);
@@ -179,6 +180,10 @@ export default function SeguimientoEnsayosPage() {
         ]);
         setUser(userData);
         setEnsayos(initialData.ensayos);
+        const urlStatus = searchParams.get('status');
+        if (urlStatus === 'pendiente') {
+          setStatusFilter('Pendiente');
+        }
         setIsLoading(false);
     }
     loadData();
@@ -189,10 +194,14 @@ export default function SeguimientoEnsayosPage() {
   const ensayoTypes = React.useMemo(() => 
     ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
   [ensayos]);
+  
+  const statusOptions = ['Todos', 'Pendiente', 'Aprobado', 'Rechazado'];
+
 
   const filteredEnsayos = React.useMemo(() =>
     ensayos
       .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
+      .filter(ensayo => statusFilter === "Todos" || getStatusLabel(ensayo.estado) === statusFilter)
       .filter(ensayo =>
         ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (ensayo.producto && ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -200,7 +209,7 @@ export default function SeguimientoEnsayosPage() {
         (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase()))
       )
       .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime()),
-  [ensayos, filterType, searchTerm]);
+  [ensayos, filterType, searchTerm, statusFilter]);
   
   const handleRedirectToRegister = () => {
     router.push('/ensayos/control-rutinario');
@@ -310,19 +319,30 @@ export default function SeguimientoEnsayosPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input 
                         placeholder="Buscar por ID, producto, lote..."
-                        className="pl-9 w-full sm:w-64"
+                        className="pl-9 w-full sm:w-48"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                  <Select value={filterType} onValueChange={setFilterType}>
-                  <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectTrigger className="w-full sm:w-auto">
                       <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                       <SelectValue placeholder="Filtrar por tipo" />
                   </SelectTrigger>
                   <SelectContent>
                       {ensayoTypes.map(type => (
                          <SelectItem key={type} value={type}>{type === "Todos" ? "Todos los tipos" : type}</SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                 <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-auto">
+                      <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectValue placeholder="Filtrar por estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {statusOptions.map(option => (
+                         <SelectItem key={option} value={option}>{option === "Todos" ? "Todos los estados" : option}</SelectItem>
                       ))}
                   </SelectContent>
                 </Select>
