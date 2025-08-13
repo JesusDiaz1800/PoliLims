@@ -116,49 +116,45 @@ export default function MainPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
-                <div className="lg:col-span-8">
-                    <Card className="card-glass h-full">
-                        <CardHeader>
-                            <CardTitle>Ensayos por Mes</CardTitle>
-                            <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="h-[240px]">
-                           <AssaysByMonthChart data={ensayos || []} />
-                        </CardContent>
-                    </Card>
-                </div>
-                 <div className="lg:col-span-4">
-                    <Card className="card-glass h-full">
-                        <CardHeader>
-                            <Collapsible
-                                open={isFiltersOpen}
-                                onOpenChange={setIsFiltersOpen}
-                                className="w-full"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <CardTitle>Filtros & Actividad</CardTitle>
-                                    <CollapsibleTrigger asChild>
-                                        <Button variant="ghost" size="sm" className="w-9 p-0">
-                                        <SlidersHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle Filters</span>
-                                        </Button>
-                                    </CollapsibleTrigger>
-                                </div>
-                                <CollapsibleContent>
-                                    <DashboardFilters
-                                        analysts={analystOptions}
-                                        assayTypes={assayTypeOptions}
-                                        suppliers={supplierOptions}
-                                        individualAssays={assayOptions}
-                                    />
-                                </CollapsibleContent>
-                            </Collapsible>
-                        </CardHeader>
-                        <CardContent className="h-[250px]">
-                            <RecentActivityList initialActivity={recentActivity || []}/>
-                        </CardContent>
-                    </Card>
-                </div>
+                <Card className="card-glass h-full lg:col-span-7">
+                    <CardHeader>
+                        <CardTitle>Ensayos por Mes</CardTitle>
+                        <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[250px]">
+                       <AssaysByMonthChart data={ensayos || []} />
+                    </CardContent>
+                </Card>
+                <Card className="card-glass h-full lg:col-span-5">
+                    <CardHeader>
+                        <Collapsible
+                            open={isFiltersOpen}
+                            onOpenChange={setIsFiltersOpen}
+                            className="w-full"
+                        >
+                            <div className="flex items-center justify-between">
+                                <CardTitle>Filtros & Actividad</CardTitle>
+                                <CollapsibleTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="w-9 p-0">
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle Filters</span>
+                                    </Button>
+                                </CollapsibleTrigger>
+                            </div>
+                            <CollapsibleContent>
+                                <DashboardFilters
+                                    analysts={analystOptions}
+                                    assayTypes={assayTypeOptions}
+                                    suppliers={supplierOptions}
+                                    individualAssays={assayOptions}
+                                />
+                            </CollapsibleContent>
+                        </Collapsible>
+                    </CardHeader>
+                    <CardContent className="h-[250px]">
+                        <RecentActivityList initialActivity={recentActivity || []}/>
+                    </CardContent>
+                </Card>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
@@ -170,17 +166,17 @@ export default function MainPage() {
                     <CardHeader><CardTitle>Carga de Trabajo</CardTitle><CardDescription>Distribución por analista.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
                 </Card>
+                <Card className="card-glass h-full">
+                    <EquipmentAlertsCard equipos={equipos || []} />
+                </Card>
                  <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
-                 <Card className="card-glass h-full">
-                    <EquipmentAlertsCard equipos={equipos || []} />
-                </Card>
             </div>
              
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
-                 <Card className="card-glass h-full">
+                <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Tendencia de Rendimiento</CardTitle><CardDescription>Muestras recibidas vs. completadas.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><ThroughputTrendChart data={ensayos || []} /></CardContent>
                 </Card>
