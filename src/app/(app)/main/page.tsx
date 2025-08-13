@@ -107,7 +107,7 @@ export default function MainPage() {
         <div className="relative z-10 space-y-4">
             <WelcomeBanner user={user} />
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
                 <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" />
                 <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
                 <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href="/ensayos/seguimiento?status=pendiente" />
@@ -115,7 +115,7 @@ export default function MainPage() {
                 <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta"/>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
                 <div className="lg:col-span-8">
                     <Card className="card-glass h-full">
                         <CardHeader>
@@ -161,7 +161,7 @@ export default function MainPage() {
                 </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
                 <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
@@ -180,7 +180,7 @@ export default function MainPage() {
                 </Card>
             </div>
              
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
                 <Card className="card-glass h-full lg:col-span-1">
                     <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>

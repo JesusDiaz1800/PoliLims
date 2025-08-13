@@ -16,7 +16,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   }
 
   return (
-    <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
+    <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
         <div className="flex items-center gap-4">
             <SidebarTrigger aria-label="Toggle sidebar" className="text-white hover:bg-white/10 hover:text-white"/>
             <Hand className="h-8 w-8 text-primary" />
