@@ -175,15 +175,11 @@ export default function MainPage() {
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
                  <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>No Conformidades</CardTitle><CardDescription>Distribución por tipo de origen.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><NonConformitiesByTypeChart data={noConformidades || []} /></CardContent>
+                    <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
             </div>
              
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
-                <Card className="card-glass h-full lg:col-span-1">
-                    <EquipmentAlertsCard equipos={equipos || []} />
-                </Card>
                  <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Tendencia de Rendimiento</CardTitle><CardDescription>Muestras recibidas vs. completadas.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><ThroughputTrendChart data={ensayos || []} /></CardContent>
@@ -191,6 +187,10 @@ export default function MainPage() {
                 <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Tiempo de Respuesta Promedio</CardTitle><CardDescription>Días desde recepción a finalización.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssayTurnaroundTimeChart data={ensayos || []} /></CardContent>
+                </Card>
+                <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>No Conformidades</CardTitle><CardDescription>Distribución por tipo de origen.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><NonConformitiesByTypeChart data={noConformidades || []} /></CardContent>
                 </Card>
             </div>
         </div>
