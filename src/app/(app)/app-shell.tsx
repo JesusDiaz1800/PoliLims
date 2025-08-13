@@ -203,6 +203,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 
 const pageTitles: Record<string, string> = {
     '/main': 'Dashboard',
+    '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -330,6 +331,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
   const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
   const pageTitle = getPageTitle();
+  const isDashboard = pathname === '/main' || pathname === '/dashboard';
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
@@ -473,7 +475,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        {pathname !== '/main' && (
+        {!isDashboard && (
           <header
           className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
           role="banner"
@@ -489,7 +491,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("custom-scrollbar", pathname !== '/main' && 'p-6 md:p-10')}
+                className={cn("custom-scrollbar", !isDashboard && 'p-6 md:p-10')}
                 role="main"
                 tabIndex={-1}
             >
