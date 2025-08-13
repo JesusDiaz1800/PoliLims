@@ -136,7 +136,7 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="relative flex-1 space-y-4">
+    <div className="relative flex-1 space-y-4 dashboard-futurista">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-4 p-6 md:p-10">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
