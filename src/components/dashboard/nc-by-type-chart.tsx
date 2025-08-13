@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react";
@@ -41,20 +40,7 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
               cy="50%"
               labelLine={false}
               outerRadius={60}
-              innerRadius={35}
-              paddingAngle={5}
               dataKey="value"
-               label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-                const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
-
-                return (
-                  <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
-                    {`${(percent * 100).toFixed(0)}%`}
-                  </text>
-                );
-              }}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} stroke={entry.color} />
@@ -65,7 +51,7 @@ const NonConformitiesByTypeChartInternal = ({ data }: NonConformitiesByTypeChart
                 layout="horizontal" 
                 verticalAlign="bottom" 
                 align="center"
-                wrapperStyle={{ paddingBottom: '10px', fontSize: '10px' }}
+                wrapperStyle={{ paddingBottom: '10px' }}
             />
           </PieChart>
         </ResponsiveContainer>

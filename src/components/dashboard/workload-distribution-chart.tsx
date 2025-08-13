@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -38,8 +38,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
         <CardDescription>Cantidad de ensayos por analista.</CardDescription>
       </CardHeader>
       <CardContent className="h-[250px] w-full">
-        {chartData.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
                 <XAxis dataKey="shortName" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
@@ -51,16 +50,9 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                         borderRadius: 'var(--radius)',
                     }}
                 />
-                <Bar dataKey="value" name="Ensayos" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} >
-                    <LabelList dataKey="value" position="top" offset={8} className="fill-foreground font-semibold"/>
-                </Bar>
+                <Bar dataKey="value" name="Ensayos" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--chart-2) / 0.8)" />} />
             </BarChart>
-          </ResponsiveContainer>
-        ) : (
-           <div className="flex items-center justify-center h-full">
-             <p className="text-sm text-muted-foreground text-center">No hay datos de carga de trabajo para mostrar.</p>
-           </div>
-        )}
+        </ResponsiveContainer>
       </CardContent>
     </>
   )

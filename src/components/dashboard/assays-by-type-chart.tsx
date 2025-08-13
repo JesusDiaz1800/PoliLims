@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 
@@ -31,8 +31,8 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
       </CardHeader>
       <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
-                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} hide />
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+                <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                 <YAxis dataKey="name" type="category" width={100} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={{fill: 'hsl(var(--accent))'}}
@@ -42,9 +42,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
                         borderRadius: 'var(--radius)',
                     }}
                 />
-                <Bar dataKey="value" name="Cantidad" radius={[0, 4, 4, 0]} fill="hsl(var(--chart-3))">
-                    <LabelList dataKey="value" position="right" offset={8} className="fill-foreground font-semibold"/>
-                </Bar>
+                <Bar dataKey="value" name="Cantidad" fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--chart-3) / 0.8)" />} />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>

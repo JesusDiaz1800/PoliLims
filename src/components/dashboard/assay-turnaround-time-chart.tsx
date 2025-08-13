@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import type { Ensayo } from "@/context/data-context";
 import { differenceInDays, parse } from "date-fns";
@@ -53,8 +53,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
                 name: nameAndDurations[0],
                 value: nameAndDurations[1].length > 0 ? nameAndDurations[1].reduce((a, b) => a + b, 0) / nameAndDurations[1].length : 0,
             }))
-            .filter(item => item.value > 0)
-            .sort((a, b) => a.value - b.value);
+            .filter(item => item.value > 0);
     }, [allData]);
 
   return (
@@ -65,7 +64,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
       </CardHeader>
       <CardContent className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
                 <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
                 <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
                 <Tooltip
@@ -76,9 +75,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
                         borderRadius: 'var(--radius)',
                     }}
                 />
-                <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} fill="hsl(var(--primary))">
-                    <LabelList dataKey="value" position="right" offset={8} className="fill-foreground font-semibold" formatter={(value: number) => value > 0 ? value.toFixed(1) : ''}/>
-                </Bar>
+                <Bar dataKey="value" name="Días" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} activeBar={<Rectangle fill="hsl(var(--primary) / 0.8)" />} />
             </BarChart>
         </ResponsiveContainer>
       </CardContent>

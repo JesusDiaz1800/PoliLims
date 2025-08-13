@@ -70,8 +70,8 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
 
   return (
     <>
-    <>
-      <CardHeader className="p-4 pb-0">
+    <Card className="h-full">
+      <CardHeader>
         <div className="flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 text-destructive" />
           <div>
@@ -80,14 +80,14 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
-        <ScrollArea className="h-full pr-2">
-          <div className="space-y-3">
+      <CardContent className="h-[calc(100%-5rem)]">
+        <ScrollArea className="h-full pr-4">
+          <div className="space-y-4">
             {equiposConAlerta.length > 0 ? (
               equiposConAlerta.map(equipo => {
                 const alert = getAlertDetails(equipo);
                 return (
-                  <div key={equipo.id} className="flex items-center justify-between text-xs">
+                  <div key={equipo.id} className="flex items-center justify-between text-sm">
                     <div>
                       <p className="font-semibold">{equipo.nombre}</p>
                       <p className={cn("font-medium", alert.color)}>{alert.message}</p>
@@ -99,14 +99,14 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
                 );
               })
             ) : (
-              <div className="text-center text-xs text-muted-foreground h-full flex items-center justify-center">
+              <div className="text-center text-sm text-muted-foreground h-full flex items-center justify-center">
                 <p>No hay equipos que requieran atención inmediata.</p>
               </div>
             )}
           </div>
         </ScrollArea>
       </CardContent>
-    </>
+    </Card>
 
     {selectedEquipo && (
         <EquipoDetailsDialog

@@ -19,12 +19,11 @@ import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
-import { ChartCard } from "@/components/dashboard/chart-card";
-import { ChartModal } from "@/components/dashboard/chart-modal";
+import { EquipmentStatusChart } from "@/components/dashboard/equipment-status-chart";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -39,8 +38,6 @@ export default function MainPage() {
     isLoaded,
     user,
   } = useDynamicData();
-
-  const [modalContent, setModalContent] = React.useState<{ title: string; children: React.ReactNode } | null>(null);
 
   const filteredEnsayos = React.useMemo(() => {
     const now = new Date();
@@ -143,29 +140,48 @@ export default function MainPage() {
           <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta"/>
         </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-4">
-          <ChartCard className="col-span-4" title="Ensayos por Mes" onExpand={() => setModalContent({ title: 'Ensayos por Mes', children: <AssaysByMonthChart data={ensayos || []} /> })}>
+          <Card className="col-span-4 card-glass">
             <AssaysByMonthChart data={ensayos || []} />
-          </ChartCard>
+          </Card>
           <Card className="col-span-3 card-glass">
               <RecentActivityList initialActivity={recentActivity || []} />
           </Card>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            <ChartCard title="Ensayos por Tipo" onExpand={() => setModalContent({ title: 'Ensayos por Tipo', children: <AssaysByTypeChart data={filteredEnsayos} /> })}>
-              <AssaysByTypeChart data={filteredEnsayos} />
-            </ChartCard>
-            <ChartCard title="Estado de Muestras" onExpand={() => setModalContent({ title: 'Estado de Muestras', children: <SampleStatusChart data={filteredEnsayos} /> })}>
-              <SampleStatusChart data={filteredEnsayos} />
-            </ChartCard>
-            <ChartCard title="Carga de Trabajo" onExpand={() => setModalContent({ title: 'Carga de Trabajo por Analista', children: <WorkloadDistributionChart data={filteredEnsayos} /> })}>
-              <WorkloadDistributionChart data={filteredEnsayos} />
-            </ChartCard>
+            <Card className="card-glass">
+                <AssaysByTypeChart data={filteredEnsayos} />
+            </Card>
+            <Card className="card-glass">
+                <SampleStatusChart data={filteredEnsayos} />
+            </Card>
+            <Card className="card-glass">
+                <WorkloadDistributionChart data={filteredEnsayos} />
+            </Card>
         </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <Card className="card-glass">
+              <EquipmentStatusChart data={equipos} />
+            </Card>
+            <Card className="col-span-1 md:col-span-2 card-glass">
+                <AssayTurnaroundTimeChart data={ensayos} />
+            </Card>
+        </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 mt-4">
+           <Card className="col-span-1 md:col-span-2 lg:col-span-4 card-glass">
+             <ThroughputTrendChart data={ensayos}/>
+           </Card>
+            <Card className="col-span-1 md:col-span-2 lg:col-span-3 card-glass">
+              <div className="grid grid-cols-2 h-full">
+                <div className="col-span-1">
+                   <NonConformitiesByTypeChart data={noConformidades}/>
+                </div>
+                <div className="col-span-1 flex items-center justify-center">
+                   <EquipmentAlertsCard equipos={equipos} />
+                </div>
+              </div>
+           </Card>
+         </div>
       </div>
-      <ChartModal isOpen={!!modalContent} onClose={() => setModalContent(null)} title={modalContent?.title || ''}>
-        {modalContent?.children}
-      </ChartModal>
     </div>
   );
 }
-

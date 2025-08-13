@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -41,8 +40,6 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
               cy="50%"
               labelLine={false}
               outerRadius={60}
-              innerRadius={40}
-              paddingAngle={5}
               dataKey="value"
             >
               {chartData.map((entry, index) => (
@@ -71,5 +68,3 @@ export function EquipmentStatusChart({ data }: EquipmentStatusChartProps) {
     </Card>
   )
 }
-
-    
