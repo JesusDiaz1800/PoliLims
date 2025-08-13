@@ -167,11 +167,11 @@ export default function MainPage() {
                     <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
                 </Card>
                 <Card className="card-glass h-full">
-                    <EquipmentAlertsCard equipos={equipos || []} />
-                </Card>
-                 <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
+                </Card>
+                <Card className="card-glass h-full">
+                    <EquipmentAlertsCard equipos={equipos || []} />
                 </Card>
             </div>
              
