@@ -162,17 +162,17 @@ export default function MainPage() {
                     <CardHeader><CardTitle>Registros por Analista</CardTitle><CardDescription>Cantidad de registros por analista.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
                 </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
-                </Card>
                  <Card className="card-glass h-full">
+                    <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
+                </Card>
+                <Card className="card-glass h-full">
                     <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
                     <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
                 </Card>
                  <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Estados de Muestras</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
+                    <CardHeader><CardTitle>Alertas de Equipos</CardTitle><CardDescription>Equipos que requieren atención.</CardDescription></CardHeader>
+                    <CardContent className="h-[240px]"><EquipmentAlertsCard equipos={equipos || []} /></CardContent>
                 </Card>
             </div>
              
@@ -194,3 +194,5 @@ export default function MainPage() {
       </div>
   );
 }
+
+    
