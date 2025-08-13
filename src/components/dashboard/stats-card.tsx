@@ -17,7 +17,7 @@ type StatsCardProps = {
 
 const StatsCardInternal = ({ title, value, description, icon: Icon, href }: StatsCardProps) => {
     const cardContent = (
-        <Card className={cn("transition-colors", href && "hover:bg-muted/50")}>
+        <Card className={cn("transition-colors card-glass", href && "hover:bg-muted/50")}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{title}</CardTitle>
                 <Icon className="h-4 w-4 text-muted-foreground" />
