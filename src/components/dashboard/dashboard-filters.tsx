@@ -11,13 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 
 interface DashboardFiltersProps {
     analysts: { value: string, label: string }[];
@@ -51,69 +44,67 @@ export function DashboardFilters({ analysts, assayTypes, suppliers }: DashboardF
     };
 
     return (
-        <Card>
-            <CardContent className="p-2">
-                <div className="flex flex-col lg:flex-row items-center justify-end gap-2 w-full">
-                    <Select value={month} onValueChange={handleFilterChange("month")}>
-                        <SelectTrigger className="w-full sm:w-auto h-9 text-xs">
-                            <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <SelectValue placeholder="Filtrar por mes" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="last_30_days">Últimos 30 días</SelectItem>
-                            <SelectItem value="this_month">Este Mes</SelectItem>
-                            <SelectItem value="last_month">Mes Pasado</SelectItem>
-                            <SelectItem value="last_3_months">Últimos 3 Meses</SelectItem>
-                            <SelectItem value="last_12_months">Últimos 12 Meses</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    <Select value={analyst} onValueChange={handleFilterChange("analyst")}>
-                        <SelectTrigger className="w-full sm:w-auto h-9 text-xs">
-                            <User className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <SelectValue placeholder="Filtrar por analista" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {analysts.map(analyst => (
-                                <SelectItem key={analyst.value} value={analyst.value}>{analyst.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                     <Select value={status} onValueChange={handleFilterChange("status")}>
-                        <SelectTrigger className="w-full sm:w-auto h-9 text-xs">
-                            <Package className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <SelectValue placeholder="Filtrar por estado" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">Todos los Estados</SelectItem>
-                            <SelectItem value="aprobado">Aprobado</SelectItem>
-                            <SelectItem value="pendiente">Pendiente</SelectItem>
-                            <SelectItem value="rechazado">Rechazado</SelectItem>
-                        </SelectContent>
-                    </Select>
-                     <Select value={type} onValueChange={handleFilterChange("type")}>
-                        <SelectTrigger className="w-full sm:w-auto h-9 text-xs">
-                            <TestTube className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <SelectValue placeholder="Filtrar por tipo" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {assayTypes.map(type => (
-                                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Select value={supplier} onValueChange={handleFilterChange("supplier")}>
-                        <SelectTrigger className="w-full sm:w-auto h-9 text-xs">
-                            <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
-                            <SelectValue placeholder="Filtrar por proveedor" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {suppliers.map(supplier => (
-                                <SelectItem key={supplier.value} value={supplier.value}>{supplier.label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="p-2 pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2 w-full">
+                <Select value={month} onValueChange={handleFilterChange("month")}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por mes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="last_30_days">Últimos 30 días</SelectItem>
+                        <SelectItem value="this_month">Este Mes</SelectItem>
+                        <SelectItem value="last_month">Mes Pasado</SelectItem>
+                        <SelectItem value="last_3_months">Últimos 3 Meses</SelectItem>
+                        <SelectItem value="last_12_months">Últimos 12 Meses</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Select value={analyst} onValueChange={handleFilterChange("analyst")}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <User className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por analista" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {analysts.map(analyst => (
+                            <SelectItem key={analyst.value} value={analyst.value}>{analyst.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                    <Select value={status} onValueChange={handleFilterChange("status")}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <Package className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">Todos los Estados</SelectItem>
+                        <SelectItem value="aprobado">Aprobado</SelectItem>
+                        <SelectItem value="pendiente">Pendiente</SelectItem>
+                        <SelectItem value="rechazado">Rechazado</SelectItem>
+                    </SelectContent>
+                </Select>
+                    <Select value={type} onValueChange={handleFilterChange("type")}>
+                    <SelectTrigger className="w-full h-9 text-xs">
+                        <TestTube className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {assayTypes.map(type => (
+                            <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <Select value={supplier} onValueChange={handleFilterChange("supplier")}>
+                    <SelectTrigger className="w-full h-9 text-xs sm:col-span-2 xl:col-span-1">
+                        <Truck className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <SelectValue placeholder="Filtrar por proveedor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {suppliers.map(supplier => (
+                            <SelectItem key={supplier.value} value={supplier.value}>{supplier.label}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+        </div>
     );
 }

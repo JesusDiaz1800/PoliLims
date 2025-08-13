@@ -2,7 +2,13 @@
 "use client";
 
 import * as React from "react";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -21,6 +27,7 @@ import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-ch
 import { useDynamicData } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
+import { Card } from "@/components/ui/card";
 
 
 export default function MainPage() {
@@ -40,6 +47,7 @@ export default function MainPage() {
   } = useDynamicData();
   
   const [user, setUser] = React.useState<User | null>(null);
+  const [isFiltersOpen, setIsFiltersOpen] = React.useState(true);
   
   React.useEffect(() => {
     async function loadUser() {
@@ -82,12 +90,36 @@ export default function MainPage() {
     <div className="relative flex-1 space-y-4 p-4 sm:p-6">
        <div className="background-overlay"></div>
        <div className="relative z-10 space-y-4">
-            <WelcomeBanner user={user} />
-            <DashboardFilters
-                analysts={allAnalysts}
-                assayTypes={assayTypes}
-                suppliers={suppliers}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2">
+                    <WelcomeBanner user={user} />
+                </div>
+                <Card>
+                    <Collapsible
+                        open={isFiltersOpen}
+                        onOpenChange={setIsFiltersOpen}
+                    >
+                        <div className="flex items-center justify-between p-2">
+                            <h4 className="text-sm font-semibold pl-2">
+                                Filtros del Dashboard
+                            </h4>
+                            <CollapsibleTrigger asChild>
+                                <Button variant="ghost" size="sm" className="w-9 p-0">
+                                <SlidersHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle</span>
+                                </Button>
+                            </CollapsibleTrigger>
+                        </div>
+                        <CollapsibleContent>
+                             <DashboardFilters
+                                analysts={allAnalysts}
+                                assayTypes={assayTypes}
+                                suppliers={suppliers}
+                            />
+                        </CollapsibleContent>
+                    </Collapsible>
+                </Card>
+            </div>
             
             {/* KPIs Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
