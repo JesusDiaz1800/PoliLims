@@ -62,7 +62,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={false} // Se eliminan las etiquetas sobre los segmentos
+                  label={false}
                   outerRadius={isModal ? 150 : 80}
                   innerRadius={isModal ? 90 : 50}
                   paddingAngle={5}
