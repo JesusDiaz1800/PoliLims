@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react";
@@ -46,11 +47,11 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
 
   return (
     <>
-        <CardHeader>
-            <CardTitle>Estado de Ensayos</CardTitle>
-            <CardDescription>Distribución porcentual de ensayos.</CardDescription>
+        <CardHeader className="p-4 pb-0">
+            <CardTitle className="text-base">Estado de Ensayos</CardTitle>
+            <CardDescription className="text-xs">Distribución porcentual de ensayos.</CardDescription>
         </CardHeader>
-        <CardContent className="h-[calc(100%-6rem)] pb-2">
+        <CardContent className="h-[calc(100%-4rem)] pb-2">
              <div className="flex items-center gap-2 h-full">
                  <div className="w-1/2 h-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -60,20 +61,20 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
-                                outerRadius={50}
-                                innerRadius={35}
+                                outerRadius={45}
+                                innerRadius={30}
                                 paddingAngle={5}
                                 dataKey="value"
                             >
                                 {chartData.map((entry) => (
                                     <Cell key={entry.name} fill={entry.fill} stroke={entry.fill} />
                                 ))}
-                                <Label value={total} position="center" fill="hsl(var(--foreground))" className="text-xl font-bold font-headline"/>
+                                <Label value={total} position="center" fill="hsl(var(--foreground))" className="text-lg font-bold font-headline"/>
                             </Pie>
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
-                <div className="w-1/2 space-y-2">
+                <div className="w-1/2 space-y-1.5">
                     {chartData.map((item) => (
                         <div key={item.name} className="flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2">

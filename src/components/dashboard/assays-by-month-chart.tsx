@@ -61,13 +61,13 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
 
   return (
     <>
-      <CardHeader>
-        <CardTitle>Ensayos por Mes</CardTitle>
-        <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
+      <CardHeader className="p-4 pb-0">
+        <CardTitle className="text-base">Ensayos por Mes</CardTitle>
+        <CardDescription className="text-xs">Volumen de ensayos en los últimos 12 meses.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-4rem)] pb-0">
+      <CardContent className="h-[calc(100%-4rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                  <defs>
                     <linearGradient id="color-chart-1" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
