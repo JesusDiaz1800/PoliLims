@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from 'react';
@@ -7,10 +5,10 @@ import Loading from '@/app/(app)/loading';
 import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
 import type { Ensayo } from '@/context/data-context';
-import type { User } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
-export default function MateriaPrimaPage() {
+function MateriaPrimaPageContent() {
   const { ensayos, user, isLoaded } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
@@ -60,4 +58,12 @@ export default function MateriaPrimaPage() {
       />
     </div>
   );
+}
+
+export default function MateriaPrimaPage() {
+    return (
+        <FilterProvider>
+            <MateriaPrimaPageContent />
+        </FilterProvider>
+    )
 }

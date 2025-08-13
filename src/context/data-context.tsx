@@ -1,11 +1,8 @@
-
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
-import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
 import type { SapProduct } from '@/services/sap-service';
 
 // --- DYNAMIC DATA (client-side state) ---
@@ -277,7 +274,6 @@ export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
     user: User | null;
-    sapProducts: SapProduct[];
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
     deleteEnsayo: (id: string) => Promise<void>;
@@ -294,89 +290,14 @@ interface DynamicDataContextType extends InitialData {
     addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
     updateProveedor: (id: string, updatedData: Partial<Proveedor>) => Promise<void>;
     deleteProveedor: (id: string) => Promise<void>;
-    filteredEnsayos: Ensayo[];
-    totalFilteredAssays: number;
-    approvalPercentage: number;
-    pendingAssays: number;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
 
 export function DynamicDataProvider({ children, user, initialData }: { children: ReactNode, user: User | null, initialData: InitialData }) {
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
     const [data, setData] = useState<InitialData>(initialData);
     const [isLoaded, setIsLoaded] = useState(true);
-
-    const isDashboard = pathname === '/main';
-
-    const month = searchParams.get('month') || 'last_12_months';
-    const analyst = isDashboard ? 'all' : (searchParams.get('analyst') || 'all');
     
-    const statusParam = searchParams.get('status');
-    const status = isDashboard ? 'all' : (statusParam || 'all');
-    
-    const type = isDashboard ? 'all' : (searchParams.get('type') || 'all');
-    const supplier = isDashboard ? 'all' : (searchParams.get('supplier') || 'all');
-    const assay = isDashboard ? 'all' : (searchParams.get('assay') || 'all');
-    
-    const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
-
-    const filteredEnsayos = useMemo(() => {
-        if (!data.ensayos) return [];
-
-        const now = new Date();
-        let startDate: Date;
-
-        switch (month) {
-            case 'last_30_days': startDate = subDays(now, 30); break;
-            case 'this_month': startDate = startOfMonth(now); break;
-            case 'last_month': startDate = startOfMonth(subMonths(now, 1)); break;
-            case 'last_3_months': startDate = subMonths(now, 3); break;
-            case 'last_12_months': startDate = subMonths(now, 12); break;
-            default: startDate = subMonths(now, 12);
-        }
-
-        const endDate = month === 'last_month' ? endOfMonth(subMonths(now, 1)) : now;
-        
-        return data.ensayos.filter(e => {
-            try {
-                const ensayoDate = parse(e.fecha, 'dd-MM-yyyy', new Date());
-                if(isNaN(ensayoDate.getTime())) return false;
-
-                const dateMatch = isWithinInterval(ensayoDate, { start: startDate, end: endDate });
-                const analystMatch = analyst === 'all' || e.analista === analyst;
-                const typeMatch = type === 'all' || e.tipo === type;
-                const supplierMatch = supplier === 'all' || e.proveedor === supplier;
-                const statusMatch = status === 'all' || 
-                    (status === 'aprobado' && e.estado === 'Aprobado') ||
-                    (status === 'pendiente' && pendingStatuses.includes(e.estado)) ||
-                    (status === 'rechazado' && e.estado === 'Rechazado') ||
-                    (e.estado === status);
-                const assayMatch = assay === 'all' || (e[assay] !== null && e[assay] !== undefined && e[assay] !== '');
-
-                return dateMatch && analystMatch && typeMatch && supplierMatch && statusMatch && assayMatch;
-            } catch {
-                return false;
-            }
-        });
-    }, [data.ensayos, month, analyst, status, type, supplier, assay]);
-
-    const { totalFilteredAssays, approvalPercentage, pendingAssays } = useMemo(() => {
-        const total = filteredEnsayos.length;
-        if (total === 0) return { totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
-        
-        const approvedCount = filteredEnsayos.filter(e => e.estado === 'Aprobado').length;
-        const pendingCount = filteredEnsayos.filter(e => pendingStatuses.includes(e.estado)).length;
-        
-        return {
-            totalFilteredAssays: total,
-            approvalPercentage: (approvedCount / total) * 100,
-            pendingAssays: pendingCount,
-        };
-    }, [filteredEnsayos]);
-
-
     const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
         const newEnsayo = await dataService.addEnsayo(ensayo);
         setData(prev => ({...prev, ensayos: [newEnsayo, ...prev.ensayos]}));
@@ -464,22 +385,11 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         setData(prev => ({ ...prev, proveedores: prev.proveedores.filter(p => p.id !== id) }));
     }, []);
 
-    const sapProducts = useMemo(() => {
-        if (!data.matrizProductos) return [];
-        return data.matrizProductos.map(p => ({
-            code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
-            name: p.producto,
-            value: p.producto,
-            label: p.producto,
-        }));
-    }, [data.matrizProductos]);
-
 
     const value = useMemo(() => ({
         ...data,
         isLoaded,
         user,
-        sapProducts,
         addEnsayo,
         updateEnsayo,
         deleteEnsayo,
@@ -496,11 +406,7 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         addProveedor,
         updateProveedor,
         deleteProveedor,
-        filteredEnsayos,
-        totalFilteredAssays,
-        approvalPercentage,
-        pendingAssays
-    }), [data, isLoaded, user, sapProducts, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
+    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor]);
 
     return (
         <DynamicDataContext.Provider value={value}>

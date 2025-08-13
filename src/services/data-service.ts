@@ -1,4 +1,3 @@
-
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
@@ -308,7 +307,7 @@ export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 't
  * It also applies some dynamic logic, like updating equipment status based on the current date.
  * @returns {Promise<object>} A promise that resolves to an object containing all initial data arrays.
  */
-export async function getInitialData(): Promise<Omit<InitialData, 'sapProducts'>> {
+export async function getInitialData() {
     const today = new Date();
     // Dynamically update equipment status based on calibration date for realistic simulation.
     const updatedEquipos = demoEquipos.map(equipo => {
@@ -338,5 +337,6 @@ export async function getInitialData(): Promise<Omit<InitialData, 'sapProducts'>
         formacion: demoFormacion,
         auditorias: demoAuditorias,
         matrizProductos,
+        sapProducts,
     };
 }

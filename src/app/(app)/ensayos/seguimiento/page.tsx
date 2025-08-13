@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from "react";
@@ -25,20 +23,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { User } from "@/services/user-service";
-import { findUserByUsername } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
-import { format } from "date-fns";
-import { parseISO } from "date-fns";
-import type { Ensayo, RecentActivity } from "@/context/data-context";
-import * as dataService from "@/services/data-service";
+import { format, parseISO } from "date-fns";
+import type { Ensayo } from "@/context/data-context";
 import Loading from "../../loading";
 import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
 import { useDynamicData } from "@/context/data-context";
+import { FilterProvider, useFilters } from "@/context/filter-context";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -63,8 +59,107 @@ const formatValue = (value: any, decimals: number = 2) => {
     return Number(value).toFixed(decimals);
 };
 
-const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditClick: (ensayo: Ensayo) => void, handleOpenApprovalDialog: (ensayo: Ensayo) => void, handleOpenReportDialog: (ensayo: Ensayo) => void, canApprove: boolean) => {
+function SeguimientoTableContainer() {
+  const router = useRouter();
+  const { ensayos, user, isLoaded, updateEnsayo, addRecentActivity } = useDynamicData();
+  const { filteredData: filteredEnsayos, setSearchTerm, setFilterType, searchTerm, filterType } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
+
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [reportData, setReportData] = React.useState<ReportData | null>(null);
+  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
+  const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
+
+  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
+
+  const ensayoTypes = React.useMemo(() => 
+    ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
+  [ensayos]);
   
+  const handleRedirectToRegister = (path: string) => {
+    router.push(path);
+  }
+
+  const handleEditClick = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsFormDialogOpen(true);
+  };
+
+  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsApprovalDialogOpen(true);
+  }
+
+  const handleCloseApprovalDialog = async () => {
+    setSelectedEnsayo(null);
+    setIsApprovalDialogOpen(false);
+  }
+  
+  const handleOpenReportDialog = (ensayo: Ensayo) => {
+    const data: ReportData = {
+        lotes: [ensayo.lote || 'N/A'],
+        material: ensayo.tipo_material || ensayo.tipo,
+        producto: ensayo.producto,
+        fechaGeneracion: new Date().toLocaleDateString('es-ES'),
+        inspector: ensayo.analista || 'N/A',
+        corroborador: "Maximiliano Miranda Valdés",
+        ensayos: [ensayo],
+        promedios: ensayo, // For a single assay, promedios are the assay values
+        filterType: ensayo.tipo,
+    };
+    setReportData(data);
+    setIsReportDialogOpen(true);
+  }
+
+  const handleCloseReportDialog = () => {
+    setReportData(null);
+    setIsReportDialogOpen(false);
+  }
+
+  const handlePrint = () => {
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write('<html><head><title>Informe de Resultados</title>');
+    
+    Array.from(document.styleSheets).forEach(sheet => {
+        try {
+            if (sheet.cssRules) {
+                const rules = Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+                doc.write(`<style>${rules}</style>`);
+            } else if (sheet.href) {
+                doc.write(`<link rel="stylesheet" href="${sheet.href}">`);
+            }
+        } catch (e) {
+            console.warn('Could not read stylesheet rules', e);
+        }
+    });
+
+    const reportContent = document.getElementById("printable-report")?.innerHTML;
+    if (reportContent) {
+        doc.write('</head><body>');
+        doc.write(reportContent);
+        doc.write('</body></html>');
+    }
+    doc.close();
+
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+    }, 500);
+  }
+
   const renderActions = (ensayo: Ensayo) => (
       <TableCell className="text-right sticky right-0 bg-card z-10">
           <DropdownMenu>
@@ -140,152 +235,11 @@ const renderDynamicTable = (ensayos: Ensayo[], filterType: string, handleEditCli
         </>);
         break;
   }
-  
-  return (
-    <Table>
-        <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
-        <TableBody>
-            {ensayos.map((ensayo) => (
-                <TableRow key={ensayo.id}>
-                    {renderRow(ensayo)}
-                    {renderActions(ensayo)}
-                </TableRow>
-            ))}
-        </TableBody>
-    </Table>
-  )
-};
 
-
-export default function SeguimientoEnsayosPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { ensayos, isLoaded, filteredEnsayos: allFilteredEnsayos, updateEnsayo, addRecentActivity } = useDynamicData();
-
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [filterType, setFilterType] = React.useState("Todos");
-  const [user, setUser] = React.useState<User | null>(null);
-  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
-  const [reportData, setReportData] = React.useState<ReportData | null>(null);
-  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
-  const [isReportDialogOpen, setIsReportDialogOpen] = React.useState(false);
-  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
-
-  React.useEffect(() => {
-    async function loadUser() {
-        const userData = await findUserByUsername(searchParams.get('user') || 'jdiaz');
-        setUser(userData);
-    }
-    loadUser();
-  }, [searchParams]);
-
-  const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
-
-  const ensayoTypes = React.useMemo(() => 
-    ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
-  [ensayos]);
-
-  const filteredEnsayos = React.useMemo(() =>
-    allFilteredEnsayos
-      .filter(ensayo => filterType === "Todos" || ensayo.tipo === filterType)
-      .filter(ensayo =>
-        ensayo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (ensayo.producto && ensayo.producto.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (ensayo.analista && ensayo.analista.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (ensayo.lote && ensayo.lote.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-      .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime()),
-  [allFilteredEnsayos, filterType, searchTerm]);
-  
-  const handleRedirectToRegister = (path: string) => {
-    router.push(path);
-  }
-
-  const handleEditClick = (ensayo: Ensayo) => {
-    setSelectedEnsayo(ensayo);
-    setIsFormDialogOpen(true);
-  };
-
-  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
-    setSelectedEnsayo(ensayo);
-    setIsApprovalDialogOpen(true);
-  }
-
-  const handleCloseApprovalDialog = async () => {
-    setSelectedEnsayo(null);
-    setIsApprovalDialogOpen(false);
-  }
-  
-  const handleOpenReportDialog = (ensayo: Ensayo) => {
-    const data: ReportData = {
-        lotes: [ensayo.lote || 'N/A'],
-        material: ensayo.tipo_material || ensayo.tipo,
-        producto: ensayo.producto,
-        fechaGeneracion: new Date().toLocaleDateString('es-ES'),
-        inspector: ensayo.analista || 'N/A',
-        corroborador: "Maximiliano Miranda Valdés",
-        ensayos: [ensayo],
-        promedios: ensayo, // For a single assay, promedios are the assay values
-        filterType: ensayo.tipo,
-    };
-    setReportData(data);
-    setIsReportDialogOpen(true);
-  }
-
-  const handleCloseReportDialog = () => {
-    setReportData(null);
-    setIsReportDialogOpen(false);
-  }
-
-  const handlePrint = () => {
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
-    iframe.style.border = 'none';
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document;
-    if (!doc) return;
-
-    doc.open();
-    doc.write('<html><head><title>Informe de Resultados</title>');
-    
-    // Copy stylesheets
-    Array.from(document.styleSheets).forEach(sheet => {
-        try {
-            if (sheet.cssRules) {
-                const rules = Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
-                doc.write(`<style>${rules}</style>`);
-            } else if (sheet.href) {
-                doc.write(`<link rel="stylesheet" href="${sheet.href}">`);
-            }
-        } catch (e) {
-            console.warn('Could not read stylesheet rules', e);
-        }
-    });
-
-    const reportContent = document.getElementById("printable-report")?.innerHTML;
-    if (reportContent) {
-        doc.write('</head><body>');
-        doc.write(reportContent);
-        doc.write('</body></html>');
-    }
-    doc.close();
-
-    setTimeout(() => {
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        if (document.body.contains(iframe)) {
-          document.body.removeChild(iframe);
-        }
-    }, 500);
-  }
-  
   if (!isLoaded || !user) {
     return <Loading />;
   }
-
+  
   return (
     <>
     <Card>
@@ -338,7 +292,17 @@ export default function SeguimientoEnsayosPage() {
       <CardContent>
          <div className="relative overflow-x-auto">
          {filteredEnsayos.length > 0 ? (
-           renderDynamicTable(filteredEnsayos, filterType, handleEditClick, handleOpenApprovalDialog, handleOpenReportDialog, canApprove || false)
+            <Table>
+                <TableHeader><TableRow>{headers}<TableHead className="text-right sticky right-0 bg-card z-10">Acciones</TableHead></TableRow></TableHeader>
+                <TableBody>
+                    {filteredEnsayos.map((ensayo) => (
+                        <TableRow key={ensayo.id}>
+                            {renderRow(ensayo)}
+                            {renderActions(ensayo)}
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
          ) : (
             <div className="text-center py-16 text-muted-foreground">
                 <Search className="mx-auto h-12 w-12 mb-4" />
@@ -394,4 +358,12 @@ export default function SeguimientoEnsayosPage() {
     )}
     </>
   );
+}
+
+export default function SeguimientoEnsayosPage() {
+    return (
+        <FilterProvider>
+            <SeguimientoTableContainer />
+        </FilterProvider>
+    )
 }

@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from 'react';
@@ -7,25 +5,21 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Loading from '@/app/(app)/loading';
 import type { Ensayo } from '@/context/data-context';
 import type { User } from '@/services/user-service';
-import { findUserByUsername } from '@/services/user-service';
 import { EnsayosProductoTerminadoTable } from '@/components/ensayos/tuberias/ensayos-producto-terminado-table';
 import { EnsayoProductoTerminadoDialog } from '@/components/ensayos/tuberias/ensayo-producto-terminado-dialog';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
-export default function TuberiasPpPage() {
+function TuberiasPpPageContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { ensayos, isLoaded } = useDynamicData();
-    const [user, setUser] = React.useState<User | null>(null);
+    const { ensayos, isLoaded, user } = useDynamicData();
     const [isDialogOpen, setIsDialogOpen] = React.useState(false);
     const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
     const [activeTab, setActiveTab] = React.useState('all');
 
     React.useEffect(() => {
-        async function loadPageData() {
-            const userData = await findUserByUsername(searchParams.get('user') || 'jdiaz');
-            setUser(userData);
-
+        if (isLoaded) {
             const ensayoId = searchParams.get('id');
             if (ensayoId) {
                 const ensayo = ensayos.find(e => e.id === ensayoId);
@@ -34,9 +28,6 @@ export default function TuberiasPpPage() {
                     setIsDialogOpen(true);
                 }
             }
-        };
-        if (isLoaded) {
-            loadPageData();
         }
     }, [searchParams, isLoaded, ensayos]);
 
@@ -49,7 +40,6 @@ export default function TuberiasPpPage() {
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
         setSelectedEnsayo(null);
-        // Clean up URL
         const newSearchParams = new URLSearchParams(searchParams.toString());
         newSearchParams.delete('id');
         router.replace(`${window.location.pathname}?${newSearchParams.toString()}`);
@@ -81,4 +71,12 @@ export default function TuberiasPpPage() {
             )}
         </div>
     );
+}
+
+export default function TuberiasPpPage() {
+    return (
+        <FilterProvider>
+            <TuberiasPpPageContent />
+        </FilterProvider>
+    )
 }
