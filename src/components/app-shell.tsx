@@ -280,7 +280,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
-  const userQuery = searchParams.toString();
+  const userQuery = searchParams.get('user') ? `user=${searchParams.get('user')}` : '';
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const getPageTitle = React.useCallback(() => {
