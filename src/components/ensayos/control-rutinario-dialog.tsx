@@ -11,13 +11,17 @@ import {
 } from "@/components/ui/dialog";
 import { ControlRutinarioForm } from "./control-rutinario-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { TipoProducto } from "@/lib/matriz-datos";
+import type { SapProduct } from "@/services/sap-service";
 
 interface ControlRutinarioDialogProps {
   isOpen: boolean;
   onClose: () => void;
+  productos: SapProduct[];
+  matrizProductos: TipoProducto[];
 }
 
-export function ControlRutinarioDialog({ isOpen, onClose }: ControlRutinarioDialogProps) {
+export function ControlRutinarioDialog({ isOpen, onClose, productos, matrizProductos }: ControlRutinarioDialogProps) {
 
   const inspectores = [
       { value: "ELIAS IBAÑEZ", label: "ELIAS IBAÑEZ" },
@@ -82,6 +86,8 @@ export function ControlRutinarioDialog({ isOpen, onClose }: ControlRutinarioDial
               maquinas={maquinas}
               marcas={marcas}
               onFormSubmit={onClose}
+              productos={productos}
+              matrizProductos={matrizProductos}
             />
           </div>
         </div>

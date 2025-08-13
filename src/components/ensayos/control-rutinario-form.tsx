@@ -21,6 +21,9 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import * as dataService from "@/services/data-service"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip"
+import type { TipoProducto } from "@/lib/matriz-datos"
+import type { SapProduct } from "@/services/sap-service"
+import { Combobox } from "../ui/combobox"
 
 interface ControlRutinarioFormProps {
   inspectores: { value: string; label: string }[]
@@ -28,6 +31,8 @@ interface ControlRutinarioFormProps {
   maquinas: { value: string; label: string }[]
   marcas: { value: string; label: string }[]
   onFormSubmit: () => void;
+  productos: SapProduct[];
+  matrizProductos: TipoProducto[];
 }
 
 const formSchema = z.object({
@@ -77,7 +82,7 @@ const defaultFormValues: Partial<FormValues> = {
 };
 
 
-export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marcas, onFormSubmit }: ControlRutinarioFormProps) {
+export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marcas, onFormSubmit, productos, matrizProductos }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
   const hasAlerts = Object.values(alerts).some(Boolean);
@@ -276,7 +281,13 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
                             <FormItem>
                                 <FormLabel>Producto</FormLabel>
                                 <FormControl>
-                                     <Input placeholder="Ej: Tubería HDPE 90mm PN-16" {...field} />
+                                    <Combobox 
+                                        options={productos}
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        placeholder="Buscar producto..."
+                                        notFoundText="No se encontró producto."
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

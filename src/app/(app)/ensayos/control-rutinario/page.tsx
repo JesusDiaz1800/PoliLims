@@ -29,7 +29,6 @@ export default function ControlRutinarioPage() {
         registros={registros}
         ensayos={ensayos}
         onAddRecordClick={handleAddRecordClick} 
-        matrizProductos={matrizProductos} 
       />
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 

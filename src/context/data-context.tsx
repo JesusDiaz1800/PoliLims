@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import { subMonths, parse, isWithinInterval, startOfMonth, endOfMonth, subDays } from 'date-fns';
+import type { SapProduct } from '@/services/sap-service';
 
 // --- DYNAMIC DATA (client-side state) ---
 export type Ensayo = {
@@ -276,6 +277,7 @@ export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
     user: User | null;
+    sapProducts: SapProduct[];
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
     deleteEnsayo: (id: string) => Promise<void>;
@@ -462,11 +464,22 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         setData(prev => ({ ...prev, proveedores: prev.proveedores.filter(p => p.id !== id) }));
     }, []);
 
+    const sapProducts = useMemo(() => {
+        if (!data.matrizProductos) return [];
+        return data.matrizProductos.map(p => ({
+            code: p.code || p.producto.replace(/\s+/g, '-').toUpperCase(),
+            name: p.producto,
+            value: p.producto,
+            label: p.producto,
+        }));
+    }, [data.matrizProductos]);
+
 
     const value = useMemo(() => ({
         ...data,
         isLoaded,
         user,
+        sapProducts,
         addEnsayo,
         updateEnsayo,
         deleteEnsayo,
@@ -487,7 +500,7 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         totalFilteredAssays,
         approvalPercentage,
         pendingAssays
-    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
+    }), [data, isLoaded, user, sapProducts, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, filteredEnsayos, totalFilteredAssays, approvalPercentage, pendingAssays]);
 
     return (
         <DynamicDataContext.Provider value={value}>

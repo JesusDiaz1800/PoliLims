@@ -1,5 +1,5 @@
 
-import { getMatrizProductos } from "@/services/server-data-service";
+import { getMatrizProductos } from "@/lib/matriz-datos";
 
 /**
  * @interface SapProduct

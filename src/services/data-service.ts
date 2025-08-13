@@ -1,7 +1,8 @@
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
-import { getKnowledgeBaseFiles } from "./server-data-service";
+import { getMatrizProductos } from "@/lib/matriz-datos";
+import { getProductsFromSap } from "./sap-service";
 
 
 // --- DEMO DATA ---
@@ -307,7 +308,7 @@ export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 't
  * It also applies some dynamic logic, like updating equipment status based on the current date.
  * @returns {Promise<object>} A promise that resolves to an object containing all initial data arrays.
  */
-export async function getInitialData(): Promise<Omit<InitialData, 'matrizProductos' | 'sapProducts'>> {
+export async function getInitialData(): Promise<Omit<InitialData, 'sapProducts'>> {
     const today = new Date();
     // Dynamically update equipment status based on calibration date for realistic simulation.
     const updatedEquipos = demoEquipos.map(equipo => {
@@ -316,6 +317,11 @@ export async function getInitialData(): Promise<Omit<InitialData, 'matrizProduct
         }
         return equipo;
     });
+
+    const [matrizProductos, sapProducts] = await Promise.all([
+        getMatrizProductos(),
+        getProductsFromSap()
+    ]);
 
     return {
         ensayos: demoEnsayos,
@@ -331,5 +337,6 @@ export async function getInitialData(): Promise<Omit<InitialData, 'matrizProduct
         condicionesAmbientales: demoCondicionesAmbientales,
         formacion: demoFormacion,
         auditorias: demoAuditorias,
+        matrizProductos,
     };
 }
