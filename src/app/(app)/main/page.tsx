@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -19,8 +18,6 @@ import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
-import { findUserByUsername } from "@/services/user-service";
-import { useSearchParams } from 'next/navigation';
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
@@ -29,11 +26,14 @@ import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
+import { useSearchParams } from "next/navigation";
+import { subMonths, isAfter, parse } from 'date-fns';
 
+const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
 export default function MainPage() {
   const searchParams = useSearchParams();
-  const username = searchParams.get('user') || 'jdiaz';
+  const userQuery = searchParams.toString();
 
   const { 
     ensayos, 
@@ -41,24 +41,63 @@ export default function MainPage() {
     equipos, 
     noConformidades, 
     isLoaded,
-    filteredEnsayos,
-    totalFilteredAssays,
-    approvalPercentage,
-    pendingAssays,
+    user,
   } = useDynamicData();
   
-  const [user, setUser] = React.useState<User | null>(null);
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
-  
-  React.useEffect(() => {
-    async function loadUser() {
-        const userData = await findUserByUsername(username);
-        setUser(userData);
-    }
-    if (username) {
-      loadUser();
-    }
-  }, [username]);
+
+  // --- Start of KPI Calculation Logic ---
+  const filteredEnsayos = React.useMemo(() => {
+    const now = new Date();
+    const monthsParam = searchParams.get('month') || 'last_12_months';
+    const analystParam = searchParams.get('analyst') || 'all';
+    const statusParam = searchParams.get('status') || 'all';
+    const typeParam = searchParams.get('type') || 'all';
+    const supplierParam = searchParams.get('supplier') || 'all';
+    const assayParam = searchParams.get('assay') || 'all';
+
+    let dateLimit = subMonths(now, 12);
+    if (monthsParam === 'last_30_days') dateLimit = subMonths(now, 1);
+    if (monthsParam === 'this_month') dateLimit = new Date(now.getFullYear(), now.getMonth(), 1);
+    if (monthsParam === 'last_month') dateLimit = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    if (monthsParam === 'last_3_months') dateLimit = subMonths(now, 3);
+
+    return ensayos.filter(e => {
+        try {
+            const assayDate = parse(e.fecha, 'dd-MM-yyyy', new Date());
+            if (isNaN(assayDate.getTime())) return false; // Skip invalid dates
+            
+            const dateFilter = isAfter(assayDate, dateLimit);
+            const analystFilter = analystParam === 'all' || e.analista === analystParam;
+            const typeFilter = typeParam === 'all' || e.tipo === typeParam;
+            const supplierFilter = supplierParam === 'all' || e.proveedor === supplierParam;
+            const assayFilter = assayParam === 'all' || (e[assayParam] !== null && e[assayParam] !== undefined);
+            
+            const statusFilter = statusParam === 'all' ||
+                (statusParam === 'aprobado' && e.estado === 'Aprobado') ||
+                (statusParam === 'rechazado' && e.estado === 'Rechazado') ||
+                (statusParam === 'pendiente' && pendingStatuses.includes(e.estado));
+
+            return dateFilter && analystFilter && typeFilter && statusFilter && supplierFilter && assayFilter;
+        } catch (error) {
+            return false;
+        }
+    });
+  }, [ensayos, searchParams]);
+
+  const { totalFilteredAssays, approvalPercentage, pendingAssays } = React.useMemo(() => {
+    const total = filteredEnsayos.length;
+    if (total === 0) return { totalFilteredAssays: 0, approvalPercentage: 0, pendingAssays: 0 };
+    
+    const approved = filteredEnsayos.filter(e => e.estado === 'Aprobado').length;
+    const pending = filteredEnsayos.filter(e => pendingStatuses.includes(e.estado)).length;
+    
+    const relevantTotal = filteredEnsayos.filter(e => e.estado === 'Aprobado' || e.estado === 'Rechazado').length;
+    const percentage = relevantTotal > 0 ? (approved / relevantTotal) * 100 : 0;
+
+    return { totalFilteredAssays: total, approvalPercentage: percentage, pendingAssays: pending };
+  }, [filteredEnsayos]);
+  // --- End of KPI Calculation Logic ---
 
   const allAnalysts = React.useMemo(() => {
     if (!isLoaded || !ensayos) return [];
@@ -95,7 +134,6 @@ export default function MainPage() {
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
-  const userQuery = searchParams.toString();
 
   return (
     <div className="relative flex-1 space-y-4">
