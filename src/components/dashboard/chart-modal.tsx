@@ -46,3 +46,5 @@ export function ChartModal({ isOpen, onClose, title, children }: ChartModalProps
     </AnimatePresence>
   );
 }
+
+    

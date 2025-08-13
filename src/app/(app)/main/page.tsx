@@ -8,7 +8,6 @@ import { subMonths, isAfter, parse } from 'date-fns';
 
 import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
-import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
 import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
@@ -153,89 +152,92 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-    <div className="dashboard-futurista p-6 md:p-10">
-      <div className="relative z-10 space-y-4">
-        <WelcomeBanner user={user} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href={`/ensayos/seguimiento`} />
-          <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
-          <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href={`/ensayos/seguimiento?status=pendiente`} />
-          <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos" />
-          <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-8">
-            <ChartCard title="Ensayos por Mes (Últimos 12 meses)">
-              <AssaysByMonthChart data={ensayos || []} />
-            </ChartCard>
-          </div>
-          <div className="lg:col-span-4">
-            <Card className="card-glass">
-              <Collapsible
-                open={isFiltersOpen}
-                onOpenChange={setIsFiltersOpen}
-                className="p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-semibold">
-                    Filtros del Dashboard
-                  </h4>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-9 p-0">
-                      <SlidersHorizontal className="h-4 w-4" />
-                      <span className="sr-only">Toggle</span>
-                    </Button>
-                  </CollapsibleTrigger>
-                </div>
-                <CollapsibleContent>
-                  <DashboardFilters
-                    analysts={allAnalysts}
-                    assayTypes={assayTypes}
-                    suppliers={suppliers}
-                    individualAssays={individualAssays}
-                  />
-                </CollapsibleContent>
-              </Collapsible>
-            </Card>
-            <div className="mt-4">
-              <ChartCard title="Distribución de Estados de Muestras">
-                <SampleStatusChart data={filteredEnsayos} />
-              </ChartCard>
+    <div className="dashboard-futurista">
+        <div className="background-overlay" />
+        <div className="relative z-10 space-y-4">
+            <WelcomeBanner user={user} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href={`/ensayos/seguimiento`} />
+                <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} />
+                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href={`/ensayos/seguimiento?status=pendiente`} />
+                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos" />
+                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" />
             </div>
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <ChartCard title="Distribución de Tipos de Ensayo">
-            <AssaysByTypeChart data={filteredEnsayos} />
-          </ChartCard>
-          <ChartCard title="Distribución de Carga de Trabajo">
-            <WorkloadDistributionChart data={filteredEnsayos} />
-          </ChartCard>
-          <Card className="card-glass">
-            <RecentActivityList initialActivity={recentActivity || []} />
-          </Card>
-        </div>
-         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-4">
-            <Card className="h-[280px] card-glass">
-              <EquipmentAlertsCard equipos={equipos || []} />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-8">
+                <ChartCard title="Ensayos por Mes (Últimos 12 meses)">
+                <AssaysByMonthChart data={ensayos || []} />
+                </ChartCard>
+            </div>
+            <div className="lg:col-span-4">
+                <Card className="card-glass">
+                <Collapsible
+                    open={isFiltersOpen}
+                    onOpenChange={setIsFiltersOpen}
+                    className="p-4"
+                >
+                    <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold">
+                        Filtros del Dashboard
+                    </h4>
+                    <CollapsibleTrigger asChild>
+                        <Button variant="ghost" size="sm" className="w-9 p-0">
+                        <SlidersHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle</span>
+                        </Button>
+                    </CollapsibleTrigger>
+                    </div>
+                    <CollapsibleContent>
+                    <DashboardFilters
+                        analysts={allAnalysts}
+                        assayTypes={assayTypes}
+                        suppliers={suppliers}
+                        individualAssays={individualAssays}
+                    />
+                    </CollapsibleContent>
+                </Collapsible>
+                </Card>
+                <div className="mt-4">
+                <ChartCard title="Distribución de Estados de Muestras">
+                    <SampleStatusChart data={filteredEnsayos} />
+                </ChartCard>
+                </div>
+            </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <ChartCard title="Distribución de Tipos de Ensayo">
+                <AssaysByTypeChart data={filteredEnsayos} />
+            </ChartCard>
+            <ChartCard title="Distribución de Carga de Trabajo">
+                <WorkloadDistributionChart data={filteredEnsayos} />
+            </ChartCard>
+            <Card className="card-glass">
+                <RecentActivityList initialActivity={recentActivity || []} />
             </Card>
-          </div>
-          <div className="lg:col-span-4">
-            <ChartCard title="No Conformidades por Mes (Últimos 6 meses)">
-              <NonConformitiesByMonthChart data={noConformidades || []} />
-            </ChartCard>
-          </div>
-          <div className="lg:col-span-4">
-            <ChartCard title="Tiempo de Respuesta Promedio por Ensayo">
-              <AssayTurnaroundTimeChart data={ensayos || []} />
-            </ChartCard>
-          </div>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="lg:col-span-4">
+                <Card className="h-[280px] card-glass">
+                <EquipmentAlertsCard equipos={equipos || []} />
+                </Card>
+            </div>
+            <div className="lg:col-span-4">
+                <ChartCard title="No Conformidades por Mes (Últimos 6 meses)">
+                <NonConformitiesByMonthChart data={noConformidades || []} />
+                </ChartCard>
+            </div>
+            <div className="lg:col-span-4">
+                <ChartCard title="Tiempo de Respuesta Promedio por Ensayo">
+                <AssayTurnaroundTimeChart data={ensayos || []} />
+                </ChartCard>
+            </div>
+            </div>
         </div>
-      </div>
     </div>
   );
 }
+
+    

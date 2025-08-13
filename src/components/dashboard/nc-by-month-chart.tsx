@@ -83,3 +83,5 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
   )
 }
 export const NonConformitiesByMonthChart = React.memo(NonConformitiesByMonthChartInternal);
+
+    

@@ -94,3 +94,5 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   )
 }
 export const WorkloadDistributionChart = React.memo(WorkloadDistributionChartInternal);
+
+    

@@ -111,3 +111,5 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
   )
 }
 export const AssaysByMonthChart = React.memo(AssaysByMonthChartInternal);
+
+    

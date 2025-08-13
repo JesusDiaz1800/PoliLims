@@ -110,3 +110,5 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
   )
 }
 export const AssayTurnaroundTimeChart = React.memo(AssayTurnaroundTimeChartInternal);
+
+    
