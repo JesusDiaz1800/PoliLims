@@ -66,8 +66,8 @@ const ThroughputTrendChartInternal = ({ data: allData }: ThroughputTrendChartPro
                         }}
                     />
                     <Legend iconSize={10} wrapperStyle={{fontSize: '12px', paddingTop: '10px'}}/>
-                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="url(#color-received)" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-1))"}} />
-                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="url(#color-completed)" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-2))"}}/>
+                    <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-1))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-1))"}} />
+                    <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{r: 2, fill: "hsl(var(--chart-2))"}}/>
                 </LineChart>
             </ResponsiveContainer>
         </CardContent>

@@ -1,7 +1,6 @@
 
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Hand } from "lucide-react";
 import type { User } from "@/services/user-service";
 import React from "react";
@@ -19,11 +18,11 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   return (
     <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
         <div className="flex items-center gap-4">
-            <SidebarTrigger aria-label="Toggle sidebar" />
+            <SidebarTrigger aria-label="Toggle sidebar" className="text-white hover:bg-white/10 hover:text-white"/>
             <Hand className="h-8 w-8 text-primary" />
             <div>
-                <CardTitle className="text-2xl">¡Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</CardTitle>
-                <CardDescription className="text-base text-muted-foreground">Aquí tienes un resumen del estado actual del laboratorio.</CardDescription>
+                <h1 className="text-2xl font-bold font-headline">¡Bienvenido de vuelta, {user.fullName.split(' ')[0]}!</h1>
+                <p className="text-base text-muted-foreground">Aquí tienes un resumen del estado actual del laboratorio.</p>
             </div>
         </div>
     </div>

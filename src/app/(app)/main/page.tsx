@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 
-import { StatsCard } from "@/components/dashboard/stats-card";
+import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
@@ -94,7 +94,7 @@ export default function MainPage() {
                 <div className="lg:col-span-2">
                     <WelcomeBanner user={user} />
                 </div>
-                <Card className="lg:col-span-2">
+                <Card className="lg:col-span-2 card-glass">
                     <Collapsible
                         open={isFiltersOpen}
                         onOpenChange={setIsFiltersOpen}
@@ -133,38 +133,38 @@ export default function MainPage() {
 
             {/* Main Charts Row */}
             <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-12 lg:col-span-7 h-[300px]">
+                <Card className="col-span-12 lg:col-span-7 h-[300px] card-glass">
                     <ThroughputTrendChart data={filteredEnsayos} />
-                </div>
-                <div className="col-span-12 lg:col-span-5 h-[300px]">
+                </Card>
+                <Card className="col-span-12 lg:col-span-5 h-[300px] card-glass">
                     <AssaysByMonthChart data={ensayos || []} />
-                </div>
+                </Card>
             </div>
 
             {/* Secondary Charts & Lists Row */}
             <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-12 lg:col-span-3 h-[280px]">
+                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
                     <AssaysByTypeChart data={filteredEnsayos} />
-                </div>
-                <div className="col-span-12 lg:col-span-3 h-[280px]">
+                </Card>
+                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
                     <SampleStatusChart data={filteredEnsayos} />
-                </div>
-                <div className="col-span-12 lg:col-span-3 h-[280px]">
+                </Card>
+                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
                     <WorkloadDistributionChart data={filteredEnsayos} />
-                </div>
-                <div className="col-span-12 lg:col-span-3 h-[280px]">
+                </Card>
+                <Card className="col-span-12 lg:col-span-3 h-[280px] card-glass">
                     <RecentActivityList initialActivity={recentActivity || []}/>
-                </div>
+                </Card>
             </div>
              
              {/* Third Row with other charts */}
             <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-12 lg:col-span-4 h-[280px]">
+                <Card className="col-span-12 lg:col-span-4 h-[280px] card-glass">
                     <EquipmentAlertsCard equipos={equipos || []} />
-                </div>
-                 <div className="col-span-12 lg:col-span-8 h-[280px]">
+                </Card>
+                 <Card className="col-span-12 lg:col-span-8 h-[280px] card-glass">
                     <NonConformitiesByMonthChart data={noConformidades || []} />
-                </div>
+                </Card>
             </div>
 
         </div>

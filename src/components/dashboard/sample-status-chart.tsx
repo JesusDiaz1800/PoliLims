@@ -36,9 +36,9 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
     });
 
     return [
-        { name: 'Aprobado', value: statusCounts.Aprobado, fill: 'var(--color-chart-2)' },
-        { name: 'Pendiente', value: statusCounts.Pendiente, fill: 'var(--color-chart-3)' },
-        { name: 'Rechazado', value: statusCounts.Rechazado, fill: 'var(--color-chart-5)' },
+        { name: 'Aprobado', value: statusCounts.Aprobado, fill: 'hsl(var(--chart-2))' },
+        { name: 'Pendiente', value: statusCounts.Pendiente, fill: 'hsl(var(--chart-3))' },
+        { name: 'Rechazado', value: statusCounts.Rechazado, fill: 'hsl(var(--chart-5))' },
     ].filter(d => d.value > 0);
   }, [data]);
   
@@ -56,26 +56,6 @@ const SampleStatusChartInternal = ({ data }: SampleStatusChartProps) => {
                  <div className="w-1/2 h-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                            <style>
-                                {
-                                    `
-                                    :root {
-                                        --color-chart-1: hsl(var(--chart-1));
-                                        --color-chart-2: hsl(var(--chart-2));
-                                        --color-chart-3: hsl(var(--chart-3));
-                                        --color-chart-4: hsl(var(--chart-4));
-                                        --color-chart-5: hsl(var(--chart-5));
-                                    }
-                                    .dark {
-                                        --color-chart-1: hsl(var(--chart-1));
-                                        --color-chart-2: hsl(var(--chart-2));
-                                        --color-chart-3: hsl(var(--chart-3));
-                                        --color-chart-4: hsl(var(--chart-4));
-                                        --color-chart-5: hsl(var(--chart-5));
-                                    }
-                                    `
-                                }
-                            </style>
                             <Pie
                                 data={chartData}
                                 cx="50%"

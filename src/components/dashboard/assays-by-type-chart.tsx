@@ -28,7 +28,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
             .map(([name, value], index) => ({
                 name,
                 value,
-                fill: `url(#color-chart-${(index % 5) + 1})`
+                fill: `hsl(var(--chart-${(index % 5) + 1}))`
             }))
             .sort((a, b) => b.value - a.value);
     }, [allData]);
@@ -42,20 +42,6 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
       <CardContent className="h-[calc(100%-4rem)] pb-0">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-                 <defs>
-                    <linearGradient id="color-chart-1" x1="0" y1="0" x2="1" y2="0">
-                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
-                    </linearGradient>
-                     <linearGradient id="color-chart-2" x1="0" y1="0" x2="1" y2="0">
-                       <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
-                    </linearGradient>
-                      <linearGradient id="color-chart-3" x1="0" y1="0" x2="1" y2="0">
-                       <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
-                    </linearGradient>
-                </defs>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
                 <YAxis dataKey="name" type="category" width={80} stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip
