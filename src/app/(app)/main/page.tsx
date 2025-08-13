@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -20,7 +21,7 @@ import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-ch
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaround-time-chart";
 import { ChartModal } from "@/components/dashboard/chart-modal";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -28,18 +29,19 @@ import { Button } from "@/components/ui/button";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
-const ChartCard = ({ title, children, className }: { title: string; children: React.ReactNode, className?: string }) => {
+const ChartCard = ({ title, description, children, className }: { title: string; description: string; children: React.ReactNode, className?: string }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
     <>
       <Card className="h-full card-glass relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
-        <div className="p-4">
-            <h3 className="text-sm font-semibold text-foreground/90">{title}</h3>
-            <div className="mt-4 h-[240px]">
-                {children}
-            </div>
-        </div>
+        <CardHeader>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent className="h-[240px]">
+            {children}
+        </CardContent>
         <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <Expand className="h-4 w-4 text-white/70" />
         </div>
@@ -145,7 +147,7 @@ export default function MainPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 <div className="lg:col-span-8">
-                    <ChartCard title="Ensayos por Mes (Últimos 12 meses)">
+                    <ChartCard title="Ensayos por Mes" description="Volumen de ensayos en los últimos 12 meses.">
                         <AssaysByMonthChart data={ensayos || []} />
                     </ChartCard>
                 </div>
@@ -178,7 +180,7 @@ export default function MainPage() {
                         </Collapsible>
                     </Card>
                     <div className="mt-4">
-                        <ChartCard title="Distribución de Estados de Muestras">
+                        <ChartCard title="Estados de Muestras" description="Distribución porcentual de los estados actuales.">
                              <SampleStatusChart data={filteredEnsayos} />
                         </ChartCard>
                     </div>
@@ -186,30 +188,36 @@ export default function MainPage() {
             </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                <ChartCard title="Distribución de Tipos de Ensayo">
+                <ChartCard title="Distribución de Ensayos" description="Cantidad de ensayos por cada tipo de producto.">
                     <AssaysByTypeChart data={filteredEnsayos} />
                 </ChartCard>
-                <ChartCard title="Distribución de Carga de Trabajo">
+                <ChartCard title="Carga de Trabajo" description="Distribución de la cantidad de ensayos por analista.">
                      <WorkloadDistributionChart data={filteredEnsayos} />
                 </ChartCard>
-                 <Card className="card-glass h-[312px]">
-                    <RecentActivityList initialActivity={recentActivity || []}/>
+                <Card className="card-glass h-[340px]">
+                    <CardHeader>
+                        <CardTitle>Actividad Reciente</CardTitle>
+                        <CardDescription>Últimas acciones realizadas en el sistema.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[250px] -mt-4">
+                        <RecentActivityList initialActivity={recentActivity || []}/>
+                    </CardContent>
                 </Card>
             </div>
              
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 <div className="lg:col-span-4">
-                    <Card className="h-[312px] card-glass">
+                    <Card className="h-[340px] card-glass">
                         <EquipmentAlertsCard equipos={equipos || []} />
                     </Card>
                 </div>
                 <div className="lg:col-span-4">
-                    <ChartCard title="No Conformidades por Tipo">
+                    <ChartCard title="No Conformidades" description="Tendencia de NCs en los últimos 6 meses.">
                         <NonConformitiesByTypeChart data={noConformidades || []} />
                     </ChartCard>
                 </div>
                  <div className="lg:col-span-4">
-                     <ChartCard title="Tiempo de Respuesta Promedio por Ensayo">
+                     <ChartCard title="Tiempos de Respuesta" description="Promedio de días para completar cada tipo de ensayo.">
                         <AssayTurnaroundTimeChart data={ensayos || []} />
                     </ChartCard>
                 </div>

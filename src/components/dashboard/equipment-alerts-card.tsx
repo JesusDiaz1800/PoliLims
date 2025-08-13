@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { EquipoDetailsDialog } from "../equipos/equipo-details-dialog";
 import { EquipoDialog } from "../equipos/equipo-dialog";
-import { ChartCard } from "./chart-card";
 
 
 interface EquipmentAlertsCardProps {
@@ -75,34 +74,36 @@ const EquipmentAlertsCardInternal = ({ equipos }: EquipmentAlertsCardProps) => {
 
   return (
     <>
-    <ChartCard title="Alertas de Equipos">
-        <div className="h-[250px] -mt-6">
-            <ScrollArea className="h-full pr-4">
-            <div className="space-y-4 p-4">
-                {equiposConAlerta.length > 0 ? (
-                equiposConAlerta.map(equipo => {
-                    const alert = getAlertDetails(equipo);
-                    return (
-                    <div key={equipo.id} className="flex items-center justify-between text-sm">
-                        <div>
-                        <p className="font-semibold">{equipo.nombre}</p>
-                        <p className={cn("font-medium", alert.color)}>{alert.message}</p>
-                        </div>
-                        <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => handleViewDetails(equipo)}>
-                            Ver
-                        </Button>
+    <CardHeader>
+        <CardTitle>Alertas de Equipos</CardTitle>
+        <CardDescription>Equipos que requieren atención inmediata.</CardDescription>
+    </CardHeader>
+    <CardContent className="h-[250px] -mt-2">
+        <ScrollArea className="h-full pr-4">
+        <div className="space-y-4">
+            {equiposConAlerta.length > 0 ? (
+            equiposConAlerta.map(equipo => {
+                const alert = getAlertDetails(equipo);
+                return (
+                <div key={equipo.id} className="flex items-center justify-between text-sm">
+                    <div>
+                    <p className="font-semibold">{equipo.nombre}</p>
+                    <p className={cn("font-medium", alert.color)}>{alert.message}</p>
                     </div>
-                    );
-                })
-                ) : (
-                <div className="text-center text-sm text-muted-foreground h-full flex items-center justify-center">
-                    <p>No hay equipos que requieran atención inmediata.</p>
+                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => handleViewDetails(equipo)}>
+                        Ver
+                    </Button>
                 </div>
-                )}
+                );
+            })
+            ) : (
+            <div className="text-center text-sm text-muted-foreground h-full flex items-center justify-center">
+                <p>No hay equipos que requieran atención inmediata.</p>
             </div>
-            </ScrollArea>
+            )}
         </div>
-    </ChartCard>
+        </ScrollArea>
+    </CardContent>
 
     {selectedEquipo && (
         <EquipoDetailsDialog
