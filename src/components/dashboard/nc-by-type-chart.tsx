@@ -28,6 +28,21 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
   const height = isModal ? 500 : 250;
   const totalNC = React.useMemo(() => chartData.reduce((sum, item) => sum + item.value, 0), [chartData]);
   
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+    if (!percent || percent < 0.05) return null;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" className="text-xs font-bold">
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
+
   return (
     <div className="h-full w-full relative">
       <ResponsiveContainer width="100%" height="100%">
@@ -62,7 +77,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={false}
+                  label={renderCustomizedLabel}
                   outerRadius={isModal ? 150 : 80}
                   innerRadius={isModal ? 90 : 50}
                   paddingAngle={5}
