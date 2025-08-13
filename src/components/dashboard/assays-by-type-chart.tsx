@@ -28,31 +28,31 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
     return (
     <div className="h-[250px] w-full" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
               <defs>
-                  <linearGradient id="colorType1" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorType1" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
                       <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
                   </linearGradient>
-                   <linearGradient id="colorType2" x1="0" y1="0" x2="0" y2="1">
+                   <linearGradient id="colorType2" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
                       <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
                   </linearGradient>
-                   <linearGradient id="colorType3" x1="0" y1="0" x2="0" y2="1">
+                   <linearGradient id="colorType3" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
                       <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
                   </linearGradient>
-                   <linearGradient id="colorType4" x1="0" y1="0" x2="0" y2="1">
+                   <linearGradient id="colorType4" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-4))" stopOpacity={0.8}/>
                       <stop offset="95%" stopColor="hsl(var(--chart-4))" stopOpacity={0.2}/>
                   </linearGradient>
-                   <linearGradient id="colorType5" x1="0" y1="0" x2="0" y2="1">
+                   <linearGradient id="colorType5" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
                       <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.2}/>
                   </linearGradient>
               </defs>
-              <XAxis dataKey="name" stroke="#888888" fontSize={10} tickLine={false} axisLine={false} interval={0} />
-              <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+              <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+              <YAxis dataKey="name" type="category" width={80} tick={{fontSize: 10}} stroke="#888888" tickLine={false} axisLine={false} interval={0} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -62,7 +62,7 @@ const AssaysByTypeChartInternal = ({ data: allData, isModal = false }: AssaysByT
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Ensayos" radius={[4, 4, 0, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
+              <Bar dataKey="value" name="Ensayos" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
                  {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={`url(#colorType${(index % 5) + 1})`} />
                   ))}

@@ -28,20 +28,20 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
         .sort((a, b) => b.value - a.value);
   }, [allData]);
 
-  const height = isModal ? 500 : 250;
+  const height = isModal ? 500 : 240;
 
   return (
     <div className="h-[240px] w-full relative" style={{ height: `${height}px` }}>
       <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+          <BarChart data={chartData} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                <defs>
-                  <linearGradient id="colorWorkload" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="colorWorkload" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
                       <stop offset="100%" stopColor="hsl(var(--chart-5))" stopOpacity={0.4}/>
                   </linearGradient>
               </defs>
-              <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
-              <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" type="category" tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
+              <YAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
                   contentStyle={{
@@ -51,7 +51,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       borderRadius: 'var(--radius)',
                   }}
               />
-              <Bar dataKey="value" name="Registros" radius={[0, 4, 4, 0]} fill="url(#colorWorkload)" activeBar={<Rectangle fillOpacity={0.8} />}/>
+              <Bar dataKey="value" name="Registros" radius={[4, 4, 0, 0]} fill="url(#colorWorkload)" activeBar={<Rectangle fillOpacity={0.8} />}/>
           </BarChart>
       </ResponsiveContainer>
     </div>
