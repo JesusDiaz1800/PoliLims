@@ -16,6 +16,21 @@ const CustomCursor = (props: any) => {
   return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
 };
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
+        <p className="font-bold text-card-foreground text-sm">{label}</p>
+        <p className="text-xs text-muted-foreground">
+            Cantidad: <span className="font-bold text-foreground">{payload[0].value}</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
+
 const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) => {
     const chartData = React.useMemo(() => {
         const typeCounts = allData.reduce((acc, ensayo) => {
@@ -45,13 +60,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
                 <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={<CustomCursor />}
-                    contentStyle={{
-                      backgroundColor: 'hsl(var(--card))',
-                      borderColor: 'hsl(var(--border))',
-                      borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--card-foreground))',
-                      fontSize: '12px'
-                    }}
+                    content={<CustomTooltip />}
                 />
                 <Bar dataKey="value" name="Cantidad" radius={[0, 2, 2, 0]} barSize={12}/>
             </BarChart>
