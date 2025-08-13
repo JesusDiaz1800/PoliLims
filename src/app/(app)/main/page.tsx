@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, Expand, SlidersHorizontal } from "lucide-react";
 import { subMonths, isAfter, parse } from 'date-fns';
 
-import { StatsCard } from "@/components/dashboard/stats-card";
+import { StatsCard } from "@/components/main/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { AssaysByMonthChart } from "@/components/dashboard/assays-by-month-chart";
@@ -16,6 +16,7 @@ import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-car
 import Loading from '../loading';
 import type { User } from "@/services/user-service";
 import { NonConformitiesByMonthChart } from "@/components/dashboard/nc-by-month-chart";
+import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
