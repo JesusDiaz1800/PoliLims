@@ -20,7 +20,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-card-foreground text-sm">{label}</p>
+        <p className="font-bold text-card-foreground text-xs">{label}</p>
         <p className="text-xs text-muted-foreground">
             Cantidad: <span className="font-bold text-foreground">{payload[0].value}</span>
         </p>
@@ -50,10 +50,10 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">Ensayos por Tipo</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Distribución de la cantidad de ensayos.</CardDescription>
+        <CardTitle>Ensayos por Tipo</CardTitle>
+        <CardDescription>Distribución de la cantidad de ensayos.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
+      <CardContent className="h-[calc(100%-4rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
