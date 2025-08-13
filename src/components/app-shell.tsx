@@ -505,7 +505,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("min-w-full custom-scrollbar", pathname !== '/main' && "p-6 md:p-10")}
+                className={cn("p-6 md:p-10")}
                 role="main"
                 tabIndex={-1}
             >
