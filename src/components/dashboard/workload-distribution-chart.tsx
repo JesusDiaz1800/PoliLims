@@ -20,8 +20,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-card-foreground">{label}</p>
-        <p className="text-sm text-muted-foreground">Ensayos: {payload[0].value}</p>
+        <p className="font-bold text-card-foreground text-base">{label}</p>
+        <p className="text-xs text-muted-foreground">Ensayos: {payload[0].value}</p>
       </div>
     );
   }
