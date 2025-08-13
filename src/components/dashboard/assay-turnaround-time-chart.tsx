@@ -85,7 +85,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData }: AssayTurnaroundTime
         <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 25, left: -10, bottom: 0 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
-                <YAxis dataKey="name" type="category" width={50} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
+                <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
                 <Tooltip
                     cursor={false}
                     content={<CustomTooltip />}
