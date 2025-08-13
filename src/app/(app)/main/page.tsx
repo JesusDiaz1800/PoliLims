@@ -130,11 +130,11 @@ export default function MainPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <Card className="lg:col-span-7 h-[300px] card-glass">
-                    <ThroughputTrendChart data={filteredEnsayos} />
-                </Card>
                 <Card className="lg:col-span-5 h-[300px] card-glass">
                     <AssaysByMonthChart data={ensayos || []} />
+                </Card>
+                <Card className="lg:col-span-7 h-[300px] card-glass">
+                    <ThroughputTrendChart data={filteredEnsayos} />
                 </Card>
             </div>
 
@@ -166,4 +166,3 @@ export default function MainPage() {
     </div>
   );
 }
-
