@@ -1,7 +1,6 @@
 
 import { getInitialData } from '@/services/data-service';
 import AppLayoutClient from './app-layout-client';
-import { DynamicDataProvider } from '@/context/data-context';
 import { findUserByUsername } from '@/services/user-service';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -41,10 +40,8 @@ export default async function AppLayout({
     const initialData = await getInitialData();
 
     return (
-        <DynamicDataProvider initialData={initialData}>
-            <AppLayoutClient user={user}>
-                {children}
-            </AppLayoutClient>
-        </DynamicDataProvider>
+        <AppLayoutClient user={user} initialData={initialData}>
+            {children}
+        </AppLayoutClient>
     );
 }

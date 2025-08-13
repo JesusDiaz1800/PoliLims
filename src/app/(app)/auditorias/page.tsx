@@ -85,5 +85,3 @@ const AuditoriasPage = () => {
 }
 
 export default AuditoriasPage;
-
-    

@@ -8,13 +8,16 @@ import type { User } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
 import React, { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { DynamicDataProvider, type InitialData } from '@/context/data-context';
 
 export default function AppLayoutClient({ 
     children,
     user,
+    initialData,
 }: { 
     children: React.ReactNode,
     user: User | null;
+    initialData: InitialData
 }) {
     const pathname = usePathname();
 
@@ -45,14 +48,16 @@ export default function AppLayoutClient({
             enableSystem
             disableTransitionOnChange
         >
-            <ChatWidgetProvider>
-                <SidebarProvider>
-                    <AppShell user={user}>
-                        {children}
-                    </AppShell>
-                </SidebarProvider>
-                <ChatWidget />
-            </ChatWidgetProvider>
+            <DynamicDataProvider initialData={initialData}>
+                <ChatWidgetProvider>
+                    <SidebarProvider>
+                        <AppShell user={user}>
+                            {children}
+                        </AppShell>
+                    </SidebarProvider>
+                    <ChatWidget />
+                </ChatWidgetProvider>
+            </DynamicDataProvider>
         </ThemeProvider>
     );
 }

@@ -6,35 +6,20 @@ import { CalculadoraIncertidumbre } from "@/components/incertidumbre/incertidumb
 import { HistoricoIncertidumbre } from "@/components/incertidumbre/incertidumbre-historico";
 import type { CalculoIncertidumbre } from "@/context/data-context";
 import Loading from "../../loading";
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from '@/context/data-context';
 import { useToast } from '@/hooks/use-toast';
 
 export default function IncertidumbrePage() {
-    const [calculos, setCalculos] = React.useState<CalculoIncertidumbre[]>([]);
-    const [isLoading, setIsLoading] = React.useState(true);
+    const { calculosIncertidumbre, addCalculoIncertidumbre, addRecentActivity, isLoaded } = useDynamicData();
     const { toast } = useToast();
 
-    React.useEffect(() => {
-        async function loadData() {
-            setIsLoading(true);
-            const data = await dataService.getInitialData();
-            setCalculos(data.calculosIncertidumbre);
-            setIsLoading(false);
-        }
-        loadData();
-    }, []);
-
     const handleCalculoGuardado = async (nuevoCalculo: Omit<CalculoIncertidumbre, 'id'>) => {
-        // Simula la adición del cálculo y la actividad reciente
         try {
-            const calculoGuardado = await dataService.addCalculoIncertidumbre(nuevoCalculo);
-            await dataService.addRecentActivity({
-                user: "Victor Lutz",
+            await addCalculoIncertidumbre(nuevoCalculo);
+            await addRecentActivity({
+                user: "Victor Lutz", // This should be dynamic
                 action: `realizó un nuevo cálculo de incertidumbre: ${nuevoCalculo.nombre}`,
             });
-
-            // Actualiza el estado local para reflejar el cambio inmediatamente en la UI
-            setCalculos(prevCalculos => [calculoGuardado, ...prevCalculos]);
             
             toast({
                 title: "Cálculo Guardado",
@@ -51,14 +36,14 @@ export default function IncertidumbrePage() {
     };
 
 
-    if (isLoading) {
+    if (!isLoaded) {
         return <Loading/>
     }
 
     return (
         <div className="space-y-6">
             <CalculadoraIncertidumbre onCalculoGuardado={handleCalculoGuardado} />
-            <HistoricoIncertidumbre calculos={calculos} />
+            <HistoricoIncertidumbre calculos={calculosIncertidumbre} />
         </div>
     );
 }
