@@ -11,17 +11,12 @@ interface WorkloadDistributionChartProps {
     data: Ensayo[];
 }
 
-const CustomCursor = (props: any) => {
-  const { x, y, width, height } = props;
-  return <Rectangle fill="hsla(var(--accent), 0.3)" x={x} y={y} width={width} height={height} />;
-};
-
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="p-2 bg-card/80 backdrop-blur-sm border border-border rounded-lg shadow-lg">
-        <p className="font-bold text-card-foreground text-sm">{label}</p>
-        <p className="text-xs text-muted-foreground">Ensayos: {payload[0].value}</p>
+        <p className="font-bold text-card-foreground text-xs">{label}</p>
+        <p className="text-xs text-muted-foreground">Ensayos: <span className="font-bold text-foreground">{payload[0].value}</span></p>
       </div>
     );
   }
@@ -53,10 +48,10 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
   return (
     <>
       <CardHeader className="p-4 pb-0">
-        <CardTitle className="text-lg">Carga de Trabajo</CardTitle>
+        <CardTitle>Carga de Trabajo</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">Ensayos por analista en el período.</CardDescription>
       </CardHeader>
-      <CardContent className="h-[calc(100%-5rem)] pb-2">
+      <CardContent className="h-[calc(100%-4rem)] pb-2">
         {chartData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -71,7 +66,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                  />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip
-                    cursor={<CustomCursor />}
+                    cursor={false}
                     content={<CustomTooltip />}
                 />
                 <Bar dataKey="value" name="Ensayos" radius={[2, 2, 0, 0]} barSize={12}/>
