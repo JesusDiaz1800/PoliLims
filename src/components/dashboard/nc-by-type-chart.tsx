@@ -68,6 +68,7 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
               />
               <Pie

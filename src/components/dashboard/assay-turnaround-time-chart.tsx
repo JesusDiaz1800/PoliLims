@@ -81,6 +81,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
               />
               <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>

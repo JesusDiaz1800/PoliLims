@@ -72,6 +72,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       backdropFilter: 'blur(4px)',
                       border: '1px solid hsl(var(--border) / 0.3)',
                       borderRadius: 'var(--radius)',
+                      color: 'hsl(var(--foreground))'
                   }}
               />
               <Bar dataKey="total" name="Ensayos" radius={[4, 4, 0, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
