@@ -73,6 +73,7 @@ const NonConformitiesByMonthChartInternal = ({ data: allData }: NonConformitiesB
                         offset={8}
                         className="fill-white font-bold"
                         fontSize={10}
+                        formatter={(value: number) => (value > 0 ? value : '')}
                     />
                 </Bar>
             </BarChart>

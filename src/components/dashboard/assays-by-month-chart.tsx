@@ -96,6 +96,7 @@ const AssaysByMonthChartInternal = ({ data: allData }: AssaysByMonthChartProps) 
                         offset={8}
                         className="fill-white font-bold"
                         fontSize={10}
+                        formatter={(value: number) => (value > 0 ? value : '')}
                     />
                 </Bar>
                 <ReferenceLine 
