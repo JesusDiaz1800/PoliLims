@@ -63,7 +63,7 @@ const WorkloadDistributionChartInternal = ({ data: allData }: WorkloadDistributi
                       backgroundColor: 'hsl(var(--card))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--card-foreground))',
+                      color: 'hsl(var(--foreground))',
                       fontSize: '12px'
                     }}
                 />

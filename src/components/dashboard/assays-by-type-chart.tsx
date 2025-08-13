@@ -40,7 +40,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
       </CardHeader>
       <CardContent className="h-[calc(100%-5rem)] pb-2">
         <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                 <XAxis type="number" stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} hide />
                 <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickLine={false} axisLine={false} />
                 <Tooltip
@@ -49,7 +49,7 @@ const AssaysByTypeChartInternal = ({ data: allData }: AssaysByTypeChartProps) =>
                       backgroundColor: 'hsl(var(--card))',
                       borderColor: 'hsl(var(--border))',
                       borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--card-foreground))',
+                      color: 'hsl(var(--foreground))',
                       fontSize: '12px'
                     }}
                 />
