@@ -57,8 +57,6 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
                         border: '1px solid hsl(var(--border) / 0.3)',
                         borderRadius: 'var(--radius)',
                     }}
-                    labelStyle={{ color: 'hsl(var(--foreground))' }}
-                    itemStyle={{ color: 'hsl(var(--foreground))' }}
                 />
                 <Legend 
                     verticalAlign="bottom" 
