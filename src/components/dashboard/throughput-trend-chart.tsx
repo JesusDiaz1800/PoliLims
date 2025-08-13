@@ -58,7 +58,11 @@ const ThroughputTrendChartInternal = ({ data: allData, isModal = false }: Throug
                         borderRadius: 'var(--radius)',
                     }}
                 />
-                <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '10px' }}/>
+                <Legend 
+                    verticalAlign="bottom" 
+                    wrapperStyle={{ paddingTop: '10px' }}
+                    formatter={(value) => <span className="text-white">{value}</span>}
+                />
                 <Line type="monotone" dataKey="received" name="Recibidas" stroke="hsl(var(--chart-4))" strokeWidth={3} dot={false} />
                 <Line type="monotone" dataKey="completed" name="Completadas" stroke="hsl(var(--chart-2))" strokeWidth={3} dot={false} />
             </LineChart>

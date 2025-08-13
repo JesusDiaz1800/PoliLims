@@ -102,7 +102,7 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
                 verticalAlign="bottom"
                 wrapperStyle={{ bottom: isModal ? 20 : 5 }}
                 formatter={(value, entry) => (
-                    <span className="text-white/80">{value}: {entry.payload?.value}</span>
+                    <span className="text-white">{value}: {entry.payload?.value}</span>
                 )}
               />
           </PieChart>
@@ -115,5 +115,3 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
   )
 }
 export const SampleStatusChart = React.memo(SampleStatusChartInternal);
-
-
