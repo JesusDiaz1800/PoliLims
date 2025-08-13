@@ -30,7 +30,7 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href }: Stat
     );
 
     if (href) {
-        return <Link href={href}>{cardContent}</Link>;
+        return <Link href={href} prefetch={false}>{cardContent}</Link>;
     }
 
     return cardContent;
