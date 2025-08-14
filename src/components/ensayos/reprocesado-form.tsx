@@ -300,7 +300,7 @@ export function ReprocesadoForm({ analistas, ensayoToEdit, onFormSubmit, equipos
 };
 
   return (
-    <Form {...form}>
+    <Form form={form}>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* SECCIÓN GENERAL */}
         <Card>
