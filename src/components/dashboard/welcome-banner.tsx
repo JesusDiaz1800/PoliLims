@@ -5,12 +5,15 @@ import { Hand } from "lucide-react";
 import type { User } from "@/services/user-service";
 import React from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { DashboardThemeToggle } from "./dashboard-theme-toggle";
 
 interface WelcomeBannerProps {
   user: User | null;
+  theme: string;
+  setTheme: (theme: 'light' | 'dark') => void;
 }
 
-const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
+const WelcomeBannerInternal = ({ user, theme, setTheme }: WelcomeBannerProps) => {
   if (!user) {
     return null;
   }
@@ -23,6 +26,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
                 <h1 className="text-2xl font-bold font-headline">¡Bienvenido, {user.fullName.split(' ')[0]}!</h1>
                 <p className="text-base text-muted-foreground">Resumen del estado actual del laboratorio.</p>
             </div>
+            <DashboardThemeToggle theme={theme} setTheme={setTheme} />
         </div>
     </div>
   );

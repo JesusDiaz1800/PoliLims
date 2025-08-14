@@ -39,6 +39,7 @@ export default function MainPage() {
   } = useDynamicData();
   
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
+  const [theme, setTheme] = React.useState('dark');
 
   const filteredEnsayos = React.useMemo(() => {
     if (!isLoaded) return [];
@@ -100,12 +101,13 @@ export default function MainPage() {
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
+  const dashboardClass = theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light';
 
   return (
-      <div className="relative flex-1 space-y-4 dashboard-futurista px-4 sm:px-6 lg:px-8 py-6">
+      <div className={`relative flex-1 space-y-4 ${dashboardClass} px-4 sm:px-6 lg:px-8 py-6`}>
         <div className="background-overlay"></div>
         <div className="relative z-10 space-y-4">
-            <WelcomeBanner user={user} />
+            <WelcomeBanner user={user} theme={theme} setTheme={setTheme}/>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
                 <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" />
