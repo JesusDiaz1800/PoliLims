@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -464,22 +465,24 @@ function AppShell({
         </Sidebar>
 
         <div className="flex flex-col flex-1 h-screen overflow-hidden">
-            <header
-            className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
-            role="banner"
-            >
-            <div className="flex items-center gap-2">
-                <SidebarTrigger aria-label="Toggle sidebar" />
-                <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
-                    {pageTitle}
-                </h1>
-            </div>
-            <ThemeToggle />
-            </header>
+            {!isDashboard && (
+              <header
+              className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+              role="banner"
+              >
+              <div className="flex items-center gap-2">
+                  <SidebarTrigger aria-label="Toggle sidebar" />
+                  <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                      {pageTitle}
+                  </h1>
+              </div>
+              <ThemeToggle />
+              </header>
+            )}
             
             <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
                 <main
-                    className={cn("custom-scrollbar p-6 md:p-10")}
+                    className={cn("custom-scrollbar", !isDashboard && "p-6 md:p-10")}
                     role="main"
                     tabIndex={-1}
                 >
