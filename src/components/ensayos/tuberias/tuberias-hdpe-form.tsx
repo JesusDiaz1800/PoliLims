@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -272,7 +271,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
 
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -399,6 +398,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                             type="number"
                             step="any"
                             placeholder={`Medición #${index + 1}`}
+                            onChange={calculateMeltIndex}
                             className="flex-1"
                           />
                           <Button
@@ -407,6 +407,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                             size="icon"
                             onClick={() => {
                                 remove(index);
+                                setTimeout(calculateMeltIndex, 0);
                             }}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -427,7 +428,7 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} />
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
@@ -466,15 +467,15 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
@@ -536,19 +537,19 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="nh_m1">m1: Cápsula vacía [g]</FormLabel>
-                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} />
+                        <Input id="nh_m1" type="number" step="any" placeholder="m1" {...register("nh_m1")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m2">m2: Cápsula con muestra [g]</FormLabel>
-                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} />
+                        <Input id="nh_m2" type="number" step="any" placeholder="m2" {...register("nh_m2")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m3">m3: Cápsula con muestra procesada [g]</FormLabel>
-                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} />
+                        <Input id="nh_m3" type="number" step="any" placeholder="m3" {...register("nh_m3")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
                         <FormLabel htmlFor="nh_m4">m4: Cápsula con ceniza [g]</FormLabel>
-                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} />
+                        <Input id="nh_m4" type="number" step="any" placeholder="m4" {...register("nh_m4")} onChange={calculateNegroHumo} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>% Negro de Humo</FormLabel>
@@ -633,12 +634,12 @@ export function TuberiasHdpeForm({ analistas, ensayo, onFormSubmit, equipos, use
       </Card>
 
       <CardFooter className="flex justify-end pt-6">
-        <Button onClick={handleSubmit(onSubmit)}>
+        <Button type="submit">
             <Save className="mr-2 h-4 w-4" />
             Guardar Resultados
         </Button>
       </CardFooter>
       </div>
-    </form>
+    </Form>
   );
 }

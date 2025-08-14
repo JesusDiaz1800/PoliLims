@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -84,6 +83,7 @@ const defaultFormValues = {
 
 export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user, defaultTab = 'all' }: TuberiasPpFormProps) {
   const { toast } = useToast();
+  const { updateEnsayo, addRecentActivity } = useDynamicData();
 
   const form = useForm({
     defaultValues: defaultFormValues,
@@ -233,11 +233,15 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
     }
   }, [getValues]);
   
+  // Watch for changes in FV fields and recalculate
+  const watchedFvFields = watch([
+    "fv_total_m1", "fv_total_m2", "fv_total_m3",
+    "fv_intermedia_m1", "fv_intermedia_m2", "fv_intermedia_m3"
+  ]);
+
   React.useEffect(() => {
-    calculateMeltIndex();
-    calculateDensidad();
     calculateFV();
-  }, [watchedValues, calculateMeltIndex, calculateDensidad, calculateFV]);
+  }, [watchedFvFields, calculateFV]);
   
   const onSubmit = async (data: any) => {
      const ensayoData: Partial<Ensayo> = {
@@ -298,7 +302,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
   const currentDefaultTab = defaultTab === 'all' ? 'melt_index' : defaultTab;
 
   return (
-    <Form {...form}>
+    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
         <div className="space-y-6">
       {/* SECCIÓN GENERAL */}
       <Card>
@@ -425,13 +429,17 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                             type="number"
                             step="any"
                             placeholder={`Medición #${index + 1}`}
+                            onChange={calculateMeltIndex}
                             className="flex-1"
                           />
                           <Button
                             type="button"
                             variant="destructive"
                             size="icon"
-                            onClick={() => remove(index)}
+                            onClick={() => {
+                                remove(index);
+                                setTimeout(calculateMeltIndex, 0);
+                            }}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                           </Button>
@@ -451,7 +459,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="melt_index_materia_prima">Índice de fluidez Materia Prima [g/10min]</FormLabel>
-                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} />
+                        <Input id="melt_index_materia_prima" type="number" step="any" placeholder="Valor del lote de MP" {...register("melt_index_materia_prima")} onChange={calculateMeltIndex} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Índice de fluidez Producto Terminado [g/10min]</FormLabel>
@@ -490,15 +498,15 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                       <div className="space-y-2">
                         <FormLabel htmlFor="densidad_liquido">Densidad del líquido [g/cm³]</FormLabel>
-                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} />
+                        <Input id="densidad_liquido" type="number" step="any" placeholder="Ej: 0.786" {...register("densidad_liquido")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_aire">Masa de la muestra en aire [g]</FormLabel>
-                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} />
+                        <Input id="masa_aire" type="number" step="any" placeholder="Masa en aire" {...register("masa_aire")} onChange={calculateDensidad} />
                       </div>
                       <div className="space-y-2">
                         <FormLabel htmlFor="masa_agua">Masa de la muestra en agua [g]</FormLabel>
-                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} />
+                        <Input id="masa_agua" type="number" step="any" placeholder="Masa en agua" {...register("masa_agua")} onChange={calculateDensidad} />
                       </div>
                        <div className="space-y-2">
                          <FormLabel>Densidad de la muestra [g/cm³]</FormLabel>
@@ -613,7 +621,7 @@ export function TuberiasPpForm({ analistas, ensayo, onFormSubmit, equipos, user,
       </Card>
 
       <CardFooter className="flex justify-end pt-6">
-        <Button onClick={handleSubmit(onSubmit)}>
+        <Button type="submit">
           <Save className="mr-2 h-4 w-4" />
           Guardar Resultados
         </Button>

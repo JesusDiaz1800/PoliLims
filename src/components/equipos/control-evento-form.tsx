@@ -99,7 +99,7 @@ export function ControlEventoForm({ onFormSubmit, equipo }: ControlEventoFormPro
   };
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
       <div className="space-y-4">
         <FormField control={form.control} name="tipo" render={({ field }) => (
             <FormItem>
