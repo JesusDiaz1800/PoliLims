@@ -202,72 +202,83 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
     const subMenuItems = item.subItems;
     const defaultOpen = isSearchActive || pathname.startsWith(item.href);
     const isActive = pathname.startsWith(item.href);
-  
-    return (
-      <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
-        <SidebarMenuButton
-          variant="ghost"
-          className="w-full justify-between group/button px-3"
-          isActive={isActive}
-          disabled={disabled}
-          aria-disabled={disabled}
-        >
-          <Link href={`${item.href}?${userQuery}`} className="flex items-center gap-3 flex-1" onClick={(e) => onMenuClick(e, item.isAction)}>
-              <item.icon className="size-5 shrink-0" />
-              <span className="truncate text-sm">{item.label}</span>
-          </Link>
-          <CollapsibleTrigger asChild disabled={disabled}>
-             <Button variant="ghost" size="icon" className="h-full w-9 p-2 group-data-[state=open]/button:bg-white/20">
-              <svg
-                className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-              </svg>
-            </Button>
-          </CollapsibleTrigger>
-        </SidebarMenuButton>
 
-        <CollapsibleContent>
-          <SidebarMenu className="pl-2">
-            {subMenuItems &&
-              subMenuItems.map((subItem: any, index: number) => {
-                if (subItem.type === "separator") {
-                  return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
-                }
-                if (subItem.subItems && subItem.subItems.length > 0) {
-                  return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive} onMenuClick={onMenuClick}/>;
-                }
-                const isSubItemActive = pathname === subItem.href;
-  
-                return (
-                  <SidebarMenuItem key={subItem.href}>
-                    <SidebarMenuButton
-                      asChild
-                      size="sm"
-                      variant="ghost"
-                      className="w-full justify-start gap-2"
-                      isActive={isSubItemActive}
-                      disabled={disabled}
-                      aria-disabled={disabled}
-                    >
-                      <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                        {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                        <span className="text-sm">{subItem.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-          </SidebarMenu>
-        </CollapsibleContent>
-      </Collapsible>
+    return (
+        <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
+            <div
+                className={cn(
+                    "flex items-center rounded-md peer/menu-button",
+                    "group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0",
+                    "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground",
+                    isActive && "bg-white/20 text-white dark:bg-primary dark:text-primary-foreground"
+                )}
+                data-active={isActive}
+            >
+                <SidebarMenuButton
+                    asChild
+                    variant="ghost"
+                    className="w-full justify-start grow h-10 px-3 group-data-[state=collapsed]/sidebar-wrapper:px-0"
+                    isActive={isActive}
+                    disabled={disabled}
+                    aria-disabled={disabled}
+                >
+                    <Link href={`${item.href}?${userQuery}`} className="flex items-center gap-3" onClick={(e) => onMenuClick(e, item.isAction)}>
+                        <item.icon className="size-5 shrink-0" />
+                        <span className="truncate text-sm group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden">{item.label}</span>
+                    </Link>
+                </SidebarMenuButton>
+                <CollapsibleTrigger asChild disabled={disabled}>
+                    <Button variant="ghost" size="icon" className="h-full w-9 p-2 group-data-[state=collapsed]/sidebar-wrapper:hidden group-data-[state=open]/button:bg-white/20">
+                        <svg
+                            className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                        </svg>
+                    </Button>
+                </CollapsibleTrigger>
+            </div>
+
+            <CollapsibleContent>
+                <SidebarMenu className="pl-2">
+                    {subMenuItems &&
+                        subMenuItems.map((subItem: any, index: number) => {
+                            if (subItem.type === "separator") {
+                                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
+                            }
+                            if (subItem.subItems && subItem.subItems.length > 0) {
+                                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive} onMenuClick={onMenuClick} />;
+                            }
+                            const isSubItemActive = pathname === subItem.href;
+
+                            return (
+                                <SidebarMenuItem key={subItem.href}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        size="sm"
+                                        variant="ghost"
+                                        className="w-full justify-start gap-2"
+                                        isActive={isSubItemActive}
+                                        disabled={disabled}
+                                        aria-disabled={disabled}
+                                    >
+                                        <Link href={`${subItem.href}?${userQuery}`} className="relative">
+                                            {subItem.icon && <subItem.icon className="mr-2 size-4" />}
+                                            <span className="text-sm">{subItem.label}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            );
+                        })}
+                </SidebarMenu>
+            </CollapsibleContent>
+        </Collapsible>
     );
-  });
+});
 NavCollapsible.displayName = 'NavCollapsible';
 
 function AppShell({ 
