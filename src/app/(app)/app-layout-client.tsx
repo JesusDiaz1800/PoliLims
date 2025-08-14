@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -10,7 +11,6 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
-  useSidebar,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import {
@@ -64,143 +64,100 @@ import { DynamicDataProvider, type InitialData } from '@/context/data-context';
 import RootPrefetch from '@/components/root-prefetch';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
-const ensayosSubMenu = [
-    { 
-      label: 'Tuberías', 
-      icon: SlidersHorizontal,
-      href: '/ensayos/tuberias',
-      subItems: [
-        { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
-        { href: '/ensayos/tuberias/pp', label: 'PP', icon: Beaker },
-      ]
+const menuItems: any[] = [
+    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
+    {
+        label: 'Ensayos',
+        icon: TestTube,
+        href: '/ensayos',
+        subItems: [
+            { 
+              label: 'Tuberías', 
+              icon: SlidersHorizontal,
+              href: '/ensayos/tuberias',
+              subItems: [
+                { href: '/ensayos/tuberias/hdpe', label: 'HDPE', icon: Beaker },
+                { href: '/ensayos/tuberias/pp', label: 'PP', icon: Beaker },
+              ]
+            },
+            { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
+            { href: '/ensayos/reprocesado', label: 'Reprocesado', icon: Recycle },
+            { type: 'separator' },
+            { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
+            { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
+            { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
+            { type: 'separator' },
+            { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
+        ]
     },
-    { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
-    { href: '/ensayos/reprocesado', label: 'Reprocesado', icon: Recycle },
+    { 
+        label: 'Procesos de Gestión', 
+        icon: GitBranch,
+        href: '/gestion',
+        subItems: [
+          {
+            label: "Gestión de Equipos",
+            icon: BookCheck,
+            href: "/equipos",
+            subItems: [
+              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+              { href: "/equipos/control", label: "Control de Equipos", icon: History },
+              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+            ],
+          },
+          { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+          { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+          { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+          {
+            label: "Proveedores",
+            icon: Truck,
+            href: "/proveedores",
+            subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+          },
+          { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
+          { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+          { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+          { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+          { href: "/portal", label: "Portal de Clientes", icon: Users },
+        ]
+    },
+     { 
+        label: 'Informes y Certificados', 
+        icon: FileText,
+        href: '/reports',
+        subItems: [
+            { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
+            { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
+        ]
+    },
+    { 
+        label: 'Biblioteca', 
+        icon: Library,
+        href: '/biblioteca',
+        subItems: [
+            { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
+        ]
+    },
     { type: 'separator' },
-    { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
-    { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
-    { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
+    { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, isAction: true },
+    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
     { type: 'separator' },
-    { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
+    {
+        label: 'Administración',
+        icon: Settings,
+        href: '/administracion',
+        subItems: [
+            { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
+            { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
+            { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
+            { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
+            { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
+            { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
+            { type: 'separator' },
+            { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
+        ]
+    },
 ];
-
-const procesosGestionSubMenu = [
-  {
-    label: "Gestión de Equipos",
-    icon: BookCheck,
-    href: "/equipos",
-    subItems: [
-      { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-      { href: "/equipos/control", label: "Control de Equipos", icon: History },
-      { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
-    ],
-  },
-  { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
-  { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
-  { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
-  {
-    label: "Proveedores",
-    icon: Truck,
-    href: "/proveedores",
-    subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
-  },
-  { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
-  { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
-  { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
-  { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
-  { href: "/portal", label: "Portal de Clientes", icon: Users },
-];
-
-const administracionSubMenu = [
-    { href: '/administracion/usuarios', label: 'Gestión de Usuarios', icon: Users },
-    { href: '/administracion/basedatos', label: 'Base de Datos', icon: Database },
-    { href: '/administracion/permisos', label: 'Roles y Permisos', icon: ShieldCheck },
-    { href: '/administracion/notificaciones', label: 'Notificaciones', icon: Bell },
-    { href: '/administracion/configuracion', label: 'Configuración', icon: Settings },
-    { href: '/administracion/rutas', label: 'Rutas Disponibles', icon: Map },
-    { type: 'separator' },
-    { href: '/administracion/proximos-pasos', label: 'Próximos Pasos', icon: Rocket },
-];
-
-
-const bibliotecaSubMenu = [
-    { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
-];
-
-const reportsSubMenu = [
-    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
-    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
-];
-
-
-const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) => {
-  const subMenuItems = item.subMenu || item.subItems;
-  const defaultOpen = isSearchActive || pathname.startsWith(item.href);
-  const isActive = pathname.startsWith(item.href);
-
-  return (
-    <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
-      <CollapsibleTrigger asChild disabled={disabled}>
-        <SidebarMenuButton
-          variant="ghost"
-          className="w-full justify-between group/button px-3"
-          isActive={isActive}
-          disabled={disabled}
-          aria-disabled={disabled}
-        >
-          <div className="flex items-center gap-3 flex-1">
-            <item.icon className="size-5 shrink-0" />
-            <span className="truncate text-sm">{item.label}</span>
-          </div>
-          <svg
-            className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-          </svg>
-        </SidebarMenuButton>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <SidebarMenu className="pl-2">
-          {subMenuItems &&
-            subMenuItems.map((subItem: any, index: number) => {
-              if (subItem.type === "separator") {
-                return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
-              }
-              if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
-              }
-              const isSubItemActive = pathname === subItem.href;
-
-              return (
-                <SidebarMenuItem key={subItem.href}>
-                  <SidebarMenuButton
-                    asChild
-                    size="sm"
-                    variant="ghost"
-                    className="w-full justify-start gap-2"
-                    isActive={isSubItemActive}
-                    disabled={disabled}
-                    aria-disabled={disabled}
-                  >
-                    <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                      {subItem.icon && <subItem.icon className="mr-2 size-4" />}
-                      <span className="text-sm">{subItem.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-        </SidebarMenu>
-      </CollapsibleContent>
-    </Collapsible>
-  );
-});
-NavCollapsible.displayName = 'NavCollapsible';
 
 const pageTitles: Record<string, string> = {
     '/main': 'Dashboard',
@@ -238,43 +195,74 @@ const pageTitles: Record<string, string> = {
     '/proveedores/gestion': 'Gestión de Proveedores',
 };
 
-const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
-    {
-        label: 'Ensayos',
-        icon: TestTube,
-        subMenu: ensayosSubMenu,
-        href: '/ensayos'
-    },
-    { 
-        label: 'Procesos de Gestión', 
-        icon: GitBranch,
-        subMenu: procesosGestionSubMenu,
-        href: '/gestion',
-    },
-     { 
-        label: 'Informes y Certificados', 
-        icon: FileText,
-        subMenu: reportsSubMenu,
-        href: '/reports',
-    },
-    { 
-        label: 'Biblioteca', 
-        icon: Library,
-        subMenu: bibliotecaSubMenu,
-        href: '/biblioteca',
-    },
-    { type: 'separator' },
-    { href: '/soporte', label: 'Soporte de Laboratorio', icon: MessageSquarePlus, onClick: toggleChat },
-    { href: '/assistant', label: 'Asistente de Código', icon: Code2 },
-    { type: 'separator' },
-    {
-        label: 'Administración',
-        icon: Settings,
-        subMenu: administracionSubMenu,
-        href: '/administracion'
-    },
-];
+const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery, isSearchActive, onMenuClick }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean; onMenuClick: (e: React.MouseEvent, onClick?: () => void) => void; }) => {
+    const subMenuItems = item.subItems;
+    const defaultOpen = isSearchActive || pathname.startsWith(item.href);
+    const isActive = pathname.startsWith(item.href);
+  
+    return (
+      <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
+        <CollapsibleTrigger asChild disabled={disabled}>
+          <SidebarMenuButton
+            variant="ghost"
+            className="w-full justify-between group/button px-3"
+            isActive={isActive}
+            disabled={disabled}
+            aria-disabled={disabled}
+          >
+            <div className="flex items-center gap-3 flex-1">
+              <item.icon className="size-5 shrink-0" />
+              <span className="truncate text-sm">{item.label}</span>
+            </div>
+            <svg
+              className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenu className="pl-2">
+            {subMenuItems &&
+              subMenuItems.map((subItem: any, index: number) => {
+                if (subItem.type === "separator") {
+                  return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
+                }
+                if (subItem.subItems && subItem.subItems.length > 0) {
+                  return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive} onMenuClick={onMenuClick}/>;
+                }
+                const isSubItemActive = pathname === subItem.href;
+  
+                return (
+                  <SidebarMenuItem key={subItem.href}>
+                    <SidebarMenuButton
+                      asChild
+                      size="sm"
+                      variant="ghost"
+                      className="w-full justify-start gap-2"
+                      isActive={isSubItemActive}
+                      disabled={disabled}
+                      aria-disabled={disabled}
+                    >
+                      <Link href={`${subItem.href}?${userQuery}`} className="relative">
+                        {subItem.icon && <subItem.icon className="mr-2 size-4" />}
+                        <span className="text-sm">{subItem.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+          </SidebarMenu>
+        </CollapsibleContent>
+      </Collapsible>
+    );
+  });
+NavCollapsible.displayName = 'NavCollapsible';
 
 function AppShell({ 
     children,
@@ -287,30 +275,24 @@ function AppShell({
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const { isMobile } = useSidebar();
     const { setIsOpen, setIsWidgetVisible } = useChatWidget();
     const isInspectorView = user?.role === "Inspector de Calidad";
     const userQuery = searchParams.get('user') ? `user=${searchParams.get('user')}` : '';
     const [searchTerm, setSearchTerm] = React.useState("");
 
     const getPageTitle = React.useCallback(() => {
-        const title = pageTitles[pathname];
-        if (title) return title;
-        for (const item of menuItems(() => {})) {
-            if (item.href && pathname === item.href) return item.label;
-        }
-        return "Dashboard";
+        return pageTitles[pathname] || "Dashboard";
     }, [pathname]);
 
-    const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
-        if (onClick) {
-        e.preventDefault();
-        setIsWidgetVisible(true);
-        setIsOpen(true);
+    const handleMenuClick = React.useCallback((e: React.MouseEvent, isAction?: boolean) => {
+        if (isAction) {
+            e.preventDefault();
+            setIsWidgetVisible(true);
+            setIsOpen(true);
         }
-    };
+    }, [setIsOpen, setIsWidgetVisible]);
 
-    const filterMenu = (menu: any[], term: string): any[] => {
+    const filterMenu = React.useCallback((menu: any[], term: string): any[] => {
         if (!term) return menu;
         const lowerCaseTerm = term.toLowerCase();
 
@@ -321,22 +303,21 @@ function AppShell({
         
         const labelMatch = item.label.toLowerCase().includes(lowerCaseTerm);
 
-        if (item.subMenu || item.subItems) {
-            const subItems = item.subMenu || item.subItems;
-            const filteredSub = filterMenu(subItems, term);
+        if (item.subItems) {
+            const filteredSub = filterMenu(item.subItems, term);
             if (filteredSub.length > 0) {
-            acc.push({ ...item, subMenu: filteredSub, subItems: filteredSub });
+                acc.push({ ...item, subItems: filteredSub });
             } else if (labelMatch) {
-            acc.push({ ...item, subMenu: [], subItems: []});
+                acc.push({ ...item, subItems: []});
             }
         } else if (labelMatch) {
             acc.push(item);
         }
         return acc;
         }, []);
-    };
+    }, []);
 
-    const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+    const filteredMenuItems = React.useMemo(() => filterMenu(menuItems, searchTerm), [searchTerm, filterMenu]);
     const pageTitle = getPageTitle();
     const isDashboard = pathname === '/main' || pathname === '/dashboard';
 
@@ -394,7 +375,7 @@ function AppShell({
                         />
                         );
                     }
-                    if (item.subMenu) {
+                    if (item.subItems) {
                         return (
                         <NavCollapsible
                             key={item.label}
@@ -403,6 +384,7 @@ function AppShell({
                             disabled={isDisabled}
                             userQuery={userQuery}
                             isSearchActive={!!searchTerm}
+                            onMenuClick={handleMenuClick}
                         />
                         );
                     }
@@ -424,7 +406,7 @@ function AppShell({
                         >
                             <Link
                             href={`${item.href}?${userQuery}`}
-                            onClick={(e) => handleMenuClick(e, item.onClick)}
+                            onClick={(e) => handleMenuClick(e, item.isAction)}
                             >
                             <div className="flex items-center gap-3">
                                 <item.icon className="size-5 shrink-0" aria-hidden="true" />
@@ -482,24 +464,22 @@ function AppShell({
         </Sidebar>
 
         <div className="flex flex-col flex-1 h-screen overflow-hidden">
-            {!isDashboard && (
             <header
             className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
             role="banner"
             >
             <div className="flex items-center gap-2">
                 <SidebarTrigger aria-label="Toggle sidebar" />
-                    <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
                     {pageTitle}
                 </h1>
             </div>
             <ThemeToggle />
             </header>
-            )}
             
             <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
                 <main
-                    className={cn("custom-scrollbar", !isDashboard && 'p-6 md:p-10')}
+                    className={cn("custom-scrollbar p-6 md:p-10")}
                     role="main"
                     tabIndex={-1}
                 >
