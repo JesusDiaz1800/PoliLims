@@ -175,7 +175,8 @@ const soporteLaboratorioFlow = ai.defineFlow(
         }
     }
 
-    // If not a clear navigation intent, proceed with LLM
+    // If not a clear navigation intent, proceed with LLM.
+    // Load knowledge base content only when the flow is executed.
     const knowledgeBase = await getKnowledgeBaseContent();
 
     const result = await prompt({
