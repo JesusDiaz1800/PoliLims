@@ -168,9 +168,8 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-4 pr-3">
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)}>
+      <div className="space-y-4 pr-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField control={form.control} name="id" render={({ field }) => (<FormItem><FormLabel>ID de Activo</FormLabel><FormControl><Input placeholder="Ej: EQ-FTIR-01" {...field} disabled={isEditing}/></FormControl><FormMessage /></FormItem>)}/>
               <FormField control={form.control} name="nombre" render={({ field }) => (<FormItem><FormLabel>Nombre del Equipo</FormLabel><FormControl><Input placeholder="Ej: Espectrómetro FTIR" {...field} /></FormControl><FormMessage /></FormItem>)}/>
@@ -212,7 +211,6 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
           </div>
           <div className="flex justify-end pt-4"><Button type="submit"><Save className="mr-2 h-4 w-4" />{isEditing ? 'Guardar Cambios' : 'Registrar Equipo'}</Button></div>
         </div>
-      </form>
     </Form>
   );
 }
