@@ -11,12 +11,24 @@ import {
   type ControllerProps,
   type FieldPath,
   type FieldValues,
+  type UseFormReturn,
 } from "react-hook-form"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
-const Form = FormProvider
+interface FormProps<T extends FieldValues> extends Omit<React.ComponentProps<"form">, "onSubmit"> {
+  form: UseFormReturn<T>
+  onSubmit: (values: T) => void
+}
+
+const Form = <T extends FieldValues>({ form, onSubmit, children, ...props }: FormProps<T>) => (
+  <FormProvider {...form}>
+    <form onSubmit={form.handleSubmit(onSubmit)} {...props}>
+      {children}
+    </form>
+  </FormProvider>
+)
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -45,14 +57,9 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
-  const { formState } = useFormContext()
+  const { getFieldState, formState } = useFormContext()
 
-  const fieldState = {
-    invalid: !!formState.errors[fieldContext.name],
-    isDirty: !!formState.dirtyFields[fieldContext.name],
-    isTouched: !!formState.touchedFields[fieldContext.name],
-    error: formState.errors[fieldContext.name],
-  };
+  const fieldState = getFieldState(fieldContext.name, formState)
 
 
   if (!fieldContext) {
