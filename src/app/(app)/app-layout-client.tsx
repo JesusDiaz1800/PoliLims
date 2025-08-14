@@ -205,43 +205,30 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
 
     return (
         <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
-            <div
-                className={cn(
-                    "flex items-center rounded-md peer/menu-button",
-                    "group-data-[state=collapsed]/sidebar-wrapper:justify-center group-data-[state=collapsed]/sidebar-wrapper:h-9 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0",
-                    "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground",
-                    isActive && "bg-white/20 text-white dark:bg-primary dark:text-primary-foreground"
-                )}
-                data-active={isActive}
-            >
+            <CollapsibleTrigger asChild disabled={disabled}>
                 <SidebarMenuButton
-                    asChild
                     variant="ghost"
-                    className="w-full justify-start grow h-10 px-3 group-data-[state=collapsed]/sidebar-wrapper:px-0"
+                    className="w-full justify-between group/button px-3"
                     isActive={isActive}
                     disabled={disabled}
                     aria-disabled={disabled}
                 >
-                    <Link href={`${item.href}?${userQuery}`} className="flex items-center gap-3" onClick={(e) => onMenuClick(e, item.isAction)}>
+                    <div className="flex items-center gap-3 flex-1">
                         <item.icon className="size-5 shrink-0" />
-                        <span className="truncate text-sm group-data-[state=collapsed]/sidebar-wrapper:[&_span]:hidden">{item.label}</span>
-                    </Link>
+                        <span className="truncate text-sm">{item.label}</span>
+                    </div>
+                    <svg
+                        className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                    </svg>
                 </SidebarMenuButton>
-                <CollapsibleTrigger asChild disabled={disabled}>
-                    <Button variant="ghost" size="icon" className="h-full w-9 p-2 group-data-[state=collapsed]/sidebar-wrapper:hidden group-data-[state=open]/button:bg-white/20">
-                        <svg
-                            className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                        </svg>
-                    </Button>
-                </CollapsibleTrigger>
-            </div>
+            </CollapsibleTrigger>
 
             <CollapsibleContent>
                 <SidebarMenu className="pl-2">
