@@ -99,16 +99,11 @@ const menuItems: any[] = [
         icon: GitBranch,
         href: '/gestion',
         subItems: [
-          {
-            label: "Gestión de Equipos",
-            icon: BookCheck,
-            href: "/equipos",
-            subItems: [
-              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-              { href: "/equipos/control", label: "Control de Equipos", icon: History },
-              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
-            ],
-          },
+          { type: 'header', label: 'Gestión de Equipos' },
+          { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+          { href: "/equipos/control", label: "Control de Equipos", icon: History },
+          { href: "/equipos/programa", label: "Programa de Calibración", icon: CalendarCheck },
+          { type: 'separator' },
           { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
           { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
           { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
@@ -226,6 +221,9 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                 <SidebarMenu className="pl-2">
                     {subMenuItems &&
                         subMenuItems.map((subItem: any, index: number) => {
+                            if (subItem.type === "header") {
+                                return <div key={`sub-header-${index}`} className="px-3 py-2 text-xs font-semibold text-white/50 tracking-wider uppercase">{subItem.label}</div>;
+                            }
                             if (subItem.type === "separator") {
                                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
                             }
@@ -246,7 +244,7 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                                         aria-disabled={disabled}
                                     >
                                         <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                                            {subItem.icon && <subItem.icon className={cn("mr-2 size-4", subItem.className)} />}
+                                            {subItem.icon && <subItem.icon className={cn("mr-2 size-4 shrink-0", subItem.className)} />}
                                             <span className="text-sm">{subItem.label}</span>
                                         </Link>
                                     </SidebarMenuButton>
