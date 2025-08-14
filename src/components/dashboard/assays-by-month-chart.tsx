@@ -47,8 +47,10 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
 
   const average = React.useMemo(() => {
     if (chartData.length === 0) return 0;
-    const totalAssays = chartData.reduce((acc, curr) => acc + curr.total, 0);
-    return totalAssays / chartData.length;
+    const monthsWithAssays = chartData.filter(month => month.total > 0);
+    if (monthsWithAssays.length === 0) return 0;
+    const totalAssays = monthsWithAssays.reduce((acc, curr) => acc + curr.total, 0);
+    return totalAssays / monthsWithAssays.length;
   }, [chartData]);
 
 
