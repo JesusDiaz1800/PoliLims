@@ -18,7 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from '@/context/data-context';
 
 const workflowSteps = [
     { id: 'Recibida', label: 'Muestra Recibida', icon: Circle, statuses: ['Recibida'] },
@@ -71,6 +71,14 @@ const Step = ({ icon: Icon, label, isActive, isCompleted }: { icon: React.Elemen
 
 const HistoryItem = ({ activity }: { activity: RecentActivity }) => {
     const avatar = getAvatarInfo(activity.user);
+    const [formattedDate, setFormattedDate] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (activity.timestamp) {
+            setFormattedDate(format(parseISO(activity.timestamp), "dd/MM/yyyy HH:mm:ss", { locale: es }));
+        }
+    }, [activity.timestamp]);
+
     return (
         <div className="flex items-start gap-4">
             <Avatar>
@@ -82,7 +90,7 @@ const HistoryItem = ({ activity }: { activity: RecentActivity }) => {
                     <span className="font-semibold text-foreground">{activity.user}</span> {activity.action}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                    {format(parseISO(activity.timestamp), "dd/MM/yyyy HH:mm:ss", { locale: es })}
+                    {formattedDate || 'Cargando fecha...'}
                 </p>
             </div>
         </div>
@@ -91,21 +99,8 @@ const HistoryItem = ({ activity }: { activity: RecentActivity }) => {
 
 
 export default function WorkflowsPage() {
-    const [ensayos, setEnsayos] = React.useState<Ensayo[]>([]);
-    const [recentActivity, setRecentActivity] = React.useState<RecentActivity[]>([]);
-    const [isLoading, setIsLoading] = React.useState(true);
+    const { ensayos, recentActivity, isLoaded } = useDynamicData();
     const [selectedEnsayoId, setSelectedEnsayoId] = React.useState<string | null>(null);
-
-     React.useEffect(() => {
-        async function loadData() {
-            setIsLoading(true);
-            const initialData = await dataService.getInitialData();
-            setEnsayos(initialData.ensayos);
-            setRecentActivity(initialData.recentActivity);
-            setIsLoading(false);
-        }
-        loadData();
-    }, []);
 
     const productEnsayos = React.useMemo(() => 
         ensayos.filter(e => e.tipo.startsWith('Tubería'))
@@ -121,10 +116,10 @@ export default function WorkflowsPage() {
         if (!selectedEnsayo) return [];
         return recentActivity
             .filter(act => act.action.includes(selectedEnsayo.id) || (selectedEnsayo.lote && act.action.includes(selectedEnsayo.lote)))
-            .sort((a,b) => parseISO(a.timestamp).getTime() - parseISO(b.timestamp).getTime());
+            .sort((a,b) => parseISO(b.timestamp).getTime() - parseISO(a.timestamp).getTime());
     }, [selectedEnsayo, recentActivity]);
 
-    if (isLoading) {
+    if (!isLoaded) {
         return <Loading/>;
     }
 

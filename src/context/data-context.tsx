@@ -276,6 +276,7 @@ export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
     user: User | null;
+    usuarios: User[];
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
     deleteEnsayo: (id: string) => Promise<void>;
@@ -292,6 +293,13 @@ interface DynamicDataContextType extends InitialData {
     addProveedor: (proveedor: Omit<Proveedor, 'id'>) => Promise<Proveedor>;
     updateProveedor: (id: string, updatedData: Partial<Proveedor>) => Promise<void>;
     deleteProveedor: (id: string) => Promise<void>;
+    addAuditoria: (auditoria: Omit<Auditoria, 'id'>) => Promise<Auditoria>;
+    updateAuditoria: (id: string, updatedData: Partial<Auditoria>) => Promise<void>;
+    deleteAuditoria: (id: string) => Promise<void>;
+    addFormacion: (formacion: Omit<Formacion, 'id'>) => Promise<Formacion>;
+    updateFormacion: (id: string, updatedData: Partial<Formacion>) => Promise<void>;
+    deleteFormacion: (id: string) => Promise<void>;
+    addCondicionAmbiental: (condicion: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => Promise<CondicionAmbiental>;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
@@ -387,6 +395,44 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         setData(prev => ({ ...prev, proveedores: prev.proveedores.filter(p => p.id !== id) }));
     }, []);
 
+    const addAuditoria = useCallback(async (auditoria: Omit<Auditoria, 'id'>) => {
+        const newAuditoria = await dataService.addAuditoria(auditoria);
+        setData(prev => ({ ...prev, auditorias: [newAuditoria, ...prev.auditorias] }));
+        return newAuditoria;
+    }, []);
+
+    const updateAuditoria = useCallback(async (id: string, updatedData: Partial<Auditoria>) => {
+        await dataService.updateAuditoria(id, updatedData);
+        setData(prev => ({...prev, auditorias: prev.auditorias.map(a => a.id === id ? { ...a, ...updatedData } : a) }));
+    }, []);
+
+    const deleteAuditoria = useCallback(async (id: string) => {
+        await dataService.deleteAuditoria(id);
+        setData(prev => ({ ...prev, auditorias: prev.auditorias.filter(a => a.id !== id) }));
+    }, []);
+    
+    const addFormacion = useCallback(async (formacion: Omit<Formacion, 'id'>) => {
+        const newFormacion = await dataService.addFormacion(formacion);
+        setData(prev => ({ ...prev, formacion: [newFormacion, ...prev.formacion] }));
+        return newFormacion;
+    }, []);
+
+    const updateFormacion = useCallback(async (id: string, updatedData: Partial<Formacion>) => {
+        await dataService.updateFormacion(id, updatedData);
+        setData(prev => ({ ...prev, formacion: prev.formacion.map(f => f.id === id ? { ...f, ...updatedData } : f) }));
+    }, []);
+
+    const deleteFormacion = useCallback(async (id: string) => {
+        await dataService.deleteFormacion(id);
+        setData(prev => ({ ...prev, formacion: prev.formacion.filter(f => f.id !== id) }));
+    }, []);
+
+    const addCondicionAmbiental = useCallback(async (condicion: Omit<CondicionAmbiental, 'id'|'timestamp'>) => {
+        const newCondicion = await dataService.addCondicionAmbiental(condicion);
+        setData(prev => ({ ...prev, condicionesAmbientales: [newCondicion, ...prev.condicionesAmbientales] }));
+        return newCondicion;
+    }, []);
+
 
     const value = useMemo(() => ({
         ...data,
@@ -408,7 +454,14 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         addProveedor,
         updateProveedor,
         deleteProveedor,
-    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor]);
+        addAuditoria,
+        updateAuditoria,
+        deleteAuditoria,
+        addFormacion,
+        updateFormacion,
+        deleteFormacion,
+        addCondicionAmbiental
+    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental]);
 
     return (
         <DynamicDataContext.Provider value={value}>
