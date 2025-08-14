@@ -36,22 +36,15 @@ let recentActivityData: RecentActivity[] = [
     { id: 'ACT-3', user: 'Victor Lutz', action: 'ha iniciado sesión', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 2 * 60 * 60 * 1000).toISOString() },
     { id: 'ACT-4', user: 'Antonia Figueroa', action: 'comenzó a procesar el ensayo LAB-07-02', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 5 * 60 * 60 * 1000).toISOString() },
     { id: 'ACT-5', user: 'Cristian Montellano', action: 'registró un control no conforme para Tubería HDPE 200mm', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'ACT-6', user: 'Maximiliano Miranda', action: 'aprobó el informe para el ensayo LAB-07-03', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 1.5 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'ACT-7', user: 'Robinson Córdova', action: 'registró un nuevo ensayo de reprocesado', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 2 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'ACT-8', user: 'Victor Lutz', action: 'aprobó el ensayo LAB-07-05', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 2.5 * 24 * 60 * 60 * 1000).toISOString() },
-    { id: 'ACT-9', user: 'Jesus Diaz', action: 'registró un evento de mantenimiento para EQ-02', timestamp: new Date(new Date('2025-07-23T10:30:00Z').getTime() - 3 * 24 * 60 * 60 * 1000).toISOString() },
 ];
 
 
 const demoEquipos: Equipo[] = [
   { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo', marca: 'PerkinElmer', modelo: 'Spectrum Two', numero_serie: 'FTIR-9876', fecha_puesta_marcha: '10-01-2022', proxima_calibracion: '15-01-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.', ensayos_asociados: ['dsc', 'tio'], manual_url: '#', procedimiento_url: '#' },
   { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo', marca: 'CEAST', modelo: '9050', numero_serie: 'IMP-5432', fecha_puesta_marcha: '05-03-2021', proxima_calibracion: '20-12-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
-  { id: 'EQ-03', nombre: 'Calorímetro DSC', estado: 'Activo', marca: 'TA Instruments', modelo: 'Q200', numero_serie: 'DSC-1122', fecha_puesta_marcha: '15-06-2020', proxima_calibracion: '30-11-2025', ubicacion: 'Sala de Análisis Térmico', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/d8b4fe/313437?text=DSC', ensayos_asociados: ['dsc', 'tio'] },
   { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo', marca: 'CEAST', modelo: 'Melt Flow 2000', numero_serie: 'MFI-3344', fecha_puesta_marcha: '20-02-2023', proxima_calibracion: '01-03-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
   { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'En Mantenimiento', marca: 'Mettler Toledo', modelo: 'MS-TS', numero_serie: 'BAL-5566', fecha_puesta_marcha: '01-09-2019', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/fca5a5/313437?text=Balanza', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
   { id: 'EQ-06', nombre: 'Mufla para Cenizas', estado: 'Activo', marca: 'Thermo Scientific', modelo: 'Thermolyne', numero_serie: 'MUF-7788', fecha_puesta_marcha: '12-11-2018', proxima_calibracion: '28-02-2026', ubicacion: 'Área de Hornos', criticidad: 'Baja', fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio', 'cenizas'] },
-  { id: 'EQ-07', nombre: 'Máquina de Tracción Universal', estado: 'Inactivo', marca: 'Instron', modelo: '3369', numero_serie: 'TRAC-9900', fecha_puesta_marcha: '30-01-2017', proxima_calibracion: '30-07-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/fdba74/313437?text=Tracción', ensayos_asociados: ['traccion'] },
-  { id: 'EQ-08', nombre: 'Microscopio Óptico', estado: 'Activo', marca: 'Olympus', modelo: 'BX53', numero_serie: 'MIC-1234', fecha_puesta_marcha: '18-05-2022', proxima_calibracion: '18-05-2026', ubicacion: 'Sala de Microscopía', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/a5b4fc/313437?text=Microscopio', ensayos_asociados: ['dispersion_nh'] },
 ];
 
 const demoControles: ControlEvento[] = [
@@ -59,30 +52,15 @@ const demoControles: ControlEvento[] = [
     { id: 'CE-002', equipoId: 'EQ-01', fecha: '15-04-2025', tipo: 'Verificación', responsable: 'Jesus Diaz', observaciones: 'Verificación interna con patrón de referencia. Todo OK.' },
     { id: 'CE-003', equipoId: 'EQ-05', fecha: '10-07-2025', tipo: 'Mantenimiento Correctivo', responsable: 'Servicio Técnico Mettler', observaciones: 'Reemplazo de celda de carga. Requiere recalibración.' },
     { id: 'CE-004', equipoId: 'EQ-02', fecha: '20-12-2024', tipo: 'Calibración', responsable: 'Servicio Externo Instron', certificadoUrl: '#' },
-    { id: 'CE-005', equipoId: 'EQ-02', fecha: '20-06-2025', tipo: 'Verificación', responsable: 'Maximiliano Miranda', observaciones: 'Verificación de fuerza y desplazamiento. OK.' },
-    { id: 'CE-006', equipoId: 'EQ-06', fecha: '01-06-2025', tipo: 'Mantenimiento Preventivo', responsable: 'Robinson Córdova', observaciones: 'Limpieza de cámara y revisión de termocupla.' },
-    { id: 'CE-007', equipoId: 'EQ-03', fecha: '30-11-2024', tipo: 'Calibración', responsable: 'Servicio Técnico TA', observaciones: 'Calibración de temperatura y flujo de calor.', certificadoUrl: '#' },
-    { id: 'CE-008', equipoId: 'EQ-04', fecha: '01-03-2025', tipo: 'Calibración', responsable: 'Introtec', observaciones: 'Calibración de temperatura y dado de extrusión.', certificadoUrl: '#' },
+    { id: 'CE-005', equipoId: 'EQ-04', fecha: '01-03-2025', tipo: 'Calibración', responsable: 'Introtec', observaciones: 'Calibración de temperatura y dado de extrusión.', certificadoUrl: '#' },
 ];
 
-let demoNoConformidades: NoConformidad[] = Array.from({ length: 25 }, (_, i) => {
-    const tipos: NoConformidad['tipo'][] = ['Interna', 'Reclamo de Cliente', 'Auditoría'];
-    const estados: NoConformidad['estado'][] = ['Abierta', 'En Investigación', 'Resuelta', 'Cerrada'];
-    const severidades: NoConformidad['severidad'][] = ['Baja', 'Media', 'Alta', 'Crítica'];
-    const responsables = ['Victor Lutz', 'Jesus Diaz', 'Maximiliano Miranda', 'Antonia Figueroa', 'Robinson Córdova', 'Bryan Vásquez'];
-    
-    return {
-        id: `NC-${String(i + 1).padStart(3, '0')}`,
-        tipo: tipos[i % tipos.length],
-        fecha_deteccion: `1${i % 9 + 1}-0${(i % 6) + 1}-2025`,
-        descripcion: `Descripción de la incidencia de prueba número ${i + 1}. Este es un texto de ejemplo para simular un problema detectado.`,
-        estado: estados[i % estados.length],
-        severidad: severidades[i % severidades.length],
-        responsable: responsables[i % responsables.length],
-        fecha_vencimiento: `2${i % 9 + 1}-0${(i % 6) + 2}-2025`,
-        accion_correctiva: i % 3 === 0 ? `Se implementó la acción correctiva #${i+1} para solucionar el problema raíz.` : undefined,
-    };
-});
+let demoNoConformidades: NoConformidad[] = [
+    { id: `NC-001`, tipo: 'Interna', fecha_deteccion: `11-06-2025`, descripcion: 'Resultados de Melt Index fuera de especificación para lote RP-0610.', estado: 'En Investigación', severidad: 'Alta', responsable: 'Jesus Diaz', fecha_vencimiento: '25-06-2025' },
+    { id: `NC-002`, tipo: 'Reclamo de Cliente', fecha_deteccion: `05-07-2025`, descripcion: 'Cliente A reporta problemas de fragilidad en tubería de lote Lote-250618-PE1.', estado: 'Abierta', severidad: 'Crítica', responsable: 'Victor Lutz', fecha_vencimiento: '15-07-2025' },
+    { id: `NC-003`, tipo: 'Auditoría', fecha_deteccion: `15-05-2025`, descripcion: 'No se encontró registro de calibración para termómetro de ambiente de sala de muestras.', estado: 'Cerrada', severidad: 'Baja', responsable: 'Maximiliano Miranda', accion_correctiva: 'Termómetro enviado a calibrar y se actualizó programa de calibración.' },
+    { id: `NC-004`, tipo: 'Interna', fecha_deteccion: `20-07-2025`, descripcion: 'Material reprocesado presenta contaminación visual.', estado: 'Abierta', severidad: 'Media', responsable: 'Robinson Córdova', fecha_vencimiento: '30-07-2025' }
+];
 
 const demoImportaciones: Importacion[] = [
     { id: 'IMP-001', bl: 'YMLUC236092186', fecha_embarque: '11-12-2024', sca: '65344', fecha_emision_cert: '07-03-2025', di: '2400301661-3', etiqueta_rango_inicio: '7820106', etiqueta_rango_fin: '7820606', operacion: '170389', proveedor: 'RYNO', fecha_solicitada: '03-02-2025', fecha_entrega_calidad: '21-02-2025', cantidad_lote: 15821, fecha_liberacion: '05-04-2025', ingresado_siss: true, estado: 'VIGENTE' },
@@ -96,62 +74,35 @@ const demoGeneratedReports: GeneratedReport[] = [
     { id: 'REP-002', nombre: '2025-07-22 - Tubería HDPE 110mm - Lote-250719-PE2.pdf', tipo: 'Tubería HDPE', fecha_creacion: '22-07-2025', path: '/informes/tuberias/2025-07-22-HDPE110mm-Lote-250719-PE2.pdf', ensayoIds: ['LAB-07-05'] },
 ];
 
-let demoIncertidumbre: CalculoIncertidumbre[] = Array.from({ length: 22 }, (_, i) => ({
-    id: `INC-${String(i + 1).padStart(3, '0')}`,
-    nombre: `Cálculo de Incertidumbre para Equipo EQ-${String(i % 7 + 1).padStart(2, '0')}`,
-    fecha: new Date(2025, 6, 24 - i).toISOString(),
-    usuario: "Victor Lutz",
-    resultado: {
-        incertidumbreCombinada: 0.00015 + (i * 0.00001),
-        incertidumbreExpandida: (0.00015 + (i * 0.00001)) * 2,
-        factorCobertura: 2,
-    },
-    componentes: [
-        { descripcion: 'Calibración', valor: 0.0002 + (i * 0.00001), tipo: 'B', distribucion: 'rectangular', unidades: 'g' },
-        { descripcion: 'Repetibilidad', valor: 0.0001 - (i * 0.000005), tipo: 'A', distribucion: 'normal', unidades: 'g' },
-        { descripcion: 'Resolución de Display', valor: 0.00005, tipo: 'B', distribucion: 'rectangular', unidades: 'g' },
-    ]
-}));
+let demoIncertidumbre: CalculoIncertidumbre[] = [
+    { id: `INC-001`, nombre: `Cálculo de Incertidumbre para Balanza EQ-05`, fecha: new Date(2025, 6, 24).toISOString(), usuario: "Victor Lutz", resultado: { incertidumbreCombinada: 0.00015, incertidumbreExpandida: 0.00030, factorCobertura: 2 }, componentes: [{ descripcion: 'Calibración', valor: 0.0002, tipo: 'B', distribucion: 'rectangular', unidades: 'g' },{ descripcion: 'Repetibilidad', valor: 0.0001, tipo: 'A', distribucion: 'normal', unidades: 'g' }] },
+    { id: `INC-002`, nombre: `Cálculo Incertidumbre Termómetro EQ-AMB-01`, fecha: new Date(2025, 5, 10).toISOString(), usuario: "Victor Lutz", resultado: { incertidumbreCombinada: 0.12, incertidumbreExpandida: 0.24, factorCobertura: 2 }, componentes: [{ descripcion: 'Certificado de Calibración', valor: 0.2, tipo: 'B', distribucion: 'normal', unidades: '°C' },{ descripcion: 'Resolución de Display', valor: 0.1, tipo: 'B', distribucion: 'rectangular', unidades: '°C' }] }
+];
 
 let demoProveedores: Proveedor[] = [
     { id: 'PROV-001', nombre: 'Sigma-Aldrich', tipo: 'Reactivos', contacto_nombre: 'Juan Pérez', contacto_email: 'juan.perez@sigma.com', estado: 'Activo', certificacionesISO: 'ISO 9001', evaluaciones: [{ fecha: '15-01-2025', calidad: 5, cumplimiento: 5, puntualidad: 4, comentarios: 'Excelente calidad de reactivos.' }] },
     { id: 'PROV-002', nombre: 'Trescal', tipo: 'Calibración', contacto_nombre: 'María González', contacto_email: 'maria.gonzalez@trescal.com', estado: 'Activo', certificacionesISO: 'ISO 17025', evaluaciones: [{ fecha: '20-02-2025', calidad: 5, cumplimiento: 5, puntualidad: 5, comentarios: 'Servicio puntual y profesional.' }] },
-    { id: 'PROV-003', nombre: 'BOREALIS CO.', tipo: 'Materia Prima', contacto_nombre: 'Peter Schmidt', contacto_email: 'peter.schmidt@borealis.com', estado: 'Activo', evaluaciones: [{ fecha: '01-03-2025', calidad: 4, cumplimiento: 5, puntualidad: 3, comentarios: 'Retraso menor en la última entrega.' }, { fecha: '05-12-2024', calidad: 5, cumplimiento: 5, puntualidad: 5, comentarios: 'Sin problemas.' }] },
-    { id: 'PROV-004', nombre: 'Merck', tipo: 'Reactivos', estado: 'Activo', evaluaciones: [] },
-    { id: 'PROV-005', nombre: 'Servicios de Ingeniería Metrológica', tipo: 'Calibración', estado: 'En evaluación' },
-    ...Array.from({ length: 25 }, (_, i) => ({
-      id: `PROV-${String(i + 6).padStart(3, '0')}`,
-      nombre: `Proveedor de Prueba ${i + 1}`,
-      tipo: i % 2 === 0 ? 'Materia Prima' : 'Servicios Generales',
-      estado: i % 5 === 0 ? 'Inactivo' : 'Activo',
-      evaluaciones: i % 3 === 0 ? [{ fecha: `10-04-2025`, calidad: 4, cumplimiento: 4, puntualidad: 5, comentarios: 'Evaluación de ejemplo.'}] : []
-    }))
+    { id: 'PROV-003', nombre: 'BOREALIS CO.', tipo: 'Materia Prima', contacto_nombre: 'Peter Schmidt', contacto_email: 'peter.schmidt@borealis.com', estado: 'Activo', evaluaciones: [{ fecha: '01-03-2025', calidad: 4, cumplimiento: 5, puntualidad: 3, comentarios: 'Retraso menor en la última entrega.' }] },
+    { id: 'PROV-004', nombre: 'Merck', tipo: 'Reactivos', estado: 'En evaluación', evaluaciones: [] },
 ];
 
-const zonas = ['Laboratorio Principal', 'Sala de Muestras', 'Área de Ensayos Mecánicos'];
-let demoCondicionesAmbientales: CondicionAmbiental[] = [];
-for (let i = 90; i >= 0; i--) {
-    zonas.forEach(zona => {
-        const timestamp = subDays(new Date(), i).toISOString();
-        demoCondicionesAmbientales.push({
-            id: `ENV-${zona.charAt(0)}-${timestamp}`,
-            zona,
-            timestamp,
-            temperatura: 22.5 + (Math.random() - 0.5) * 5, // Temp between 20-25
-            humedad: 45 + (Math.random() - 0.5) * 20, // Humidity between 35-55
-            presion: 1012 + (Math.random() - 0.5) * 10, // Pressure around 1012 hPa
-            usuario: 'Sistema'
-        });
-    });
-}
+let demoCondicionesAmbientales: CondicionAmbiental[] = Array.from({ length: 4 }, (_, i) => {
+    const zonas = ['Laboratorio Principal', 'Sala de Muestras', 'Área de Ensayos Mecánicos'];
+    return {
+        id: `ENV-${i}`,
+        zona: zonas[i % zonas.length],
+        timestamp: subDays(new Date(), i).toISOString(),
+        temperatura: 22.5 + (Math.random() - 0.5) * 5,
+        humedad: 45 + (Math.random() - 0.5) * 20,
+        usuario: 'Sistema'
+    };
+});
 
 let demoFormacion: Formacion[] = [
     { id: 'FORM-001', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Certificación', nombre_actividad: 'Auditor Interno ISO/IEC 17025:2017', fecha: '2023-11-15', evaluador: 'AENOR', resultado: 'Aprobado', fecha_vencimiento: '2025-11-15' },
     { id: 'FORM-002', empleadoId: 'afigueroa', empleadoNombre: 'Antonia Figueroa', tipo: 'Curso', nombre_actividad: 'Cromatografía de Gases Avanzada', fecha: '2024-03-20', evaluador: 'Waters Corp.', resultado: 'Completado' },
     { id: 'FORM-003', empleadoId: 'mmiranda', empleadoNombre: 'Maximiliano Miranda', tipo: 'Evaluación de Competencia', nombre_actividad: 'Análisis de Melt Index (ASTM D1238)', fecha: '2024-06-10', evaluador: 'Victor Lutz', resultado: 'Aprobado' },
     { id: 'FORM-004', empleadoId: 'rcordova', empleadoNombre: 'Robinson Córdova', tipo: 'Inducción', nombre_actividad: 'Inducción General de Laboratorio', fecha: '2024-01-15', evaluador: 'Jesus Diaz', resultado: 'Completado', observaciones: 'Completó todos los módulos satisfactoriamente.' },
-    { id: 'FORM-005', empleadoId: 'bvasquez', empleadoNombre: 'Bryan Vásquez', tipo: 'Curso', nombre_actividad: 'Buenas Prácticas de Laboratorio (BPL)', fecha: '2023-09-05', evaluador: 'OTEC Qualitas', resultado: 'Aprobado' },
-    { id: 'FORM-006', empleadoId: 'jdiaz', empleadoNombre: 'Jesus Diaz', tipo: 'Evaluación de Competencia', nombre_actividad: 'Manejo de Espectrómetro FTIR', fecha: '2024-07-01', evaluador: 'Victor Lutz', resultado: 'Pendiente' },
 ];
 
 let demoAuditorias: Auditoria[] = [
@@ -159,7 +110,6 @@ let demoAuditorias: Auditoria[] = [
     { id: 'AUD-EXT-001', tipo: 'Externa - Certificación', fecha_inicio: '2025-09-15', fecha_fin: '2025-09-17', auditor_lider: 'Juan Garcia (AENOR)', auditores: [], alcance: 'Auditoría de seguimiento para certificación ISO/IEC 17025', estado: 'Planificada' },
     { id: 'AUD-PROV-001', tipo: 'Externa - Proveedor', fecha_inicio: '2025-07-20', fecha_fin: '2025-07-20', auditor_lider: 'Maximiliano Miranda', auditores: [], alcance: 'Auditoría al sistema de calidad del proveedor de reactivos Sigma-Aldrich', estado: 'Finalizada' },
     { id: 'AUD-INT-002', tipo: 'Interna', fecha_inicio: '2025-05-10', fecha_fin: '2025-05-11', auditor_lider: 'Victor Lutz', auditores: ['Antonia Figueroa'], alcance: 'Gestión de equipos y calibraciones (Cláusula 6.4 de ISO 17025)', estado: 'Finalizada' },
-    { id: 'AUD-INT-003', tipo: 'Interna', fecha_inicio: '2025-07-25', fecha_fin: '2025-07-26', auditor_lider: 'Jesus Diaz', auditores: ['Maximiliano Miranda'], alcance: 'Procesos de gestión de no conformidades y acciones correctivas (Cláusula 8.7 de ISO 17025)', estado: 'En Curso' }
 ];
 
 export interface AlertaConfig {
