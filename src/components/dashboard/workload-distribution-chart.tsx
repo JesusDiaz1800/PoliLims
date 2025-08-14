@@ -20,10 +20,16 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
     }, {} as Record<string, number>);
 
     return Object.entries(analystCounts)
-        .map(([name, value]) => ({
-            name: name.split(' ')[0], // Shorten name for display
-            value,
-        }))
+        .map(([name, value]) => {
+            let displayName = name.split(' ')[0];
+            if (name === "Maximiliano Miranda") {
+                displayName = "Max";
+            }
+            return {
+                name: displayName,
+                value,
+            }
+        })
         .sort((a, b) => b.value - a.value);
   }, [allData]);
 
