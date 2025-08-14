@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -16,8 +17,8 @@ interface EquipoDialogProps {
 export function EquipoDialog({ isOpen, onClose, equipo }: EquipoDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{equipo ? "Editar" : "Registrar"} Equipo</DialogTitle>
           <DialogDescription>
             {equipo
@@ -25,7 +26,7 @@ export function EquipoDialog({ isOpen, onClose, equipo }: EquipoDialogProps) {
               : "Complete el formulario para añadir un nuevo equipo al inventario."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-y-auto pr-3 -mr-2 custom-scrollbar">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
           <EquipoForm
               equipoToEdit={equipo}
               onFormSubmit={onClose}

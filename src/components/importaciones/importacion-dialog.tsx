@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -16,8 +17,8 @@ interface ImportacionDialogProps {
 export function ImportacionDialog({ isOpen, onClose, importacion }: ImportacionDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-4xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{importacion ? "Editar" : "Registrar"} Importación</DialogTitle>
           <DialogDescription>
             {importacion
@@ -25,7 +26,7 @@ export function ImportacionDialog({ isOpen, onClose, importacion }: ImportacionD
               : "Complete el formulario para añadir un nuevo registro de importación."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-y-auto pr-6 -mr-6 custom-scrollbar">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
             <ImportacionForm
                 importacionToEdit={importacion}
                 onFormSubmit={onClose}

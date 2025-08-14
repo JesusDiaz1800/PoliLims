@@ -26,8 +26,8 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultT
   const { equipos } = useDynamicData();
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[90vw] h-[90vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-0">
+      <DialogContent className="sm:max-w-5xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{ensayo ? "Editar" : "Registrar"} Ensayo: Reprocesado</DialogTitle>
           <DialogDescription>
             {ensayo
@@ -35,8 +35,7 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultT
               : "Complete el formulario para registrar un nuevo ensayo de material reprocesado."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-hidden">
-           <div className="h-full overflow-y-auto custom-scrollbar px-6 pb-6">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
               <ReprocesadoForm
                   analistas={analistas}
                   ensayoToEdit={ensayo}
@@ -45,7 +44,6 @@ export function ReprocesadoDialog({ isOpen, onClose, ensayo, analistas, defaultT
                   defaultTab={defaultTab}
               />
             </div>
-        </div>
       </DialogContent>
     </Dialog>
   );

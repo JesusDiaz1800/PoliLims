@@ -17,8 +17,8 @@ interface GestionProveedorDialogProps {
 export function GestionProveedorDialog({ isOpen, onClose, proveedor }: GestionProveedorDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{proveedor ? "Editar" : "Registrar"} Proveedor</DialogTitle>
           <DialogDescription>
             {proveedor
@@ -26,7 +26,7 @@ export function GestionProveedorDialog({ isOpen, onClose, proveedor }: GestionPr
               : "Complete el formulario para añadir un nuevo proveedor."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-y-auto pr-3 -mr-2 custom-scrollbar">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
           <GestionProveedorForm
               proveedorToEdit={proveedor}
               onFormSubmit={onClose}

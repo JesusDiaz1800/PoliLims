@@ -32,14 +32,14 @@ export function EnsayoProductoTerminadoDialog({ isOpen, onClose, ensayo, tipo, u
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-5xl max-h-[90vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-0">
+      <DialogContent className="sm:max-w-5xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>Ingresar Resultados de Ensayo: Tubería {tipo}</DialogTitle>
           <DialogDescription>
             Complete los campos con los resultados obtenidos en el laboratorio para la muestra <span className="font-mono font-bold text-foreground">{ensayo.id}</span>.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-y-auto custom-scrollbar pr-6 pl-6 pb-6">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
           {tipo === 'HDPE' ? (
             <TuberiasHdpeForm analistas={analistas} ensayo={ensayo} onFormSubmit={onClose} equipos={equipos} user={user} defaultTab={defaultTab} />
           ) : (

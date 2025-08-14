@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -24,8 +25,8 @@ interface MateriaPrimaDialogProps {
 export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, defaultTab = 'all' }: MateriaPrimaDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[90vw] h-[90vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-0">
+      <DialogContent className="sm:max-w-5xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{ensayo ? "Editar" : "Registrar"} Ensayo: Materia Prima</DialogTitle>
           <DialogDescription>
             {ensayo
@@ -33,15 +34,13 @@ export function MateriaPrimaDialog({ isOpen, onClose, ensayo, analistas, default
               : "Complete el formulario para registrar un nuevo ensayo de materia prima."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-hidden">
-            <div className="h-full overflow-y-auto custom-scrollbar px-6 pb-6">
-                <MateriaPrimaForm
-                    analistas={analistas}
-                    ensayoToEdit={ensayo}
-                    onFormSubmit={onClose}
-                    defaultTab={defaultTab}
-                />
-            </div>
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
+            <MateriaPrimaForm
+                analistas={analistas}
+                ensayoToEdit={ensayo}
+                onFormSubmit={onClose}
+                defaultTab={defaultTab}
+            />
         </div>
       </DialogContent>
     </Dialog>

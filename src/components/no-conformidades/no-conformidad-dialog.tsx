@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -31,8 +32,8 @@ export function NoConformidadDialog({
 }: NoConformidadDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-[95vh] flex flex-col p-0">
+        <DialogHeader className="p-6 pb-4">
           <DialogTitle>{incidencia ? "Editar" : "Registrar"} No Conformidad</DialogTitle>
           <DialogDescription>
             {incidencia
@@ -40,7 +41,7 @@ export function NoConformidadDialog({
               : "Complete el formulario para registrar una nueva incidencia o no conformidad."}
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[70vh] overflow-y-auto custom-scrollbar px-1">
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 pb-6">
             <NoConformidadForm
                 incidenciaToEdit={incidencia}
                 onFormSubmit={onClose}
