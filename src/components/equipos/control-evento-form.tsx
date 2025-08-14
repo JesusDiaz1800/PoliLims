@@ -133,5 +133,3 @@ export function ControlEventoForm({ onFormSubmit, equipo }: ControlEventoFormPro
     </Form>
   );
 }
-
-    

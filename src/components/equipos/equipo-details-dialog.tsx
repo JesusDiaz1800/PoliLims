@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Edit, PlusCircle, Book, Link2 } from "lucide-react";
+import { Edit, PlusCircle, Book, Link2, CalendarPlus } from "lucide-react";
 
 import { useDynamicData, type Equipo, type ControlEvento } from "@/context/data-context";
 import { cn } from "@/lib/utils";
@@ -176,5 +175,3 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
     </>
   );
 }
-
-    

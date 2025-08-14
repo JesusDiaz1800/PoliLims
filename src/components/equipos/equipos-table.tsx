@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -40,13 +39,14 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Eye, AlertCircle } from "lucide-react";
+import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Eye, AlertCircle, CalendarPlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Equipo } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { EquipoDetailsDialog } from "./equipo-details-dialog";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { ControlEventoDialog } from "./control-evento-dialog";
 
 interface EquiposTableProps {
   equipos: Equipo[];
@@ -72,15 +72,21 @@ function getStatusVariant(status: Equipo["estado"]) {
 
 function getCalibrationStatus(dateString: string): { message: string, color: string } | null {
     if (!dateString) return null;
-    const calDate = parse(dateString, 'dd-MM-yyyy', new Date());
-    const today = new Date();
-    const daysUntil = differenceInDays(calDate, today);
+    try {
+        const calDate = parse(dateString, 'dd-MM-yyyy', new Date());
+        if (isNaN(calDate.getTime())) return null;
 
-    if (isPast(calDate) && daysUntil < 0) {
-        return { message: "Calibración Vencida", color: "text-red-500" };
-    }
-    if (daysUntil <= 30) {
-        return { message: `Calibración Próxima (en ${daysUntil} días)`, color: "text-yellow-500" };
+        const today = new Date();
+        const daysUntil = differenceInDays(calDate, today);
+
+        if (isPast(calDate) && daysUntil < 0) {
+            return { message: "Calibración Vencida", color: "text-red-500" };
+        }
+        if (daysUntil <= 30) {
+            return { message: `Calibración Próxima (en ${daysUntil} días)`, color: "text-yellow-500" };
+        }
+    } catch(e) {
+        return null;
     }
     return null;
 }
@@ -89,6 +95,8 @@ const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: Equi
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
+  const [selectedEquipoForEvent, setSelectedEquipoForEvent] = React.useState<Equipo | null>(null);
+
 
   const filteredEquipos = React.useMemo(() => 
     equipos.filter(
@@ -221,6 +229,10 @@ const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: Equi
                                   <Edit className="mr-2 h-4 w-4" />
                                   Editar
                               </DropdownMenuItem>
+                              <DropdownMenuItem onSelect={() => setSelectedEquipoForEvent(equipo)}>
+                                  <CalendarPlus className="mr-2 h-4 w-4" />
+                                  Registrar Evento de Control
+                              </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <AlertDialogTrigger asChild>
                                   <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
@@ -269,6 +281,13 @@ const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: Equi
               onEdit(selectedEquipoDetails);
               setSelectedEquipoDetails(null);
           }}
+        />
+      )}
+       {selectedEquipoForEvent && (
+        <ControlEventoDialog
+            isOpen={!!selectedEquipoForEvent}
+            onClose={() => setSelectedEquipoForEvent(null)}
+            equipo={selectedEquipoForEvent}
         />
       )}
     </TooltipProvider>
