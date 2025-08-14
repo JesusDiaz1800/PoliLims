@@ -1,4 +1,5 @@
 
+
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
@@ -33,9 +34,12 @@ let recentActivityData: RecentActivity[] = [
 
 const demoEquipos: Equipo[] = [
     { id: 'EQ-01', nombre: 'Espectrómetro FTIR', estado: 'Activo', marca: 'PerkinElmer', modelo: 'Spectrum Two', numero_serie: 'FTIR-9876', fecha_puesta_marcha: '10-01-2022', proxima_calibracion: '15-01-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/cccccc/313437?text=FTIR', observaciones: 'Equipo sensible a vibraciones.', ensayos_asociados: ['dsc', 'tio'], manual_url: '#', procedimiento_url: '#' },
-    { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'Activo', marca: 'CEAST', modelo: '9050', numero_serie: 'IMP-5432', fecha_puesta_marcha: '05-03-2021', proxima_calibracion: '20-12-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
+    { id: 'EQ-02', nombre: 'Prensa de Impacto', estado: 'En Mantenimiento', marca: 'CEAST', modelo: '9050', numero_serie: 'IMP-5432', fecha_puesta_marcha: '05-03-2021', proxima_calibracion: '20-12-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/94a3b8/313437?text=Impacto' },
+    { id: 'EQ-03', nombre: 'Máquina de Tracción Universal', estado: 'Requiere Calibración', marca: 'Instron', modelo: '5967', numero_serie: 'TRAC-1234', fecha_puesta_marcha: '12-06-2020', proxima_calibracion: '01-08-2025', ubicacion: 'Área de Ensayos Mecánicos', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/f87171/313437?text=Traccion', ensayos_asociados: ['traccion'] },
     { id: 'EQ-04', nombre: 'Plastómetro MFI', estado: 'Activo', marca: 'CEAST', modelo: 'Melt Flow 2000', numero_serie: 'MFI-3344', fecha_puesta_marcha: '20-02-2023', proxima_calibracion: '01-03-2026', ubicacion: 'Mesón Central, Lab. Principal', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/6ee7b7/313437?text=MFI', ensayos_asociados: ['melt_index'] },
-    { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'Activo', marca: 'Mettler Toledo', modelo: 'MS-TS', numero_serie: 'BAL-5566', fecha_puesta_marcha: '01-09-2019', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/fca5a5/313437?text=Balanza', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad'] },
+    { id: 'EQ-05', nombre: 'Balanza Analítica', estado: 'Activo', marca: 'Mettler Toledo', modelo: 'MS-TS', numero_serie: 'BAL-5566', fecha_puesta_marcha: '01-09-2019', proxima_calibracion: '10-08-2025', ubicacion: 'Sala de Pesaje', criticidad: 'Alta', fotoUrl: 'https://placehold.co/400x400/fca5a5/313437?text=Balanza', ensayos_asociados: ['densidad', 'negro_humo', 'fibra_vidrio', 'humedad', 'cenizas'] },
+    { id: 'EQ-06', nombre: 'Mufla', estado: 'Activo', marca: 'Nabertherm', modelo: 'L 5/11', numero_serie: 'MUF-7788', fecha_puesta_marcha: '18-07-2018', proxima_calibracion: 'N/A', ubicacion: 'Área de Hornos', criticidad: 'Media', fotoUrl: 'https://placehold.co/400x400/d8b4fe/313437?text=Mufla', ensayos_asociados: ['negro_humo', 'fibra_vidrio', 'cenizas'] },
+    { id: 'EQ-07', nombre: 'Termómetro Ambiental', estado: 'Inactivo', marca: 'Testo', modelo: '174H', numero_serie: 'TERM-9900', fecha_puesta_marcha: '30-11-2022', proxima_calibracion: '30-11-2025', ubicacion: 'Sala de Muestras', criticidad: 'Baja', fotoUrl: 'https://placehold.co/400x400/fdba74/313437?text=Termo' },
 ];
 
 const demoControles: ControlEvento[] = [
@@ -45,6 +49,8 @@ const demoControles: ControlEvento[] = [
     { id: 'CE-004', equipoId: 'EQ-02', fecha: '20-12-2024', tipo: 'Calibración', responsable: 'Servicio Externo Instron', certificadoUrl: '#', proximo_control: '20-12-2025'},
     { id: 'CE-005', equipoId: 'EQ-04', fecha: '01-03-2025', tipo: 'Calibración', responsable: 'Introtec', observaciones: 'Calibración de temperatura y dado de extrusión.', certificadoUrl: '#', proximo_control: '01-03-2026' },
     { id: 'CE-006', equipoId: 'EQ-05', fecha: '10-08-2024', tipo: 'Calibración', responsable: 'Servicio Externo Mettler', observaciones: 'Calibración anual completa.', certificadoUrl: '#', proximo_control: '10-08-2025' },
+    { id: 'CE-007', equipoId: 'EQ-02', fecha: '18-07-2025', tipo: 'Mantenimiento Preventivo', responsable: 'Maximiliano Miranda', observaciones: 'Limpieza y lubricación de componentes móviles según plan de mantenimiento.' },
+    { id: 'CE-008', equipoId: 'EQ-03', fecha: '01-08-2024', tipo: 'Calibración', responsable: 'Servicio Externo Instron', observaciones: 'Calibración de celda de carga y extensómetro.', certificadoUrl: '#', proximo_control: '01-08-2025' },
 ];
 
 let demoNoConformidades: NoConformidad[] = [
@@ -187,7 +193,7 @@ let demoProveedores: Proveedor[] = [
 let demoCondicionesAmbientales: CondicionAmbiental[] = [];
 const zonas = ['Laboratorio Principal', 'Sala de Muestras', 'Área de Ensayos Mecánicos'];
 const usuariosAmbiental = ["Jesus Diaz", "Maximiliano Miranda", "Antonia Figueroa", "Robinson Córdova", "Bryan Vásquez"];
-for (let i = 0; i < 30; i++) {
+for (let i = 0; i < 90; i++) {
     const zona = zonas[i % zonas.length];
     const usuario = usuariosAmbiental[i % usuariosAmbiental.length];
     const timestamp = subDays(new Date(), i).toISOString();
@@ -303,3 +309,4 @@ export async function getInitialData() {
         sapProducts,
     };
 }
+
