@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -49,7 +50,7 @@ export function CalculadoraIncertidumbre({ onCalculoGuardado }: CalculadoraIncer
     },
   });
 
-  const { control, handleSubmit, watch, setValue } = form;
+  const { control, watch, setValue } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -114,71 +115,69 @@ export function CalculadoraIncertidumbre({ onCalculoGuardado }: CalculadoraIncer
         <CardTitle>Calculadora de Incertidumbre de Medición</CardTitle>
         <CardDescription>Estime la incertidumbre combinada y expandida según la guía GUM (ISO/IEC Guide 98-3).</CardDescription>
       </CardHeader>
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <FormField control={form.control} name="nombre_calculo" render={({ field }) => (<FormItem><FormLabel>Nombre del Cálculo</FormLabel><FormControl><Input placeholder="Ej: Incertidumbre de pesada en balanza analítica" {...field} /></FormControl><FormMessage /></FormItem>)}/>
-                 <FormField control={form.control} name="factor_cobertura" render={({ field }) => (<FormItem><FormLabel>Factor de Cobertura (k)</FormLabel><FormControl><Input type="number" step="0.01" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 1)} /></FormControl><FormMessage /></FormItem>)}/>
-            </div>
-             <Separator/>
-            <div>
-              <FormLabel>Componentes de Incertidumbre</FormLabel>
-              <div className="mt-2 space-y-4">
-                {fields.map((field, index) => (
-                  <div key={field.id} className="grid grid-cols-12 gap-2 p-3 border rounded-lg relative">
-                    <FormField control={form.control} name={`componentes.${index}.descripcion`} render={({ field }) => (<FormItem className="col-span-12 md:col-span-3"><FormLabel className="text-xs">Descripción</FormLabel><FormControl><Input placeholder="Ej: Repetibilidad" {...field} /></FormControl></FormItem>)}/>
-                    <FormField control={form.control} name={`componentes.${index}.valor`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Valor</FormLabel><FormControl><Input type="number" step="any" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} /></FormControl></FormItem>)} />
-                    <FormField control={form.control} name={`componentes.${index}.unidades`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-1"><FormLabel className="text-xs">Unidades</FormLabel><FormControl><Input placeholder="mg, °C..." {...field} /></FormControl></FormItem>)} />
-                    <FormField control={form.control} name={`componentes.${index}.tipo`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Tipo</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="A">Tipo A</SelectItem><SelectItem value="B">Tipo B</SelectItem></SelectContent></Select></FormItem>)} />
-                    <FormField control={form.control} name={`componentes.${index}.distribucion`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Distribución</FormLabel><Select onValueChange={field.onChange} value={field.value} disabled={watchedComponents[index]?.tipo === 'A'}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="normal">Normal</SelectItem><SelectItem value="rectangular">Rectangular</SelectItem><SelectItem value="triangular">Triangular</SelectItem></SelectContent></Select></FormItem>)} />
-                    <div className="col-span-12 md:col-span-2">
-                        <FormLabel className="text-xs">Incertidumbre Estándar (u)</FormLabel>
-                        <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
-                           {componentesCalculados[index]?.desviacion_estandar?.toExponential(3) || '0.000e+0'}
-                        </div>
-                    </div>
-                    <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1 h-7 w-7" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+      <Form form={form} onSubmit={onSubmit}>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               <FormField control={form.control} name="nombre_calculo" render={({ field }) => (<FormItem><FormLabel>Nombre del Cálculo</FormLabel><FormControl><Input placeholder="Ej: Incertidumbre de pesada en balanza analítica" {...field} /></FormControl><FormMessage /></FormItem>)}/>
+               <FormField control={form.control} name="factor_cobertura" render={({ field }) => (<FormItem><FormLabel>Factor de Cobertura (k)</FormLabel><FormControl><Input type="number" step="0.01" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 1)} /></FormControl><FormMessage /></FormItem>)}/>
+          </div>
+           <Separator/>
+          <div>
+            <FormLabel>Componentes de Incertidumbre</FormLabel>
+            <div className="mt-2 space-y-4">
+              {fields.map((field, index) => (
+                <div key={field.id} className="grid grid-cols-12 gap-2 p-3 border rounded-lg relative">
+                  <FormField control={form.control} name={`componentes.${index}.descripcion`} render={({ field }) => (<FormItem className="col-span-12 md:col-span-3"><FormLabel className="text-xs">Descripción</FormLabel><FormControl><Input placeholder="Ej: Repetibilidad" {...field} /></FormControl></FormItem>)}/>
+                  <FormField control={form.control} name={`componentes.${index}.valor`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Valor</FormLabel><FormControl><Input type="number" step="any" {...field} onChange={e => field.onChange(parseFloat(e.target.value) || 0)} /></FormControl></FormItem>)} />
+                  <FormField control={form.control} name={`componentes.${index}.unidades`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-1"><FormLabel className="text-xs">Unidades</FormLabel><FormControl><Input placeholder="mg, °C..." {...field} /></FormControl></FormItem>)} />
+                  <FormField control={form.control} name={`componentes.${index}.tipo`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Tipo</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="A">Tipo A</SelectItem><SelectItem value="B">Tipo B</SelectItem></SelectContent></Select></FormItem>)} />
+                  <FormField control={form.control} name={`componentes.${index}.distribucion`} render={({ field }) => (<FormItem className="col-span-6 md:col-span-2"><FormLabel className="text-xs">Distribución</FormLabel><Select onValueChange={field.onChange} value={field.value} disabled={watchedComponents[index]?.tipo === 'A'}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="normal">Normal</SelectItem><SelectItem value="rectangular">Rectangular</SelectItem><SelectItem value="triangular">Triangular</SelectItem></SelectContent></Select></FormItem>)} />
+                  <div className="col-span-12 md:col-span-2">
+                      <FormLabel className="text-xs">Incertidumbre Estándar (u)</FormLabel>
+                      <div className="flex h-10 w-full items-center rounded-md border border-input bg-muted px-3 py-2 text-sm">
+                         {componentesCalculados[index]?.desviacion_estandar?.toExponential(3) || '0.000e+0'}
+                      </div>
                   </div>
-                ))}
-                <Button type="button" variant="outline" size="sm" onClick={() => append({ descripcion: '', valor: 0, unidades: '', tipo: 'B', distribucion: 'normal' })}>
-                  <PlusCircle className="mr-2 h-4 w-4" /> Añadir Componente
-                </Button>
-              </div>
+                  <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1 h-7 w-7" onClick={() => remove(index)}><Trash2 className="h-4 w-4 text-destructive"/></Button>
+                </div>
+              ))}
+              <Button type="button" variant="outline" size="sm" onClick={() => append({ descripcion: '', valor: 0, unidades: '', tipo: 'B', distribucion: 'normal' })}>
+                <PlusCircle className="mr-2 h-4 w-4" /> Añadir Componente
+              </Button>
             </div>
-             <Separator/>
-             <Alert>
-                <BookOpen className="h-4 w-4" />
-                <AlertTitle>Guía Rápida (Referencia GUM)</AlertTitle>
-                <AlertDescription>
-                    <ul className="list-disc pl-4 mt-2 space-y-1">
-                        <li><b>Tipo A:</b> Evaluada por métodos estadísticos (ej. desviación estándar de una serie de mediciones).</li>
-                        <li><b>Tipo B:</b> Evaluada por otros medios (ej. datos de certificados de calibración, manuales, experiencia previa).</li>
-                        <li><b>Distribución:</b> Describe la probabilidad de los valores. Use <b>Rectangular</b> para límites definidos sin preferencia (ej. resolución de un equipo), <b>Normal</b> para datos de certificados (k=2).</li>
-                    </ul>
-                </AlertDescription>
-            </Alert>
-            <Alert>
-                <Calculator className="h-4 w-4" />
-                <AlertTitle>Resultados del Cálculo</AlertTitle>
-                <AlertDescription>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
-                        <div>
-                            <p className="font-semibold">Incertidumbre Combinada (uc)</p>
-                            <p className="font-mono text-lg">{incertidumbreCombinada.toExponential(4)}</p>
-                        </div>
-                        <div>
-                            <p className="font-semibold">Incertidumbre Expandida (U = uc * k)</p>
-                            <p className="font-mono text-lg text-primary">{incertidumbreExpandida.toExponential(4)}</p>
-                        </div>
-                    </div>
-                </AlertDescription>
-            </Alert>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit"><Save className="mr-2 h-4 w-4"/> Guardar Cálculo en Historial</Button>
-          </CardFooter>
-        </form>
+          </div>
+           <Separator/>
+           <Alert>
+              <BookOpen className="h-4 w-4" />
+              <AlertTitle>Guía Rápida (Referencia GUM)</AlertTitle>
+              <AlertDescription>
+                  <ul className="list-disc pl-4 mt-2 space-y-1">
+                      <li><b>Tipo A:</b> Evaluada por métodos estadísticos (ej. desviación estándar de una serie de mediciones).</li>
+                      <li><b>Tipo B:</b> Evaluada por otros medios (ej. datos de certificados de calibración, manuales, experiencia previa).</li>
+                      <li><b>Distribución:</b> Describe la probabilidad de los valores. Use <b>Rectangular</b> para límites definidos sin preferencia (ej. resolución de un equipo), <b>Normal</b> para datos de certificados (k=2).</li>
+                  </ul>
+              </AlertDescription>
+          </Alert>
+          <Alert>
+              <Calculator className="h-4 w-4" />
+              <AlertTitle>Resultados del Cálculo</AlertTitle>
+              <AlertDescription>
+                  <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div>
+                          <p className="font-semibold">Incertidumbre Combinada (uc)</p>
+                          <p className="font-mono text-lg">{incertidumbreCombinada.toExponential(4)}</p>
+                      </div>
+                      <div>
+                          <p className="font-semibold">Incertidumbre Expandida (U = uc * k)</p>
+                          <p className="font-mono text-lg text-primary">{incertidumbreExpandida.toExponential(4)}</p>
+                      </div>
+                  </div>
+              </AlertDescription>
+          </Alert>
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Button type="submit"><Save className="mr-2 h-4 w-4"/> Guardar Cálculo en Historial</Button>
+        </CardFooter>
       </Form>
     </Card>
   );
