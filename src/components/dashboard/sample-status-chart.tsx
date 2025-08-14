@@ -110,7 +110,7 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
               />
           </PieChart>
       </ResponsiveContainer>
-      <div className="absolute inset-0 text-center pointer-events-none top-1/2 -translate-y-1/2">
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
           <p className="text-2xl font-bold font-headline">{total}</p>
           <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
       </div>
