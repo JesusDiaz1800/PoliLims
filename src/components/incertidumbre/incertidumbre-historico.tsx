@@ -14,6 +14,36 @@ interface HistoricoIncertidumbreProps {
   calculos: CalculoIncertidumbre[];
 }
 
+const CalculoRow = ({ calculo }: { calculo: CalculoIncertidumbre }) => {
+    const [formattedDate, setFormattedDate] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        // This effect runs only on the client, after hydration.
+        // This ensures the server and client render match initially.
+        setFormattedDate(format(new Date(calculo.fecha), 'dd-MM-yyyy HH:mm'));
+    }, [calculo.fecha]);
+
+    return (
+        <TableRow>
+            <TableCell className="font-medium">{calculo.nombre}</TableCell>
+            <TableCell>{formattedDate || 'Cargando...'}</TableCell>
+            <TableCell>{calculo.usuario}</TableCell>
+            <TableCell className="text-right font-mono">{calculo.resultado.incertidumbreCombinada.toExponential(4)}</TableCell>
+            <TableCell className="text-right font-mono font-bold text-primary">{calculo.resultado.incertidumbreExpandida.toExponential(4)}</TableCell>
+            <TableCell className="text-right">
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem><FileText className="mr-2 h-4 w-4" />Ver Reporte PDF</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </TableCell>
+        </TableRow>
+    )
+}
+
 export function HistoricoIncertidumbre({ calculos }: HistoricoIncertidumbreProps) {
   return (
     <Card>
@@ -36,23 +66,7 @@ export function HistoricoIncertidumbre({ calculos }: HistoricoIncertidumbreProps
                 </TableHeader>
                 <TableBody>
                     {calculos.map((calculo) => (
-                        <TableRow key={calculo.id}>
-                            <TableCell className="font-medium">{calculo.nombre}</TableCell>
-                            <TableCell>{format(new Date(calculo.fecha), 'dd-MM-yyyy HH:mm')}</TableCell>
-                            <TableCell>{calculo.usuario}</TableCell>
-                            <TableCell className="text-right font-mono">{calculo.resultado.incertidumbreCombinada.toExponential(4)}</TableCell>
-                            <TableCell className="text-right font-mono font-bold text-primary">{calculo.resultado.incertidumbreExpandida.toExponential(4)}</TableCell>
-                            <TableCell className="text-right">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem><FileText className="mr-2 h-4 w-4" />Ver Reporte PDF</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
+                        <CalculoRow key={calculo.id} calculo={calculo} />
                     ))}
                 </TableBody>
             </Table>
