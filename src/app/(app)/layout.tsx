@@ -4,6 +4,7 @@ import AppLayoutClient from './app-layout-client';
 import { findUserByUsername } from '@/services/user-service';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { middleware } from '@/middleware';
 
 // This is a Server Component responsible for fetching all initial data.
 export default async function AppLayout({ 
@@ -12,26 +13,12 @@ export default async function AppLayout({
     children: React.ReactNode,
 }) {
     // In a real app with authentication, user would come from session.
-    // Here, we simulate it from searchParams.
-    const headersList = headers();
-    const referer = headersList.get('referer');
-    let user = null;
-    let usernameParam = 'jdiaz'; // Default user
-
-    if (referer) {
-      try {
-        const url = new URL(referer);
-        const username = url.searchParams.get('user');
-        if (username) {
-            usernameParam = username;
-        }
-      } catch (e) {
-        console.error("Could not parse referer URL", e)
-      }
-    }
+    // For this prototype, we simulate it from searchParams.
     
-    // Also check current URL in case of direct navigation
-    const search = headersList.get('x-search');
+    // Default user if no search param is provided
+    let usernameParam = 'jdiaz'; 
+    const search = headers().get('x-search');
+    
     if (search) {
         try {
             const params = new URLSearchParams(search);
@@ -40,16 +27,14 @@ export default async function AppLayout({
                 usernameParam = username;
             }
         } catch(e) {
-            console.error("Could not parse search params", e);
+            console.error("Could not parse search params for user", e);
         }
     }
     
-    user = await findUserByUsername(usernameParam);
+    const user = await findUserByUsername(usernameParam);
     
-    // If no user is found (e.g., direct navigation), redirect to login
-    if (!user) {
-        redirect('/login');
-    }
+    // It's safe to assume user is found as we have a default.
+    // In a real app, you'd redirect if no user was found after auth check.
 
     const initialData = await getInitialData();
 

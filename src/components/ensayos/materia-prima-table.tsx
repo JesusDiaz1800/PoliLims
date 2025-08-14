@@ -17,6 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { useDynamicData } from '@/context/data-context';
 import type { User } from '@/services/user-service';
+import { ApprovalDialog } from './approval-dialog';
 
 interface MateriaPrimaTableProps {
   ensayos: Ensayo[];
@@ -43,10 +44,13 @@ const formatValue = (value: any, decimals: number = 2) => {
 };
 
 const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaPrimaTableProps) => {
-  const { deleteEnsayo } = useDynamicData();
+  const { deleteEnsayo, updateEnsayo, addRecentActivity } = useDynamicData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [filterType, setFilterType] = React.useState('all');
+  const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
+  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = React.useState(false);
+
   const canApprove = user?.role === 'Jefe de Calidad' || user?.role === 'Ing. Analista de Calidad';
 
   const filteredEnsayos = React.useMemo(() =>
@@ -72,6 +76,11 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
         console.error("Failed to delete ensayo", error);
     }
   };
+
+  const handleOpenApprovalDialog = (ensayo: Ensayo) => {
+    setSelectedEnsayo(ensayo);
+    setIsApprovalDialogOpen(true);
+  }
 
   const ensayoFilters = [
     { value: 'all', label: 'Vista General' },
@@ -265,6 +274,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
 
 
   return (
+    <>
     <Card>
       <CardHeader>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -329,6 +339,12 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
                                     <Edit className="mr-2 h-4 w-4" />
                                     Editar / Ingresar Datos
                                 </DropdownMenuItem>
+                                {canApprove && (
+                                    <DropdownMenuItem onSelect={() => handleOpenApprovalDialog(ensayo)}>
+                                        <ShieldCheck className="mr-2 h-4 w-4" />
+                                        Aprobar / Revisar
+                                    </DropdownMenuItem>
+                                )}
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
                                     <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
@@ -368,6 +384,17 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
         )}
       </CardContent>
     </Card>
+    {selectedEnsayo && user && (
+        <ApprovalDialog 
+            isOpen={isApprovalDialogOpen}
+            onClose={() => setIsApprovalDialogOpen(false)}
+            ensayo={selectedEnsayo}
+            user={user}
+            updateEnsayo={updateEnsayo}
+            addRecentActivity={addRecentActivity}
+        />
+    )}
+    </>
   );
 }
 

@@ -7,6 +7,7 @@ import type { User } from '@/services/user-service';
 import { ChatWidget, ChatWidgetProvider } from '@/components/soporte/chat-widget';
 import React from 'react';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
+import RootPrefetch from '@/components/root-prefetch';
 
 export default function AppLayoutClient({ 
     children,
@@ -40,6 +41,7 @@ export default function AppLayoutClient({
                     </SidebarProvider>
                 </ChatWidgetProvider>
             </DynamicDataProvider>
+            <RootPrefetch />
         </ThemeProvider>
     );
 }
