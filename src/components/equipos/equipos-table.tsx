@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -47,6 +48,7 @@ import { EquipoDetailsDialog } from "./equipo-details-dialog";
 import { isPast, differenceInDays, parse } from 'date-fns';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { ControlEventoDialog } from "./control-evento-dialog";
+import { useFilters } from "@/context/filter-context";
 
 interface EquiposTableProps {
   equipos: Equipo[];
@@ -92,20 +94,10 @@ function getCalibrationStatus(dateString: string): { message: string, color: str
 }
 
 const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: EquiposTableProps) => {
-  const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
   const [selectedEquipoDetails, setSelectedEquipoDetails] = React.useState<Equipo | null>(null);
   const [selectedEquipoForEvent, setSelectedEquipoForEvent] = React.useState<Equipo | null>(null);
-
-
-  const filteredEquipos = React.useMemo(() => 
-    equipos.filter(
-      (equipo) =>
-        equipo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        equipo.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (equipo.marca && equipo.marca.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (equipo.modelo && equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase()))
-    ), [equipos, searchTerm]);
+  const { filteredData: filteredEquipos, searchTerm, setSearchTerm } = useFilters(equipos, ['nombre', 'id', 'marca', 'modelo']);
   
   const handleDelete = async (equipoId: string) => {
     try {

@@ -8,13 +8,14 @@ import Loading from '../loading';
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
 /**
  * @component AuditoriasPage
  * @description Page component for managing audits. It consumes audit and user data from the central
  * data context, handles the creation and editing of audits through a dialog.
  */
-const AuditoriasPage = () => {
+function AuditoriasPageContent() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   
@@ -65,4 +66,10 @@ const AuditoriasPage = () => {
   );
 }
 
-export default AuditoriasPage;
+export default function AuditoriasPage() {
+    return (
+        <FilterProvider>
+            <AuditoriasPageContent />
+        </FilterProvider>
+    )
+}

@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -6,8 +7,9 @@ import { EquiposTable } from '@/components/equipos/equipos-table';
 import { EquipoDialog } from '@/components/equipos/equipo-dialog';
 import type { Equipo } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
-export default function EquiposPage() {
+function EquiposPageContent() {
   const { equipos, isLoaded, deleteEquipo } = useDynamicData();
   const [isEquipoDialogOpen, setIsEquipoDialogOpen] = React.useState(false);
   const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
@@ -41,4 +43,12 @@ export default function EquiposPage() {
       />
     </div>
   );
+}
+
+export default function EquiposPage() {
+    return (
+        <FilterProvider>
+            <EquiposPageContent />
+        </FilterProvider>
+    )
 }

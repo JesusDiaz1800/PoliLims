@@ -5,9 +5,9 @@ import * as React from 'react';
 import Loading from '@/app/(app)/loading';
 import { ControlEventosTable } from '@/components/equipos/control-eventos-table';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
-
-export default function EquiposPage() {
+function ControlEquiposPageContent() {
   const { equipos, controles, isLoaded } = useDynamicData();
 
   if (!isLoaded) {
@@ -22,4 +22,12 @@ export default function EquiposPage() {
         />
     </div>
   );
+}
+
+export default function ControlEquiposPage() {
+    return (
+        <FilterProvider>
+            <ControlEquiposPageContent />
+        </FilterProvider>
+    )
 }

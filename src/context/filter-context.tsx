@@ -1,29 +1,38 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+
+// Define a more flexible state that can hold multiple filter values
+interface FilterState {
+    searchTerm: string;
+    [key: string]: string; // Allow any other string key for different filters
+}
 
 interface FilterContextType {
-    searchTerm: string;
+    filters: FilterState;
+    setFilter: (key: string, value: string) => void;
     setSearchTerm: (term: string) => void;
-    filterType: string;
-    setFilterType: (type: string) => void;
-    filteredData: any[];
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
 export function FilterProvider({ children }: { children: ReactNode }) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterType, setFilterType] = useState('all');
+    const [filters, setFilters] = useState<FilterState>({ searchTerm: '' });
 
+    const setFilter = useCallback((key: string, value: string) => {
+        setFilters(prev => ({...prev, [key]: value}));
+    }, []);
+
+    const setSearchTerm = useCallback((term: string) => {
+        setFilter('searchTerm', term);
+    }, [setFilter]);
+    
     const value = useMemo(() => ({
-        searchTerm,
-        setSearchTerm,
-        filterType,
-        setFilterType,
-        filteredData: [], // This will be overridden by useFilters hook
-    }), [searchTerm, filterType]);
+        filters,
+        setFilter,
+        setSearchTerm
+    }), [filters, setFilter, setSearchTerm]);
     
     return (
         <FilterContext.Provider value={value}>
@@ -32,30 +41,40 @@ export function FilterProvider({ children }: { children: ReactNode }) {
     );
 }
 
+// Update the hook to be more generic
 export const useFilters = <T extends Record<string, any>>(data: T[], searchKeys: (keyof T)[]) => {
     const context = useContext(FilterContext);
     if (!context) {
         throw new Error('useFilters must be used within a FilterProvider');
     }
 
-    const { searchTerm, setSearchTerm, filterType, setFilterType } = context;
+    const { filters, setFilter, setSearchTerm } = context;
+    const { searchTerm, ...otherFilters } = filters;
 
     const filteredData = useMemo(() => {
         return data.filter(item => {
-            const matchFilterType = filterType === 'all' || item.tipo === filterType;
-            const matchSearchTerm = searchKeys.some(key => {
+            // Check custom filters first
+            const matchOtherFilters = Object.entries(otherFilters).every(([key, value]) => {
+                if (value === 'all' || !value) return true;
+                return String(item[key]).toLowerCase() === value.toLowerCase();
+            });
+
+            if (!matchOtherFilters) return false;
+
+            // Then check search term
+            if (!searchTerm) return true;
+            return searchKeys.some(key => {
                 const value = item[key];
                 return typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase());
             });
-            return matchFilterType && matchSearchTerm;
         });
-    }, [data, searchTerm, filterType, searchKeys]);
+    }, [data, searchTerm, otherFilters, searchKeys]);
 
     return {
-        searchTerm,
+        filters,
+        setFilter,
         setSearchTerm,
-        filterType,
-        setFilterType,
+        searchTerm,
         filteredData,
     };
 };

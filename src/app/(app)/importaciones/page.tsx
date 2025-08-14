@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -6,9 +7,10 @@ import { ImportacionesTable } from '@/components/importaciones/importaciones-tab
 import { ImportacionDialog } from '@/components/importaciones/importacion-dialog';
 import type { Importacion } from '@/context/data-context';
 import { useDynamicData } from '@/context/data-context';
+import { FilterProvider } from '@/context/filter-context';
 
 
-export default function ImportacionesPage() {
+function ImportacionesPageContent() {
   const { importaciones, isLoaded, deleteImportacion } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedImportacion, setSelectedImportacion] = React.useState<Importacion | null>(null);
@@ -42,4 +44,12 @@ export default function ImportacionesPage() {
       />
     </div>
   );
+}
+
+export default function ImportacionesPage() {
+    return (
+        <FilterProvider>
+            <ImportacionesPageContent />
+        </FilterProvider>
+    )
 }

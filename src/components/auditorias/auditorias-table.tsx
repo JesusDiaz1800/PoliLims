@@ -44,6 +44,7 @@ import { cn } from "@/lib/utils";
 import type { Auditoria } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from "date-fns";
+import { useFilters } from "@/context/filter-context";
 
 interface AuditoriasTableProps {
   auditorias: Auditoria[];
@@ -80,17 +81,8 @@ function getStatusVariant(status: Auditoria["estado"]) {
  * @param {AuditoriasTableProps} props - The props for the component.
  */
 const AuditoriasTableInternal = ({ auditorias, onAddNew, onEdit, onDelete }: AuditoriasTableProps) => {
-  const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
-
-  const filteredAuditorias = React.useMemo(() => 
-    auditorias.filter(
-      (auditoria) =>
-        auditoria.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        auditoria.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        auditoria.auditor_lider.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        auditoria.alcance.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [auditorias, searchTerm]);
+  const { filteredData: filteredAuditorias, searchTerm, setSearchTerm } = useFilters(auditorias, ['id', 'tipo', 'auditor_lider', 'alcance']);
   
   /**
    * @function handleDelete

@@ -7,13 +7,14 @@ import { NoConformidadDialog } from '@/components/no-conformidades/no-conformida
 import { NoConformidadTable } from '@/components/no-conformidades/no-conformidad-table';
 import { useDynamicData, type NoConformidad } from '@/context/data-context';
 import { useSearchParams } from 'next/navigation';
+import { FilterProvider } from '@/context/filter-context';
 
 /**
  * @component NoConformidadesPage
  * @description Page for managing non-conformities. It fetches all necessary data from the dynamic data context,
  * including non-conformities, equipment, and assays, to populate the table and dialog forms.
  */
-export default function NoConformidadesPage() {
+function NoConformidadesPageContent() {
   const { noConformidades, equipos, ensayos, isLoaded, deleteIncidencia } = useDynamicData();
   const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -81,4 +82,12 @@ export default function NoConformidadesPage() {
       />
     </div>
   );
+}
+
+export default function NoConformidadesPage() {
+    return (
+        <FilterProvider>
+            <NoConformidadesPageContent />
+        </FilterProvider>
+    )
 }
