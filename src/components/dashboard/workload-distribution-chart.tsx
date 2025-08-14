@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -40,7 +39,7 @@ const WorkloadDistributionChartInternal = ({ data: allData, isModal = false }: W
                       <stop offset="100%" stopColor="hsl(var(--chart-5))" stopOpacity={0.4}/>
                   </linearGradient>
               </defs>
-              <XAxis dataKey="name" type="category" tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" type="category" tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} interval={0} textAnchor="end" />
               <YAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
