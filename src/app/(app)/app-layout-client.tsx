@@ -205,30 +205,33 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
   
     return (
       <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
-        <CollapsibleTrigger asChild disabled={disabled}>
-          <SidebarMenuButton
-            variant="ghost"
-            className="w-full justify-between group/button px-3"
-            isActive={isActive}
-            disabled={disabled}
-            aria-disabled={disabled}
-          >
-            <div className="flex items-center gap-3 flex-1">
+        <SidebarMenuButton
+          variant="ghost"
+          className="w-full justify-between group/button px-3"
+          isActive={isActive}
+          disabled={disabled}
+          aria-disabled={disabled}
+        >
+          <Link href={`${item.href}?${userQuery}`} className="flex items-center gap-3 flex-1" onClick={(e) => onMenuClick(e, item.isAction)}>
               <item.icon className="size-5 shrink-0" />
               <span className="truncate text-sm">{item.label}</span>
-            </div>
-            <svg
-              className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-            </svg>
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
+          </Link>
+          <CollapsibleTrigger asChild disabled={disabled}>
+             <Button variant="ghost" size="icon" className="h-full w-9 p-2 group-data-[state=open]/button:bg-white/20">
+              <svg
+                className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+              </svg>
+            </Button>
+          </CollapsibleTrigger>
+        </SidebarMenuButton>
+
         <CollapsibleContent>
           <SidebarMenu className="pl-2">
             {subMenuItems &&
@@ -529,5 +532,3 @@ export default function AppLayoutClient({
         </ThemeProvider>
     );
 }
-
-    
