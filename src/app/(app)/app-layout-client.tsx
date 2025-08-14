@@ -50,6 +50,7 @@ import {
   SlidersHorizontal,
   Search,
   Beaker,
+  ChevronDown,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -62,7 +63,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
-import { RootPrefetch } from '@/components/root-prefetch';
+import RootPrefetch from '@/components/root-prefetch';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Button } from "@/components/ui/button";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
@@ -103,25 +104,25 @@ const menuItems: any[] = [
             icon: BookCheck,
             href: "/equipos",
             subItems: [
-              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList, className: "shrink-0" },
-              { href: "/equipos/control", label: "Control de Equipos", icon: History, className: "shrink-0" },
-              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck, className: "shrink-0" },
+              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+              { href: "/equipos/control", label: "Control de Equipos", icon: History },
+              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
             ],
           },
-          { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck, className: "shrink-0" },
-          { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer, className: "shrink-0" },
-          { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon, className: "shrink-0" },
+          { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
+          { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
+          { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
           {
             label: "Proveedores",
             icon: Truck,
             href: "/proveedores",
-            subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList, className: "shrink-0" }],
+            subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
           },
-          { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch, className: "shrink-0" },
-          { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap, className: "shrink-0" },
-          { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator, className: "shrink-0" },
-          { href: "/importaciones", label: "Control de Importaciones", icon: Ship, className: "shrink-0" },
-          { href: "/portal", label: "Portal de Clientes", icon: Users, className: "shrink-0" },
+          { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
+          { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
+          { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
+          { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
+          { href: "/portal", label: "Portal de Clientes", icon: Users },
         ]
     },
      { 
@@ -218,16 +219,7 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                         <item.icon className="size-5 shrink-0" />
                         <span className="truncate text-sm">{item.label}</span>
                     </div>
-                    <svg
-                        className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                    </svg>
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
                 </CollapsibleTrigger>
             </SidebarMenuButton>
             <CollapsibleContent>
@@ -528,5 +520,3 @@ export default function AppLayoutClient({
         </ThemeProvider>
     );
 }
-
-    
