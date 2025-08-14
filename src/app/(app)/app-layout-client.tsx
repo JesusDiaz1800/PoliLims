@@ -524,3 +524,5 @@ export default function AppLayoutClient({
         </ThemeProvider>
     );
 }
+
+    
