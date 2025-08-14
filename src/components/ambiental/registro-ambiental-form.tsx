@@ -86,4 +86,3 @@ export function RegistroAmbientalForm({ zonas, usuarios, onAddRecord, onAddActiv
     </Form>
   );
 }
-
