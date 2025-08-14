@@ -1,6 +1,7 @@
 
 "use client";
 
+import * as React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Thermometer, Droplets, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
@@ -28,6 +29,16 @@ const StatItem = ({ icon, value, unit, isOutOfRange }: { icon: React.ReactNode, 
 );
 
 export function AmbientalStatsCard({ zona, ultimaLectura, limites }: AmbientalStatsCardProps) {
+  const [formattedDate, setFormattedDate] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    // This effect runs only on the client, after hydration.
+    // This ensures the server and client render match initially.
+    if (ultimaLectura?.timestamp) {
+        setFormattedDate(format(new Date(ultimaLectura.timestamp), 'dd/MM/yy HH:mm', { locale: es }));
+    }
+  }, [ultimaLectura]);
+
   if (!ultimaLectura || !limites) {
     return (
       <Card>
@@ -57,7 +68,7 @@ export function AmbientalStatsCard({ zona, ultimaLectura, limites }: AmbientalSt
                 <StatItem icon={<Droplets size={16} />} value={ultimaLectura.humedad.toFixed(1)} unit="%" isOutOfRange={humOutOfRange}/>
             </div>
             <p className="text-xs text-muted-foreground text-right mt-2">
-                Última lectura: {format(new Date(ultimaLectura.timestamp), 'dd/MM/yy HH:mm', { locale: es })}
+                {formattedDate ? `Última lectura: ${formattedDate}` : 'Cargando fecha...'}
             </p>
         </CardContent>
     </Card>
