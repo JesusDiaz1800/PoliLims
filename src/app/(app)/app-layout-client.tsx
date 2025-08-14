@@ -205,14 +205,15 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
 
     return (
         <Collapsible key={item.label} defaultOpen={defaultOpen} className="w-full" disabled={disabled}>
-            <CollapsibleTrigger asChild disabled={disabled}>
-                <SidebarMenuButton
-                    variant="ghost"
-                    className="w-full justify-between group/button px-3"
-                    isActive={isActive}
-                    disabled={disabled}
-                    aria-disabled={disabled}
-                >
+            <SidebarMenuButton
+                asChild
+                variant="ghost"
+                className="w-full justify-between group/button px-3"
+                isActive={isActive}
+                disabled={disabled}
+                aria-disabled={disabled}
+            >
+                <CollapsibleTrigger className="w-full">
                     <div className="flex items-center gap-3 flex-1">
                         <item.icon className="size-5 shrink-0" />
                         <span className="truncate text-sm">{item.label}</span>
@@ -227,9 +228,8 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                     >
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
                     </svg>
-                </SidebarMenuButton>
-            </CollapsibleTrigger>
-
+                </CollapsibleTrigger>
+            </SidebarMenuButton>
             <CollapsibleContent>
                 <SidebarMenu className="pl-2">
                     {subMenuItems &&
@@ -254,7 +254,7 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                                         aria-disabled={disabled}
                                     >
                                         <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                                            {subItem.icon && <subItem.icon className="mr-2 size-4" />}
+                                            {subItem.icon && <subItem.icon className="mr-2 size-4 shrink-0" />}
                                             <span className="text-sm">{subItem.label}</span>
                                         </Link>
                                     </SidebarMenuButton>
