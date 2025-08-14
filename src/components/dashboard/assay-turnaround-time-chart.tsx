@@ -19,6 +19,29 @@ const assayChecks: { name: string, field: keyof Ensayo }[] = [
     { name: "TIO", field: "tio_tiempo" },
 ];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const value = payload[0].value;
+    const days = Math.floor(value);
+    const hours = Math.round((value - days) * 24);
+    
+    return (
+      <div className="rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+        <div className="font-medium">{label}</div>
+        <div className="text-muted-foreground">
+            {days > 0 && `${days} día${days > 1 ? 's' : ''}`}
+            {days > 0 && hours > 0 && " y "}
+            {hours > 0 && `${hours} hora${hours > 1 ? 's' : ''}`}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
+
 const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: AssayTurnaroundTimeChartProps) => {
     const chartData = React.useMemo(() => {
         const turnarounds: { [key: string]: number[] } = {};
@@ -76,15 +99,7 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
               <YAxis dataKey="name" type="category" width={60} tick={{fontSize: 12}} stroke="#888888" tickLine={false} axisLine={false} />
               <Tooltip
                   cursor={{fill: 'hsla(var(--primary), 0.1)'}}
-                  contentStyle={{
-                      backgroundColor: 'hsl(var(--card) / 0.8)',
-                      backdropFilter: 'blur(4px)',
-                      border: '1px solid hsl(var(--border) / 0.3)',
-                      borderRadius: 'var(--radius)',
-                      color: 'hsl(var(--foreground))'
-                  }}
-                  labelStyle={{ color: 'hsl(var(--foreground))' }}
-                  itemStyle={{ color: 'hsl(var(--foreground))' }}
+                  content={<CustomTooltip />}
               />
               <Bar dataKey="value" name="Días" radius={[0, 4, 4, 0]} activeBar={<Rectangle fillOpacity={0.8} />}>
                   {chartData.map((_entry, index) => (
