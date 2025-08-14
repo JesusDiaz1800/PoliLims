@@ -64,6 +64,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
 import RootPrefetch from '@/components/root-prefetch';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { Button } from "@/components/ui/button";
 
 const menuItems: any[] = [
     { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
@@ -476,7 +477,17 @@ function AppShell({
                       {pageTitle}
                   </h1>
               </div>
-              <ThemeToggle />
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                    </span>
+                    <span className="sr-only">Notificaciones</span>
+                </Button>
+                <ThemeToggle />
+              </div>
               </header>
             )}
             
@@ -524,5 +535,3 @@ export default function AppLayoutClient({
         </ThemeProvider>
     );
 }
-
-    
