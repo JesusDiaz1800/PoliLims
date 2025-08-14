@@ -185,315 +185,311 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-4">
-                <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <FormField
-                        control={control}
-                        name="fecha_ingreso"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Fecha</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                                </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="hora"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Hora</FormLabel>
-                            <FormControl>
-                                <Input type="time" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="inspector"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Inspector</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}</SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                        />
-                    <FormField
-                        control={control}
-                        name="maquinista"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Maquinista</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="maquina"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Máquina</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>{maquinas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={control}
-                        name="producto"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Producto</FormLabel>
-                                <FormControl>
-                                    <Combobox 
-                                        options={productos}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        placeholder="Buscar producto..."
-                                        notFoundText="No se encontró producto."
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={control}
-                        name="marca"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Marca</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-            </div>
-
-            <Separator />
-            
-            <div className="space-y-4">
-                <h3 className="text-lg font-medium font-headline">Mediciones Dimensionales y Visuales</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <FormField
-                        control={control}
-                        name="diametro"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Diámetro Ext. [mm]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Ingrese el diámetro" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            <AlertaValidacion mensaje={alerts.diametro} />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="espesor_min"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Espesor Mín. [mm]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Valor mínimo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            <AlertaValidacion mensaje={alerts.espesor_min} />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="espesor_max"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Espesor Máx. [mm]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Valor máximo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            <AlertaValidacion mensaje={alerts.espesor_max} />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="ovalidad"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Ovalidad [mm]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Medida de ovalidad" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            <AlertaValidacion mensaje={alerts.ovalidad} />
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="largo"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Largo Muestra [mm]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Largo de la muestra" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={control}
-                        name="peso_muestra"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Peso muestra [g]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Peso en gramos" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
-                            </FormControl>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={control}
-                        name="peso_kg_m"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Peso [kg/m]</FormLabel>
-                            <FormControl>
-                                <Input type="number" step="any" placeholder="Calculado..." {...field} value={field.value ?? ''} readOnly className="bg-muted"/>
-                            </FormControl>
-                                <AlertaValidacion mensaje={alerts.peso_kg_m} />
-                            </FormItem>
-                        )}
-                    />
-                </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                    <FormField
-                        control={control}
-                        name="color_tuberia"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Color de Tubería</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Ej: Negro, Verde" {...field} value={field.value ?? ''} />
-                            </FormControl>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={control}
-                        name="color_linea"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Color de Línea de Identificación</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Ej: Azul, Roja" {...field} value={field.value ?? ''} />
-                            </FormControl>
-                            </FormItem>
-                        )}
-                    />
-                        <FormField
-                        control={control}
-                        name="observaciones_visuales"
-                        render={({ field }) => (
-                            <FormItem className="md:col-span-3">
-                            <FormLabel>Observaciones de Calidad Visual</FormLabel>
-                            <FormControl>
-                                <Textarea placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...field} value={field.value ?? ''}/>
-                            </FormControl>
-                            </FormItem>
-                        )}
-                    />
-                </div>
-            </div>
-
-            <Separator />
-            
+    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+            <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <FormField
-                control={control}
-                name="entregado_laboratorio"
-                render={({ field }) => (
-                    <FormItem>
-                        <h3 className="text-lg font-medium font-headline">Acción Final</h3>
-                        <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
+                    control={control}
+                    name="fecha_ingreso"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Fecha</FormLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <FormControl>
+                                    <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {field.value ? format(field.value, "dd-MM-yyyy") : <span>Seleccione una fecha</span>}
+                                    </Button>
+                                </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="hora"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Hora</FormLabel>
+                        <FormControl>
+                            <Input type="time" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="inspector"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Inspector</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>{inspectores.map(i => <SelectItem key={i.value} value={i.value}>{i.label}</SelectItem>)}</SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                <FormField
+                    control={control}
+                    name="maquinista"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Maquinista</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>{maquinistas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="maquina"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Máquina</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>{maquinas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="producto"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Producto</FormLabel>
                             <FormControl>
-                                <Checkbox
-                                    id="entregado_laboratorio"
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    className="mt-0.5"
+                                <Combobox 
+                                    options={productos}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    placeholder="Buscar producto..."
+                                    notFoundText="No se encontró producto."
                                 />
                             </FormControl>
-                            <div className="grid gap-1.5 leading-none">
-                                <label
-                                    htmlFor="entregado_laboratorio"
-                                    className="font-semibold cursor-pointer"
-                                >
-                                    Muestra Entregada a Laboratorio
-                                </label>
-                                <p className="text-sm text-muted-foreground">
-                                    Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
-                                </p>
-                            </div>
-                        </div>
-                    </FormItem>
-                )}
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
-        
-    
+                <FormField
+                    control={control}
+                    name="marca"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Marca</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                    <SelectTrigger><SelectValue placeholder="Seleccione..." /></SelectTrigger>
+                                </FormControl>
+                                <SelectContent>{marcas.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}</SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
+        </div>
 
-    <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
-        <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Limpiar
-        </Button>
-        <Button type="submit" className={cn(hasAlerts && 'bg-destructive/90 hover:bg-destructive text-destructive-foreground')}>
-            {hasAlerts && <AlertTriangle className="mr-2 h-4 w-4" />}
-            <FilePlus2 className="mr-2 h-4 w-4" />
-            Registrar Control
-        </Button>
-    </div>
-      </form>
+        <Separator />
+        
+        <div className="space-y-4">
+            <h3 className="text-lg font-medium font-headline">Mediciones Dimensionales y Visuales</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <FormField
+                    control={control}
+                    name="diametro"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Diámetro Ext. [mm]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Ingrese el diámetro" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        <AlertaValidacion mensaje={alerts.diametro} />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="espesor_min"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Espesor Mín. [mm]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Valor mínimo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        <AlertaValidacion mensaje={alerts.espesor_min} />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="espesor_max"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Espesor Máx. [mm]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Valor máximo" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        <AlertaValidacion mensaje={alerts.espesor_max} />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="ovalidad"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Ovalidad [mm]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Medida de ovalidad" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        <AlertaValidacion mensaje={alerts.ovalidad} />
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="largo"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Largo Muestra [mm]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Largo de la muestra" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="peso_muestra"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Peso muestra [g]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Peso en gramos" {...field} value={field.value ?? ''} onChange={event => field.onChange(event.target.value === '' ? undefined : +event.target.value)} />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="peso_kg_m"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Peso [kg/m]</FormLabel>
+                        <FormControl>
+                            <Input type="number" step="any" placeholder="Calculado..." {...field} value={field.value ?? ''} readOnly className="bg-muted"/>
+                        </FormControl>
+                            <AlertaValidacion mensaje={alerts.peso_kg_m} />
+                        </FormItem>
+                    )}
+                />
+            </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <FormField
+                    control={control}
+                    name="color_tuberia"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Color de Tubería</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Ej: Negro, Verde" {...field} value={field.value ?? ''} />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={control}
+                    name="color_linea"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Color de Línea de Identificación</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Ej: Azul, Roja" {...field} value={field.value ?? ''} />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+                    <FormField
+                    control={control}
+                    name="observaciones_visuales"
+                    render={({ field }) => (
+                        <FormItem className="md:col-span-3">
+                        <FormLabel>Observaciones de Calidad Visual</FormLabel>
+                        <FormControl>
+                            <Textarea placeholder="Añada cualquier nota sobre la calidad visual, al tacto, color, etc." rows={3} {...field} value={field.value ?? ''}/>
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+            </div>
+        </div>
+
+        <Separator />
+        
+            <FormField
+            control={control}
+            name="entregado_laboratorio"
+            render={({ field }) => (
+                <FormItem>
+                    <h3 className="text-lg font-medium font-headline">Acción Final</h3>
+                    <div className="items-top flex space-x-3 p-4 rounded-lg border bg-card">
+                        <FormControl>
+                            <Checkbox
+                                id="entregado_laboratorio"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                className="mt-0.5"
+                            />
+                        </FormControl>
+                        <div className="grid gap-1.5 leading-none">
+                            <label
+                                htmlFor="entregado_laboratorio"
+                                className="font-semibold cursor-pointer"
+                            >
+                                Muestra Entregada a Laboratorio
+                            </label>
+                            <p className="text-sm text-muted-foreground">
+                                Marque esta casilla si la muestra física ha sido enviada. Esto creará un nuevo registro de ensayo en el área de Seguimiento para que el laboratorio proceda con los análisis restantes (Melt Index, Densidad, etc.).
+                            </p>
+                        </div>
+                    </div>
+                </FormItem>
+            )}
+            />
+    
+        <div className="flex justify-end pt-6 gap-4 border-t mt-6 sticky bottom-0 bg-card/95 pb-4 -mb-4 -mx-6 px-6">
+            <Button type="button" variant="ghost" onClick={() => form.reset(defaultFormValues)}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Limpiar
+            </Button>
+            <Button type="submit" className={cn(hasAlerts && 'bg-destructive/90 hover:bg-destructive text-destructive-foreground')}>
+                {hasAlerts && <AlertTriangle className="mr-2 h-4 w-4" />}
+                <FilePlus2 className="mr-2 h-4 w-4" />
+                Registrar Control
+            </Button>
+        </div>
     </Form>
   )
 }
