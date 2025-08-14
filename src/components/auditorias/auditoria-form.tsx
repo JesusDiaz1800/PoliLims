@@ -103,8 +103,7 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
   const userOptions = users.map(u => ({ value: u.fullName, label: u.fullName }));
   
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField control={form.control} name="tipo" render={({ field }) => (<FormItem><FormLabel>Tipo de Auditoría</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Interna">Interna</SelectItem><SelectItem value="Externa - Proveedor">Externa - Proveedor</SelectItem><SelectItem value="Externa - Certificación">Externa - Certificación</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
           <FormField control={form.control} name="estado" render={({ field }) => (<FormItem><FormLabel>Estado</FormLabel><Select onValueChange={field.onChange} value={field.value}><FormControl><SelectTrigger><SelectValue/></SelectTrigger></FormControl><SelectContent><SelectItem value="Planificada">Planificada</SelectItem><SelectItem value="En Curso">En Curso</SelectItem><SelectItem value="Finalizada">Finalizada</SelectItem><SelectItem value="Cancelada">Cancelada</SelectItem></SelectContent></Select><FormMessage /></FormItem>)}/>
@@ -125,7 +124,6 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
         <FormField control={form.control} name="alcance" render={({ field }) => (<FormItem><FormLabel>Alcance de la Auditoría</FormLabel><FormControl><Textarea placeholder="Ej: 'Procesos de ensayo de materias primas según ISO/IEC 17025:2017, cláusulas 7.2 a 7.7'" {...field} /></FormControl><FormMessage /></FormItem>)}/>
         <FormField control={form.control} name="objetivos" render={({ field }) => (<FormItem><FormLabel>Objetivos de la Auditoría</FormLabel><FormControl><Textarea placeholder="Ej: 'Verificar la conformidad con los procedimientos internos P-001 y P-002, evaluar la competencia del personal...'" {...field} /></FormControl><FormMessage /></FormItem>)}/>
         <div className="flex justify-end pt-4"><Button type="submit"><Save className="mr-2 h-4 w-4" />{isEditing ? 'Guardar Cambios' : 'Planificar Auditoría'}</Button></div>
-      </form>
     </Form>
   );
 }
