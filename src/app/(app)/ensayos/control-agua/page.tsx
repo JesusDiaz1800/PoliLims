@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -60,64 +59,62 @@ export default function ControlAguaPage() {
                 </div>
             </CardHeader>
             <CardContent>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                             <FormField control={form.control} name="ph" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>pH</FormLabel>
-                                    <FormControl><Input type="number" step="0.1" placeholder="Ej: 7.2" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                             <FormField control={form.control} name="conductividad" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Conductividad [µS/cm]</FormLabel>
-                                    <FormControl><Input type="number" placeholder="Ej: 150" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                             <FormField control={form.control} name="cloro_residual" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Cloro Residual [ppm]</FormLabel>
-                                    <FormControl><Input type="number" step="0.1" placeholder="Ej: 0.5" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                             <FormField control={form.control} name="dureza" render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Dureza Total [mg/L CaCO₃]</FormLabel>
-                                    <FormControl><Input type="number" placeholder="Ej: 80" {...field} /></FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                        </div>
-                         <FormField control={form.control} name="observaciones" render={({ field }) => (
+                <Form form={form} onSubmit={onSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                         <FormField control={form.control} name="ph" render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Observaciones</FormLabel>
-                                <FormControl><Textarea placeholder="Añada cualquier nota relevante sobre la calidad del agua..." {...field} /></FormControl>
+                                <FormLabel>pH</FormLabel>
+                                <FormControl><Input type="number" step="0.1" placeholder="Ej: 7.2" {...field} /></FormControl>
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <div className="flex items-center justify-between">
-                            <FormField control={form.control} name="responsable" render={({ field }) => (
-                                <FormItem className="w-full max-w-xs">
-                                    <FormLabel>Responsable del Análisis</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl><SelectTrigger><SelectValue placeholder="Seleccione analista..." /></SelectTrigger></FormControl>
-                                        <SelectContent>
-                                            {analistas.map(a => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )} />
-                            <Button type="submit">
-                                <Save className="mr-2 h-4 w-4" />
-                                Guardar Registro
-                            </Button>
-                        </div>
-                    </form>
+                         <FormField control={form.control} name="conductividad" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Conductividad [µS/cm]</FormLabel>
+                                <FormControl><Input type="number" placeholder="Ej: 150" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="cloro_residual" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Cloro Residual [ppm]</FormLabel>
+                                <FormControl><Input type="number" step="0.1" placeholder="Ej: 0.5" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                         <FormField control={form.control} name="dureza" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Dureza Total [mg/L CaCO₃]</FormLabel>
+                                <FormControl><Input type="number" placeholder="Ej: 80" {...field} /></FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                    </div>
+                     <FormField control={form.control} name="observaciones" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Observaciones</FormLabel>
+                            <FormControl><Textarea placeholder="Añada cualquier nota relevante sobre la calidad del agua..." {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <div className="flex items-center justify-between">
+                        <FormField control={form.control} name="responsable" render={({ field }) => (
+                            <FormItem className="w-full max-w-xs">
+                                <FormLabel>Responsable del Análisis</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
+                                    <FormControl><SelectTrigger><SelectValue placeholder="Seleccione analista..." /></SelectTrigger></FormControl>
+                                    <SelectContent>
+                                        {analistas.map(a => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        <Button type="submit">
+                            <Save className="mr-2 h-4 w-4" />
+                            Guardar Registro
+                        </Button>
+                    </div>
                 </Form>
             </CardContent>
         </Card>
