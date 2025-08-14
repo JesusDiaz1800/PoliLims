@@ -62,7 +62,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
-import RootPrefetch from '@/components/root-prefetch';
+import { RootPrefetch } from '@/components/root-prefetch';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Button } from "@/components/ui/button";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
@@ -103,25 +103,25 @@ const menuItems: any[] = [
             icon: BookCheck,
             href: "/equipos",
             subItems: [
-              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-              { href: "/equipos/control", label: "Control de Equipos", icon: History },
-              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
+              { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList, className: "shrink-0" },
+              { href: "/equipos/control", label: "Control de Equipos", icon: History, className: "shrink-0" },
+              { href: "/equipos/programa", label: "Programa", icon: CalendarCheck, className: "shrink-0" },
             ],
           },
-          { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
-          { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
-          { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
+          { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck, className: "shrink-0" },
+          { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer, className: "shrink-0" },
+          { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon, className: "shrink-0" },
           {
             label: "Proveedores",
             icon: Truck,
             href: "/proveedores",
-            subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList }],
+            subItems: [{ href: "/proveedores/gestion", label: "Gestión de Proveedores", icon: ClipboardList, className: "shrink-0" }],
           },
-          { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch },
-          { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap },
-          { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator },
-          { href: "/importaciones", label: "Control de Importaciones", icon: Ship },
-          { href: "/portal", label: "Portal de Clientes", icon: Users },
+          { href: "/workflows", label: "Flujos de Trabajo", icon: GitBranch, className: "shrink-0" },
+          { href: "/administracion/formacion", label: "Formación y Competencia", icon: GraduationCap, className: "shrink-0" },
+          { href: "/administracion/incertidumbre", label: "Calculadora de Incertidumbre", icon: Calculator, className: "shrink-0" },
+          { href: "/importaciones", label: "Control de Importaciones", icon: Ship, className: "shrink-0" },
+          { href: "/portal", label: "Portal de Clientes", icon: Users, className: "shrink-0" },
         ]
     },
      { 
@@ -254,7 +254,7 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                                         aria-disabled={disabled}
                                     >
                                         <Link href={`${subItem.href}?${userQuery}`} className="relative">
-                                            {subItem.icon && <subItem.icon className="mr-2 size-4 shrink-0" />}
+                                            {subItem.icon && <subItem.icon className={cn("mr-2 size-4", subItem.className)} />}
                                             <span className="text-sm">{subItem.label}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -468,9 +468,8 @@ function AppShell({
         </Sidebar>
 
         <div className="flex flex-col flex-1 h-screen overflow-hidden">
-            {!isDashboard && (
-              <header
-              className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+            <header
+              className={cn("sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6", isDashboard && "hidden")}
               role="banner"
               >
               <div className="flex items-center gap-2">
@@ -483,12 +482,11 @@ function AppShell({
                  <NotificationDropdown />
                 <ThemeToggle />
               </div>
-              </header>
-            )}
+            </header>
             
             <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
                 <main
-                    className={cn("custom-scrollbar", !isDashboard && "p-6 md:p-10")}
+                    className={cn("custom-scrollbar", isDashboard ? "p-0" : "p-6 md:p-10")}
                     role="main"
                     tabIndex={-1}
                 >
@@ -530,3 +528,5 @@ export default function AppLayoutClient({
         </ThemeProvider>
     );
 }
+
+    
