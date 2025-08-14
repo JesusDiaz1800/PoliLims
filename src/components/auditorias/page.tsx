@@ -5,7 +5,7 @@ import * as React from 'react';
 import { AuditoriasTable } from '@/components/auditorias/auditorias-table';
 import { AuditoriaDialog } from '@/components/auditorias/auditoria-dialog';
 import Loading from '../../app/(app)/loading';
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from "@/context/data-context";
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { getAllUsers } from '@/services/user-service';
@@ -18,7 +18,7 @@ import { getAllUsers } from '@/services/user-service';
  * It's now intended to be the internal logic component if needed, but the primary page is /app/(app)/auditorias/page.tsx.
  */
 const AuditoriasPageInternal = () => {
-  const [auditorias, setAuditorias] = React.useState<Auditoria[]>([]);
+  const { auditorias, isLoaded, deleteAuditoria } = useDynamicData();
   const [isLoading, setIsLoading] = React.useState(true);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
@@ -33,11 +33,7 @@ const AuditoriasPageInternal = () => {
   const loadData = React.useCallback(async () => {
     setIsLoading(true);
     try {
-      const [initialData, allUsers] = await Promise.all([
-        dataService.getInitialData(),
-        getAllUsers()
-      ]);
-      setAuditorias(initialData.auditorias);
+      const allUsers = await getAllUsers();
       // Filter users to only include relevant roles for auditing
       setUsers(allUsers.filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'));
     } catch (error) {
@@ -69,10 +65,9 @@ const AuditoriasPageInternal = () => {
   const handleCloseDialog = () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
-    loadData();
   };
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return <Loading />;
   }
 
@@ -82,6 +77,7 @@ const AuditoriasPageInternal = () => {
         auditorias={auditorias}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
+        onDelete={deleteAuditoria}
       />
       <AuditoriaDialog
         isOpen={isDialogOpen}

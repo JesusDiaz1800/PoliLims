@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import type { Auditoria } from "@/context/data-context";
 import { Textarea } from "@/components/ui/textarea";
-import * as dataService from "@/services/data-service";
+import { useDynamicData } from "@/context/data-context";
 import type { User } from "@/services/user-service";
 
 interface AuditoriaFormProps {
@@ -43,6 +43,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: AuditoriaFormProps) {
   const { toast } = useToast();
+  const { addAuditoria, updateAuditoria } = useDynamicData();
   const isEditing = !!auditoriaToEdit;
 
   const defaultValues = React.useMemo(() => ({
@@ -75,14 +76,14 @@ export function AuditoriaForm({ auditoriaToEdit, onFormSubmit, users }: Auditori
 
     try {
       if (isEditing && auditoriaToEdit) {
-        await dataService.updateAuditoria(auditoriaToEdit.id, auditoriaData as any);
+        await updateAuditoria(auditoriaToEdit.id, auditoriaData as any);
         toast({
           title: "Auditoría Actualizada",
           description: `La auditoría ${auditoriaToEdit.id} ha sido actualizada.`,
         });
       } else {
         const { id, ...newAuditoriaData } = auditoriaData;
-        await dataService.addAuditoria(newAuditoriaData as any);
+        await addAuditoria(newAuditoriaData as any);
         toast({
           title: "Auditoría Planificada",
           description: "La nueva auditoría ha sido registrada en el sistema.",
