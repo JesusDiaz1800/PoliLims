@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell, LabelList } from "recharts"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Rectangle, Cell, LabelList, ReferenceLine, CartesianGrid } from "recharts"
 import type { Ensayo } from "@/context/data-context";
 import { format, subMonths, getMonth, parseISO } from "date-fns";
 import { es } from 'date-fns/locale';
@@ -45,6 +45,13 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
     return Object.values(monthlyData);
   }, [allData]);
 
+  const average = React.useMemo(() => {
+    if (chartData.length === 0) return 0;
+    const totalAssays = chartData.reduce((acc, curr) => acc + curr.total, 0);
+    return totalAssays / chartData.length;
+  }, [chartData]);
+
+
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -63,6 +70,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                       <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
                   </linearGradient>
               </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
               <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
               <Tooltip
@@ -83,6 +91,7 @@ const AssaysByMonthChartInternal = ({ data: allData, isModal = false }: AssaysBy
                 ))}
                  <LabelList dataKey="total" position="top" fill="hsl(var(--foreground))" fontSize={12} formatter={(value: number) => (value > 0 ? value : '')} />
               </Bar>
+              <ReferenceLine y={average} label={{ value: `Promedio: ${average.toFixed(1)}`, position: 'insideTopLeft', fill: 'hsl(var(--foreground))', fontSize: 10, dy: -5 }} stroke="hsl(var(--foreground))" strokeDasharray="3 3" />
           </BarChart>
       </ResponsiveContainer>
     </div>
