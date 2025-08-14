@@ -99,11 +99,16 @@ const menuItems: any[] = [
         icon: GitBranch,
         href: '/gestion',
         subItems: [
-          { type: 'header', label: 'Gestión de Equipos' },
-          { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
-          { href: "/equipos/control", label: "Control de Equipos", icon: History },
-          { href: "/equipos/programa", label: "Programa de Calibración", icon: CalendarCheck },
-          { type: 'separator' },
+          { 
+              label: 'Gestión de Equipos', 
+              icon: BookCheck,
+              href: '/equipos',
+              subItems: [
+                { href: "/equipos", label: "Inventario de Equipos", icon: ClipboardList },
+                { href: "/equipos/control", label: "Control de Equipos", icon: History },
+                { href: "/equipos/programa", label: "Programa de Calibración", icon: CalendarCheck },
+              ]
+          },
           { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
           { href: "/control-ambiental", label: "Control Ambiental", icon: Thermometer },
           { href: "/no-conformidades", label: "No Conformidades", icon: AlertOctagon },
@@ -194,7 +199,7 @@ const pageTitles: Record<string, string> = {
     '/proveedores/gestion': 'Gestión de Proveedores',
 };
 
-const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery, isSearchActive, onMenuClick }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean; onMenuClick: (e: React.MouseEvent, onClick?: () => void) => void; }) => {
+const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery, isSearchActive, isSubmenu = false }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean, isSubmenu?: boolean; }) => {
     const subMenuItems = item.subItems;
     const defaultOpen = isSearchActive || pathname.startsWith(item.href);
     const isActive = pathname.startsWith(item.href);
@@ -204,21 +209,22 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
             <SidebarMenuButton
                 asChild
                 variant="ghost"
-                className="w-full justify-between group/button px-3"
+                className="w-full justify-between group/button"
+                size={isSubmenu ? 'sm' : 'default'}
                 isActive={isActive}
                 disabled={disabled}
                 aria-disabled={disabled}
             >
                 <CollapsibleTrigger className="w-full">
                     <div className="flex items-center gap-3 flex-1">
-                        <item.icon className="size-5 shrink-0" />
+                        <item.icon className={cn("size-5 shrink-0", isSubmenu && "size-4")} />
                         <span className="truncate text-sm">{item.label}</span>
                     </div>
                     <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/button:rotate-180" />
                 </CollapsibleTrigger>
             </SidebarMenuButton>
             <CollapsibleContent>
-                <SidebarMenu className="pl-2">
+                <SidebarMenu className={cn("pl-4", isSubmenu && "pl-2")}>
                     {subMenuItems &&
                         subMenuItems.map((subItem: any, index: number) => {
                             if (subItem.type === "header") {
@@ -228,7 +234,7 @@ const NavCollapsible = React.memo(({ item, pathname, disabled = false, userQuery
                                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
                             }
                             if (subItem.subItems && subItem.subItems.length > 0) {
-                                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive} onMenuClick={onMenuClick} />;
+                                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive} isSubmenu={true} />;
                             }
                             const isSubItemActive = pathname === subItem.href;
 
@@ -378,7 +384,6 @@ function AppShell({
                             disabled={isDisabled}
                             userQuery={userQuery}
                             isSearchActive={!!searchTerm}
-                            onMenuClick={handleMenuClick}
                         />
                         );
                     }
