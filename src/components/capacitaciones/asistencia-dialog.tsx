@@ -58,7 +58,7 @@ export function AsistenciaDialog({ isOpen, onClose, capacitacion, users, onSave 
     return { fallback };
   };
 
-  const usuariosDisponibles = users.filter(u => !asistentes.some(a => a.empleadoId === u.username));
+  const usuariosDisponibles = (users || []).filter(u => !asistentes.some(a => a.empleadoId === u.username));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
