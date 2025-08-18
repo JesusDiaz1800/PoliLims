@@ -87,12 +87,12 @@ const AssayTurnaroundTimeChartInternal = ({ data: allData, isModal = false }: As
           <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
               <defs>
                   <linearGradient id="colorTurnaround1" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                      <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.4}/>
-                  </linearGradient>
-                   <linearGradient id="colorTurnaround2" x1="0" y1="0" x2="1" y2="0">
                       <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
                       <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0.4}/>
+                  </linearGradient>
+                   <linearGradient id="colorTurnaround2" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.4}/>
                   </linearGradient>
               </defs>
               <XAxis type="number" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}d`} />
