@@ -5,6 +5,9 @@
 import { Hand } from "lucide-react";
 import type { User } from "@/services/user-service";
 import React from "react";
+import { NotificationDropdown } from "../notifications/notification-dropdown";
+import { ThemeToggle } from "../theme-toggle";
+import { LogoAlt } from "../logo-alt";
 
 interface WelcomeBannerProps {
   user: User | null;
@@ -21,6 +24,13 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
             <div className="flex-1">
                 <h1 className="text-2xl font-bold font-headline">¡Bienvenido, {user.fullName.split(' ')[0]}!</h1>
                 <p className="text-base text-muted-foreground">Resumen del estado actual del laboratorio.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <NotificationDropdown />
+              <ThemeToggle />
+              <div className="w-16 hidden sm:block">
+                  <LogoAlt />
+              </div>
             </div>
         </div>
     </div>
