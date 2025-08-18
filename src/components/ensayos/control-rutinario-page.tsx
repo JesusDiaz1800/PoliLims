@@ -9,7 +9,7 @@ import { useDynamicData } from '@/context/data-context';
 
 export default function ControlRutinarioPageClient() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { registros, ensayos, matrizProductos, sapProducts, isLoaded, deleteRegistro } = useDynamicData();
+  const { registros, ensayos, matrizProductos, isLoaded, deleteRegistro } = useDynamicData();
 
   const handleAddRecordClick = () => {
     setIsDialogOpen(true);
@@ -23,6 +23,11 @@ export default function ControlRutinarioPageClient() {
     return <Loading />;
   }
 
+  const productOptions = matrizProductos.map(p => ({
+    value: p.producto,
+    label: p.producto,
+  }));
+
   return (
     <div className="space-y-6">
       <ControlRutinarioTable 
@@ -34,7 +39,7 @@ export default function ControlRutinarioPageClient() {
       <ControlRutinarioDialog 
         isOpen={isDialogOpen} 
         onClose={handleDialogClose} 
-        productos={sapProducts}
+        productos={productOptions}
         matrizProductos={matrizProductos}
       />
     </div>

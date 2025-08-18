@@ -1,7 +1,7 @@
+
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto, EnsayoPHI } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
-import { getProductsFromSap } from "./sap-service";
 
 
 // --- DEMO DATA ---
@@ -300,10 +300,7 @@ export async function getInitialData() {
         return equipo;
     });
 
-    const [matrizProductos, sapProducts] = await Promise.all([
-        getMatrizProductos(),
-        getProductsFromSap()
-    ]);
+    const matrizProductos = await getMatrizProductos();
 
     return {
         ensayos: demoEnsayos,
@@ -321,6 +318,5 @@ export async function getInitialData() {
         auditorias: demoAuditorias,
         ensayosPHI: demoEnsayosPHI,
         matrizProductos,
-        sapProducts,
     };
 }

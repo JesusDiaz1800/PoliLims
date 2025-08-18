@@ -22,7 +22,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import * as dataService from "@/services/data-service"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip"
 import type { TipoProducto } from "@/lib/matriz-datos"
-import type { SapProduct } from "@/services/sap-service"
 import { Combobox } from "../ui/combobox"
 
 interface ControlRutinarioFormProps {
@@ -31,7 +30,7 @@ interface ControlRutinarioFormProps {
   maquinas: { value: string; label: string }[]
   marcas: { value: string; label: string }[]
   onFormSubmit: () => void;
-  productos: SapProduct[];
+  productos: { label: string; value: string }[];
   matrizProductos: TipoProducto[];
 }
 

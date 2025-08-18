@@ -4,7 +4,6 @@
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
-import type { SapProduct } from '@/services/sap-service';
 import type { TipoProducto } from '@/lib/matriz-datos';
 
 // --- DYNAMIC DATA (client-side state) ---
@@ -236,7 +235,8 @@ export interface EnsayoPHI {
   resultado?: string;
 }
 
-export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
+export type InitialData = Omit<Awaited<ReturnType<typeof dataService.getInitialData>>, 'sapProducts'>;
+
 
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
