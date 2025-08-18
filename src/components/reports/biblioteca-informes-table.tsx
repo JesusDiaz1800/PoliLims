@@ -86,7 +86,7 @@ const BibliotecaInformesTableInternal = ({ informes, onDelete }: BibliotecaInfor
       <CardHeader>
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex-1 space-y-1.5">
-            <CardTitle>Biblioteca de Informes</CardTitle>
+            <CardTitle>Informes Generados</CardTitle>
             <CardDescription>
               Busque y gestione todos los informes generados por el sistema.
             </CardDescription>

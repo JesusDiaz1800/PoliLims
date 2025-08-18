@@ -140,9 +140,7 @@ const administracionSubMenu = [
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
-    { type: 'separator' },
-    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
-    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
+    { href: '/reports/biblioteca', label: 'Informes', icon: FileSearch },
 ];
 
 function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
@@ -245,7 +243,7 @@ const pageTitles: Record<string, string> = {
     '/importaciones': 'Control de Importaciones',
     '/no-conformidades': 'Gestión de No Conformidades',
     '/biblioteca/documentos': 'Gestor Documental',
-    '/reports/generador': 'Generador de Informes y Certificados',
+    '/reports/generador': 'Generador de Informes',
     '/reports/biblioteca': 'Biblioteca de Informes',
     '/workflows': 'Flujos de Trabajo',
     '/proveedores/gestion': 'Gestión de Proveedores',
@@ -265,6 +263,7 @@ const menuItems = (toggleChat: () => void): any[] => [
         subMenu: procesosGestionSubMenu,
         href: '/gestion',
     },
+    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
     { 
         label: 'Biblioteca', 
         icon: Library,
