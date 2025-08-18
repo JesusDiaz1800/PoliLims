@@ -66,7 +66,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
             : 'Notificación de Ensayo en Proceso:';
 
         const horasTranscurridasTexto = isComplete
-            ? 'Ensayo Completo' 
+            ? 'Ensayo Terminado'
             : `${transcurridoHoras.toFixed(2)}`;
 
         const body = `
