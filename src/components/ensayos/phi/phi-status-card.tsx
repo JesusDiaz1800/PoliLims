@@ -48,7 +48,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
     const isSinRaya = !ensayo.raya || ensayo.raya.toLowerCase() === 'sin raya';
     const badgeColor = isSinRaya ? undefined : getColorForRaya(ensayo.raya);
     const textColor = isSinRaya || ensayo.raya.toLowerCase() === 'blanca' ? 'black' : 'white';
-    const isComplete = ensayo.estado !== 'EN PROCESO';
+    const isComplete = ensayo.estado === 'FINALIZADO';
 
     const handleEmailClick = () => {
         const inicio = new Date(ensayo.fechaInicio);
