@@ -12,8 +12,16 @@ interface PhiProgressBarProps {
 
 export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBarProps) {
   const [progress, setProgress] = React.useState(0);
+  const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+
+  React.useEffect(() => {
+    if (!isClient) return;
+
     if(isComplete) {
         setProgress(100);
         return;
@@ -31,10 +39,10 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     };
 
     calculateProgress();
-    const interval = setInterval(calculateProgress, 1000);
+    const interval = setInterval(calculateProgress, 1000 * 60); // Update every minute is enough
 
     return () => clearInterval(interval);
-  }, [fechaInicio, horas, isComplete]);
+  }, [fechaInicio, horas, isComplete, isClient]);
   
   const getIndicatorColor = () => {
     if (progress < 50) {

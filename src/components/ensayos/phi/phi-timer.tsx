@@ -10,8 +10,16 @@ interface PhiTimerProps {
 
 export function PhiTimer({ fechaInicio, horas, isComplete }: PhiTimerProps) {
   const [tiempoRestante, setTiempoRestante] = React.useState("00:00:00");
+  const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
+    // This effect runs once on the client after hydration
+    setIsClient(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isClient) return;
+
     if(isComplete) {
         setTiempoRestante("00:00:00");
         return;
@@ -39,7 +47,15 @@ export function PhiTimer({ fechaInicio, horas, isComplete }: PhiTimerProps) {
     calculateRemainingTime();
 
     return () => clearInterval(interval);
-  }, [fechaInicio, horas, isComplete]);
+  }, [fechaInicio, horas, isComplete, isClient]);
+
+  if (!isClient) {
+    return (
+        <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm">
+            --:--:--
+        </div>
+    );
+  }
 
   return (
     <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm">
