@@ -10,7 +10,7 @@ import { PhiTimer } from './phi-timer';
 import { format, addHours, parseISO } from 'date-fns';
 import { History, Search, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface PhiTableProps {
   data: EnsayoPHI[];
