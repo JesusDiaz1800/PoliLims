@@ -33,23 +33,19 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MoreHorizontal, Search, UserPlus, Filter, Edit, Trash2 } from "lucide-react";
 import * as userService from "@/services/user-service";
-import Loading from "../../loading";
 import { useToast } from "@/hooks/use-toast";
 
 
 export default function UsuariosPage() {
     const [users, setUsers] = React.useState<userService.User[]>([]);
-    const [isLoading, setIsLoading] = React.useState(true);
     const [searchTerm, setSearchTerm] = React.useState("");
     const [roleFilter, setRoleFilter] = React.useState("Todos");
     const { toast } = useToast();
 
     React.useEffect(() => {
         const fetchUsers = async () => {
-            setIsLoading(true);
             const allUsers = await userService.getAllUsers();
             setUsers(allUsers);
-            setIsLoading(false);
         };
         fetchUsers();
     }, []);
@@ -69,10 +65,6 @@ export default function UsuariosPage() {
             user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.username.toLowerCase().includes(searchTerm.toLowerCase())
         );
-
-    if (isLoading) {
-        return <Loading />;
-    }
 
     return (
         <Card>

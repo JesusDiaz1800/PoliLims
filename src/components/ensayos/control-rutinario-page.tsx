@@ -1,14 +1,14 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
-import Loading from '../../app/(app)/loading';
 import { useDynamicData } from '@/context/data-context';
 
 export default function ControlRutinarioPageClient() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { registros, ensayos, matrizProductos, isLoaded, deleteRegistro } = useDynamicData();
+  const { registros, ensayos, matrizProductos, deleteRegistro } = useDynamicData();
 
   const handleAddRecordClick = () => {
     setIsDialogOpen(true);
@@ -17,11 +17,7 @@ export default function ControlRutinarioPageClient() {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
   };
-
-  if (!isLoaded) {
-    return <Loading />;
-  }
-
+  
   const productOptions = matrizProductos.map(p => ({
     value: p.producto,
     label: p.producto,

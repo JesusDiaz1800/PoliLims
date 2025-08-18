@@ -5,12 +5,11 @@ import * as React from 'react';
 import { CalculadoraIncertidumbre } from "@/components/incertidumbre/incertidumbre-calculadora";
 import { HistoricoIncertidumbre } from "@/components/incertidumbre/incertidumbre-historico";
 import type { CalculoIncertidumbre } from "@/context/data-context";
-import Loading from "../../loading";
 import { useDynamicData } from '@/context/data-context';
 import { useToast } from '@/hooks/use-toast';
 
 export default function IncertidumbrePage() {
-    const { calculosIncertidumbre, addCalculoIncertidumbre, addRecentActivity, isLoaded } = useDynamicData();
+    const { calculosIncertidumbre, addCalculoIncertidumbre, addRecentActivity } = useDynamicData();
     const { toast } = useToast();
 
     const handleCalculoGuardado = async (nuevoCalculo: Omit<CalculoIncertidumbre, 'id'>) => {
@@ -34,11 +33,6 @@ export default function IncertidumbrePage() {
             });
         }
     };
-
-
-    if (!isLoaded) {
-        return <Loading/>
-    }
 
     return (
         <div className="space-y-6">

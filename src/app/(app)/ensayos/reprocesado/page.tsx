@@ -1,7 +1,7 @@
+
 "use client";
 
 import * as React from 'react';
-import Loading from '@/app/(app)/loading';
 import { ReprocesadoTable } from '@/components/ensayos/reprocesado-table';
 import { ReprocesadoDialog } from '@/components/ensayos/reprocesado-dialog';
 import type { Ensayo } from '@/context/data-context';
@@ -9,7 +9,7 @@ import { useDynamicData } from '@/context/data-context';
 import { FilterProvider } from '@/context/filter-context';
 
 function ReprocesadoPageContent() {
-  const { ensayos, user, isLoaded } = useDynamicData();
+  const { ensayos, user } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [activeTab, setActiveTab] = React.useState('all');
@@ -37,10 +37,6 @@ function ReprocesadoPageContent() {
       { value: "bryan.vasquez", label: "Bryan Vásquez" },
   ], []);
 
-  if (!isLoaded || !user) {
-    return <Loading />;
-  }
-  
   return (
     <div className="space-y-6">
       <ReprocesadoTable

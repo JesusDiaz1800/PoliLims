@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Loading from '../loading';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, parseISO } from 'date-fns';
@@ -99,7 +98,7 @@ const HistoryItem = ({ activity }: { activity: RecentActivity }) => {
 
 
 export default function WorkflowsPage() {
-    const { ensayos, recentActivity, isLoaded } = useDynamicData();
+    const { ensayos, recentActivity } = useDynamicData();
     const [selectedEnsayoId, setSelectedEnsayoId] = React.useState<string | null>(null);
 
     const productEnsayos = React.useMemo(() => 
@@ -118,10 +117,6 @@ export default function WorkflowsPage() {
             .filter(act => act.action.includes(selectedEnsayo.id) || (selectedEnsayo.lote && act.action.includes(selectedEnsayo.lote)))
             .sort((a,b) => parseISO(b.timestamp).getTime() - parseISO(a.timestamp).getTime());
     }, [selectedEnsayo, recentActivity]);
-
-    if (!isLoaded) {
-        return <Loading/>;
-    }
 
     return (
         <div className="space-y-6">

@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { useDynamicData, type Capacitacion } from '@/context/data-context';
-import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -13,7 +12,7 @@ import { es } from 'date-fns/locale';
 import Link from 'next/link';
 
 export default function MisEvaluacionesPage() {
-    const { capacitaciones, user, isLoaded } = useDynamicData();
+    const { capacitaciones, user } = useDynamicData();
 
     const misEvaluacionesPendientes = React.useMemo(() => {
         if (!user || !capacitaciones) return [];
@@ -29,10 +28,6 @@ export default function MisEvaluacionesPage() {
             return !yaRespondio;
         });
     }, [capacitaciones, user]);
-
-    if (!isLoaded || !user) {
-        return <Loading />;
-    }
 
     return (
         <div className="space-y-6">

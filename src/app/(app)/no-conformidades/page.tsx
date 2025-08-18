@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from 'react';
-import Loading from '@/app/(app)/loading';
 import { NoConformidadDialog } from '@/components/no-conformidades/no-conformidad-dialog';
 import { NoConformidadTable } from '@/components/no-conformidades/no-conformidad-table';
 import { useDynamicData, type NoConformidad } from '@/context/data-context';
@@ -15,7 +14,7 @@ import { FilterProvider } from '@/context/filter-context';
  * including non-conformities, equipment, and assays, to populate the table and dialog forms.
  */
 function NoConformidadesPageContent() {
-  const { noConformidades, equipos, ensayos, isLoaded, deleteIncidencia } = useDynamicData();
+  const { noConformidades, equipos, ensayos, deleteIncidencia } = useDynamicData();
   const searchParams = useSearchParams();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedIncidencia, setSelectedIncidencia] = React.useState<NoConformidad | null>(null);
@@ -43,26 +42,19 @@ function NoConformidadesPageContent() {
   
   // Memoized list of analysts derived from the assays data.
   const analistas = React.useMemo(() => {
-    if (!isLoaded) return [];
     return [...new Set(ensayos.map(e => e.analista).filter(Boolean))].map(a => ({ value: a, label: a }))
-  }, [ensayos, isLoaded]);
+  }, [ensayos]);
   
   // Memoized list of affected products derived from the assays data.
   const productosAfectados = React.useMemo(() => {
-    if (!isLoaded) return [];
     return [...new Set(ensayos.map(e => e.producto).filter(Boolean))].map(p => ({ value: p, label: p }))
-  }, [ensayos, isLoaded]);
+  }, [ensayos]);
 
   // Memoized list of involved equipment.
   const equiposImplicados = React.useMemo(() => {
-    if (!isLoaded) return [];
     return equipos.map(e => ({ value: e.id, label: `${e.nombre} (${e.id})` }))
-  }, [equipos, isLoaded]);
+  }, [equipos]);
 
-  if (!isLoaded) {
-    return <Loading />;
-  }
-  
   return (
     <div className="space-y-6">
       <NoConformidadTable

@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { useDynamicData, type Capacitacion } from '@/context/data-context';
-import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { RealizarEvaluacionForm } from '@/components/capacitaciones/realizar-evaluacion-form';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
@@ -15,7 +14,7 @@ export default function RealizarEvaluacionPage() {
     const { id: capacitacionId } = useParams();
     const router = useRouter();
     const { toast } = useToast();
-    const { capacitaciones, user, isLoaded, updateCapacitacion } = useDynamicData();
+    const { capacitaciones, user, updateCapacitacion } = useDynamicData();
 
     const capacitacion = React.useMemo(() => {
         if (!capacitacionId || !capacitaciones) return null;
@@ -61,11 +60,6 @@ export default function RealizarEvaluacionPage() {
         }
     };
 
-
-    if (!isLoaded || !user) {
-        return <Loading />;
-    }
-    
     if (!capacitacion) {
         return (
              <Alert variant="destructive">
@@ -107,4 +101,3 @@ export default function RealizarEvaluacionPage() {
         </Card>
     );
 }
-

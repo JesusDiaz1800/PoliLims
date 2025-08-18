@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from 'react';
-import Loading from '@/app/(app)/loading';
 import { ImportacionesTable } from '@/components/importaciones/importaciones-table';
 import { ImportacionDialog } from '@/components/importaciones/importacion-dialog';
 import type { Importacion } from '@/context/data-context';
@@ -11,7 +10,7 @@ import { FilterProvider } from '@/context/filter-context';
 
 
 function ImportacionesPageContent() {
-  const { importaciones, isLoaded, deleteImportacion } = useDynamicData();
+  const { importaciones, deleteImportacion } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedImportacion, setSelectedImportacion] = React.useState<Importacion | null>(null);
 
@@ -24,10 +23,6 @@ function ImportacionesPageContent() {
     setSelectedImportacion(null);
     setIsDialogOpen(false);
   };
-
-  if (!isLoaded) {
-    return <Loading />;
-  }
 
   return (
     <div className="space-y-6">

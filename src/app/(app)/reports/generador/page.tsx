@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { useDynamicData, type Ensayo } from '@/context/data-context';
-import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Mail, FileText, Loader2, Info, AlertTriangle, GanttChartSquare, ListChecks } from 'lucide-react';
@@ -58,7 +57,7 @@ const parameterOptions = [
 ];
 
 export default function GeneradorInformesPage() {
-  const { ensayos, isLoading } = useDynamicData();
+  const { ensayos } = useDynamicData();
   const { toast } = useToast();
   const [loteSelectionState, loteSelectionAction] = useActionState(generateReportAction, initialState);
   const [productCertState, productCertAction] = useActionState(generateProductCertificateAction, initialState);
@@ -145,10 +144,6 @@ export default function GeneradorInformesPage() {
       }, 500);
     }
   };
-
-  if (isLoading) {
-    return <Loading />;
-  }
 
   const ReportPreview = ({ reportData, error }: { reportData: ReportData | null; error?: string | null }) => {
     if (!reportData && !error) return null;

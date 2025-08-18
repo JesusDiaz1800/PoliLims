@@ -12,7 +12,6 @@ import { AssaysByTypeChart } from "@/components/dashboard/assays-by-type-chart";
 import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
-import Loading from '../loading';
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
 import { useDynamicData, type Ensayo } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
@@ -32,7 +31,6 @@ export default function MainPage() {
     equipos, 
     noConformidades, 
     proveedores,
-    isLoaded,
     user
   } = useDynamicData();
 
@@ -40,8 +38,6 @@ export default function MainPage() {
   const [theme, setTheme] = React.useState('dark');
 
   const filteredEnsayos = React.useMemo(() => {
-    if (!isLoaded) return [];
-    
     const analystParam = 'all';
     const statusParam = 'all';
     const typeParam = 'all';
@@ -62,7 +58,7 @@ export default function MainPage() {
             return false;
         }
     });
-  }, [ensayos, isLoaded]);
+  }, [ensayos]);
 
   const { totalFilteredAssays, approvalPercentage, pendingAssays } = React.useMemo(() => {
     const total = filteredEnsayos.length;
@@ -76,10 +72,6 @@ export default function MainPage() {
 
     return { totalFilteredAssays: total, approvalPercentage: percentage, pendingAssays: pending };
   }, [filteredEnsayos]);
-  
-  if (!isLoaded || !user) {
-    return <Loading />;
-  }
   
   const allAnalysts = Array.from(new Set(ensayos.map(e => e.analista).filter(Boolean)));
   const allAssayTypes = Array.from(new Set(ensayos.map(e => e.tipo).filter(Boolean)));

@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import { useDynamicData, type CondicionAmbiental } from '@/context/data-context';
-import Loading from '@/app/(app)/loading';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { AmbientalStatsCard } from '@/components/ambiental/ambiental-stats-card';
 import { HistorialAmbientalChart } from '@/components/ambiental/historial-ambiental-chart';
@@ -13,12 +12,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { Label } from '@/components/ui/label';
 
 export default function ControlAmbientalPage() {
-    const { condicionesAmbientales, addCondicionAmbiental, addRecentActivity, isLoaded } = useDynamicData();
+    const { condicionesAmbientales, addCondicionAmbiental, addRecentActivity } = useDynamicData();
     const [zonaSeleccionada, setZonaSeleccionada] = React.useState('Laboratorio Principal');
-
-    if (!isLoaded) {
-        return <Loading />;
-    }
 
     const zonas = Array.from(new Set(condicionesAmbientales.map(c => c.zona)));
 

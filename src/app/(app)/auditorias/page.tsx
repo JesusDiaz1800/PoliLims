@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { AuditoriasTable } from '@/components/auditorias/auditorias-table';
 import { AuditoriaDialog } from '@/components/auditorias/auditoria-dialog';
-import Loading from '../loading';
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
 import { useDynamicData } from '@/context/data-context';
@@ -19,7 +18,7 @@ function AuditoriasPageContent() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   
-  const { auditorias, usuarios, isLoaded, deleteAuditoria } = useDynamicData();
+  const { auditorias, usuarios, deleteAuditoria } = useDynamicData();
 
   const relevantUsers = React.useMemo(() => 
     (usuarios || []).filter(u => u.role !== 'Cliente' && u.role !== 'Inspector de Calidad'),
@@ -43,10 +42,6 @@ function AuditoriasPageContent() {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
   };
-
-  if (!isLoaded) {
-    return <Loading />;
-  }
 
   return (
     <div className="space-y-6">

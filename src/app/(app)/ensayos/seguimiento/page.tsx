@@ -32,7 +32,6 @@ import type { ReportData } from "@/app/(app)/reports/generador/actions";
 import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format, parseISO } from "date-fns";
 import type { Ensayo } from "@/context/data-context";
-import Loading from "../../loading";
 import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
 import { useDynamicData } from "@/context/data-context";
 import { FilterProvider, useFilters } from "@/context/filter-context";
@@ -63,7 +62,7 @@ const formatValue = (value: any, decimals: number = 2) => {
 function SeguimientoTableContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { ensayos, user, isLoaded, updateEnsayo, addRecentActivity } = useDynamicData();
+  const { ensayos, user, updateEnsayo, addRecentActivity } = useDynamicData();
   const initialStatusFilter = searchParams.get('status') || undefined;
 
   const { filteredData: filteredEnsayos, setFilter, searchTerm, setSearchTerm } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
@@ -248,10 +247,6 @@ function SeguimientoTableContainer() {
             <TableCell><div className="flex flex-col"><span className="font-medium">{ensayo.producto}</span><span className="text-xs text-muted-foreground font-mono">{ensayo.id}</span></div></TableCell><TableCell>{ensayo.lote || 'N/A'}</TableCell><TableCell>{ensayo.analista}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexCalculado, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.meltIndexVariacion, 2)}%</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.densidadCalculada, 4)}</TableCell><TableCell className="text-right font-mono">{formatValue(ensayo.negroHumoCalculado, 2)}%</TableCell><TableCell className="text-center"><Badge className={cn("border-transparent font-normal", getStatusVariant(ensayo.estado))}>{getStatusLabel(ensayo.estado)}</Badge></TableCell>
         </>);
         break;
-  }
-
-  if (!isLoaded || !user) {
-    return <Loading />;
   }
   
   return (

@@ -255,6 +255,7 @@ export interface Capacitacion {
       empleadoId: string;
       respuestas: string[];
       resultado: 'Aprobado' | 'Reprobado';
+      fecha_completado?: string; // ISO 8601 string
     }[];
   };
 }
@@ -264,7 +265,6 @@ export type InitialData = Omit<Awaited<ReturnType<typeof dataService.getInitialD
 
 
 interface DynamicDataContextType extends InitialData {
-    isLoaded: boolean;
     user: User | null;
     setUser: (user: User | null) => void;
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
@@ -456,7 +456,6 @@ export function DynamicDataProvider({ children, initialData }: { children: React
 
     const value = useMemo(() => ({
         ...data,
-        isLoaded: true, // Data is always available from the root layout
         user,
         setUser,
         addEnsayo,

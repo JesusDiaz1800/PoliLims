@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { AuditoriasTable } from '@/components/auditorias/auditorias-table';
 import { AuditoriaDialog } from '@/components/auditorias/auditoria-dialog';
-import Loading from '../../app/(app)/loading';
 import { useDynamicData } from "@/context/data-context";
 import type { Auditoria } from '@/context/data-context';
 import type { User } from '@/services/user-service';
@@ -18,8 +17,7 @@ import { getAllUsers } from '@/services/user-service';
  * It's now intended to be the internal logic component if needed, but the primary page is /app/(app)/auditorias/page.tsx.
  */
 const AuditoriasPageInternal = () => {
-  const { auditorias, isLoaded, deleteAuditoria } = useDynamicData();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { auditorias, deleteAuditoria } = useDynamicData();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [selectedAuditoria, setSelectedAuditoria] = React.useState<Auditoria | null>(null);
   const [users, setUsers] = React.useState<User[]>([]);
@@ -31,7 +29,6 @@ const AuditoriasPageInternal = () => {
    * Uses React.useCallback to prevent re-creation on every render.
    */
   const loadData = React.useCallback(async () => {
-    setIsLoading(true);
     try {
       const allUsers = await getAllUsers();
       // Filter users to only include relevant roles for auditing
@@ -39,8 +36,6 @@ const AuditoriasPageInternal = () => {
     } catch (error) {
         console.error("Failed to load audit data:", error);
         // Optionally, set an error state to display a message to the user
-    } finally {
-        setIsLoading(false);
     }
   }, []);
 
@@ -66,10 +61,6 @@ const AuditoriasPageInternal = () => {
     setSelectedAuditoria(null);
     setIsDialogOpen(false);
   };
-
-  if (isLoading || !isLoaded) {
-    return <Loading />;
-  }
 
   return (
     <div className="space-y-6">

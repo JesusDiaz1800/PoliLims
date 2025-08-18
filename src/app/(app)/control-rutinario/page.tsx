@@ -3,12 +3,11 @@
 import React, { useState } from 'react';
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
-import Loading from '../../loading';
 import { useDynamicData } from '@/context/data-context';
 
 export default function ControlRutinarioPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { registros, ensayos, isLoaded } = useDynamicData();
+  const { registros, ensayos } = useDynamicData();
 
   const handleAddRecordClick = () => {
     setIsDialogOpen(true);
@@ -18,10 +17,6 @@ export default function ControlRutinarioPage() {
     setIsDialogOpen(false);
   };
 
-  if (!isLoaded) {
-    return <Loading />;
-  }
-
   return (
     <div className="space-y-6">
       <ControlRutinarioTable 
@@ -29,10 +24,7 @@ export default function ControlRutinarioPage() {
         ensayos={ensayos}
         onAddRecordClick={handleAddRecordClick} 
       />
-      <ControlRutinarioDialog 
-        isOpen={isDialogOpen} 
-        onClose={handleDialogClose} 
-      />
+      
     </div>
   );
 }

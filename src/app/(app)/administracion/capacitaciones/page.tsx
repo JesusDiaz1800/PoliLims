@@ -3,7 +3,6 @@
 
 import * as React from 'react';
 import type { Capacitacion, User } from '@/context/data-context';
-import Loading from '@/app/(app)/loading';
 import { CapacitacionesTable } from '@/components/capacitaciones/capacitaciones-table';
 import { CapacitacionDialog } from '@/components/capacitaciones/capacitacion-dialog';
 import { AsistenciaDialog } from '@/components/capacitaciones/asistencia-dialog';
@@ -11,7 +10,7 @@ import { EvaluacionDialog } from '@/components/capacitaciones/evaluacion-dialog'
 import { useDynamicData } from '@/context/data-context';
 
 export default function CapacitacionesPage() {
-  const { capacitaciones, usuarios, isLoaded, deleteCapacitacion, updateCapacitacion } = useDynamicData();
+  const { capacitaciones, usuarios, deleteCapacitacion, updateCapacitacion } = useDynamicData();
   
   const [isCapacitacionDialogOpen, setIsCapacitacionDialogOpen] = React.useState(false);
   const [isAsistenciaDialogOpen, setIsAsistenciaDialogOpen] = React.useState(false);
@@ -32,10 +31,6 @@ export default function CapacitacionesPage() {
     setIsAsistenciaDialogOpen(false);
     setIsEvaluacionDialogOpen(false);
   };
-
-  if (!isLoaded) {
-    return <Loading />;
-  }
 
   return (
     <div className="space-y-6">

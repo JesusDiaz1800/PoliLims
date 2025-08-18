@@ -1,7 +1,7 @@
+
 "use client";
 
 import * as React from 'react';
-import Loading from '@/app/(app)/loading';
 import { MateriaPrimaTable } from '@/components/ensayos/materia-prima-table';
 import { MateriaPrimaDialog } from '@/components/ensayos/materia-prima-dialog';
 import type { Ensayo } from '@/context/data-context';
@@ -9,7 +9,7 @@ import { useDynamicData } from '@/context/data-context';
 import { FilterProvider } from '@/context/filter-context';
 
 function MateriaPrimaPageContent() {
-  const { ensayos, user, isLoaded } = useDynamicData();
+  const { ensayos, user } = useDynamicData();
   const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [activeTab, setActiveTab] = React.useState('all');
@@ -36,10 +36,6 @@ function MateriaPrimaPageContent() {
     setSelectedEnsayo(null);
     setIsFormDialogOpen(false);
   };
-
-  if (!isLoaded || !user) {
-    return <Loading />;
-  }
 
   return (
     <div className="space-y-6">

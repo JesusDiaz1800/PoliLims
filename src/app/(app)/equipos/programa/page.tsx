@@ -4,7 +4,6 @@
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { CalendarioEquipos } from '@/components/equipos/calendario-equipos';
-import Loading from '@/app/(app)/loading';
 import { parse, isPast } from 'date-fns';
 import { EquipoDetailsDialog } from '@/components/equipos/equipo-details-dialog';
 import { EquipoDialog } from '@/components/equipos/equipo-dialog';
@@ -19,14 +18,14 @@ export type CalendarioEvento = {
 };
 
 export default function ProgramaPage() {
-    const { equipos, isLoaded } = useDynamicData();
+    const { equipos } = useDynamicData();
     const [eventos, setEventos] = React.useState<CalendarioEvento[]>([]);
     const [selectedEquipo, setSelectedEquipo] = React.useState<Equipo | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
     const [isEditOpen, setIsEditOpen] = React.useState(false);
 
     React.useEffect(() => {
-        if (isLoaded && equipos.length > 0) {
+        if (equipos.length > 0) {
             const nuevosEventos = equipos.map(equipo => {
                 if (!equipo.proxima_calibracion) return null;
                 
@@ -53,7 +52,7 @@ export default function ProgramaPage() {
 
             setEventos(nuevosEventos);
         }
-    }, [equipos, isLoaded]);
+    }, [equipos]);
 
     const handleEventClick = (eventInfo: any) => {
         const equipoSeleccionado = eventInfo.event.extendedProps.equipo;
@@ -65,10 +64,6 @@ export default function ProgramaPage() {
         setSelectedEquipo(equipo);
         setIsDetailsOpen(false); // Close details dialog if open
         setIsEditOpen(true);
-    }
-
-    if (!isLoaded) {
-        return <Loading />;
     }
 
     return (
