@@ -51,6 +51,7 @@ import {
   Search,
   Beaker,
   ChevronDown,
+  Timer,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -86,6 +87,7 @@ const menuItems: any[] = [
             },
             { href: '/ensayos/materia-prima', label: 'Materia Prima', icon: TestTube },
             { href: '/ensayos/reprocesado', label: 'Reprocesado', icon: Recycle },
+            { href: '/ensayos/presion-hidrostatica', label: 'Resistencia Presión Hidrostática', icon: Timer },
             { type: 'separator' },
             { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
             { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
@@ -175,6 +177,7 @@ const pageTitles: Record<string, string> = {
     '/ensayos/tuberias/pp': 'Ensayos de Tuberías PP',
     '/ensayos/materia-prima': 'Ensayos de Materia Prima',
     '/ensayos/reprocesado': 'Ensayos de Reprocesado',
+    '/ensayos/presion-hidrostatica': 'Registro Resistencia a Presión Hidrostática',
     '/ensayos/control-accesorios': 'Control de Accesorios',
     '/ensayos/control-agua': 'Control de Agua',
     '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
