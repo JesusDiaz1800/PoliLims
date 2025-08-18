@@ -8,8 +8,9 @@ import type { EnsayoPHI } from '@/context/data-context';
 import { PhiProgressBar } from './phi-progress-bar';
 import { PhiTimer } from './phi-timer';
 import { format, addHours, parseISO } from 'date-fns';
-import { History, Search } from 'lucide-react';
-
+import { History, Search, Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 interface PhiTableProps {
   data: EnsayoPHI[];
@@ -40,6 +41,40 @@ const FechaFinCell = ({ fechaInicioISO, horas }: { fechaInicioISO: string, horas
     return <>{formattedDate}</>;
 }
 
+const handleEmailClick = (ensayo: EnsayoPHI) => {
+    const inicio = new Date(ensayo.fechaInicio);
+    const ahora = new Date();
+    const transcurridoMilisegundos = ahora.getTime() - inicio.getTime();
+    const transcurridoHoras = transcurridoMilisegundos / (1000 * 60 * 60);
+
+    const fechaFinEstimada = new Date(inicio.getTime() + ensayo.horas * 60 * 60 * 1000);
+    
+    const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl;juribe@smartpipes.cl';
+    const subject = `Solicitud de Liberación: Ensayo ${ensayo.producto}`;
+
+    const saludo = 'Favor liberar tuberías.';
+
+    const horasTranscurridasTexto = 'Ensayo Completo';
+
+    const body = `
+${saludo}
+
+--------------------------------------------------
+Producto: ${ensayo.producto}
+Inicio Ensayo: ${format(inicio, 'dd-MM-yyyy HH:mm')}
+Fin Estimado: ${format(fechaFinEstimada, 'dd-MM-yyyy HH:mm')}
+Horas Totales: ${ensayo.horas}
+Horas Transcurridas: ${horasTranscurridasTexto}
+Color de Raya: ${ensayo.raya}
+--------------------------------------------------
+
+Atte.,
+    `.trim().replace(/^\s+/gm, '');
+
+    const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoLink;
+};
+
 
 export function PhiTable({ data }: PhiTableProps) {
   const sortedData = [...data].sort((a, b) => new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime());
@@ -66,6 +101,7 @@ export function PhiTable({ data }: PhiTableProps) {
             <TableHead>Fecha Fin</TableHead>
             <TableHead>Estado</TableHead>
             <TableHead>Observaciones</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -88,6 +124,21 @@ export function PhiTable({ data }: PhiTableProps) {
               </TableCell>
               <TableCell className={ensayo.resultado?.includes('Con fallas') ? 'text-red-500 font-bold' : ''}>
                 {ensayo.resultado || '---'}
+              </TableCell>
+              <TableCell className="text-right">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" onClick={() => handleEmailClick(ensayo)}>
+                          <Mail className="h-4 w-4" />
+                          <span className="sr-only">Notificar liberación</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reenviar notificación</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
             </TableRow>
           )})}

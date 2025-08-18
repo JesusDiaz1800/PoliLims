@@ -52,7 +52,8 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
     const handleEmailClick = () => {
         const inicio = new Date(ensayo.fechaInicio);
         const ahora = new Date();
-        const transcurridoHoras = (ahora.getTime() - inicio.getTime()) / (1000 * 60 * 60);
+        const transcurridoMilisegundos = ahora.getTime() - inicio.getTime();
+        const transcurridoHoras = transcurridoMilisegundos / (1000 * 60 * 60);
 
         const fechaFinEstimada = new Date(inicio.getTime() + ensayo.horas * 60 * 60 * 1000);
         
@@ -63,7 +64,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
             ? 'Favor liberar tuberías.'
             : 'Notificación de Ensayo en Proceso:';
 
-        const horasTranscurridasTexto = ensayo.estado === 'FINALIZADO' 
+        const horasTranscurridasTexto = ensayo.estado === 'FINALIZADO' || transcurridoHoras >= ensayo.horas
             ? 'Ensayo Completo' 
             : `${transcurridoHoras.toFixed(2)}`;
 
