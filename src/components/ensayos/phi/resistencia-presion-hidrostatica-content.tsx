@@ -13,11 +13,11 @@ import { PhiStatusCard } from '@/components/ensayos/phi/phi-status-card';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 export default function ResistenciaPresionHidrostaticaPageContent() {
-    const { ensayosPHI, addEnsayoPHI, updateEnsayoPHI, isLoaded } = useDynamicData();
+    const { ensayosPHI, addEnsayoPHI, updateEnsayoPHI } = useDynamicData();
     const [isNewEnsayoOpen, setIsNewEnsayoOpen] = React.useState(false);
     const [isResultOpen, setIsResultOpen] = React.useState(false);
 
-    if (!isLoaded) {
+    if (!ensayosPHI) {
         return <Loading />;
     }
 
