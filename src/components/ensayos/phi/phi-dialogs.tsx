@@ -145,40 +145,38 @@ function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) 
     
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
-            <div className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="ensayoId">Seleccionar Ensayo</Label>
+                <Controller
+                    name="ensayoId"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <Combobox
+                            options={ensayosActivos.map(e => ({ value: e.id, label: `${e.producto} (Inicio: ${format(new Date(e.fechaInicio), 'dd/MM HH:mm')})` }))}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Seleccione un ensayo en proceso..."
+                        />
+                    )}
+                />
+                {errors.ensayoId && <p className="text-destructive text-sm mt-1">Debe seleccionar un ensayo.</p>}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                 <div className="space-y-2">
-                    <Label htmlFor="ensayoId">Seleccionar Ensayo</Label>
-                    <Controller
-                        name="ensayoId"
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                            <Combobox
-                                options={ensayosActivos.map(e => ({ value: e.id, label: `${e.producto} (Inicio: ${format(new Date(e.fechaInicio), 'dd/MM HH:mm')})` }))}
-                                onChange={field.onChange}
-                                value={field.value}
-                                placeholder="Seleccione un ensayo en proceso..."
-                            />
-                        )}
-                    />
-                    {errors.ensayoId && <p className="text-destructive text-sm mt-1">Debe seleccionar un ensayo.</p>}
+                    <Label htmlFor="presion">Presión (bar)</Label>
+                    <Input id="presion" type="number" step="any" {...register('presion', { required: true })} />
+                    {errors.presion && <p className="text-destructive text-sm mt-1">Campo requerido.</p>}
                 </div>
-                <div className="flex items-end gap-4">
-                    <div className="flex-1 space-y-2">
-                        <Label htmlFor="presion">Presión (bar)</Label>
-                        <Input id="presion" type="number" step="any" {...register('presion', { required: true })} />
-                        {errors.presion && <p className="text-destructive text-sm mt-1">Campo requerido.</p>}
-                    </div>
-                    <div className="flex items-center space-x-2 pb-2">
-                        <Checkbox id="huboFalla" {...register('huboFalla')} />
-                        <Label htmlFor="huboFalla">¿Hubo Falla?</Label>
-                    </div>
+                <div className="flex items-center space-x-2 pb-2">
+                    <Checkbox id="huboFalla" {...register('huboFalla')} />
+                    <Label htmlFor="huboFalla">¿Hubo Falla?</Label>
                 </div>
-                <div className="space-y-2">
-                    <Label htmlFor="observacion">Observación</Label>
-                    <Textarea id="observacion" {...register('observacion', { required: huboFalla })} />
-                    {errors.observacion && <p className="text-destructive text-sm mt-1">La observación es requerida si hubo fallas.</p>}
-                </div>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="observacion">Observación</Label>
+                <Textarea id="observacion" {...register('observacion', { required: huboFalla })} />
+                {errors.observacion && <p className="text-destructive text-sm mt-1">La observación es requerida si hubo fallas.</p>}
             </div>
              <DialogFooter>
                 <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
