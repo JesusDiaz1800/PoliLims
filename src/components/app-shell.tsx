@@ -342,7 +342,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
   const isDashboard = pathname === '/main';
 
   return (
-    <div className="flex min-h-screen w-full bg-muted/40">
+    <div className="flex min-h-screen w-full">
       <Sidebar
         className="
           bg-gradient-to-b from-[#1C3664] to-[#162A4F] text-white
@@ -498,7 +498,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <div className="flex items-center gap-2">
               <NotificationDropdown />
               <ThemeToggle />
-              <div className="w-16 hidden sm:block">
+              <div className="w-12 hidden sm:block">
                   <LogoAlt />
               </div>
             </div>
@@ -507,7 +507,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("custom-scrollbar p-6 md:p-10")}
+                className={cn("custom-scrollbar", !isDashboard && "p-6 md:p-10")}
                 role="main"
                 tabIndex={-1}
             >

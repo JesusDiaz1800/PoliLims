@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -96,7 +97,7 @@ export default function MainPage() {
 
   return (
       <div className={cn(
-        "relative flex-1 space-y-4",
+        "relative flex-1 space-y-4 p-6 md:p-10",
         theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light'
       )}>
         <div className="background-overlay"></div>
