@@ -106,7 +106,7 @@ Laboratorio de Calidad
                         Finaliza: <CalculoFechaFin fechaInicio={ensayo.fechaInicio} horas={ensayo.horas} />
                     </span>
                  </div>
-                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEmailClick} disabled={ensayo.estado === 'EN PROCESO'}>
+                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEmailClick}>
                     <Mail className="h-4 w-4" />
                     <span className="sr-only">Notificar liberación</span>
                 </Button>
