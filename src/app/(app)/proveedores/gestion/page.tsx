@@ -4,6 +4,7 @@
 import * as React from 'react';
 import dynamic from 'next/dynamic';
 import Loading from '../../loading';
+import { FilterProvider } from '@/context/filter-context';
 
 const GestionProveedoresPageContent = dynamic(() => import('@/components/proveedores/gestion-proveedores-page-content').then(mod => mod.default), {
   loading: () => <Loading />,
@@ -11,5 +12,9 @@ const GestionProveedoresPageContent = dynamic(() => import('@/components/proveed
 });
 
 export default function GestionProveedoresPage() {
-  return <GestionProveedoresPageContent />;
+  return (
+    <FilterProvider>
+      <GestionProveedoresPageContent />
+    </FilterProvider>
+  );
 }

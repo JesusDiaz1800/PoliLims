@@ -43,6 +43,7 @@ import { Search, FilePlus, Edit, MoreHorizontal, Trash2, Truck } from "lucide-re
 import { cn } from "@/lib/utils";
 import type { Proveedor } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
+import { useFilters } from "@/context/filter-context";
 
 
 interface GestionProveedoresTableProps {
@@ -66,15 +67,8 @@ function getStatusVariant(status: Proveedor["estado"]) {
 }
 
 const GestionProveedoresTableInternal = ({ proveedores, onAddNew, onEdit, onDelete }: GestionProveedoresTableProps) => {
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const { filteredData: filteredProveedores, searchTerm, setSearchTerm } = useFilters(proveedores, ['nombre', 'tipo']);
   const { toast } = useToast();
-
-  const filteredProveedores = React.useMemo(() => 
-    proveedores.filter(
-      (proveedor) =>
-        proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        proveedor.tipo.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [proveedores, searchTerm]);
   
   const handleDelete = async (proveedorId: string) => {
     try {
