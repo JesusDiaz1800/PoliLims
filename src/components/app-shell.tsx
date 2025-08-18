@@ -65,6 +65,7 @@ import { useChatWidget } from "@/components/soporte/chat-widget";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LogoAlt } from "@/components/logo-alt";
 
 const ensayosSubMenu = [
     { 
@@ -491,7 +492,12 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                   {pageTitle}
               </h1>
           </div>
+          <div className="flex items-center gap-2">
+             <div className="w-24 hidden sm:block">
+                <LogoAlt />
+            </div>
             <ThemeToggle />
+          </div>
           </header>
         )}
         

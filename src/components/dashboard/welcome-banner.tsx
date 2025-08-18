@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { Hand } from "lucide-react";
@@ -6,6 +7,7 @@ import type { User } from "@/services/user-service";
 import React from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LogoAlt } from "../logo-alt";
 
 interface WelcomeBannerProps {
   user: User | null;
@@ -24,7 +26,12 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
                 <h1 className="text-2xl font-bold font-headline">¡Bienvenido, {user.fullName.split(' ')[0]}!</h1>
                 <p className="text-base text-muted-foreground">Resumen del estado actual del laboratorio.</p>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+                 <div className="w-24 hidden sm:block">
+                    <LogoAlt />
+                </div>
+                <ThemeToggle />
+            </div>
         </div>
     </div>
   );
