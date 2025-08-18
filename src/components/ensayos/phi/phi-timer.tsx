@@ -50,14 +50,14 @@ export function PhiTimer({ fechaInicio, horas, isComplete }: PhiTimerProps) {
 
   if (!isClient) {
     return (
-      <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm tabular-nums">
+      <div className="font-mono bg-black text-cyan-400 text-center rounded p-2 text-3xl tabular-nums shadow-lg border-2 border-gray-700">
         --:--:--
       </div>
     );
   }
 
   return (
-    <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm tabular-nums">
+    <div className="font-mono bg-black text-cyan-400 text-center rounded p-2 text-3xl tabular-nums shadow-lg border-2 border-gray-700">
       {tiempoRestante}
     </div>
   );

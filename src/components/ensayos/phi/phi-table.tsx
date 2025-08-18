@@ -8,40 +8,33 @@ import type { EnsayoPHI } from '@/context/data-context';
 import { PhiProgressBar } from './phi-progress-bar';
 import { PhiTimer } from './phi-timer';
 import { format, parse } from 'date-fns';
+import { History, Search } from 'lucide-react';
+
 
 interface PhiTableProps {
   data: EnsayoPHI[];
 }
 
-const CalculoFechaFin = ({ fechaInicio, horas }: { fechaInicio: string, horas: number }) => {
-    const [fechaFin, setFechaFin] = React.useState('Calculando...');
-
-    React.useEffect(() => {
-        const inicio = new Date(fechaInicio);
-        if (!isNaN(inicio.getTime())) {
-            const fechaFinEstimada = new Date(inicio.getTime() + horas * 60 * 60 * 1000);
-            setFechaFin(format(fechaFinEstimada, 'dd-MM-yyyy HH:mm'));
-        } else {
-            setFechaFin('Fecha inválida');
-        }
-    }, [fechaInicio, horas]);
-
-    return <span>{fechaFin}</span>;
-};
-
 const FechaInicioCell = ({ fechaInicio }: { fechaInicio: string }) => {
     const [formattedDate, setFormattedDate] = React.useState('Cargando...');
-
     React.useEffect(() => {
-        setFormattedDate(format(new Date(fechaInicio), 'dd-MM-yyyy HH:mm:ss'));
+        setFormattedDate(format(new Date(fechaInicio), 'dd/MM/yyyy HH:mm:ss'));
     }, [fechaInicio]);
-
     return <>{formattedDate}</>;
 };
 
-
 export function PhiTable({ data }: PhiTableProps) {
   const sortedData = [...data].sort((a, b) => new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime());
+
+  if (data.length === 0) {
+    return (
+      <div className="text-center py-16 text-muted-foreground bg-muted/50 rounded-lg">
+          <History className="mx-auto h-12 w-12 mb-4" />
+          <h3 className="text-xl font-semibold">No hay ensayos finalizados</h3>
+          <p>Los ensayos completados aparecerán aquí.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="border rounded-md">
@@ -52,9 +45,6 @@ export function PhiTable({ data }: PhiTableProps) {
             <TableHead>Producto</TableHead>
             <TableHead>Raya</TableHead>
             <TableHead>Horas</TableHead>
-            <TableHead>Fecha Final Estimada</TableHead>
-            <TableHead>% Progreso</TableHead>
-            <TableHead>Tiempo Restante</TableHead>
             <TableHead>Estado</TableHead>
             <TableHead>Observaciones</TableHead>
           </TableRow>
@@ -69,23 +59,6 @@ export function PhiTable({ data }: PhiTableProps) {
                 <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
               </TableCell>
               <TableCell>{ensayo.horas}</TableCell>
-              <TableCell>
-                  <CalculoFechaFin fechaInicio={ensayo.fechaInicio} horas={ensayo.horas} />
-              </TableCell>
-              <TableCell className="w-[150px]">
-                <PhiProgressBar
-                    fechaInicio={ensayo.fechaInicio}
-                    horas={ensayo.horas}
-                    isComplete={ensayo.estado !== 'EN PROCESO'}
-                />
-              </TableCell>
-              <TableCell>
-                <PhiTimer 
-                    fechaInicio={ensayo.fechaInicio} 
-                    horas={ensayo.horas} 
-                    isComplete={ensayo.estado !== 'EN PROCESO'}
-                />
-              </TableCell>
               <TableCell>
                  <Badge variant={ensayo.estado === 'FINALIZADO' ? 'default' : 'secondary'}
                    className={ensayo.estado === 'FINALIZADO' ? 'bg-green-500/20 text-green-700' : 'bg-yellow-500/20 text-yellow-700'}
