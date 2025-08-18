@@ -73,7 +73,7 @@ const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, onManag
   const { toast } = useToast();
 
   const filteredData = React.useMemo(() => 
-    data.filter(
+    (data || []).filter(
       (item) =>
         item.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.instructor.toLowerCase().includes(searchTerm.toLowerCase())
