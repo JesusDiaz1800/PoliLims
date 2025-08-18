@@ -34,7 +34,7 @@ export default function ResistenciaPresionHidrostaticaPage() {
                     <h1 className="text-xl font-bold font-headline uppercase">Registro de Resistencia a la Presión Hidrostática</h1>
                     <p className="text-sm text-muted-foreground">LEP-DGC-021, Versión 01</p>
                 </div>
-                <div className="space-x-2">
+                <div className="flex flex-col items-end space-y-2">
                     <Button onClick={() => setIsNewEnsayoOpen(true)}>
                         <FilePlus2 className="mr-2 h-4 w-4"/>
                         Iniciar Ensayo
