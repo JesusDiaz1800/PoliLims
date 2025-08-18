@@ -61,7 +61,6 @@ import { Logo } from "@/components/logo";
 import { useChatWidget, ChatWidgetProvider, ChatWidget } from '@/components/soporte/chat-widget';
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
 import RootPrefetch from '@/components/root-prefetch';
@@ -499,30 +498,18 @@ function AppShell({
 export default function AppLayoutClient({ 
     children,
     user,
-    initialData,
 }: { 
     children: React.ReactNode,
     user: User | null;
-    initialData: InitialData
 }) {
     return (
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-        >
-            <DynamicDataProvider initialData={initialData} user={user}>
-                <ChatWidgetProvider>
-                    <SidebarProvider>
-                        <AppShell user={user}>
-                            {children}
-                        </AppShell>
-                        <ChatWidget />
-                    </SidebarProvider>
-                </ChatWidgetProvider>
-            </DynamicDataProvider>
-            <RootPrefetch />
-        </ThemeProvider>
+        <ChatWidgetProvider>
+            <SidebarProvider>
+                <AppShell user={user}>
+                    {children}
+                </AppShell>
+                <ChatWidget />
+            </SidebarProvider>
+        </ChatWidgetProvider>
     );
 }

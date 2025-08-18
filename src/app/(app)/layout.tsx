@@ -2,9 +2,9 @@
 import React from 'react';
 import AppLayoutClient from './app-layout-client';
 import { findUserByUsername } from '@/services/user-service';
-import { getInitialData } from '@/services/data-service';
 
-// This is a Server Component responsible for fetching all initial data.
+// This is a Server Component responsible for fetching the user.
+// The initial data is now provided by the root layout.
 export default async function AppLayout({ 
     children
 }: { 
@@ -19,10 +19,8 @@ export default async function AppLayout({
     // It's safe to assume user is found as we have a default.
     // In a real app, you'd redirect if no user was found after auth check.
 
-    const initialData = await getInitialData();
-
     return (
-        <AppLayoutClient user={user} initialData={initialData}>
+        <AppLayoutClient user={user}>
             {children}
         </AppLayoutClient>
     );

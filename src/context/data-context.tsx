@@ -241,6 +241,7 @@ export type InitialData = Omit<Awaited<ReturnType<typeof dataService.getInitialD
 interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
     user: User | null;
+    setUser: (user: User | null) => void;
     usuarios: User[];
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
@@ -271,9 +272,10 @@ interface DynamicDataContextType extends InitialData {
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
 
-export function DynamicDataProvider({ children, user, initialData }: { children: ReactNode, user: User | null, initialData: InitialData }) {
+export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
     const [data, setData] = useState<InitialData>(initialData);
     const [isLoaded, setIsLoaded] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
     
     const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
         const newEnsayo = await dataService.addEnsayo(ensayo);
@@ -415,6 +417,7 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         ...data,
         isLoaded,
         user,
+        setUser,
         addEnsayo,
         updateEnsayo,
         deleteEnsayo,

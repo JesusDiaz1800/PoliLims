@@ -3,6 +3,9 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Space_Grotesk, Orbitron } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme-provider';
+import { DynamicDataProvider, type InitialData } from '@/context/data-context';
+import { getInitialData } from '@/services/data-service';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -14,16 +17,28 @@ export const metadata: Metadata = {
   description: 'LIMS para Polifusión S.A.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch initial data once at the root level
+  const initialData = await getInitialData();
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} ${orbitron.variable} font-body antialiased`}>
-        {children}
-        <Toaster />
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+        >
+          <DynamicDataProvider initialData={initialData}>
+            {children}
+            <Toaster />
+          </DynamicDataProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

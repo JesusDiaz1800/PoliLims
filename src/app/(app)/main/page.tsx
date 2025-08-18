@@ -22,11 +22,13 @@ import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaroun
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
+import { findUserByUsername } from "@/services/user-service";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
 export default function MainPage() {
   const searchParams = useSearchParams();
+  const username = searchParams.get('user') || 'jdiaz';
 
   const { 
     ensayos, 
@@ -36,7 +38,18 @@ export default function MainPage() {
     proveedores,
     isLoaded,
     user,
+    setUser
   } = useDynamicData();
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+        const fetchedUser = await findUserByUsername(username);
+        setUser(fetchedUser);
+    }
+    if (!user || user.username !== username) {
+        fetchUser();
+    }
+  }, [username, user, setUser]);
   
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
   const [theme, setTheme] = React.useState('dark');
