@@ -54,7 +54,7 @@ const handleEmailClick = (ensayo: EnsayoPHI) => {
 
     const saludo = 'Favor liberar tuberías.';
 
-    const horasTranscurridasTexto = 'Ensayo Completo';
+    const horasTranscurridasTexto = 'Ensayo Terminado';
 
     const body = `
 ${saludo}
