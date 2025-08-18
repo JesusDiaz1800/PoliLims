@@ -96,10 +96,12 @@ export default function MainPageContent() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
   
   return (
-      <div className="flex-1 space-y-4 p-6 md:p-10">
+    <div className={cn("flex-1 space-y-4 p-6 md:p-10", theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')}>
+      <div className="background-overlay" />
+      <div className="relative z-10">
         <WelcomeBanner user={user} />
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" trend="up" trendDirection="positive" />
             <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} trend="up" trendDirection="positive"/>
             <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href="/ensayos/seguimiento?status=Pendiente" trend="down" trendDirection="negative" />
@@ -107,7 +109,7 @@ export default function MainPageContent() {
             <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" trend="up" trendDirection="negative"/>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
             <Card className="lg:col-span-8">
                 <CardHeader>
                     <CardTitle>Ensayos por Mes</CardTitle>
@@ -149,7 +151,7 @@ export default function MainPageContent() {
             </Card>
         </div>
         
-         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
+         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
             <Card className="h-full">
                 <CardHeader><CardTitle>Registros por Analista</CardTitle><CardDescription>Cantidad de registros por analista.</CardDescription></CardHeader>
                 <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
@@ -171,7 +173,7 @@ export default function MainPageContent() {
             </Card>
         </div>
          
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             <Card className="h-full">
                 <CardHeader><CardTitle>Tendencia de Rendimiento</CardTitle><CardDescription>Muestras recibidas vs. completadas.</CardDescription></CardHeader>
                 <CardContent className="h-[240px]"><ThroughputTrendChart data={ensayos || []} /></CardContent>
@@ -186,5 +188,6 @@ export default function MainPageContent() {
             </Card>
         </div>
       </div>
+    </div>
   );
 }

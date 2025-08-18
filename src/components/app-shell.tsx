@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -484,31 +483,30 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
         
-        <header
-          className={cn(
-            "sticky top-0 z-30 flex h-16 items-center border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6 transition-opacity",
-            isDashboard && "opacity-0 pointer-events-none"
-            )}
-          role="banner"
-        >
-          <div className="flex items-center gap-2">
-              <SidebarTrigger aria-label="Toggle sidebar" />
-                <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
-                  {pageTitle}
-              </h1>
-          </div>
-          <div className="flex items-center gap-2 ml-auto">
-            <NotificationDropdown />
-            <ThemeToggle />
-            <div className="w-12 hidden sm:block">
-                <LogoAlt />
+        {!isDashboard && (
+          <header
+            className="sticky top-0 z-30 flex h-16 items-center border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
+            role="banner"
+          >
+            <div className="flex items-center gap-2">
+                <SidebarTrigger aria-label="Toggle sidebar" />
+                  <h1 className="text-xl font-semibold font-headline text-foreground" tabIndex={-1}>
+                    {pageTitle}
+                </h1>
             </div>
-          </div>
-        </header>
+            <div className="flex items-center gap-2 ml-auto">
+              <NotificationDropdown />
+              <ThemeToggle />
+              <div className="w-12 hidden sm:block">
+                  <LogoAlt />
+              </div>
+            </div>
+          </header>
+        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("custom-scrollbar", !isDashboard && "p-6 md:p-10")}
+                className="custom-scrollbar"
                 role="main"
                 tabIndex={-1}
             >

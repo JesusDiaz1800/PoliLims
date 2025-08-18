@@ -4,6 +4,49 @@ import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConform
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
+// --- DEMO DATA FOR NOTIFICATIONS ---
+export interface AlertaConfig {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    email: { activa: boolean };
+    sms: { activa: boolean };
+    roles: string[];
+}
+
+export interface Notificacion {
+    id: string;
+    fecha: string; // ISO String
+    canal: 'Email' | 'SMS';
+    destinatario: string;
+    asunto: string;
+    estado: 'Enviado' | 'Fallido' | 'Pendiente';
+}
+
+export interface PlantillaNotificacion {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    asunto: string;
+    cuerpo: string;
+}
+
+export const mockAlertConfigs: AlertaConfig[] = [
+    { id: 'alerta-calibracion', nombre: 'Alerta de Calibración Próxima', descripcion: 'Notificar 30 días antes de que la calibración de un equipo expire.', email: { activa: true }, sms: { activa: false }, roles: ['Jefe de Calidad', 'Ing. Analista de Calidad'] },
+    { id: 'alerta-nc-vencida', nombre: 'No Conformidad Vencida', descripcion: 'Notificar cuando una No Conformidad ha pasado su fecha de vencimiento.', email: { activa: true }, sms: { activa: true }, roles: ['Jefe de Calidad'] },
+    { id: 'alerta-ensayo-pendiente', nombre: 'Ensayo Pendiente de Revisión', descripcion: 'Notificar cuando un ensayo ha sido completado y requiere aprobación.', email: { activa: true }, sms: { activa: false }, roles: ['Jefe de Calidad', 'Ing. Analista de Calidad'] },
+];
+
+export const mockNotificationHistory: Notificacion[] = [
+    { id: 'notif-1', fecha: subDays(new Date(), 1).toISOString(), canal: 'Email', destinatario: 'vlutz@polifusion.cl', asunto: 'Alerta de Calibración: Prensa de Impacto (EQ-02)', estado: 'Enviado' },
+    { id: 'notif-2', fecha: subDays(new Date(), 2).toISOString(), canal: 'SMS', destinatario: '+56912345678', asunto: 'NC Vencida: NC-001', estado: 'Enviado' },
+    { id: 'notif-3', fecha: subDays(new Date(), 3).toISOString(), canal: 'Email', destinatario: 'jdiaz@polifusion.cl', asunto: 'Ensayo Pendiente: LAB-06-04', estado: 'Fallido' },
+];
+
+export const mockAlertTemplates: PlantillaNotificacion[] = [
+    { id: 'plantilla-calibracion', nombre: 'Aviso de Calibración Próxima', descripcion: 'Email que se envía cuando la calibración de un equipo está por vencer.', asunto: 'Alerta de Calibración: {{equipo.nombre}}', cuerpo: 'Estimado/a,\n\nLe informamos que el equipo {{equipo.nombre}} (ID: {{equipo.id}}) requiere calibración.\n\nFecha de vencimiento: {{equipo.proxima_calibracion}} (en {{dias_restantes}} días).\n\nPor favor, coordine las acciones necesarias.\n\nSaludos,\nSistema PoliLIMS' },
+    { id: 'plantilla-nc', nombre: 'Aviso de No Conformidad Vencida', descripcion: 'Email que se envía cuando una NC ha sobrepasado su fecha de cierre.', asunto: 'Alerta de NC Vencida: {{nc.id}}', cuerpo: 'Estimado/a {{usuario.nombre}},\n\nLe informamos que la No Conformidad {{nc.id}} ("{{nc.descripcion}}") ha superado su fecha de vencimiento programada para el {{nc.fecha_vencimiento}}.\n\nPor favor, tome las acciones correctivas necesarias a la brevedad.\n\nSaludos,\nSistema PoliLIMS' },
+];
 
 // --- DEMO DATA ---
 const demoRegistros: Registro[] = [
