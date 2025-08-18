@@ -83,14 +83,14 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, onDelete, i
     filteredData: filteredIncidencias, 
     searchTerm, 
     setSearchTerm, 
-    setFilterType 
+    setFilter
   } = useFilters(incidencias, ['id', 'descripcion', 'responsable']);
   
   React.useEffect(() => {
     if(initialStatusFilter) {
-      setFilterType(initialStatusFilter === 'abierta' ? 'Abierta' : 'Todos');
+      setFilter('estado', initialStatusFilter === 'abierta' ? 'Abierta' : 'Todos');
     }
-  }, [initialStatusFilter, setFilterType]);
+  }, [initialStatusFilter, setFilter]);
 
   const handleDelete = async (incidenciaId: string) => {
     try {
@@ -130,7 +130,7 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, onDelete, i
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-             <Select onValueChange={setFilterType}>
+             <Select onValueChange={(value) => setFilter('estado', value)}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="Filtrar por estado" />
