@@ -39,7 +39,7 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     };
 
     calculateProgress();
-    const interval = setInterval(calculateProgress, 1000 * 60);
+    const interval = setInterval(calculateProgress, 1000 * 60); // Update every minute for performance
 
     return () => clearInterval(interval);
   }, [fechaInicio, horas, isComplete, isClient]);
@@ -50,7 +50,7 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     return "bg-green-500";
   };
   
-  const textColor = isComplete || progress >= 100 ? 'text-primary-foreground' : 'mix-blend-difference text-white';
+  const textColor = progress >= 100 ? 'text-primary-foreground' : 'mix-blend-difference text-white';
 
   if (!isClient) {
     return <Progress value={0} />;
