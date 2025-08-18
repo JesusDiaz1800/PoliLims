@@ -26,7 +26,7 @@ export default function ResistenciaPresionHidrostaticaPage() {
                     <LogoAlt />
                 </div>
                 <div className="text-center">
-                    <h1 className="text-xl font-bold font-headline uppercase">SEGUIMIENTO DE ENSAYOS DE RESISTENCIA A LA PRESIÓN HIDROSTÁTICA INTERNA</h1>
+                    <h1 className="text-xl font-bold font-headline uppercase">Registro de Resistencia a la Presión Hidrostática Interna</h1>
                     <p className="text-sm text-muted-foreground">LEP-DGC-021, Versión 01</p>
                 </div>
                 <div className="space-x-2">

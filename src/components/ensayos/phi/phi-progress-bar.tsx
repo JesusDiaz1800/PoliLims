@@ -18,13 +18,12 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     setIsClient(true);
   }, []);
 
-
   React.useEffect(() => {
     if (!isClient) return;
 
-    if(isComplete) {
-        setProgress(100);
-        return;
+    if (isComplete) {
+      setProgress(100);
+      return;
     }
 
     const calculateProgress = () => {
@@ -39,22 +38,34 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     };
 
     calculateProgress();
-    const interval = setInterval(calculateProgress, 1000 * 60); // Update every minute is enough
+    const interval = setInterval(calculateProgress, 1000 * 60);
 
     return () => clearInterval(interval);
   }, [fechaInicio, horas, isComplete, isClient]);
   
   const getIndicatorColor = () => {
-    if (progress < 50) {
-      const red = 255;
-      const green = Math.round(progress * 2 * 2.55);
-      return `rgb(${red}, ${green}, 0)`;
+    const percentage = progress / 100;
+    let r, g;
+    if (percentage < 0.5) {
+      r = 255;
+      g = Math.round(percentage * 2 * 255);
     } else {
-      const red = Math.round((100 - progress) * 2 * 2.55);
-      const green = 255;
-      return `rgb(${red}, ${green}, 0)`;
+      r = Math.round((1 - percentage) * 2 * 255);
+      g = 255;
     }
+    return `rgb(${r}, ${g}, 0)`;
   };
 
-  return <Progress value={progress} indicatorClassName="transition-none" style={{'--tw-bg-primary': getIndicatorColor()} as React.CSSProperties} />;
+  if (!isClient) {
+    return <Progress value={0} />;
+  }
+
+  return (
+    <div className="relative w-full h-full">
+      <Progress value={progress} indicatorStyle={{ backgroundColor: getIndicatorColor() }} />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-xs font-semibold text-white mix-blend-difference">{progress.toFixed(1)}%</span>
+      </div>
+    </div>
+  );
 }

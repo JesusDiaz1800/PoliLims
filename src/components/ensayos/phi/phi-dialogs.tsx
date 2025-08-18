@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -5,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { format, parse } from 'date-fns';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
@@ -35,15 +36,25 @@ interface NewEnsayoFormProps {
 }
 
 function NewEnsayoForm({ onClose, addEnsayo }: NewEnsayoFormProps) {
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
+      defaultValues: {
+        fechaIngresoManual: format(new Date(), 'dd-MM-yyyy'),
+        fechaInicio: format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
+        producto: '',
+        raya: '',
+        horas: ''
+      }
+    });
     const { toast } = useToast();
 
     const onSubmit = async (data: any) => {
         try {
+            const fechaInicioDate = parse(data.fechaInicio, 'dd-MM-yyyy HH:mm:ss', new Date());
+
             await addEnsayo({
                 ...data,
-                fechaIngresoManual: format(new Date(), 'dd-MM-yyyy'),
-                fechaInicio: new Date().toISOString(),
+                horas: parseFloat(data.horas),
+                fechaInicio: fechaInicioDate.toISOString(),
                 estado: 'EN PROCESO',
             });
             toast({ title: "Ensayo Iniciado", description: "El nuevo ensayo de PHI ha sido registrado." });
@@ -55,22 +66,44 @@ function NewEnsayoForm({ onClose, addEnsayo }: NewEnsayoFormProps) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor="producto">Producto</Label>
-                    <Combobox options={productosPHI} onChange={(value) => setValue('producto', value)} placeholder="Seleccione producto..." />
-                    {errors.producto && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
-                </div>
-                 <div>
-                    <Label htmlFor="raya">Color de Raya</Label>
-                    <Combobox options={rayas} onChange={(value) => setValue('raya', value)} placeholder="Seleccione color..."/>
-                    {errors.raya && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
-                </div>
-                 <div>
-                    <Label htmlFor="horas">Horas de Ensayo</Label>
-                    <Input id="horas" type="number" {...register('horas', { required: true, valueAsNumber: true })} />
-                    {errors.horas && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
-                </div>
+            <div className="space-y-2">
+                <Label htmlFor="fechaIngresoManual">Ingreso</Label>
+                <Input id="fechaIngresoManual" {...register('fechaIngresoManual', { required: true })} />
+                {errors.fechaIngresoManual && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="fechaInicio">Inicio</Label>
+                <Input id="fechaInicio" {...register('fechaInicio', { required: true })} />
+                {errors.fechaInicio && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="producto">Producto</Label>
+                 <Controller
+                    name="producto"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Combobox options={productosPHI} onChange={field.onChange} value={field.value} placeholder="Seleccione producto..." />
+                    )}
+                  />
+                {errors.producto && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="raya">Color de Raya</Label>
+                <Controller
+                    name="raya"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Combobox options={rayas} onChange={field.onChange} value={field.value} placeholder="Seleccione color..."/>
+                    )}
+                  />
+                {errors.raya && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="horas">Tiempo de Ensayo (horas)</Label>
+                <Input id="horas" type="number" step="any" {...register('horas', { required: true })} />
+                {errors.horas && <p className="text-destructive text-sm mt-1">Este campo es requerido</p>}
             </div>
             <DialogFooter>
                 <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
@@ -88,7 +121,7 @@ interface ResultFormProps {
 }
 
 function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, control, watch, formState: { errors } } = useForm();
     const { toast } = useToast();
     const conFalla = watch('conFalla');
 
@@ -113,11 +146,19 @@ function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-4">
             <div>
                 <Label htmlFor="ensayoId">Seleccionar Ensayo</Label>
-                <Combobox
-                    options={ensayosActivos.map(e => ({ value: e.id, label: `${e.producto} (Inicio: ${format(new Date(e.fechaInicio), 'dd/MM HH:mm')})` }))}
-                    onChange={(value) => setValue('ensayoId', value)}
-                    placeholder="Seleccione un ensayo en proceso..."
-                />
+                 <Controller
+                    name="ensayoId"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                        <Combobox
+                            options={ensayosActivos.map(e => ({ value: e.id, label: `${e.producto} (Inicio: ${format(new Date(e.fechaInicio), 'dd/MM HH:mm')})` }))}
+                            onChange={field.onChange}
+                            value={field.value}
+                            placeholder="Seleccione un ensayo en proceso..."
+                        />
+                     )}
+                  />
                  {errors.ensayoId && <p className="text-destructive text-sm mt-1">Debe seleccionar un ensayo.</p>}
             </div>
             <div className="flex items-center space-x-2">
@@ -165,8 +206,7 @@ export function PhiDialogs({
             <Dialog open={isNewEnsayoOpen} onOpenChange={setIsNewEnsayoOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Iniciar Nuevo Ensayo PHI</DialogTitle>
-                        <DialogDescription>Complete los datos para comenzar un nuevo ensayo de resistencia a la presión.</DialogDescription>
+                        <DialogTitle>Formulario de Ensayo</DialogTitle>
                     </DialogHeader>
                     <NewEnsayoForm onClose={() => setIsNewEnsayoOpen(false)} addEnsayo={addEnsayoPHI} />
                 </DialogContent>
@@ -183,4 +223,3 @@ export function PhiDialogs({
         </>
     );
 }
-

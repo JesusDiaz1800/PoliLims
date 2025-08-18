@@ -13,16 +13,15 @@ export function PhiTimer({ fechaInicio, horas, isComplete }: PhiTimerProps) {
   const [isClient, setIsClient] = React.useState(false);
 
   React.useEffect(() => {
-    // This effect runs once on the client after hydration
     setIsClient(true);
   }, []);
 
   React.useEffect(() => {
     if (!isClient) return;
 
-    if(isComplete) {
-        setTiempoRestante("00:00:00");
-        return;
+    if (isComplete) {
+      setTiempoRestante("00:00:00");
+      return;
     }
 
     const calculateRemainingTime = () => {
@@ -51,14 +50,14 @@ export function PhiTimer({ fechaInicio, horas, isComplete }: PhiTimerProps) {
 
   if (!isClient) {
     return (
-        <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm">
-            --:--:--
-        </div>
+      <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm tabular-nums">
+        --:--:--
+      </div>
     );
   }
 
   return (
-    <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm">
+    <div className="font-mono bg-black text-cyan-400 text-center rounded p-1 text-sm tabular-nums">
       {tiempoRestante}
     </div>
   );
