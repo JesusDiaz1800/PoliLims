@@ -110,7 +110,7 @@ Atte.,
                     />
                 </div>
             </CardContent>
-            <CardFooter className="text-xs text-muted-foreground flex justify-between items-center bg-muted/50 p-3">
+            <CardFooter className="text-xs text-foreground/80 flex justify-between items-center bg-muted/50 p-3">
                  <div className="flex items-center gap-1.5">
                     <Clock className="h-3 w-3"/>
                     <span>{ensayo.horas}h</span>
