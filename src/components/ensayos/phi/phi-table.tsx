@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import type { EnsayoPHI } from '@/context/data-context';
 import { PhiProgressBar } from './phi-progress-bar';
 import { PhiTimer } from './phi-timer';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 interface PhiTableProps {
   data: EnsayoPHI[];
@@ -40,7 +40,7 @@ export function PhiTable({ data }: PhiTableProps) {
             return (
             <TableRow key={ensayo.id}>
               <TableCell className="font-mono">{15 + index}</TableCell>
-              <TableCell>{ensayo.fechaIngresoManual ? format(new Date(ensayo.fechaIngresoManual), 'dd/MM/yyyy') : 'N/A'}</TableCell>
+              <TableCell>{ensayo.fechaIngresoManual ? format(parse(ensayo.fechaIngresoManual, 'dd/MM/yyyy', new Date()), 'dd/MM/yyyy') : 'N/A'}</TableCell>
               <TableCell>{format(new Date(ensayo.fechaInicio), 'dd/MM/yyyy HH:mm:ss')}</TableCell>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
