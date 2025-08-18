@@ -96,7 +96,7 @@ export default function MainPage() {
 
   return (
       <div className={cn(
-        "relative flex-1 space-y-4 px-4 sm:px-6 lg:px-8 py-6",
+        "relative flex-1 space-y-4",
         theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light'
       )}>
         <div className="background-overlay"></div>

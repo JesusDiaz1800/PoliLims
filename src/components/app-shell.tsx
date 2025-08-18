@@ -481,7 +481,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
       </Sidebar>
 
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
-        {pathname !== '/main' && (
+        
           <header
           className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6"
           role="banner"
@@ -500,11 +500,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
             <ThemeToggle />
           </div>
           </header>
-        )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("custom-scrollbar", pathname !== '/main' ? 'p-6 md:p-10' : '')}
+                className={cn("custom-scrollbar p-6 md:p-10")}
                 role="main"
                 tabIndex={-1}
             >
