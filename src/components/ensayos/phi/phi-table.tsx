@@ -29,6 +29,16 @@ const CalculoFechaFin = ({ fechaInicio, horas }: { fechaInicio: string, horas: n
     return <span>{fechaFin}</span>;
 };
 
+const FechaInicioCell = ({ fechaInicio }: { fechaInicio: string }) => {
+    const [formattedDate, setFormattedDate] = React.useState('Cargando...');
+
+    React.useEffect(() => {
+        setFormattedDate(format(new Date(fechaInicio), 'dd-MM-yyyy HH:mm:ss'));
+    }, [fechaInicio]);
+
+    return <>{formattedDate}</>;
+};
+
 
 export function PhiTable({ data }: PhiTableProps) {
   const sortedData = [...data].sort((a, b) => new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime());
@@ -56,8 +66,8 @@ export function PhiTable({ data }: PhiTableProps) {
             return (
             <TableRow key={ensayo.id}>
               <TableCell className="font-mono">{15 + index}</TableCell>
-              <TableCell>{ensayo.fechaIngresoManual || 'N/A'}</TableCell>
-              <TableCell>{format(new Date(ensayo.fechaInicio), 'dd-MM-yyyy HH:mm:ss')}</TableCell>
+              <TableCell>{ensayo.fechaIngresoManual}</TableCell>
+              <TableCell><FechaInicioCell fechaInicio={ensayo.fechaInicio} /></TableCell>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
                 <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
