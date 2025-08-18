@@ -62,6 +62,10 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
             ? 'Favor liberar tuberías.'
             : 'Notificación de Ensayo en Proceso:';
 
+        const horasTranscurridasTexto = ensayo.estado === 'FINALIZADO' 
+            ? 'ENSAYO FINALIZADO' 
+            : `${transcurridoHoras.toFixed(2)}`;
+
         const body = `
 ${saludo}
 
@@ -70,7 +74,7 @@ Producto: ${ensayo.producto}
 Inicio Ensayo: ${format(inicio, 'dd-MM-yyyy HH:mm')}
 Fin Estimado: ${format(fechaFinEstimada, 'dd-MM-yyyy HH:mm')}
 Horas Totales: ${ensayo.horas}
-Horas Transcurridas: ${transcurridoHoras.toFixed(2)}
+Horas Transcurridas: ${horasTranscurridasTexto}
 Color de Raya: ${ensayo.raya}
 --------------------------------------------------
 
