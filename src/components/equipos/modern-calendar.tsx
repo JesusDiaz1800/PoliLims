@@ -95,15 +95,15 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
                 className={cn(
                   'relative aspect-square cursor-pointer rounded-lg border p-2 transition-colors flex flex-col',
                   'bg-background hover:bg-accent/80',
-                  isToday(day) && 'border-primary',
-                  selectedDay && isSameDay(day, selectedDay) && 'bg-primary/20 ring-2 ring-primary',
+                  isToday(day) && 'ring-2 ring-primary/50',
+                  selectedDay && isSameDay(day, selectedDay) && 'bg-primary text-primary-foreground hover:bg-primary/90',
                   !isSameMonth(day, currentMonth) && 'text-muted-foreground/50'
                 )}
               >
                 <span
                   className={cn(
                     'font-semibold',
-                    isToday(day) && 'text-primary'
+                    isToday(day) && !(selectedDay && isSameDay(day, selectedDay)) && 'text-primary'
                   )}
                 >
                   {format(day, 'd')}
@@ -112,11 +112,11 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
                     {dayEvents.slice(0, 2).map((event, i) => (
                         <div key={i} className="flex items-center gap-1.5">
                            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: event.color }}/>
-                           <span className="text-xs truncate font-medium text-muted-foreground">{event.title}</span>
+                           <span className={cn("text-xs truncate font-medium", selectedDay && isSameDay(day, selectedDay) ? 'text-primary-foreground/80' : 'text-muted-foreground' )}>{event.title}</span>
                         </div>
                     ))}
                     {dayEvents.length > 2 && (
-                        <div className="text-xs text-muted-foreground/80 mt-1">
+                        <div className={cn("text-xs mt-1", selectedDay && isSameDay(day, selectedDay) ? 'text-primary-foreground/70' : 'text-muted-foreground/80')}>
                            + {dayEvents.length - 2} más
                         </div>
                     )}
