@@ -2,48 +2,38 @@
 "use client";
 
 import * as React from 'react';
-import type { Capacitacion } from '@/context/data-context';
+import type { Capacitacion, User } from '@/context/data-context';
 import Loading from '@/app/(app)/loading';
 import { CapacitacionesTable } from '@/components/capacitaciones/capacitaciones-table';
 import { CapacitacionDialog } from '@/components/capacitaciones/capacitacion-dialog';
-import type { User } from '@/services/user-service';
+import { AsistenciaDialog } from '@/components/capacitaciones/asistencia-dialog';
+import { EvaluacionDialog } from '@/components/capacitaciones/evaluacion-dialog';
 import { useDynamicData } from '@/context/data-context';
-import { getAllUsers } from '@/services/user-service';
 
 export default function CapacitacionesPage() {
-  const { capacitaciones, isLoaded: isDataLoaded, deleteCapacitacion } = useDynamicData();
-  const [users, setUsers] = React.useState<User[]>([]);
-  const [isLoadingUsers, setIsLoadingUsers] = React.useState(true);
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const { capacitaciones, usuarios, isLoaded, deleteCapacitacion, updateCapacitacion } = useDynamicData();
+  
+  const [isCapacitacionDialogOpen, setIsCapacitacionDialogOpen] = React.useState(false);
+  const [isAsistenciaDialogOpen, setIsAsistenciaDialogOpen] = React.useState(false);
+  const [isEvaluacionDialogOpen, setIsEvaluacionDialogOpen] = React.useState(false);
+
   const [selectedCapacitacion, setSelectedCapacitacion] = React.useState<Capacitacion | null>(null);
 
-  const loadUsers = React.useCallback(async () => {
-    setIsLoadingUsers(true);
-    try {
-        const allUsers = await getAllUsers();
-        setUsers(allUsers);
-    } catch(error) {
-        console.error("Failed to load users for capacitaciones page", error);
-    } finally {
-        setIsLoadingUsers(false);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    loadUsers();
-  }, [loadUsers]);
-
-  const handleOpenDialog = (record?: Capacitacion) => {
+  const handleOpenDialog = (type: 'capacitacion' | 'asistencia' | 'evaluacion', record?: Capacitacion) => {
     setSelectedCapacitacion(record || null);
-    setIsDialogOpen(true);
+    if (type === 'capacitacion') setIsCapacitacionDialogOpen(true);
+    if (type === 'asistencia') setIsAsistenciaDialogOpen(true);
+    if (type === 'evaluacion') setIsEvaluacionDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialogs = () => {
     setSelectedCapacitacion(null);
-    setIsDialogOpen(false);
+    setIsCapacitacionDialogOpen(false);
+    setIsAsistenciaDialogOpen(false);
+    setIsEvaluacionDialogOpen(false);
   };
 
-  if (!isDataLoaded || isLoadingUsers) {
+  if (!isLoaded) {
     return <Loading />;
   }
 
@@ -51,17 +41,36 @@ export default function CapacitacionesPage() {
     <div className="space-y-6">
       <CapacitacionesTable
         data={capacitaciones}
-        onAddNew={() => handleOpenDialog()}
-        onEdit={handleOpenDialog}
+        onAddNew={() => handleOpenDialog('capacitacion')}
+        onEdit={(record) => handleOpenDialog('capacitacion', record)}
         onDelete={deleteCapacitacion}
-        users={users}
+        onManageAsistencia={(record) => handleOpenDialog('asistencia', record)}
+        onManageEvaluacion={(record) => handleOpenDialog('evaluacion', record)}
+        users={usuarios}
       />
       <CapacitacionDialog
-        isOpen={isDialogOpen}
-        onClose={handleCloseDialog}
+        isOpen={isCapacitacionDialogOpen}
+        onClose={handleCloseDialogs}
         capacitacion={selectedCapacitacion}
-        users={users}
+        users={usuarios}
       />
+      {selectedCapacitacion && (
+        <>
+          <AsistenciaDialog
+            isOpen={isAsistenciaDialogOpen}
+            onClose={handleCloseDialogs}
+            capacitacion={selectedCapacitacion}
+            users={usuarios}
+            onSave={updateCapacitacion}
+          />
+          <EvaluacionDialog
+            isOpen={isEvaluacionDialogOpen}
+            onClose={handleCloseDialogs}
+            capacitacion={selectedCapacitacion}
+            onSave={updateCapacitacion}
+          />
+        </>
+      )}
     </div>
   );
 }

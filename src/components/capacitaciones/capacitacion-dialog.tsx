@@ -16,16 +16,16 @@ interface CapacitacionDialogProps {
 export function CapacitacionDialog({ isOpen, onClose, capacitacion, users }: CapacitacionDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>{capacitacion ? "Gestionar" : "Planificar"} Capacitación</DialogTitle>
+          <DialogTitle>{capacitacion ? "Editar" : "Planificar"} Capacitación</DialogTitle>
           <DialogDescription>
             {capacitacion
-              ? `Gestionando la capacitación "${capacitacion.nombre}".`
+              ? `Editando los detalles para la capacitación "${capacitacion.nombre}".`
               : "Complete el formulario para planificar una nueva capacitación."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex-grow overflow-y-auto custom-scrollbar -mr-6 pr-6">
+        <div className="pt-4">
             <CapacitacionForm
                 capacitacionToEdit={capacitacion}
                 onFormSubmit={onClose}

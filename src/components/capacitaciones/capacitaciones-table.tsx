@@ -39,7 +39,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Search, FilePlus, Edit, MoreHorizontal, Trash2, GraduationCap, Users } from "lucide-react";
+import { Search, FilePlus, Edit, MoreHorizontal, Trash2, GraduationCap, Users, FileText, ClipboardCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Capacitacion, User } from "@/context/data-context";
 import { useToast } from "@/hooks/use-toast";
@@ -50,6 +50,8 @@ interface CapacitacionesTableProps {
   onAddNew: () => void;
   onEdit: (record: Capacitacion) => void;
   onDelete: (id: string) => Promise<void>;
+  onManageAsistencia: (record: Capacitacion) => void;
+  onManageEvaluacion: (record: Capacitacion) => void;
   users: User[];
 }
 
@@ -66,7 +68,7 @@ function getStatusVariant(status: Capacitacion["estado"]) {
   }
 }
 
-const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, users }: CapacitacionesTableProps) => {
+const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, onManageAsistencia, onManageEvaluacion, users }: CapacitacionesTableProps) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { toast } = useToast();
 
@@ -116,7 +118,7 @@ const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, users }
             </div>
             <Button onClick={onAddNew} className="w-full sm:w-auto">
             <FilePlus className="mr-2 h-4 w-4" />
-            Registrar Capacitación
+            Planificar Capacitación
             </Button>
         </div>
         </div>
@@ -135,7 +137,7 @@ const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, users }
         </TableHeader>
         <TableBody>
             {filteredData.map((item) => {
-              const asistentesPresentes = item.asistentes.filter(a => a.asistio).length;
+              const asistentesPresentes = (item.asistentes || []).filter(a => a.asistio).length;
               return (
                 <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.nombre}</TableCell>
@@ -144,7 +146,7 @@ const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, users }
                     <TableCell>
                       <div className="flex items-center gap-1.5">
                         <Users className="h-4 w-4 text-muted-foreground" />
-                        <span>{asistentesPresentes} / {item.asistentes.length}</span>
+                        <span>{asistentesPresentes} / {(item.asistentes || []).length}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -163,7 +165,13 @@ const CapacitacionesTableInternal = ({ data, onAddNew, onEdit, onDelete, users }
                                 <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                                 <DropdownMenuItem onSelect={() => onEdit(item)}>
-                                    <Edit className="mr-2 h-4 w-4" />Gestionar Capacitación
+                                    <Edit className="mr-2 h-4 w-4" />Editar Detalles
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => onManageAsistencia(item)}>
+                                    <ClipboardCheck className="mr-2 h-4 w-4" />Gestionar Asistencia
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => onManageEvaluacion(item)}>
+                                    <FileText className="mr-2 h-4 w-4" />Gestionar Evaluación
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>

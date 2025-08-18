@@ -52,6 +52,7 @@ import {
   Search,
   Beaker,
   Home,
+  UserCheck,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -100,6 +101,8 @@ const procesosGestionSubMenu = [
     href: "/administracion/formacion",
     subItems: [
       { href: "/administracion/capacitaciones", label: "Capacitaciones", icon: GraduationCap },
+      { href: "/administracion/formacion", label: "Registros de Formación", icon: ClipboardList },
+      { href: "/mis-evaluaciones", label: "Mis Evaluaciones", icon: UserCheck },
     ],
   },
   { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
@@ -225,6 +228,8 @@ const pageTitles: Record<string, string> = {
     '/ensayos/seguimiento': 'Seguimiento General de Ensayos',
     '/administracion/usuarios': 'Gestión de Usuarios',
     '/administracion/capacitaciones': 'Gestión de Capacitaciones',
+    '/administracion/formacion': 'Registros de Formación',
+    '/mis-evaluaciones': 'Mis Evaluaciones Pendientes',
     '/administracion/basedatos': 'Base de Datos',
     '/administracion/permisos': 'Roles y Permisos',
     '/administracion/incertidumbre': 'Calculadora de Incertidumbre',
