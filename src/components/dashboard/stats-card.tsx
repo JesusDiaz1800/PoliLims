@@ -7,15 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+type Trend = 'up' | 'down';
+type TrendDirection = 'positive' | 'negative';
+
 type StatsCardProps = {
     title: string;
     value: string;
     description: string;
     icon: LucideIcon;
     href?: string;
+    trend?: Trend;
+    trendDirection?: TrendDirection;
 };
 
-const StatsCardInternal = ({ title, value, description, icon: Icon, href }: StatsCardProps) => {
+const StatsCardInternal = ({ title, value, description, icon: Icon, href, trend, trendDirection }: StatsCardProps) => {
     const router = useRouter();
 
     const handlePrefetch = () => {
@@ -29,6 +34,16 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href }: Stat
             router.push(href);
         }
     };
+
+    const isPositive = (trend === 'up' && trendDirection === 'positive') || (trend === 'down' && trendDirection === 'negative');
+    const isNegative = (trend === 'up' && trendDirection === 'negative') || (trend === 'down' && trendDirection === 'positive');
+    
+    const descriptionColor = cn(
+      "text-xs text-muted-foreground",
+      isPositive && "text-green-600 dark:text-green-400",
+      isNegative && "text-red-600 dark:text-red-500",
+    );
+
 
     return (
         <Card 
@@ -45,7 +60,7 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href }: Stat
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold font-headline">{value}</div>
-                <p className="text-xs text-muted-foreground">{description}</p>
+                <p className={descriptionColor}>{description}</p>
             </CardContent>
         </Card>
     );
