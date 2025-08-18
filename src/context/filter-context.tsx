@@ -3,6 +3,8 @@
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 
+const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
+
 // Define a more flexible state that can hold multiple filter values
 interface FilterState {
     searchTerm: string;
@@ -55,7 +57,12 @@ export const useFilters = <T extends Record<string, any>>(data: T[], searchKeys:
         return data.filter(item => {
             // Check custom filters first
             const matchOtherFilters = Object.entries(otherFilters).every(([key, value]) => {
-                if (value === 'all' || !value) return true;
+                if (value === 'Todos' || !value) return true;
+                
+                if(key === 'estado' && value === 'Pendiente') {
+                    return pendingStatuses.includes(item[key]);
+                }
+                
                 return String(item[key]).toLowerCase() === value.toLowerCase();
             });
 

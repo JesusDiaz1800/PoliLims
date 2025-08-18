@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer, ChevronDown } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer, ChevronDown, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import type { User } from "@/services/user-service";
@@ -62,7 +63,7 @@ const formatValue = (value: any, decimals: number = 2) => {
 function SeguimientoTableContainer() {
   const router = useRouter();
   const { ensayos, user, isLoaded, updateEnsayo, addRecentActivity } = useDynamicData();
-  const { filteredData: filteredEnsayos, setSearchTerm, setFilterType, searchTerm, filterType } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
+  const { filteredData: filteredEnsayos, setFilter, searchTerm, setSearchTerm } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
 
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [reportData, setReportData] = React.useState<ReportData | null>(null);
@@ -75,6 +76,8 @@ function SeguimientoTableContainer() {
   const ensayoTypes = React.useMemo(() => 
     ["Todos", ...Array.from(new Set(ensayos.map(e => e.tipo)))],
   [ensayos]);
+
+  const ensayoStatuses = ["Todos", "Aprobado", "Rechazado", "Pendiente"];
   
   const handleRedirectToRegister = (path: string) => {
     router.push(path);
@@ -190,7 +193,8 @@ function SeguimientoTableContainer() {
           </DropdownMenu>
       </TableCell>
   );
-
+  
+  const filterType = 'all'; // Simplified for this implementation
   let headers, renderRow;
 
   switch (filterType) {
@@ -259,7 +263,7 @@ function SeguimientoTableContainer() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                 <Select value={filterType} onValueChange={setFilterType}>
+                 <Select onValueChange={(value) => setFilter('tipo', value)}>
                   <SelectTrigger className="w-full sm:w-auto">
                       <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
                       <SelectValue placeholder="Filtrar por tipo" />
@@ -267,6 +271,17 @@ function SeguimientoTableContainer() {
                   <SelectContent>
                       {ensayoTypes.map(type => (
                          <SelectItem key={type} value={type}>{type === "Todos" ? "Todos los tipos" : type}</SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                 <Select onValueChange={(value) => setFilter('estado', value)}>
+                  <SelectTrigger className="w-full sm:w-auto">
+                      <Package className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <SelectValue placeholder="Filtrar por estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                      {ensayoStatuses.map(status => (
+                         <SelectItem key={status} value={status}>{status === "Todos" ? "Todos los estados" : status}</SelectItem>
                       ))}
                   </SelectContent>
                 </Select>
@@ -330,7 +345,7 @@ function SeguimientoTableContainer() {
             ensayo={selectedEnsayo}
             tipo={selectedEnsayo.tipo.replace('Tubería ', '') as 'HDPE' | 'PP'}
             user={user}
-            defaultTab={filterType}
+            defaultTab={'all'}
         />
     )}
     {reportData && (
