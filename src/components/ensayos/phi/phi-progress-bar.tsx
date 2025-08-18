@@ -50,7 +50,7 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     return "bg-green-500";
   };
   
-  const textColor = isComplete ? 'text-primary-foreground' : 'mix-blend-difference text-white';
+  const textColor = isComplete || progress >= 100 ? 'text-primary-foreground' : 'mix-blend-difference text-white';
 
   if (!isClient) {
     return <Progress value={0} />;
