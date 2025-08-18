@@ -52,12 +52,10 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
         const inicio = new Date(ensayo.fechaInicio);
         const fechaFinEstimada = new Date(inicio.getTime() + ensayo.horas * 60 * 60 * 1000);
         
-        const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl';
-        const subject = `Solicitud de Liberación: Ensayo de Presión Hidrostática`;
+        const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl;juribe@smartpipes.cl';
+        const subject = `Solicitud de Liberación: Ensayo ${ensayo.producto}`;
         const body = `
-Estimados,
-
-Favor liberar tuberías correspondientes al siguiente ensayo:
+Favor liberar tuberías.
 
 --------------------------------------------------
 Producto: ${ensayo.producto}
@@ -66,8 +64,6 @@ Fin Estimado: ${format(fechaFinEstimada, 'dd-MM-yyyy HH:mm')}
 Horas Totales: ${ensayo.horas}
 Color de Raya: ${ensayo.raya}
 --------------------------------------------------
-
-El ensayo ha finalizado satisfactoriamente.
 
 Atte.,
 Laboratorio de Calidad
