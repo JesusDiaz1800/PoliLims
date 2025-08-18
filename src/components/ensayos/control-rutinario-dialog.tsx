@@ -11,7 +11,7 @@ import {
 import { ControlRutinarioForm } from "./control-rutinario-form";
 import type { TipoProducto } from "@/lib/matriz-datos";
 import { type UseFormReturn } from "react-hook-form";
-import { type ControlRutinarioFormValues } from "./control-rutinario-page";
+import { type ControlRutinarioFormValues } from "@/app/(app)/control-rutinario/page";
 
 interface ControlRutinarioDialogProps {
   isOpen: boolean;

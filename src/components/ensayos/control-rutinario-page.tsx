@@ -8,32 +8,8 @@ import { format } from 'date-fns';
 import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
 import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
 import { useDynamicData } from '@/context/data-context';
+import type { ControlRutinarioFormValues } from '@/app/(app)/control-rutinario/page';
 
-const formSchema = z.object({
-  fecha_ingreso: z.date({
-    required_error: "La fecha es requerida.",
-    invalid_type_error: "Formato de fecha inválido."
-  }),
-  hora: z.string().nonempty("La hora es requerida."),
-  inspector: z.string().nonempty("El inspector es requerido."),
-  maquinista: z.string().nonempty("El maquinista es requerido."),
-  maquina: z.string().nonempty("La máquina es requerida."),
-  producto: z.string().nonempty("El producto es requerido."),
-  marca: z.string().nonempty("La marca es requerida."),
-  diametro: z.number().optional(),
-  espesor_min: z.number().optional(),
-  espesor_max: z.number().optional(),
-  largo: z.number().optional(),
-  peso_muestra: z.number().optional(),
-  peso_kg_m: z.number().optional(),
-  ovalidad: z.number().optional(),
-  observaciones_visuales: z.string().optional(),
-  color_tuberia: z.string().optional(),
-  color_linea: z.string().optional(),
-  entregado_laboratorio: z.boolean().default(false),
-}).passthrough();
-
-export type ControlRutinarioFormValues = z.infer<typeof formSchema>;
 
 const defaultFormValues: Partial<ControlRutinarioFormValues> = {
   fecha_ingreso: new Date(),
@@ -52,7 +28,6 @@ export default function ControlRutinarioPageClient() {
   const { registros, ensayos, matrizProductos, deleteRegistro } = useDynamicData();
 
   const form = useForm<ControlRutinarioFormValues>({
-    resolver: zodResolver(formSchema),
     defaultValues: defaultFormValues,
   });
 

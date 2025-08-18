@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -22,37 +21,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useDynamicData } from "@/context/data-context"
 import type { TipoProducto } from "@/lib/matriz-datos"
 import { Combobox } from "../ui/combobox"
-
-const formSchema = z.object({
-  fecha_ingreso: z.date({ 
-    required_error: "La fecha es requerida.",
-    invalid_type_error: "Formato de fecha inválido." 
-  }),
-  hora: z.string().nonempty("La hora es requerida."),
-  inspector: z.string().nonempty("El inspector es requerido."),
-  maquinista: z.string().nonempty("El maquinista es requerido."),
-  maquina: z.string().nonempty("La máquina es requerida."),
-  producto: z.string().nonempty("El producto es requerido."),
-  marca: z.string().nonempty("La marca es requerida."),
-  diametro: z.number().optional(),
-  espesor_min: z.number().optional(),
-  espesor_max: z.number().optional(),
-  largo: z.number().optional(),
-  peso_muestra: z.number().optional(),
-  peso_kg_m: z.number().optional(),
-  ovalidad: z.number().optional(),
-  observaciones_visuales: z.string().optional(),
-  color_tuberia: z.string().optional(),
-  color_linea: z.string().optional(),
-  entregado_laboratorio: z.boolean().default(false),
-}).passthrough();
-
-
-type FormValues = z.infer<typeof formSchema>;
+import type { ControlRutinarioFormValues } from "@/app/(app)/control-rutinario/page"
 
 
 interface ControlRutinarioFormProps {
-  form: UseFormReturn<FormValues>;
+  form: UseFormReturn<ControlRutinarioFormValues>;
   inspectores: { value: string; label: string }[]
   maquinistas: { value: string; label: string }[]
   maquinas: { value: string; label: string }[]
@@ -60,7 +33,7 @@ interface ControlRutinarioFormProps {
   onFormSubmit: () => void;
   productos: { label: string; value: string }[];
   matrizProductos: TipoProducto[];
-  defaultFormValues: Partial<FormValues>;
+  defaultFormValues: Partial<ControlRutinarioFormValues>;
 }
 
 type ValidationAlerts = {
@@ -81,7 +54,7 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
 
   const watchedValues = watch();
 
-  const validate = React.useCallback((values: FormValues) => {
+  const validate = React.useCallback((values: ControlRutinarioFormValues) => {
     const newAlerts: ValidationAlerts = {};
     const productoSeleccionado = matrizProductos.find(p => p.producto === values.producto);
     if (!productoSeleccionado) return;
@@ -117,12 +90,12 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
             const pesoCalculado = (values.peso_muestra / values.largo) / 10;
             setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)), { shouldValidate: true });
         }
-        validate(values as FormValues);
+        validate(values as ControlRutinarioFormValues);
     });
     return () => subscription.unsubscribe();
   }, [watch, setValue, validate]);
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ControlRutinarioFormValues) => {
     const resultado = Object.values(alerts).some(Boolean) ? "No Conforme" : "Conforme";
     
     const newRegistroData = {
@@ -204,8 +177,8 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <Form form={form} onSubmit={onSubmit}>
+      <form className="space-y-6">
         <div className="space-y-4">
             <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -504,7 +477,7 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Limpiar
             </Button>
-            <Button type="submit" className={cn(hasAlerts && 'bg-destructive/90 hover:bg-destructive text-destructive-foreground')}>
+            <Button type="submit" className={cn(hasAlerts && 'bg-destructive/90 hover:bg-destructive text-destructive-foreground')} onClick={form.handleSubmit(onSubmit)}>
                 {hasAlerts && <AlertTriangle className="mr-2 h-4 w-4" />}
                 <FilePlus2 className="mr-2 h-4 w-4" />
                 Registrar Control
