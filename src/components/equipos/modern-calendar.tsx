@@ -93,8 +93,8 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
                 onClick={() => handleDayClick(day)}
                 className={cn(
                   'relative aspect-square cursor-pointer rounded-lg border p-2 transition-colors flex flex-col',
-                  'hover:bg-accent/80',
-                  isToday(day) && 'bg-accent/50 dark:bg-primary/10 border-primary/50',
+                  'bg-background hover:bg-accent/80',
+                  isToday(day) && 'bg-accent dark:bg-primary/10 border-primary/50',
                   selectedDay && isSameDay(day, selectedDay) && 'bg-primary/20 dark:bg-primary/20 ring-2 ring-primary',
                   !isSameMonth(day, currentMonth) && 'text-muted-foreground/50'
                 )}
