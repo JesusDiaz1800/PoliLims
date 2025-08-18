@@ -6,6 +6,7 @@ import { Inter, Space_Grotesk, Orbitron } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { DynamicDataProvider, type InitialData } from '@/context/data-context';
 import { getInitialData } from '@/services/data-service';
+import RootPrefetch from '@/components/root-prefetch';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
@@ -37,6 +38,7 @@ export default async function RootLayout({
           <DynamicDataProvider initialData={initialData}>
             {children}
             <Toaster />
+            <RootPrefetch />
           </DynamicDataProvider>
         </ThemeProvider>
       </body>
