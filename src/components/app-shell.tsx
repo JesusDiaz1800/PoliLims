@@ -493,11 +493,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               </h1>
           </div>
           <div className="flex items-center gap-2">
-             <div className="w-20 hidden sm:block">
-                <LogoAlt />
-            </div>
             <NotificationDropdown />
             <ThemeToggle />
+            <div className="w-16 hidden sm:block">
+                <LogoAlt />
+            </div>
           </div>
           </header>
         
