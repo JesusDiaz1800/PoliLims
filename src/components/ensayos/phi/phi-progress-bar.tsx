@@ -44,30 +44,21 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
     return () => clearInterval(interval);
   }, [fechaInicio, horas, isComplete, isClient]);
   
-  const getIndicatorColor = () => {
-    if (progress >= 100) return 'hsl(var(--chart-2))'; // Green for complete
-    
-    // RGB for red (239, 68, 68) and yellow (245, 158, 11)
-    const red = [239, 68, 68];
-    const yellow = [245, 158, 11];
-
-    // Interpolate between red and yellow
-    const r = Math.round(red[0] + (yellow[0] - red[0]) * (progress / 100));
-    const g = Math.round(red[1] + (yellow[1] - red[1]) * (progress / 100));
-    const b = Math.round(red[2] + (yellow[2] - red[2]) * (progress / 100));
-    
-    return `rgb(${r}, ${g}, ${b})`;
+  const getIndicatorColorClass = () => {
+    if (progress < 40) return "bg-red-500";
+    if (progress < 80) return "bg-yellow-500";
+    return "bg-green-500";
   };
+  
+  const textColor = isComplete ? 'text-primary-foreground' : 'mix-blend-difference text-white';
 
   if (!isClient) {
     return <Progress value={0} />;
   }
   
-  const textColor = progress >= 100 ? 'text-white' : 'mix-blend-difference text-white';
-
   return (
     <div className="relative w-full h-full">
-      <Progress value={progress} indicatorStyle={{ backgroundColor: getIndicatorColor() }} />
+      <Progress value={progress} indicatorClassName={cn( "transition-all duration-500", getIndicatorColorClass() )} />
       <div className="absolute inset-0 flex items-center justify-center">
         <span className={cn("text-xs font-semibold", textColor)}>{progress.toFixed(1)}%</span>
       </div>
