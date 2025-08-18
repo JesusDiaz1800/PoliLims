@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, PlusCircle, Search, Filter, Pencil, ShieldCheck, Printer, ChevronDown, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { User } from "@/services/user-service";
 import { ApprovalDialog } from "@/components/ensayos/approval-dialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -62,8 +62,18 @@ const formatValue = (value: any, decimals: number = 2) => {
 
 function SeguimientoTableContainer() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { ensayos, user, isLoaded, updateEnsayo, addRecentActivity } = useDynamicData();
+  const initialStatusFilter = searchParams.get('status') || undefined;
+
   const { filteredData: filteredEnsayos, setFilter, searchTerm, setSearchTerm } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
+  
+  React.useEffect(() => {
+    if(initialStatusFilter) {
+      setFilter('estado', initialStatusFilter);
+    }
+  }, [initialStatusFilter, setFilter]);
+
 
   const [selectedEnsayo, setSelectedEnsayo] = React.useState<Ensayo | null>(null);
   const [reportData, setReportData] = React.useState<ReportData | null>(null);
@@ -274,7 +284,7 @@ function SeguimientoTableContainer() {
                       ))}
                   </SelectContent>
                 </Select>
-                 <Select onValueChange={(value) => setFilter('estado', value)}>
+                 <Select onValueChange={(value) => setFilter('estado', value)} value={initialStatusFilter || 'Todos'}>
                   <SelectTrigger className="w-full sm:w-auto">
                       <Package className="h-4 w-4 mr-2 text-muted-foreground" />
                       <SelectValue placeholder="Filtrar por estado" />
