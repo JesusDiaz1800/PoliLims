@@ -235,6 +235,31 @@ export interface EnsayoPHI {
   resultado?: string;
 }
 
+export interface Capacitacion {
+  id: string;
+  nombre: string;
+  fecha: string; // ISO string
+  instructor: string;
+  temario: string;
+  estado: 'Planificada' | 'Realizada' | 'Cancelada';
+  asistentes: {
+    empleadoId: string;
+    asistio: boolean;
+  }[];
+  evaluacion?: {
+    id: string;
+    preguntas: {
+      pregunta: string;
+    }[];
+    resultados: {
+      empleadoId: string;
+      respuestas: string[];
+      resultado: 'Aprobado' | 'Reprobado';
+    }[];
+  };
+}
+
+
 export type InitialData = Omit<Awaited<ReturnType<typeof dataService.getInitialData>>, 'sapProducts'>;
 
 
@@ -267,6 +292,9 @@ interface DynamicDataContextType extends InitialData {
     addCondicionAmbiental: (condicion: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => Promise<CondicionAmbiental>;
     addEnsayoPHI: (ensayo: Omit<EnsayoPHI, 'id'>) => Promise<void>;
     updateEnsayoPHI: (id: string, updatedData: Partial<EnsayoPHI>) => Promise<void>;
+    addCapacitacion: (capacitacion: Omit<Capacitacion, 'id'>) => Promise<Capacitacion>;
+    updateCapacitacion: (id: string, updatedData: Partial<Capacitacion>) => Promise<void>;
+    deleteCapacitacion: (id: string) => Promise<void>;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
@@ -409,7 +437,22 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         await dataService.updateEnsayoPHI(id, updatedData);
         setData(prev => ({ ...prev, ensayosPHI: prev.ensayosPHI.map(e => e.id === id ? { ...e, ...updatedData } : e) }));
     }, []);
-
+    
+    const addCapacitacion = useCallback(async (capacitacion: Omit<Capacitacion, 'id'>) => {
+        const newCapacitacion = await dataService.addCapacitacion(capacitacion);
+        setData(prev => ({ ...prev, capacitaciones: [newCapacitacion, ...prev.capacitaciones] }));
+        return newCapacitacion;
+    }, []);
+    
+    const updateCapacitacion = useCallback(async (id: string, updatedData: Partial<Capacitacion>) => {
+        await dataService.updateCapacitacion(id, updatedData);
+        setData(prev => ({ ...prev, capacitaciones: prev.capacitaciones.map(c => c.id === id ? { ...c, ...updatedData } as Capacitacion : c) }));
+    }, []);
+    
+    const deleteCapacitacion = useCallback(async (id: string) => {
+        await dataService.deleteCapacitacion(id);
+        setData(prev => ({ ...prev, capacitaciones: prev.capacitaciones.filter(c => c.id !== id) }));
+    }, []);
 
     const value = useMemo(() => ({
         ...data,
@@ -441,7 +484,10 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         addCondicionAmbiental,
         addEnsayoPHI,
         updateEnsayoPHI,
-    }), [data, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental, addEnsayoPHI, updateEnsayoPHI]);
+        addCapacitacion,
+        updateCapacitacion,
+        deleteCapacitacion,
+    }), [data, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental, addEnsayoPHI, updateEnsayoPHI, addCapacitacion, updateCapacitacion, deleteCapacitacion]);
 
     return (
         <DynamicDataContext.Provider value={value}>

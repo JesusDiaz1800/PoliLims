@@ -1,5 +1,5 @@
 
-import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto, EnsayoPHI } from "@/context/data-context";
+import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto, EnsayoPHI, Capacitacion } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
 
@@ -70,15 +70,15 @@ const demoGeneratedReports: GeneratedReport[] = [
     { id: 'REP-002', nombre: '2025-07-22 - Tubería HDPE 110mm - Lote-250719-PE2.pdf', tipo: 'Tubería HDPE', fecha_creacion: '22-07-2025', path: '/informes/tuberias/2025-07-22-HDPE110mm-Lote-250719-PE2.pdf', ensayoIds: ['LAB-07-05'] },
 ];
 
-let demoCalculosIncertidumbre: CalculoIncertidumbre[] = [
-    { id: `INC-001`, nombre: `Cálculo de Incertidumbre para Balanza EQ-05`, fecha: new Date(2025, 6, 24).toISOString(), usuario: "Victor Lutz", resultado: { incertidumbreCombinada: 0.00015, incertidumbreExpandida: 0.00030, factorCobertura: 2 }, componentes: [{ descripcion: 'Calibración', valor: 0.0002, tipo: 'B', distribucion: 'rectangular', unidades: 'g' },{ descripcion: 'Repetibilidad', valor: 0.0001, tipo: 'A', distribucion: 'normal', unidades: 'g' }] },
-    { id: `INC-002`, nombre: `Cálculo Incertidumbre Termómetro EQ-AMB-01`, fecha: new Date(2025, 5, 10).toISOString(), usuario: "Victor Lutz", resultado: { incertidumbreCombinada: 0.12, incertidumbreExpandida: 0.24, factorCobertura: 2 }, componentes: [{ descripcion: 'Certificado de Calibración', valor: 0.2, tipo: 'B', distribucion: 'normal', unidades: '°C' },{ descripcion: 'Resolución de Display', valor: 0.1, tipo: 'B', distribucion: 'rectangular', unidades: '°C' }] }
+let demoCapacitaciones: Capacitacion[] = [
+    { id: 'CAP-001', nombre: 'Uso y Cuidado de Espectrómetro FTIR', fecha: '2025-06-15', instructor: 'PerkinElmer Inc.', temario: 'Teoría básica, software, mantenimiento preventivo.', estado: 'Realizada', asistentes: [{empleadoId: 'jdiaz', asistio: true}, {empleadoId: 'afigueroa', asistio: true}], evaluacion: { id: 'EVAL-001', preguntas: [{pregunta: '¿Cuál es la función del interferómetro?'}], resultados: [{empleadoId: 'jdiaz', resultado: 'Aprobado', respuestas: ['Respuesta A']}, {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Respuesta A']}]} },
+    { id: 'CAP-002', nombre: 'Auditoría Interna ISO/IEC 17025:2017', fecha: '2025-08-20', instructor: 'AENOR Chile', temario: 'Cláusulas de la norma, técnicas de auditoría, redacción de hallazgos.', estado: 'Planificada', asistentes: [{empleadoId: 'vlutz', asistio: false}, {empleadoId: 'mmiranda', asistio: false}] },
 ];
 
-
-let generatedReports = [...demoGeneratedReports];
+const demoCalculosIncertidumbre: CalculoIncertidumbre[] = [];
 let calculosIncertidumbre = [...demoCalculosIncertidumbre];
 
+let generatedReports = [...demoGeneratedReports];
 let demoEnsayosPHI: EnsayoPHI[] = [
   { id: 'PHI-001', fechaIngresoManual: '20-07-2025', fechaInicio: new Date(2025, 6, 20, 10, 30).toISOString(), producto: '90mm x 12m SMARTCOLORS PN-16 SDR-11', raya: 'Azul', horas: 100, estado: 'EN PROCESO' },
   { id: 'PHI-002', fechaIngresoManual: '21-07-2025', fechaInicio: new Date(2025, 6, 21, 14, 0).toISOString(), producto: '75mm x 6m SMART PIPE/PP-RCT PN-16 S-3,2', raya: 'Azul', horas: 100, estado: 'FINALIZADO', resultado: 'Sin fallas a 51.5 [bar]' },
@@ -195,6 +195,20 @@ export async function addRecentActivity(activity: Omit<RecentActivity, 'id' | 't
      const newActivity = { ...activity, id: `ACT-NEW-${Math.random().toString(16).slice(2)}`, timestamp: new Date().toISOString() };
     recentActivityData.unshift(newActivity);
     return newActivity;
+}
+
+export async function addCapacitacion(capacitacion: Omit<Capacitacion, 'id'>): Promise<Capacitacion> {
+    const newCapacitacion = { ...capacitacion, id: `CAP-NEW-${Math.random().toString(16).slice(2)}` };
+    demoCapacitaciones.unshift(newCapacitacion);
+    return newCapacitacion;
+}
+
+export async function updateCapacitacion(id: string, updatedData: Partial<Capacitacion>): Promise<void> {
+    demoCapacitaciones = demoCapacitaciones.map(c => c.id === id ? { ...c, ...updatedData } as Capacitacion : c);
+}
+
+export async function deleteCapacitacion(id: string): Promise<void> {
+    demoCapacitaciones = demoCapacitaciones.filter(c => c.id !== id);
 }
 
 let demoProveedores: Proveedor[] = [
@@ -317,6 +331,7 @@ export async function getInitialData() {
         formacion: demoFormacion,
         auditorias: demoAuditorias,
         ensayosPHI: demoEnsayosPHI,
+        capacitaciones: demoCapacitaciones,
         matrizProductos,
     };
 }
