@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         body: ['var(--font-inter)', ...fontFamily.sans],
         headline: ['var(--font-space-grotesk)', ...fontFamily.sans],
+        digital: ['var(--font-orbitron)', ...fontFamily.mono],
       },
       boxShadow: {
         'glow': '0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)',
@@ -84,7 +85,7 @@ export default {
          "fade-in": {
           "0%": {
             opacity: '0',
-            transform: 'translateY(5px)'
+            transform: 'translateY(10px)'
           },
           "100%": {
             opacity: '1',
@@ -104,7 +105,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out forwards",
+        "fade-in": "fade-in 0.5s ease-out forwards",
         'spin-slow': 'spin-slow 3s linear infinite',
         'orbit': 'orbit 2s linear infinite',
       },
