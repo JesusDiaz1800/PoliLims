@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { useForm } from "react-hook-form"
+import { useForm, type UseFormReturn } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { format } from "date-fns"
@@ -22,16 +22,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useDynamicData } from "@/context/data-context"
 import type { TipoProducto } from "@/lib/matriz-datos"
 import { Combobox } from "../ui/combobox"
-
-interface ControlRutinarioFormProps {
-  inspectores: { value: string; label: string }[]
-  maquinistas: { value: string; label: string }[]
-  maquinas: { value: string; label: string }[]
-  marcas: { value: string; label: string }[]
-  onFormSubmit: () => void;
-  productos: { label: string; value: string }[];
-  matrizProductos: TipoProducto[];
-}
 
 const formSchema = z.object({
   fecha_ingreso: z.date({ 
@@ -60,6 +50,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+
+interface ControlRutinarioFormProps {
+  form: UseFormReturn<FormValues>;
+  inspectores: { value: string; label: string }[]
+  maquinistas: { value: string; label: string }[]
+  maquinas: { value: string; label: string }[]
+  marcas: { value: string; label: string }[]
+  onFormSubmit: () => void;
+  productos: { label: string; value: string }[];
+  matrizProductos: TipoProducto[];
+  defaultFormValues: Partial<FormValues>;
+}
+
 type ValidationAlerts = {
   diametro?: string
   espesor_min?: string
@@ -68,29 +71,12 @@ type ValidationAlerts = {
   peso_kg_m?: string
 }
 
-const defaultFormValues: Partial<FormValues> = {
-  fecha_ingreso: new Date(),
-  hora: format(new Date(), 'HH:mm'),
-  inspector: '',
-  maquinista: '',
-  maquina: '',
-  producto: '',
-  marca: '',
-  entregado_laboratorio: false,
-};
-
-
-export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marcas, onFormSubmit, productos, matrizProductos }: ControlRutinarioFormProps) {
+export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas, marcas, onFormSubmit, productos, matrizProductos, defaultFormValues }: ControlRutinarioFormProps) {
   const { toast } = useToast()
   const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
   const hasAlerts = Object.values(alerts).some(Boolean);
   
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: defaultFormValues,
-  })
-
   const { watch, setValue, control } = form
 
   const watchedValues = watch();

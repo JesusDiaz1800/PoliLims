@@ -1,7 +1,12 @@
 
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ControlRutinarioTable } from "@/components/ensayos/control-rutinario-table";
+import { ControlRutinarioDialog } from "@/components/ensayos/control-rutinario-dialog";
+import { useDynamicData } from '@/context/data-context';
+import { getMatrizProductos } from '@/lib/matriz-datos';
+import type { TipoProducto } from '@/lib/matriz-datos';
 import dynamic from 'next/dynamic';
 import Loading from '../../loading';
 
