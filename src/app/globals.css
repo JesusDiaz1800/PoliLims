@@ -235,4 +235,14 @@ input[type=number] {
   }
 }
 
-    
+@layer components {
+  .btn-metallic-gradient {
+    @apply bg-gradient-to-br from-slate-300 via-slate-200 to-slate-400 text-slate-800 border-slate-400 hover:from-slate-200 hover:to-slate-300;
+  }
+  .btn-metallic-gradient-dark {
+    @apply dark:from-slate-600 dark:via-slate-500 dark:to-slate-700 dark:text-slate-100 dark:border-slate-500 dark:hover:from-slate-500 dark:hover:to-slate-600;
+  }
+  .btn-shadow {
+     @apply shadow-lg shadow-slate-500/10 dark:shadow-black/50 transition-all duration-200 ease-in-out hover:shadow-md hover:shadow-slate-500/20 active:shadow-sm;
+  }
+}
