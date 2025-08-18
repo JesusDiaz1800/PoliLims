@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -11,6 +12,23 @@ import { format, parse } from 'date-fns';
 interface PhiTableProps {
   data: EnsayoPHI[];
 }
+
+const CalculoFechaFin = ({ fechaInicio, horas }: { fechaInicio: string, horas: number }) => {
+    const [fechaFin, setFechaFin] = React.useState('Calculando...');
+
+    React.useEffect(() => {
+        const inicio = new Date(fechaInicio);
+        if (!isNaN(inicio.getTime())) {
+            const fechaFinEstimada = new Date(inicio.getTime() + horas * 60 * 60 * 1000);
+            setFechaFin(format(fechaFinEstimada, 'dd-MM-yyyy HH:mm'));
+        } else {
+            setFechaFin('Fecha inválida');
+        }
+    }, [fechaInicio, horas]);
+
+    return <span>{fechaFin}</span>;
+};
+
 
 export function PhiTable({ data }: PhiTableProps) {
   const sortedData = [...data].sort((a, b) => new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime());
@@ -35,7 +53,6 @@ export function PhiTable({ data }: PhiTableProps) {
         </TableHeader>
         <TableBody>
           {sortedData.map((ensayo, index) => {
-            const fechaFinEstimada = new Date(new Date(ensayo.fechaInicio).getTime() + ensayo.horas * 60 * 60 * 1000);
             return (
             <TableRow key={ensayo.id}>
               <TableCell className="font-mono">{15 + index}</TableCell>
@@ -46,7 +63,9 @@ export function PhiTable({ data }: PhiTableProps) {
                 <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
               </TableCell>
               <TableCell>{ensayo.horas}</TableCell>
-              <TableCell>{format(fechaFinEstimada, 'dd/MM/yyyy HH:mm')}</TableCell>
+              <TableCell>
+                  <CalculoFechaFin fechaInicio={ensayo.fechaInicio} horas={ensayo.horas} />
+              </TableCell>
               <TableCell className="w-[150px]">
                 <PhiProgressBar
                     fechaInicio={ensayo.fechaInicio}
@@ -78,4 +97,3 @@ export function PhiTable({ data }: PhiTableProps) {
     </div>
   );
 }
-
