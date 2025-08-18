@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -94,7 +93,7 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
                 onClick={() => handleDayClick(day)}
                 className={cn(
                   'relative aspect-square cursor-pointer rounded-lg border p-2 transition-colors flex flex-col',
-                  'hover:bg-accent',
+                  'hover:bg-accent/80',
                   isToday(day) && 'bg-accent/50 dark:bg-primary/10 border-primary/50',
                   selectedDay && isSameDay(day, selectedDay) && 'bg-primary/20 dark:bg-primary/20 ring-2 ring-primary',
                   !isSameMonth(day, currentMonth) && 'text-muted-foreground/50'
@@ -130,7 +129,7 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
         <h3 className="text-lg font-semibold font-headline mb-4 capitalize">
           Eventos del {selectedDay ? format(selectedDay, 'd MMMM', {locale: es}) : 'día'}
         </h3>
-        <ScrollArea className="h-72">
+        <ScrollArea className="h-64">
             <div className="space-y-3 pr-3">
                 {selectedDayEvents.length > 0 ? (
                     selectedDayEvents.map((event, i) => (
