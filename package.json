@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "analyze": "cross-env ANALYZE=true next build"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
@@ -67,7 +66,6 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^14.2.5",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.14",
