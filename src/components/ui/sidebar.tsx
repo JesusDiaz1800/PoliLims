@@ -317,8 +317,8 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-white data-[active=true]:dark:bg-primary data-[active=true]:dark:text-primary-foreground",
-        ghost: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/10 data-[active=true]:text-white data-[active=true]:dark:bg-primary data-[active=true]:dark:text-primary-foreground",
+        default: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-primary-foreground data-[active=true]:dark:bg-primary data-[active=true]:dark:text-primary-foreground",
+        ghost: "text-white hover:bg-white/10 hover:text-white dark:text-foreground/80 dark:hover:bg-muted dark:hover:text-foreground data-[active=true]:bg-white/80 data-[active=true]:text-primary-foreground data-[active=true]:dark:bg-primary data-[active=true]:dark:text-primary-foreground",
       },
       size: {
         default: "h-10 px-3 text-sm",
