@@ -163,7 +163,7 @@ function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) 
                 {errors.ensayoId && <p className="text-destructive text-sm mt-1">Debe seleccionar un ensayo.</p>}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                <div className="space-y-2">
+                 <div className="space-y-2">
                     <Label htmlFor="presion">Presión (bar)</Label>
                     <Input id="presion" type="number" step="any" {...register('presion', { required: true })} />
                     {errors.presion && <p className="text-destructive text-sm mt-1">Campo requerido.</p>}
@@ -221,7 +221,7 @@ export function PhiDialogs({
                 </DialogContent>
             </Dialog>
             <Dialog open={isResultOpen} onOpenChange={setIsResultOpen}>
-                <DialogContent>
+                <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Ingresar Resultado de Ensayo PHI</DialogTitle>
                         <DialogDescription>Seleccione un ensayo en proceso y registre su resultado final.</DialogDescription>
