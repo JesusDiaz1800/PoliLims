@@ -92,7 +92,7 @@ export default function MainPage() {
 
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
-  const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
+  const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
 
   return (
       <div className={cn(

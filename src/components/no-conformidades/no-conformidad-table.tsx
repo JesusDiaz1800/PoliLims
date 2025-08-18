@@ -80,6 +80,7 @@ const statusOptions = ['Todos', 'Abierta', 'En Investigación', 'Resuelta', 'Cer
 const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, onDelete, initialStatusFilter }: NoConformidadTableProps) => {
   const { toast } = useToast();
   const { 
+    filters,
     filteredData: filteredIncidencias, 
     searchTerm, 
     setSearchTerm, 
@@ -130,7 +131,7 @@ const NoConformidadTableInternal = ({ incidencias, onAddNew, onEdit, onDelete, i
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-             <Select onValueChange={(value) => setFilter('estado', value)}>
+             <Select onValueChange={(value) => setFilter('estado', value)} value={filters.estado || 'Todos'}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="Filtrar por estado" />
