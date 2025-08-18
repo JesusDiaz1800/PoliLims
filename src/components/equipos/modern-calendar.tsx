@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from 'react';
@@ -56,7 +57,7 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
   }, [events, selectedDay]);
 
   return (
-    <div className="md:grid md:grid-cols-3 md:divide-x md:divide-border">
+    <div className="md:grid md:grid-cols-3 md:divide-x md:divide-border/50 rounded-lg border shadow-sm">
       <div className="p-4 md:col-span-2">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold font-headline capitalize">
@@ -94,8 +95,8 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
                 className={cn(
                   'relative aspect-square cursor-pointer rounded-lg border p-2 transition-colors flex flex-col',
                   'bg-background hover:bg-accent/80',
-                  isToday(day) && 'bg-accent dark:bg-primary/10 border-primary/50',
-                  selectedDay && isSameDay(day, selectedDay) && 'bg-primary/20 dark:bg-primary/20 ring-2 ring-primary',
+                  isToday(day) && 'border-primary',
+                  selectedDay && isSameDay(day, selectedDay) && 'bg-primary/20 ring-2 ring-primary',
                   !isSameMonth(day, currentMonth) && 'text-muted-foreground/50'
                 )}
               >
@@ -125,12 +126,12 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
           })}
         </div>
       </div>
-      <aside className="p-4 border-t md:border-t-0 md:border-l">
+      <aside className="p-4 border-t md:border-t-0 md:border-l border-border/50">
         <h3 className="text-lg font-semibold font-headline mb-4 capitalize">
           Eventos del {selectedDay ? format(selectedDay, 'd MMMM', {locale: es}) : 'día'}
         </h3>
-        <ScrollArea className="h-56">
-            <div className="space-y-3 pr-3">
+        <ScrollArea className="h-96 pr-3">
+            <div className="space-y-3">
                 {selectedDayEvents.length > 0 ? (
                     selectedDayEvents.map((event, i) => (
                     <button 

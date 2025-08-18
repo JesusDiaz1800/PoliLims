@@ -68,7 +68,7 @@ export default function ProgramaPage() {
     return (
         <>
             <Card className="overflow-hidden">
-                <CardContent className="p-0">
+                 <CardContent className="p-0">
                     <ModernCalendar events={eventos} onEventClick={handleEventClick}/>
                 </CardContent>
             </Card>
