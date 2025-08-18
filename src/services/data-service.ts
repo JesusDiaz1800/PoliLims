@@ -86,11 +86,11 @@ let demoCapacitaciones: Capacitacion[] = [
         evaluacion: { 
             id: 'EVAL-001', 
             preguntas: [
-              {pregunta: '¿Cuál es la temperatura de ensayo para polietileno según ASTM D1238?'}, 
+              {pregunta: '¿Por qué es importante registrar el equipo utilizado en cada ensayo?'}, 
               {pregunta: 'Describa brevemente cómo se prepara una muestra para el ensayo.'}
             ], 
             resultados: [
-                {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['190°C', 'Se corta el material en trozos pequeños y se seca.'], fecha_completado: '2025-06-16T10:00:00Z'}
+                {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Para asegurar la trazabilidad metrológica y facilitar la investigación en caso de resultados anómalos.', 'Se corta el material en trozos pequeños y se seca en la estufa.'], fecha_completado: '2025-06-16T10:00:00Z'}
             ]
         } 
     },
