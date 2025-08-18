@@ -23,6 +23,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { Button } from "@/components/ui/button";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -38,6 +39,11 @@ export default function MainPage() {
   } = useDynamicData();
 
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filteredEnsayos = React.useMemo(() => {
     // Note: Filters are currently mocked. In a real app, you'd use state from DashboardFilters.
@@ -94,14 +100,32 @@ export default function MainPage() {
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
+  
+  if (!mounted) {
+    return (
+      <div className="space-y-4 p-6 md:p-10">
+        <Skeleton className="h-10 w-1/2" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-24" />)}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <Skeleton className="lg:col-span-8 h-80" />
+          <Skeleton className="lg:col-span-4 h-80" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-80" />)}
+        </div>
+      </div>
+    )
+  }
 
   return (
       <div className={cn(
-        "relative flex-1 space-y-4 p-6 md:p-10",
+        "relative flex-1 space-y-4",
         theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light'
       )}>
         <div className="background-overlay"></div>
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-4 p-6 md:p-10">
             <WelcomeBanner user={user} />
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
