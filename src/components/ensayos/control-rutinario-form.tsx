@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -83,17 +84,24 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
     
     setAlerts(newAlerts);
   }, [matrizProductos]);
+  
+  const watchedLargo = watch('largo');
+  const watchedPesoMuestra = watch('peso_muestra');
+
+  React.useEffect(() => {
+    if (watchedPesoMuestra !== undefined && watchedLargo !== undefined && watchedLargo > 0) {
+        const pesoCalculado = (watchedPesoMuestra / watchedLargo) / 10;
+        setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)), { shouldValidate: true });
+    }
+  }, [watchedLargo, watchedPesoMuestra, setValue]);
 
   React.useEffect(() => {
     const subscription = watch((values) => {
-        if (values.peso_muestra !== undefined && values.largo !== undefined && values.largo > 0) {
-            const pesoCalculado = (values.peso_muestra / values.largo) / 10;
-            setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)), { shouldValidate: true });
-        }
         validate(values as ControlRutinarioFormValues);
     });
     return () => subscription.unsubscribe();
-  }, [watch, setValue, validate]);
+  }, [watch, validate]);
+
 
   const onSubmit = async (data: ControlRutinarioFormValues) => {
     const resultado = Object.values(alerts).some(Boolean) ? "No Conforme" : "Conforme";
@@ -487,3 +495,5 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
     </Form>
   )
 }
+
+    
