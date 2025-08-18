@@ -48,6 +48,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
     const isSinRaya = !ensayo.raya || ensayo.raya.toLowerCase() === 'sin raya';
     const badgeColor = isSinRaya ? undefined : getColorForRaya(ensayo.raya);
     const textColor = isSinRaya || ensayo.raya.toLowerCase() === 'blanca' ? 'black' : 'white';
+    const isComplete = ensayo.estado !== 'EN PROCESO';
 
     const handleEmailClick = () => {
         const inicio = new Date(ensayo.fechaInicio);
@@ -64,7 +65,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
             ? 'Favor liberar tuberías.'
             : 'Notificación de Ensayo en Proceso:';
 
-        const horasTranscurridasTexto = ensayo.estado === 'FINALIZADO'
+        const horasTranscurridasTexto = isComplete
             ? 'Ensayo Completo' 
             : `${transcurridoHoras.toFixed(2)}`;
 
@@ -99,13 +100,13 @@ Atte.,
                  <PhiTimer 
                     fechaInicio={ensayo.fechaInicio} 
                     horas={ensayo.horas} 
-                    isComplete={ensayo.estado !== 'EN PROCESO'}
+                    isComplete={isComplete}
                 />
                 <div className="w-full px-4">
                    <PhiProgressBar
                         fechaInicio={ensayo.fechaInicio}
                         horas={ensayo.horas}
-                        isComplete={ensayo.estado !== 'EN PROCESO'}
+                        isComplete={isComplete}
                     />
                 </div>
             </CardContent>
