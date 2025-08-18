@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import * as React from "react";
@@ -66,6 +65,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoAlt } from "@/components/logo-alt";
+import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
 
 const ensayosSubMenu = [
     { 
@@ -493,9 +493,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
               </h1>
           </div>
           <div className="flex items-center gap-2">
-             <div className="w-24 hidden sm:block">
+             <div className="w-20 hidden sm:block">
                 <LogoAlt />
             </div>
+            <NotificationDropdown />
             <ThemeToggle />
           </div>
           </header>

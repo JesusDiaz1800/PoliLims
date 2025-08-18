@@ -18,7 +18,7 @@ body {
     --popover: 210 20% 100%;
     --popover-foreground: 224 71.4% 4.1%;
  
-    --primary: 216 84% 51%; /* SteelBlue */
+    --primary: 204 90% 43%; /* #126FCC */
     --primary-foreground: 210 20% 98%;
  
     --secondary: 215 28% 93%;
@@ -35,11 +35,11 @@ body {
 
     --border: 215 20% 89%;
     --input: 215 20% 89%;
-    --ring: 216 84% 51%;
+    --ring: 204 90% 43%;
  
     --radius: 0.5rem;
 
-    --chart-1: 216 84% 51%; /* primary */
+    --chart-1: 204 90% 43%; /* primary */
     --chart-2: 142 76% 36%; /* green */
     --chart-3: 38 92% 50%; /* orange */
     --chart-4: 0 84% 60%; /* red */
@@ -53,7 +53,7 @@ body {
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
+    --primary: 204 80% 55%; /* Lighter blue for dark mode */
     --primary-foreground: 222 47% 11%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 210 40% 98%;
@@ -65,8 +65,8 @@ body {
     --destructive-foreground: 210 40% 98%;
     --border: 217 33% 25%;
     --input: 217 33% 25%;
-    --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
+    --ring: 204 80% 55%;
+    --chart-1: 204 80% 55%;
     --chart-2: 173 80% 40%;
     --chart-3: 38 78% 61%;
     --chart-4: 0 72% 51%;
@@ -209,30 +209,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 input[type=number] {
     -moz-appearance: textfield;
-}
-
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes orbit {
-  0% {
-    transform: rotate(0deg) translateX(40px) rotate(0deg);
-    opacity: 1;
-  }
-  50% {
-    transform: rotate(180deg) translateX(40px) rotate(-180deg);
-    opacity: 0.7;
-  }
-  100% {
-    transform: rotate(360deg) translateX(40px) rotate(-360deg);
-    opacity: 1;
-  }
 }
 
 @layer components {

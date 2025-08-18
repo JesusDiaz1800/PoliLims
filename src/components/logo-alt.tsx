@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 
 export function LogoAlt({ className }: { className?: string }) {
   return (
-    <div className={cn("relative w-full h-full text-foreground", className)}>
+    <div className={cn("relative w-full h-full text-primary", className)}>
        <svg 
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 921 664"
