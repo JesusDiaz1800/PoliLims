@@ -136,6 +136,9 @@ const administracionSubMenu = [
 
 const bibliotecaSubMenu = [
     { href: '/biblioteca/documentos', label: 'Documentos', icon: Library },
+    { type: 'separator' },
+    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
+    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
 
 const reportsSubMenu = [
@@ -262,12 +265,6 @@ const menuItems = (toggleChat: () => void): any[] => [
         icon: GitBranch,
         subMenu: procesosGestionSubMenu,
         href: '/gestion',
-    },
-     { 
-        label: 'Informes y Certificados', 
-        icon: FileText,
-        subMenu: reportsSubMenu,
-        href: '/reports',
     },
     { 
         label: 'Biblioteca', 

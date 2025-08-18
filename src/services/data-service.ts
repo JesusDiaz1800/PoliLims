@@ -77,7 +77,7 @@ let demoCapacitaciones: Capacitacion[] = [
         nombre: 'Capacitación Procedimiento de Ensayo Melt Index', 
         fecha: '2025-06-15', 
         instructor: 'Victor Lutz', 
-        temario: 'Norma ASTM D1238, preparación de muestras, operación del equipo MFI, cálculo de resultados.', 
+        temario: 'Norma ASTM D1238, preparación de muestras, operación del equipo MFI, cálculo de resultados y registro en LIMS.', 
         estado: 'Realizada', 
         asistentes: [
             {empleadoId: 'jdiaz', asistio: true}, 
@@ -86,15 +86,15 @@ let demoCapacitaciones: Capacitacion[] = [
         evaluacion: { 
             id: 'EVAL-001', 
             preguntas: [
-              {pregunta: '¿Por qué es importante registrar el equipo utilizado en cada ensayo?'}, 
-              {pregunta: 'Describa brevemente cómo se prepara una muestra para el ensayo.'}
+              {pregunta: 'Describa brevemente cómo se prepara una muestra para el ensayo.'},
+              {pregunta: '¿Qué valores se deben registrar en el sistema LIMS para el ensayo de Melt Index? (a) Los pesos de cada masa extruida (b) El valor máximo de las masas pesadas (c) El valor mínimo (d) El peso de los descartes'}
             ], 
             resultados: [
-                {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Para asegurar la trazabilidad metrológica y facilitar la investigación en caso de resultados anómalos.', 'Se corta el material en trozos pequeños y se seca en la estufa.'], fecha_completado: '2025-06-16T10:00:00Z'}
+                {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Se corta el material en trozos pequeños y se seca en la estufa según procedimiento.', 'a) Los pesos de cada masa extruida'], fecha_completado: '2025-06-16T10:00:00Z'}
             ]
         } 
     },
-    { id: 'CAP-002', nombre: 'Auditoría Interna ISO/IEC 17025:2017', fecha: '2025-08-20', instructor: 'AENOR Chile', temario: 'Cláusulas de la norma, técnicas de auditoría, redacción de hallazgos.', estado: 'Planificada', asistentes: [{empleadoId: 'vlutz', asistio: false}, {empleadoId: 'mmiranda', asistio: false}] },
+    { id: 'CAP-002', nombre: 'Auditoría Interna ISO/IEC 17025:2017', fecha: '2025-08-20', instructor: 'AENOR Chile', temario: 'Cláusulas de la norma, técnicas de auditoría, redacción de hallazgos.', estado: 'Planificada', asistentes: [{empleadoId: 'vlutz', asistio: false}, {empleadoId: 'mmiranda', asistio: false}], evaluacion: { id: 'EVAL-002', preguntas: [], resultados: []}}
 ];
 
 const demoCalculosIncertidumbre: CalculoIncertidumbre[] = [];
