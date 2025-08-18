@@ -225,50 +225,15 @@ export interface Auditoria {
     hallazgos?: Hallazgo[];
 }
 
-export interface MovimientoInventario {
-    fecha: string; // timestamp
-    tipo_movimiento: 'ingreso' | 'salida' | 'ajuste';
-    cantidad: number;
-    usuario_id: string;
-}
-
-export interface ItemInventario {
-    id: string; // id_item
-    nombre: string; // nombre_item
-    tipo: 'reactivo' | 'material_consumible' | 'estandar_referencia'; // tipo_item
-    cantidad_disponible: number;
-    unidades: string;
-    ubicacion: string; // ubicacion_almacen
-    fecha_vencimiento?: string; // timestamp
-    proveedor_id?: string;
-    registro_movimientos: MovimientoInventario[];
-}
-
-export interface Usuario {
-    uid: string; // UID de Firebase
-    nombre_completo: string;
-    email: string;
-    rol: 'administrador' | 'gerente_laboratorio' | 'analista' | 'tecnico' | 'cliente';
-    laboratorio_id?: string;
-    fecha_creacion_cuenta: string; // timestamp
-    ultimo_acceso: string; // timestamp
-    registros_formacion: {
-        curso: string;
-        fecha_finalizacion: string; // timestamp
-        aprobado: boolean;
-        pnt_asociados: string[];
-    }[];
-}
-
-export interface Pnt {
-    id: string; // id_pnt
-    nombre: string;
-    version: string;
-    fecha_aprobacion: string; // timestamp
-    contenido: string; // Texto o URL a Cloud Storage
-    autor_id: string; // referencia a usuarios
-    instrumentos_asociados: string[]; // referencias a equipos
-    ensayos_asociados: string[];
+export interface EnsayoPHI {
+  id: string;
+  fechaIngresoManual: string; // 'dd/MM/yyyy'
+  fechaInicio: string; // ISO string
+  producto: string;
+  raya: string;
+  horas: number;
+  estado: 'EN PROCESO' | 'FINALIZADO';
+  resultado?: string;
 }
 
 export type InitialData = Awaited<ReturnType<typeof dataService.getInitialData>>;
@@ -300,6 +265,8 @@ interface DynamicDataContextType extends InitialData {
     updateFormacion: (id: string, updatedData: Partial<Formacion>) => Promise<void>;
     deleteFormacion: (id: string) => Promise<void>;
     addCondicionAmbiental: (condicion: Omit<CondicionAmbiental, 'id' | 'timestamp'>) => Promise<CondicionAmbiental>;
+    addEnsayoPHI: (ensayo: Omit<EnsayoPHI, 'id'>) => Promise<void>;
+    updateEnsayoPHI: (id: string, updatedData: Partial<EnsayoPHI>) => Promise<void>;
 }
 
 const DynamicDataContext = createContext<DynamicDataContextType | undefined>(undefined);
@@ -433,6 +400,16 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         return newCondicion;
     }, []);
 
+    const addEnsayoPHI = useCallback(async (ensayo: Omit<EnsayoPHI, 'id'>) => {
+        const newEnsayo = await dataService.addEnsayoPHI(ensayo);
+        setData(prev => ({ ...prev, ensayosPHI: [newEnsayo, ...prev.ensayosPHI] }));
+    }, []);
+
+    const updateEnsayoPHI = useCallback(async (id: string, updatedData: Partial<EnsayoPHI>) => {
+        await dataService.updateEnsayoPHI(id, updatedData);
+        setData(prev => ({ ...prev, ensayosPHI: prev.ensayosPHI.map(e => e.id === id ? { ...e, ...updatedData } : e) }));
+    }, []);
+
 
     const value = useMemo(() => ({
         ...data,
@@ -460,8 +437,10 @@ export function DynamicDataProvider({ children, user, initialData }: { children:
         addFormacion,
         updateFormacion,
         deleteFormacion,
-        addCondicionAmbiental
-    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental]);
+        addCondicionAmbiental,
+        addEnsayoPHI,
+        updateEnsayoPHI,
+    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental, addEnsayoPHI, updateEnsayoPHI]);
 
     return (
         <DynamicDataContext.Provider value={value}>
