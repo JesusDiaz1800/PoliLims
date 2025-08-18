@@ -130,7 +130,7 @@ export function ModernCalendar({ events, onEventClick }: ModernCalendarProps) {
         <h3 className="text-lg font-semibold font-headline mb-4 capitalize">
           Eventos del {selectedDay ? format(selectedDay, 'd MMMM', {locale: es}) : 'día'}
         </h3>
-        <ScrollArea className="h-80">
+        <ScrollArea className="h-72">
             <div className="space-y-3 pr-3">
                 {selectedDayEvents.length > 0 ? (
                     selectedDayEvents.map((event, i) => (
