@@ -35,7 +35,7 @@ export default function Loading() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Set a random message on initial mount
+    // Set a random message on initial mount, only on the client side
     setMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
     
     // Trigger fade-in animation
