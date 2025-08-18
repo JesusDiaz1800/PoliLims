@@ -61,7 +61,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
         const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl;juribe@smartpipes.cl';
         const subject = `Solicitud de Liberación: Ensayo ${ensayo.producto}`;
 
-        const saludo = transcurridoHoras >= 50
+        const saludo = isComplete || transcurridoHoras >= 50
             ? 'Favor liberar tuberías.'
             : 'Notificación de Ensayo en Proceso:';
 
