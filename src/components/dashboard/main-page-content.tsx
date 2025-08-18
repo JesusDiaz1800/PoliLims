@@ -96,100 +96,94 @@ export default function MainPageContent() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
   
   return (
-      <div className={cn(
-        "relative flex-1 space-y-4",
-        theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light'
-      )}>
-        <div className="background-overlay"></div>
-        <div className="relative z-10 space-y-4 p-6 md:p-10">
-            <WelcomeBanner user={user} />
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
-                <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" trend="up" trendDirection="positive" />
-                <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} trend="up" trendDirection="positive"/>
-                <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href="/ensayos/seguimiento?status=Pendiente" trend="down" trendDirection="negative" />
-                <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos"/>
-                <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" trend="up" trendDirection="negative"/>
-            </div>
+      <div className="flex-1 space-y-4 p-6 md:p-10">
+        <WelcomeBanner user={user} />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
+            <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" trend="up" trendDirection="positive" />
+            <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} trend="up" trendDirection="positive"/>
+            <StatsCard title="Ensayos Pendientes" value={`${pendingAssays}`} description="-3.4% vs. mes anterior" icon={Hourglass} href="/ensayos/seguimiento?status=Pendiente" trend="down" trendDirection="negative" />
+            <StatsCard title="Equipos Operativos" value={`${operationalEquipment}/${totalEquipment}`} description="Estado de la flota" icon={Beaker} href="/equipos"/>
+            <StatsCard title="NC Abiertas" value={openNcCount.toString()} description="+2 nuevas esta semana" icon={AlertOctagon} href="/no-conformidades?status=abierta" trend="up" trendDirection="negative"/>
+        </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
-                <Card className="card-glass lg:col-span-8">
-                    <CardHeader>
-                        <CardTitle>Ensayos por Mes</CardTitle>
-                        <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[250px]">
-                       <AssaysByMonthChart data={ensayos || []} />
-                    </CardContent>
-                </Card>
-                <Card className="card-glass lg:col-span-4">
-                    <CardHeader>
-                        <Collapsible
-                            open={isFiltersOpen}
-                            onOpenChange={setIsFiltersOpen}
-                            className="w-full"
-                        >
-                            <div className="flex items-center justify-between">
-                                <CardTitle>Filtros &amp; Actividad</CardTitle>
-                                <CollapsibleTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="w-9 p-0">
-                                    <SlidersHorizontal className="h-4 w-4" />
-                                    <span className="sr-only">Toggle Filters</span>
-                                    </Button>
-                                </CollapsibleTrigger>
-                            </div>
-                            <CollapsibleContent>
-                                <DashboardFilters
-                                    analysts={analystOptions}
-                                    assayTypes={assayTypeOptions}
-                                    suppliers={supplierOptions}
-                                    individualAssays={assayOptions}
-                                />
-                            </CollapsibleContent>
-                        </Collapsible>
-                    </CardHeader>
-                    <CardContent className="h-[240px]">
-                        <RecentActivityList initialActivity={recentActivity || []}/>
-                    </CardContent>
-                </Card>
-            </div>
-            
-             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Registros por Analista</CardTitle><CardDescription>Cantidad de registros por analista.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
-                </Card>
-                 <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Estado de Ensayos</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
-                </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
-                </Card>
-                 <Card className="card-glass h-full">
-                    <CardHeader>
-                        <CardTitle>Alertas de Equipos</CardTitle>
-                        <CardDescription>Equipos que requieren atención inmediata.</CardDescription>
-                    </CardHeader>
-                    <EquipmentAlertsCard equipos={equipos || []} />
-                </Card>
-            </div>
-             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Tendencia de Rendimiento</CardTitle><CardDescription>Muestras recibidas vs. completadas.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><ThroughputTrendChart data={ensayos || []} /></CardContent>
-                </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>Tiempo de Respuesta Promedio</CardTitle><CardDescription>Días desde recepción a finalización.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><AssayTurnaroundTimeChart data={ensayos || []} /></CardContent>
-                </Card>
-                <Card className="card-glass h-full">
-                    <CardHeader><CardTitle>No Conformidades</CardTitle><CardDescription>Distribución por tipo de origen.</CardDescription></CardHeader>
-                    <CardContent className="h-[240px]"><NonConformitiesByTypeChart data={noConformidades || []} /></CardContent>
-                </Card>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-200">
+            <Card className="lg:col-span-8">
+                <CardHeader>
+                    <CardTitle>Ensayos por Mes</CardTitle>
+                    <CardDescription>Volumen de ensayos en los últimos 12 meses.</CardDescription>
+                </CardHeader>
+                <CardContent className="h-[250px]">
+                   <AssaysByMonthChart data={ensayos || []} />
+                </CardContent>
+            </Card>
+            <Card className="lg:col-span-4">
+                <CardHeader>
+                    <Collapsible
+                        open={isFiltersOpen}
+                        onOpenChange={setIsFiltersOpen}
+                        className="w-full"
+                    >
+                        <div className="flex items-center justify-between">
+                            <CardTitle>Filtros &amp; Actividad</CardTitle>
+                            <CollapsibleTrigger asChild>
+                                <Button variant="ghost" size="sm" className="w-9 p-0">
+                                <SlidersHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle Filters</span>
+                                </Button>
+                            </CollapsibleTrigger>
+                        </div>
+                        <CollapsibleContent>
+                            <DashboardFilters
+                                analysts={analystOptions}
+                                assayTypes={assayTypeOptions}
+                                suppliers={supplierOptions}
+                                individualAssays={assayOptions}
+                            />
+                        </CollapsibleContent>
+                    </Collapsible>
+                </CardHeader>
+                <CardContent className="h-[240px]">
+                    <RecentActivityList initialActivity={recentActivity || []}/>
+                </CardContent>
+            </Card>
+        </div>
+        
+         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-300">
+            <Card className="h-full">
+                <CardHeader><CardTitle>Registros por Analista</CardTitle><CardDescription>Cantidad de registros por analista.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><WorkloadDistributionChart data={filteredEnsayos} /></CardContent>
+            </Card>
+             <Card className="h-full">
+                <CardHeader><CardTitle>Estado de Ensayos</CardTitle><CardDescription>Distribución porcentual.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><SampleStatusChart data={filteredEnsayos} /></CardContent>
+            </Card>
+            <Card className="h-full">
+                <CardHeader><CardTitle>Distribución de Ensayos</CardTitle><CardDescription>Cantidad por tipo de producto.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><AssaysByTypeChart data={filteredEnsayos} /></CardContent>
+            </Card>
+             <Card className="h-full">
+                <CardHeader>
+                    <CardTitle>Alertas de Equipos</CardTitle>
+                    <CardDescription>Equipos que requieren atención inmediata.</CardDescription>
+                </CardHeader>
+                <EquipmentAlertsCard equipos={equipos || []} />
+            </Card>
+        </div>
+         
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-400">
+            <Card className="h-full">
+                <CardHeader><CardTitle>Tendencia de Rendimiento</CardTitle><CardDescription>Muestras recibidas vs. completadas.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><ThroughputTrendChart data={ensayos || []} /></CardContent>
+            </Card>
+            <Card className="h-full">
+                <CardHeader><CardTitle>Tiempo de Respuesta Promedio</CardTitle><CardDescription>Días desde recepción a finalización.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><AssayTurnaroundTimeChart data={ensayos || []} /></CardContent>
+            </Card>
+            <Card className="h-full">
+                <CardHeader><CardTitle>No Conformidades</CardTitle><CardDescription>Distribución por tipo de origen.</CardDescription></CardHeader>
+                <CardContent className="h-[240px]"><NonConformitiesByTypeChart data={noConformidades || []} /></CardContent>
+            </Card>
         </div>
       </div>
   );
