@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { parse, isPast } from 'date-fns';
 import { EquipoDetailsDialog } from '@/components/equipos/equipo-details-dialog';
 import { EquipoDialog } from '@/components/equipos/equipo-dialog';
@@ -68,12 +68,6 @@ export default function ProgramaPage() {
     return (
         <>
             <Card className="overflow-hidden">
-                <CardHeader>
-                    <CardTitle>Programa de Calibración y Mantenimiento</CardTitle>
-                    <CardDescription>
-                        Calendario interactivo con las fechas de las próximas calibraciones y mantenimientos programados para los equipos.
-                    </CardDescription>
-                </CardHeader>
                 <CardContent className="p-0">
                     <ModernCalendar events={eventos} onEventClick={handleEventClick}/>
                 </CardContent>
