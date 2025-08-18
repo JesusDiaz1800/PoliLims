@@ -20,7 +20,10 @@ export default function MisEvaluacionesPage() {
         return capacitaciones.filter(cap => {
             const haAsistido = cap.asistentes?.some(a => a.empleadoId === user.username && a.asistio);
             const tieneEvaluacion = cap.evaluacion && cap.evaluacion.preguntas && cap.evaluacion.preguntas.length > 0;
-            if (!haAsistido || !tieneEvaluacion) return false;
+            
+            if (!haAsistido || !tieneEvaluacion) {
+                return false;
+            }
 
             const yaRespondio = cap.evaluacion.resultados?.some(r => r.empleadoId === user.username);
             return !yaRespondio;
@@ -82,4 +85,3 @@ export default function MisEvaluacionesPage() {
         </div>
     );
 }
-
