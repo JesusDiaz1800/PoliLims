@@ -2,22 +2,15 @@
 "use client";
 
 import * as React from 'react';
-import { ControlEventosTable } from '@/components/equipos/control-eventos-table';
-import { useDynamicData } from '@/context/data-context';
+import dynamic from 'next/dynamic';
+import Loading from '../../loading';
 import { FilterProvider } from '@/context/filter-context';
 
-function ControlEquiposPageContent() {
-  const { equipos, controles } = useDynamicData();
+const ControlEquiposPageContent = dynamic(() => import('@/components/equipos/control-equipos-page-content').then(mod => mod.default), {
+  loading: () => <Loading />,
+  ssr: false
+});
 
-  return (
-    <div className="space-y-6">
-        <ControlEventosTable 
-            controles={controles} 
-            equipos={equipos}
-        />
-    </div>
-  );
-}
 
 export default function ControlEquiposPage() {
     return (
