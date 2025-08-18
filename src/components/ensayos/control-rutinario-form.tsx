@@ -19,8 +19,7 @@ import { useToast } from "@/hooks/use-toast"
 import { AlertaValidacion } from "@/components/ensayos/alerta-validacion"
 import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import * as dataService from "@/services/data-service"
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip"
+import { useDynamicData } from "@/context/data-context"
 import type { TipoProducto } from "@/lib/matriz-datos"
 import { Combobox } from "../ui/combobox"
 
@@ -83,6 +82,7 @@ const defaultFormValues: Partial<FormValues> = {
 
 export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marcas, onFormSubmit, productos, matrizProductos }: ControlRutinarioFormProps) {
   const { toast } = useToast()
+  const { addRegistro, addEnsayo, addRecentActivity } = useDynamicData();
   const [alerts, setAlerts] = React.useState<ValidationAlerts>({})
   const hasAlerts = Object.values(alerts).some(Boolean);
   
@@ -93,17 +93,48 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
 
   const { watch, setValue, control } = form
 
-  const watchedPesoMuestra = watch("peso_muestra");
-  const watchedLargo = watch("largo");
-  
-  
-  React.useEffect(() => {
-    if (watchedPesoMuestra !== undefined && watchedLargo !== undefined && watchedLargo > 0) {
-        const pesoCalculado = (watchedPesoMuestra / watchedLargo) / 10;
-        setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)));
-    }
-  }, [watchedLargo, watchedPesoMuestra, setValue]);
+  const watchedValues = watch();
 
+  const validate = React.useCallback((values: FormValues) => {
+    const newAlerts: ValidationAlerts = {};
+    const productoSeleccionado = matrizProductos.find(p => p.producto === values.producto);
+    if (!productoSeleccionado) return;
+
+    if (values.diametro !== undefined && productoSeleccionado.diametro_min && values.diametro < productoSeleccionado.diametro_min) {
+        newAlerts.diametro = `Diámetro por debajo del mínimo de norma (${productoSeleccionado.diametro_min}mm).`;
+    } else if (values.diametro !== undefined && productoSeleccionado.diametro_max && values.diametro > productoSeleccionado.diametro_max) {
+        newAlerts.diametro = `Diámetro por encima del máximo de norma (${productoSeleccionado.diametro_max}mm).`;
+    }
+
+    if (values.espesor_min !== undefined && productoSeleccionado.espesor_min_norma && values.espesor_min < productoSeleccionado.espesor_min_norma) {
+        newAlerts.espesor_min = `Espesor por debajo del mínimo de norma (${productoSeleccionado.espesor_min_norma}mm).`;
+    }
+    
+    if (values.espesor_max !== undefined && productoSeleccionado.espesor_max_norma && values.espesor_max > productoSeleccionado.espesor_max_norma) {
+        newAlerts.espesor_max = `Espesor por encima del máximo de norma (${productoSeleccionado.espesor_max_norma}mm).`;
+    }
+
+    if (values.ovalidad !== undefined && productoSeleccionado.ovalidad_norma && values.ovalidad > productoSeleccionado.ovalidad_norma) {
+        newAlerts.ovalidad = `Ovalidad excede el máximo de norma (${productoSeleccionado.ovalidad_norma}mm).`;
+    }
+
+    if (values.peso_kg_m !== undefined && productoSeleccionado.peso_min_teorico && values.peso_kg_m < productoSeleccionado.peso_min_teorico) {
+        newAlerts.peso_kg_m = `Peso por debajo del mínimo de norma (${productoSeleccionado.peso_min_teorico} kg/m).`;
+    }
+    
+    setAlerts(newAlerts);
+  }, [matrizProductos]);
+
+  React.useEffect(() => {
+    const subscription = watch((values) => {
+        if (values.peso_muestra !== undefined && values.largo !== undefined && values.largo > 0) {
+            const pesoCalculado = (values.peso_muestra / values.largo) / 10;
+            setValue("peso_kg_m", parseFloat(pesoCalculado.toFixed(6)), { shouldValidate: true });
+        }
+        validate(values as FormValues);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setValue, validate]);
 
   const onSubmit = async (data: FormValues) => {
     const resultado = Object.values(alerts).some(Boolean) ? "No Conforme" : "Conforme";
@@ -131,7 +162,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
     };
 
     try {
-        const newRegistro = await dataService.addRegistro(newRegistroData);
+        const newRegistro = await addRegistro(newRegistroData);
         
         toast({
           title: "Registro Guardado",
@@ -139,10 +170,13 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
           variant: resultado === 'No Conforme' ? 'destructive' : 'default',
         });
 
-        await dataService.addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${data.producto}`});
+        await addRecentActivity({ user: data.inspector, action: `registró un nuevo control para ${data.producto}`});
         
         if (data.entregado_laboratorio) {
+            const productoInfo = matrizProductos.find(p => p.producto === data.producto);
             let tipoEnsayo = 'Tubería';
+            if (productoInfo?.material.includes('HDPE')) tipoEnsayo = 'Tubería HDPE';
+            if (productoInfo?.material.includes('PP')) tipoEnsayo = 'Tubería PP';
 
             const newEnsayo = {
                 id_muestra: newRegistro.id,
@@ -160,14 +194,14 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
                 maquina: data.maquina,
                 inspector: data.inspector,
             };
-            await dataService.addEnsayo(newEnsayo);
+            await addEnsayo(newEnsayo);
             
             toast({
                 title: "Muestra Enviada a Laboratorio",
                 description: `La muestra para '${tipoEnsayo}' está ahora en Seguimiento.`,
                 variant: "default",
             });
-            await dataService.addRecentActivity({ user: data.inspector, action: `envió una muestra de ${data.producto} a laboratorio.`});
+            await addRecentActivity({ user: data.inspector, action: `envió una muestra de ${data.producto} a laboratorio.`});
         }
         
         form.reset(defaultFormValues);
@@ -184,7 +218,8 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
   }
 
   return (
-    <Form form={form} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
             <h3 className="text-lg font-medium font-headline">Información de Producción</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -489,6 +524,7 @@ export function ControlRutinarioForm({ inspectores, maquinistas, maquinas, marca
                 Registrar Control
             </Button>
         </div>
+      </form>
     </Form>
   )
 }
