@@ -3,6 +3,7 @@
 
 import * as React from 'react';
 import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 interface PhiProgressBarProps {
   fechaInicio: string;
@@ -44,27 +45,31 @@ export function PhiProgressBar({ fechaInicio, horas, isComplete }: PhiProgressBa
   }, [fechaInicio, horas, isComplete, isClient]);
   
   const getIndicatorColor = () => {
-    const percentage = progress / 100;
-    let r, g;
-    if (percentage < 0.5) {
-      r = 255;
-      g = Math.round(percentage * 2 * 255);
-    } else {
-      r = Math.round((1 - percentage) * 2 * 255);
-      g = 255;
-    }
-    return `rgb(${r}, ${g}, 0)`;
+    if (progress >= 100) return 'hsl(var(--chart-2))'; // Green for complete
+    
+    // RGB for red (239, 68, 68) and yellow (245, 158, 11)
+    const red = [239, 68, 68];
+    const yellow = [245, 158, 11];
+
+    // Interpolate between red and yellow
+    const r = Math.round(red[0] + (yellow[0] - red[0]) * (progress / 100));
+    const g = Math.round(red[1] + (yellow[1] - red[1]) * (progress / 100));
+    const b = Math.round(red[2] + (yellow[2] - red[2]) * (progress / 100));
+    
+    return `rgb(${r}, ${g}, ${b})`;
   };
 
   if (!isClient) {
     return <Progress value={0} />;
   }
+  
+  const textColor = progress >= 100 ? 'text-white' : 'mix-blend-difference text-white';
 
   return (
     <div className="relative w-full h-full">
       <Progress value={progress} indicatorStyle={{ backgroundColor: getIndicatorColor() }} />
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-semibold text-white mix-blend-difference">{progress.toFixed(1)}%</span>
+        <span className={cn("text-xs font-semibold", textColor)}>{progress.toFixed(1)}%</span>
       </div>
     </div>
   );

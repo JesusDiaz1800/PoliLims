@@ -24,6 +24,7 @@ const productosPHI = [
 ];
 
 const rayas = [
+    { value: 'Sin Raya', label: 'Sin Raya' },
     { value: 'Azul', label: 'Azul' },
     { value: 'Roja', label: 'Roja' },
     { value: 'Verde', label: 'Verde' },
@@ -41,8 +42,8 @@ function NewEnsayoForm({ onClose, addEnsayo }: NewEnsayoFormProps) {
         fechaIngresoManual: format(new Date(), 'dd-MM-yyyy'),
         fechaInicio: format(new Date(), 'dd-MM-yyyy HH:mm:ss'),
         producto: '',
-        raya: '',
-        horas: ''
+        raya: 'Sin Raya',
+        horas: '100'
       }
     });
     const { toast } = useToast();
