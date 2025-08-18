@@ -97,7 +97,7 @@ const procesosGestionSubMenu = [
     ],
   },
   {
-    label: "Formación del Personal",
+    label: "Competencia del Personal",
     icon: GraduationCap,
     href: "/administracion/formacion",
     subItems: [
