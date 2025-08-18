@@ -221,7 +221,7 @@ export function PhiDialogs({
                 </DialogContent>
             </Dialog>
             <Dialog open={isResultOpen} onOpenChange={setIsResultOpen}>
-                <DialogContent className="sm:max-w-lg">
+                <DialogContent className="sm:max-w-xl">
                     <DialogHeader>
                         <DialogTitle>Ingresar Resultado de Ensayo PHI</DialogTitle>
                         <DialogDescription>Seleccione un ensayo en proceso y registre su resultado final.</DialogDescription>
