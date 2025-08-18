@@ -1,8 +1,15 @@
 
 "use client";
 
-import { GenericFormPage } from '@/components/generic-form-page';
+import * as React from 'react';
+import dynamic from 'next/dynamic';
+import Loading from '../loading';
 import { Users } from 'lucide-react';
+
+const GenericFormPage = dynamic(() => import('@/components/generic-form-page').then(mod => mod.GenericFormPage), {
+  loading: () => <Loading />,
+  ssr: false
+});
 
 export default function ClientPortalPage() {
     const formFields = [
