@@ -93,7 +93,7 @@ export function AsistenciaDialog({ isOpen, onClose, capacitacion, users, onSave 
                     </TableHeader>
                     <TableBody>
                         {asistentes.map(asistente => {
-                            const user = users.find(u => u.username === asistente.empleadoId);
+                            const user = (users || []).find(u => u.username === asistente.empleadoId);
                             const avatar = getAvatarInfo(user?.fullName || '??');
                             return (
                             <TableRow key={asistente.empleadoId}>
