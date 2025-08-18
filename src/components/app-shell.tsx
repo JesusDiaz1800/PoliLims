@@ -54,6 +54,7 @@ import {
   Beaker,
   Home,
   UserCheck,
+  FlaskConical,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
@@ -81,6 +82,7 @@ const ensayosSubMenu = [
     { href: '/ensayos/control-rutinario', label: 'Control Rutinario', icon: ClipboardCheck },
     { href: '/ensayos/control-accesorios', label: 'Control de Accesorios', icon: Wrench },
     { href: '/ensayos/control-agua', label: 'Control de Agua', icon: Droplets },
+    { href: '/ensayos/presion-hidrostatica', label: 'Presión Hidrostática', icon: FlaskConical },
     { type: 'separator' },
     { href: '/ensayos/seguimiento', label: 'Seguimiento General', icon: ClipboardList },
 ];
@@ -222,6 +224,7 @@ const pageTitles: Record<string, string> = {
     '/ensayos/reprocesado': 'Ensayos de Reprocesado',
     '/ensayos/control-accesorios': 'Control de Accesorios',
     '/ensayos/control-agua': 'Control de Agua',
+    '/ensayos/presion-hidrostatica': 'Resistencia a Presión Hidrostática',
     '/ensayos/control-rutinario': 'Control Rutinario de Tuberías',
     '/ensayos/seguimiento': 'Seguimiento General de Ensayos',
     '/administracion/usuarios': 'Gestión de Usuarios',
