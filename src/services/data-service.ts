@@ -71,7 +71,25 @@ const demoGeneratedReports: GeneratedReport[] = [
 ];
 
 let demoCapacitaciones: Capacitacion[] = [
-    { id: 'CAP-001', nombre: 'Uso y Cuidado de Espectrómetro FTIR', fecha: '2025-06-15', instructor: 'PerkinElmer Inc.', temario: 'Teoría básica, software, mantenimiento preventivo.', estado: 'Realizada', asistentes: [{empleadoId: 'jdiaz', asistio: true}, {empleadoId: 'afigueroa', asistio: true}], evaluacion: { id: 'EVAL-001', preguntas: [{pregunta: '¿Cuál es la función del interferómetro?'}], resultados: [{empleadoId: 'jdiaz', resultado: 'Aprobado', respuestas: ['Respuesta A']}, {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Respuesta A']}]} },
+    { 
+        id: 'CAP-001', 
+        nombre: 'Uso y Cuidado de Espectrómetro FTIR', 
+        fecha: '2025-06-15', 
+        instructor: 'PerkinElmer Inc.', 
+        temario: 'Teoría básica, software, mantenimiento preventivo.', 
+        estado: 'Realizada', 
+        asistentes: [
+            {empleadoId: 'jdiaz', asistio: true}, 
+            {empleadoId: 'afigueroa', asistio: true}
+        ], 
+        evaluacion: { 
+            id: 'EVAL-001', 
+            preguntas: [{pregunta: '¿Cuál es la función del interferómetro?'}, {pregunta: 'Describa el procedimiento de limpieza de la lente.'}], 
+            resultados: [
+                {empleadoId: 'afigueroa', resultado: 'Aprobado', respuestas: ['Respuesta A', 'Respuesta B'], fecha_completado: '2025-06-16T10:00:00Z'}
+            ]
+        } 
+    },
     { id: 'CAP-002', nombre: 'Auditoría Interna ISO/IEC 17025:2017', fecha: '2025-08-20', instructor: 'AENOR Chile', temario: 'Cláusulas de la norma, técnicas de auditoría, redacción de hallazgos.', estado: 'Planificada', asistentes: [{empleadoId: 'vlutz', asistio: false}, {empleadoId: 'mmiranda', asistio: false}] },
 ];
 
