@@ -96,14 +96,14 @@ const procesosGestionSubMenu = [
       { href: "/equipos/programa", label: "Programa", icon: CalendarCheck },
     ],
   },
-  {
-    label: "Competencia del Personal",
-    icon: GraduationCap,
-    href: "/administracion/formacion",
+  { 
+    label: 'Competencia del Personal', 
+    icon: GraduationCap, 
+    href: '/administracion/capacitaciones',
     subItems: [
-      { href: "/administracion/capacitaciones", label: "Capacitaciones", icon: GraduationCap },
-      { href: "/administracion/formacion", label: "Registros de Formación", icon: ClipboardList },
-      { href: "/mis-evaluaciones", label: "Mis Evaluaciones", icon: UserCheck },
+      { href: '/administracion/capacitaciones', label: 'Capacitaciones', icon: GraduationCap },
+      { href: '/administracion/formacion', label: 'Registros de Formación', icon: ClipboardList },
+      { href: '/mis-evaluaciones', label: 'Mis Evaluaciones', icon: UserCheck },
     ],
   },
   { href: "/auditorias", label: "Auditorías", icon: ClipboardCheck },
@@ -140,12 +140,6 @@ const bibliotecaSubMenu = [
     { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
     { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
 ];
-
-const reportsSubMenu = [
-    { href: '/reports/generador', label: 'Generador de Informes', icon: FilePlus2 },
-    { href: '/reports/biblioteca', label: 'Biblioteca de Informes', icon: FileSearch },
-];
-
 
 function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
@@ -494,12 +488,13 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                   {pageTitle}
               </h1>
           </div>
+            <ThemeToggle />
           </header>
         )}
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className={cn("custom-scrollbar", pathname !== '/main' && 'p-6 md:p-10')}
+                className={cn("custom-scrollbar", pathname !== '/main' ? 'p-6 md:p-10' : '')}
                 role="main"
                 tabIndex={-1}
             >

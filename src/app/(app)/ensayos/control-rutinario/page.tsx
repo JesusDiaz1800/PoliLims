@@ -3,7 +3,6 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import Loading from '../../loading';
-import ControlRutinarioPageClient from '@/components/ensayos/control-rutinario-page';
 
 const DynamicControlRutinario = dynamic(() => import('@/components/ensayos/control-rutinario-page'), {
   loading: () => <Loading />,

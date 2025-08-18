@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Space_Grotesk, Orbitron } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
-import { DynamicDataProvider, type InitialData } from '@/context/data-context';
+import { DynamicDataProvider } from '@/context/data-context';
 import { getInitialData } from '@/services/data-service';
 import RootPrefetch from '@/components/root-prefetch';
 
@@ -23,7 +23,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch initial data once at the root level
   const initialData = await getInitialData();
 
   return (

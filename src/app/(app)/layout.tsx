@@ -1,6 +1,7 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import AppLayoutClient from './app-layout-client';
+import Loading from './loading';
 import { findUserByUsername } from '@/services/user-service';
 
 export default async function AppLayout({ 
@@ -15,8 +16,10 @@ export default async function AppLayout({
     const user = await findUserByUsername(username); 
 
     return (
-        <AppLayoutClient user={user}>
-            {children}
-        </AppLayoutClient>
+        <Suspense fallback={<Loading />}>
+            <AppLayoutClient user={user}>
+                {children}
+            </AppLayoutClient>
+        </Suspense>
     );
 }

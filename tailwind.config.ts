@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         body: ['var(--font-inter)', ...fontFamily.sans],
         headline: ['var(--font-space-grotesk)', ...fontFamily.sans],
+        digital: ['var(--font-orbitron)', ...fontFamily.mono],
       },
       boxShadow: {
         'glow': '0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)',
@@ -112,5 +113,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
-    

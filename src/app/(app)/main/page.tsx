@@ -2,8 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
-import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal, Info } from "lucide-react";
+import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { RecentActivityList } from "@/components/dashboard/recent-activity-list";
@@ -13,7 +12,7 @@ import { DashboardFilters } from "@/components/dashboard/dashboard-filters";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { EquipmentAlertsCard } from "@/components/dashboard/equipment-alerts-card";
 import { NonConformitiesByTypeChart } from "@/components/dashboard/nc-by-type-chart";
-import { useDynamicData, type Ensayo } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context";
 import { SampleStatusChart } from "@/components/dashboard/sample-status-chart";
 import { WorkloadDistributionChart } from "@/components/dashboard/workload-distribution-chart";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -35,9 +34,9 @@ export default function MainPage() {
   } = useDynamicData();
 
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
-  const [theme, setTheme] = React.useState('dark');
 
   const filteredEnsayos = React.useMemo(() => {
+    // Note: Filters are currently mocked. In a real app, you'd use state from DashboardFilters.
     const analystParam = 'all';
     const statusParam = 'all';
     const typeParam = 'all';
@@ -91,13 +90,12 @@ export default function MainPage() {
   const operationalEquipment = (equipos || []).filter(e => e.estado === "Activo").length;
   const totalEquipment = (equipos || []).length;
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
-  const dashboardClass = theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light';
 
   return (
-      <div className={`relative flex-1 space-y-4 ${dashboardClass} px-4 sm:px-6 lg:px-8 py-6`}>
+      <div className="relative flex-1 space-y-4 px-4 sm:px-6 lg:px-8 py-6">
         <div className="background-overlay"></div>
         <div className="relative z-10 space-y-4">
-            <WelcomeBanner user={user} theme={theme} setTheme={setTheme}/>
+            <WelcomeBanner user={user} />
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 delay-100">
                 <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" />
