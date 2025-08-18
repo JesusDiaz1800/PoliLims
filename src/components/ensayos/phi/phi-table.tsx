@@ -48,8 +48,6 @@ export function PhiTable({ data }: PhiTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Fila</TableHead>
-            <TableHead>Fecha Ingreso</TableHead>
             <TableHead>Fecha Inicio</TableHead>
             <TableHead>Producto</TableHead>
             <TableHead>Raya</TableHead>
@@ -62,11 +60,9 @@ export function PhiTable({ data }: PhiTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedData.map((ensayo, index) => {
+          {sortedData.map((ensayo) => {
             return (
             <TableRow key={ensayo.id}>
-              <TableCell className="font-mono">{15 + index}</TableCell>
-              <TableCell>{ensayo.fechaIngresoManual}</TableCell>
               <TableCell><FechaInicioCell fechaInicio={ensayo.fechaInicio} /></TableCell>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
