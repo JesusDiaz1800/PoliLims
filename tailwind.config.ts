@@ -1,6 +1,5 @@
 
 import type {Config} from 'tailwindcss';
-const { fontFamily } = require("tailwindcss/defaultTheme")
 
 export default {
   darkMode: ['class'],
@@ -19,9 +18,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['var(--font-inter)', ...fontFamily.sans],
-        headline: ['var(--font-space-grotesk)', ...fontFamily.sans],
-        digital: ['var(--font-orbitron)', ...fontFamily.mono],
+        body: ['var(--font-inter)'],
+        headline: ['var(--font-space-grotesk)'],
+        digital: ['var(--font-orbitron)'],
       },
       boxShadow: {
         'glow': '0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2)',
