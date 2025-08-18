@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import type { EnsayoPHI } from '@/context/data-context';
 import { PhiProgressBar } from './phi-progress-bar';
 import { PhiTimer } from './phi-timer';
-import { format, parse } from 'date-fns';
+import { format, addHours, parseISO } from 'date-fns';
 import { History, Search } from 'lucide-react';
 
 
@@ -15,13 +15,31 @@ interface PhiTableProps {
   data: EnsayoPHI[];
 }
 
-const FechaInicioCell = ({ fechaInicio }: { fechaInicio: string }) => {
+const FechaCell = ({ fechaISO }: { fechaISO: string }) => {
     const [formattedDate, setFormattedDate] = React.useState('Cargando...');
     React.useEffect(() => {
-        setFormattedDate(format(new Date(fechaInicio), 'dd/MM/yyyy HH:mm:ss'));
-    }, [fechaInicio]);
+        try {
+            setFormattedDate(format(parseISO(fechaISO), 'dd/MM/yyyy HH:mm:ss'));
+        } catch {
+            setFormattedDate('Fecha inválida');
+        }
+    }, [fechaISO]);
     return <>{formattedDate}</>;
 };
+
+const FechaFinCell = ({ fechaInicioISO, horas }: { fechaInicioISO: string, horas: number }) => {
+    const [formattedDate, setFormattedDate] = React.useState('Calculando...');
+    React.useEffect(() => {
+        try {
+            const fechaFin = addHours(parseISO(fechaInicioISO), horas);
+            setFormattedDate(format(fechaFin, 'dd/MM/yyyy HH:mm:ss'));
+        } catch {
+             setFormattedDate('Fecha inválida');
+        }
+    }, [fechaInicioISO, horas]);
+    return <>{formattedDate}</>;
+}
+
 
 export function PhiTable({ data }: PhiTableProps) {
   const sortedData = [...data].sort((a, b) => new Date(b.fechaInicio).getTime() - new Date(a.fechaInicio).getTime());
@@ -41,10 +59,11 @@ export function PhiTable({ data }: PhiTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Fecha Inicio</TableHead>
             <TableHead>Producto</TableHead>
             <TableHead>Raya</TableHead>
             <TableHead>Horas</TableHead>
+            <TableHead>Fecha Inicio</TableHead>
+            <TableHead>Fecha Fin</TableHead>
             <TableHead>Estado</TableHead>
             <TableHead>Observaciones</TableHead>
           </TableRow>
@@ -53,12 +72,13 @@ export function PhiTable({ data }: PhiTableProps) {
           {sortedData.map((ensayo) => {
             return (
             <TableRow key={ensayo.id}>
-              <TableCell><FechaInicioCell fechaInicio={ensayo.fechaInicio} /></TableCell>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
                 <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
               </TableCell>
               <TableCell>{ensayo.horas}</TableCell>
+              <TableCell><FechaCell fechaISO={ensayo.fechaInicio} /></TableCell>
+              <TableCell><FechaFinCell fechaInicioISO={ensayo.fechaInicio} horas={ensayo.horas} /></TableCell>
               <TableCell>
                  <Badge variant={ensayo.estado === 'FINALIZADO' ? 'default' : 'secondary'}
                    className={ensayo.estado === 'FINALIZADO' ? 'bg-green-500/20 text-green-700' : 'bg-yellow-500/20 text-yellow-700'}

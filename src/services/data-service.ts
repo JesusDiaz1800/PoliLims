@@ -81,7 +81,7 @@ let calculosIncertidumbre = [...demoCalculosIncertidumbre];
 
 let demoEnsayosPHI: EnsayoPHI[] = [
   { id: 'PHI-001', fechaIngresoManual: '20-07-2025', fechaInicio: new Date(2025, 6, 20, 10, 30).toISOString(), producto: '90mm x 12m SMARTCOLORS PN-16 SDR-11', raya: 'Azul', horas: 100, estado: 'EN PROCESO' },
-  { id: 'PHI-002', fechaIngresoManual: '21-07-2025', fechaInicio: new Date(2025, 6, 21, 14, 0).toISOString(), producto: '75mm x 6m SMART PIPE/PP-RCT PN-16 S-3,2', raya: 'Roja', horas: 100, estado: 'FINALIZADO', resultado: 'Sin fallas a 51.5 [bar]' },
+  { id: 'PHI-002', fechaIngresoManual: '21-07-2025', fechaInicio: new Date(2025, 6, 21, 14, 0).toISOString(), producto: '75mm x 6m SMART PIPE/PP-RCT PN-16 S-3,2', raya: 'Azul', horas: 100, estado: 'FINALIZADO', resultado: 'Sin fallas a 51.5 [bar]' },
 ];
 
 export async function addEnsayoPHI(ensayo: Omit<EnsayoPHI, 'id'>): Promise<EnsayoPHI> {
