@@ -5,6 +5,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
+import { Button } from '../ui/button';
 
 interface CalendarioEquiposProps {
     eventos: any[];
@@ -27,9 +28,14 @@ export function CalendarioEquipos({ eventos, onEventClick }: CalendarioEquiposPr
                 }}
                 height="auto"
                 contentHeight="auto"
+                dayMaxEvents={true}
+                buttonText={{
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                }}
             />
         </div>
     );
 }
-
-    

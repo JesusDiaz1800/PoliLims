@@ -5,7 +5,7 @@ import * as React from 'react';
 import dynamic from 'next/dynamic';
 import Loading from '../../loading';
 
-const ProgramaPageContent = dynamic(() => import('@/components/equipos/programa-page-content').then(mod => mod.default), {
+const ProgramaPageContent = dynamic(() => import('@/components/equipos/programa-page-content'), {
   loading: () => <Loading />,
   ssr: false
 });
