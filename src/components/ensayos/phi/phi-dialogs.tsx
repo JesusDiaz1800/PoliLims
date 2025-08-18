@@ -215,6 +215,9 @@ export function PhiDialogs({
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Formulario de Ensayo</DialogTitle>
+                        <DialogDescription>
+                            Complete los datos para iniciar un nuevo monitoreo de Presión Hidrostática.
+                        </DialogDescription>
                     </DialogHeader>
                     <NewEnsayoForm onClose={() => setIsNewEnsayoOpen(false)} addEnsayo={addEnsayoPHI} />
                 </DialogContent>

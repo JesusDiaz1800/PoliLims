@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { Calendar, Clock, Tag, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 interface PhiStatusCardProps {
   ensayo: EnsayoPHI;
@@ -118,10 +119,19 @@ Atte.,
                         Finaliza: <CalculoFechaFin fechaInicio={ensayo.fechaInicio} horas={ensayo.horas} />
                     </span>
                  </div>
-                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEmailClick}>
-                    <Mail className="h-4 w-4" />
-                    <span className="sr-only">Notificar liberación</span>
-                </Button>
+                 <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEmailClick}>
+                                <Mail className="h-4 w-4" />
+                                <span className="sr-only">Notificar liberación</span>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Notificar liberación por correo</p>
+                        </TooltipContent>
+                    </Tooltip>
+                 </TooltipProvider>
             </CardFooter>
         </Card>
     )

@@ -74,7 +74,7 @@ export function PhiTable({ data }: PhiTableProps) {
             <TableRow key={ensayo.id}>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
-                <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
+                <Badge style={{ backgroundColor: getColorForRaya(ensayo.raya), color: (ensayo.raya.toLowerCase() === 'blanca' ? 'black' : 'white') }} className="border border-black/20">{ensayo.raya}</Badge>
               </TableCell>
               <TableCell>{ensayo.horas}</TableCell>
               <TableCell><FechaCell fechaISO={ensayo.fechaInicio} /></TableCell>
@@ -95,4 +95,15 @@ export function PhiTable({ data }: PhiTableProps) {
       </Table>
     </div>
   );
+}
+
+const getColorForRaya = (raya: string) => {
+    const colors: {[key: string]: string} = {
+        'azul': '#3b82f6',
+        'roja': '#ef4444',
+        'verde': '#22c55e',
+        'blanca': '#e5e5e5',
+        'negra': '#171717',
+    }
+    return raya ? colors[raya.toLowerCase()] || '#6b7280' : '#6b7280';
 }
