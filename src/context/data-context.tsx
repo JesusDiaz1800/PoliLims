@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import * as dataService from '@/services/data-service';
 import type { User } from '@/services/user-service';
 import type { TipoProducto } from '@/lib/matriz-datos';
@@ -242,7 +242,6 @@ interface DynamicDataContextType extends InitialData {
     isLoaded: boolean;
     user: User | null;
     setUser: (user: User | null) => void;
-    usuarios: User[];
     addEnsayo: (ensayo: Omit<Ensayo, 'id'>) => Promise<Ensayo>;
     updateEnsayo: (id: string, updatedData: Partial<Ensayo>) => Promise<void>;
     deleteEnsayo: (id: string) => Promise<void>;
@@ -274,7 +273,6 @@ const DynamicDataContext = createContext<DynamicDataContextType | undefined>(und
 
 export function DynamicDataProvider({ children, initialData }: { children: ReactNode, initialData: InitialData }) {
     const [data, setData] = useState<InitialData>(initialData);
-    const [isLoaded, setIsLoaded] = useState(true);
     const [user, setUser] = useState<User | null>(null);
     
     const addEnsayo = useCallback(async (ensayo: Omit<Ensayo, 'id'>) => {
@@ -415,7 +413,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
 
     const value = useMemo(() => ({
         ...data,
-        isLoaded,
+        isLoaded: true, // Data is always available from the root layout
         user,
         setUser,
         addEnsayo,
@@ -443,7 +441,7 @@ export function DynamicDataProvider({ children, initialData }: { children: React
         addCondicionAmbiental,
         addEnsayoPHI,
         updateEnsayoPHI,
-    }), [data, isLoaded, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental, addEnsayoPHI, updateEnsayoPHI]);
+    }), [data, user, addEnsayo, updateEnsayo, deleteEnsayo, addRegistro, deleteRegistro, addEquipo, updateEquipo, deleteEquipo, addControlEvento, addIncidencia, updateIncidencia, deleteIncidencia, addRecentActivity, addProveedor, updateProveedor, deleteProveedor, addAuditoria, updateAuditoria, deleteAuditoria, addFormacion, updateFormacion, deleteFormacion, addCondicionAmbiental, addEnsayoPHI, updateEnsayoPHI]);
 
     return (
         <DynamicDataContext.Provider value={value}>
