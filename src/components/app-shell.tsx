@@ -97,7 +97,7 @@ const procesosGestionSubMenu = [
     ],
   },
   { 
-    label: 'Competencia del Personal', 
+    label: 'Competencia Personal', 
     icon: GraduationCap, 
     href: '/administracion/capacitaciones',
     subItems: [
