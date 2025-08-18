@@ -124,13 +124,13 @@ interface ResultFormProps {
 function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) {
     const { register, handleSubmit, control, watch, formState: { errors } } = useForm();
     const { toast } = useToast();
-    const conFalla = watch('conFalla');
+    const huboFalla = watch('huboFalla');
 
     const onSubmit = async (data: any) => {
         try {
-            const resultado = data.conFalla
+            const resultado = data.huboFalla
                 ? `Con fallas: ${data.observacion}`
-                : `Sin fallas`;
+                : `Sin fallas a ${data.presion} [bar]`;
             
             await updateEnsayo(data.ensayoId, {
                 estado: 'FINALIZADO',
@@ -162,20 +162,25 @@ function ResultForm({ onClose, updateEnsayo, ensayosActivos }: ResultFormProps) 
                   />
                  {errors.ensayoId && <p className="text-destructive text-sm mt-1">Debe seleccionar un ensayo.</p>}
             </div>
-            <div className="flex items-center space-x-2">
-                <Checkbox id="conFalla" {...register('conFalla')} />
-                <Label htmlFor="conFalla">¿Presentó fallas?</Label>
-            </div>
-            {conFalla && (
-                <div>
-                    <Label htmlFor="observacion">Observación de la Falla</Label>
-                    <Textarea id="observacion" {...register('observacion', { required: true })} />
-                    {errors.observacion && <p className="text-destructive text-sm mt-1">La observación es requerida si hay fallas.</p>}
+            <div className="flex items-end gap-4">
+                <div className="flex-1">
+                    <Label htmlFor="presion">Presión (bar)</Label>
+                    <Input id="presion" type="number" step="any" {...register('presion', { required: true })} />
+                    {errors.presion && <p className="text-destructive text-sm mt-1">Campo requerido.</p>}
                 </div>
-            )}
+                 <div className="flex items-center space-x-2 pb-2">
+                    <Checkbox id="huboFalla" {...register('huboFalla')} />
+                    <Label htmlFor="huboFalla">¿Hubo Falla?</Label>
+                </div>
+            </div>
+            <div>
+                <Label htmlFor="observacion">Observación</Label>
+                <Textarea id="observacion" {...register('observacion', { required: huboFalla })} />
+                {errors.observacion && <p className="text-destructive text-sm mt-1">La observación es requerida si hubo fallas.</p>}
+            </div>
              <DialogFooter>
                 <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
-                <Button type="submit">Registrar Resultado</Button>
+                <Button type="submit">Registrar</Button>
             </DialogFooter>
         </form>
     );
