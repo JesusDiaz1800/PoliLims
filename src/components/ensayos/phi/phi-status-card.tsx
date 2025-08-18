@@ -66,7 +66,6 @@ Color de Raya: ${ensayo.raya}
 --------------------------------------------------
 
 Atte.,
-Laboratorio de Calidad
         `.trim().replace(/^\s+/gm, ''); // Remove leading spaces from each line
 
         const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
