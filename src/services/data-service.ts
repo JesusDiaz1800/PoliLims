@@ -1,4 +1,3 @@
-
 import type { Ensayo, Registro, RecentActivity, Equipo, ControlEvento, NoConformidad, Importacion, GeneratedReport, CalculoIncertidumbre, Proveedor, CondicionAmbiental, Formacion, Auditoria, Hallazgo, TipoProducto, EnsayoPHI } from "@/context/data-context";
 import { isPast, parse, subDays, format as formatDate, addYears } from 'date-fns';
 import { getMatrizProductos } from "@/lib/matriz-datos";
@@ -87,7 +86,7 @@ let demoEnsayosPHI: EnsayoPHI[] = [
 
 export async function addEnsayoPHI(ensayo: Omit<EnsayoPHI, 'id'>): Promise<EnsayoPHI> {
     const newEnsayo = { ...ensayo, id: `PHI-NEW-${Math.random().toString(16).slice(2)}` };
-    demoEnsayosPHI.push(newEnsayo);
+    demoEnsayosPHI.unshift(newEnsayo);
     return newEnsayo;
 }
 
@@ -278,7 +277,7 @@ export const mockNotificationHistory: Notificacion[] = [
 
 export const mockAlertTemplates: PlantillaNotificacion[] = [
     { id: 'cal_vencimiento_email', nombre: 'Email de Vencimiento de Calibración', descripcion: 'Plantilla para notificar sobre calibraciones próximas a vencer.', asunto: 'Alerta de Calibración: {{equipo.nombre}} vence en {{dias_restantes}} días', cuerpo: 'Estimado(a),\n\nLe informamos que la calibración del equipo {{equipo.nombre}} (ID: {{equipo.id}}) está programada para vencer el {{equipo.proxima_calibracion}}.\n\nPor favor, tome las acciones necesarias para coordinar su calibración a tiempo.\n\nAtentamente,\nSistema PoliLIMS.'},
-    { id: 'nc_nueva_email', nombre: 'Email de Nueva No Conformidad', descripcion: 'Notifica al usuario asignado sobre una nueva NC.', asunto: 'Nueva No Conformidad Asignada: {{nc.id}}', cuerpo: 'Hola {{usuario.nombre}},\n\nSe le ha asignado como responsable de la No Conformidad N° {{nc.id}} ({{nc.descripcion}}), detectada el {{nc.fecha_deteccion}}.\n\nPor favor, ingrese al sistema para revisar los detalles y establecer un plan de acción.\n\nGracias,\nSistema PoliLIMS.'},
+    { id: 'nc_nueva_email', nombre: 'Email de Nueva No Conformidad', descripcion: 'Notifica al usuario asignado sobre una nueva NC.', asunto: 'Nueva No Conformidad Asignada: {{nc.id}}', cuerpo: 'Hola {{usuario.nombre}},\n\nSe le ha asignado como responsable de la No Conformidad N° {{nc.id}} ({{nc.descripcion}}), detectada el {{nc.fecha_deteccion}}).\n\nPor favor, ingrese al sistema para revisar los detalles y establecer un plan de acción.\n\nGracias,\nSistema PoliLIMS.'},
     { id: 'ac_vencimiento_email', nombre: 'Email de Vencimiento de Acción Correctiva', descripcion: 'Alerta sobre el vencimiento próximo de una acción correctiva.', asunto: 'Recordatorio: Acción Correctiva para NC {{nc.id}} vence pronto', cuerpo: 'Estimado(a) {{usuario.nombre}},\n\nEste es un recordatorio de que la fecha límite para completar la acción correctiva asociada a la No Conformidad N° {{nc.id}} es el {{nc.fecha_vencimiento}}.\n\nPor favor, asegúrese de completar y documentar la acción antes de la fecha indicada.\n\nSaludos,\nSistema PoliLIMS.'},
 ];
 

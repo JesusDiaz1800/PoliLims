@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from 'react';
@@ -40,8 +39,8 @@ export function PhiTable({ data }: PhiTableProps) {
             return (
             <TableRow key={ensayo.id}>
               <TableCell className="font-mono">{15 + index}</TableCell>
-              <TableCell>{ensayo.fechaIngresoManual ? format(parse(ensayo.fechaIngresoManual, 'dd/MM/yyyy', new Date()), 'dd/MM/yyyy') : 'N/A'}</TableCell>
-              <TableCell>{format(new Date(ensayo.fechaInicio), 'dd/MM/yyyy HH:mm:ss')}</TableCell>
+              <TableCell>{ensayo.fechaIngresoManual || 'N/A'}</TableCell>
+              <TableCell>{format(new Date(ensayo.fechaInicio), 'dd-MM-yyyy HH:mm:ss')}</TableCell>
               <TableCell className="font-medium max-w-xs truncate">{ensayo.producto}</TableCell>
               <TableCell>
                 <Badge style={{ backgroundColor: ensayo.raya.toLowerCase() }} className="text-white">{ensayo.raya}</Badge>
@@ -79,3 +78,4 @@ export function PhiTable({ data }: PhiTableProps) {
     </div>
   );
 }
+
