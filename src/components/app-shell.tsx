@@ -1,7 +1,8 @@
 
+
 "use client";
 
-import React from "react";
+import * as React from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
@@ -96,7 +97,7 @@ const procesosGestionSubMenu = [
     ],
   },
   {
-    label: "Formación y Competencia",
+    label: "Formación del Personal",
     icon: GraduationCap,
     href: "/administracion/formacion",
     subItems: [
