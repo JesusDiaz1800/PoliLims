@@ -49,9 +49,31 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
     const textColor = isSinRaya || ensayo.raya.toLowerCase() === 'blanca' ? 'black' : 'white';
 
     const handleEmailClick = () => {
-        const subject = `Liberación de Tubería: ${ensayo.producto}`;
-        const body = `Estimados,\n\nJunto con saludar, se solicita la liberación de la tubería correspondiente al ensayo de presión hidrostática:\n\nProducto: ${ensayo.producto}\nInicio de Ensayo: ${format(new Date(ensayo.fechaInicio), 'dd-MM-yyyy HH:mm')}\nDuración: ${ensayo.horas} horas\n\nEl ensayo ha finalizado satisfactoriamente.\n\nSaludos cordiales,\nLaboratorio de Calidad`;
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const inicio = new Date(ensayo.fechaInicio);
+        const fechaFinEstimada = new Date(inicio.getTime() + ensayo.horas * 60 * 60 * 1000);
+        
+        const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl';
+        const subject = `Solicitud de Liberación: Ensayo de Presión Hidrostática`;
+        const body = `
+Estimados,
+
+Favor liberar tuberías correspondientes al siguiente ensayo:
+
+--------------------------------------------------
+Producto: ${ensayo.producto}
+Inicio Ensayo: ${format(inicio, 'dd-MM-yyyy HH:mm')}
+Fin Estimado: ${format(fechaFinEstimada, 'dd-MM-yyyy HH:mm')}
+Horas Totales: ${ensayo.horas}
+Color de Raya: ${ensayo.raya}
+--------------------------------------------------
+
+El ensayo ha finalizado satisfactoriamente.
+
+Atte.,
+Laboratorio de Calidad
+        `.trim().replace(/^\s+/gm, ''); // Remove leading spaces from each line
+
+        const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
     };
 
