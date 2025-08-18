@@ -8,8 +8,9 @@ import type { EnsayoPHI } from '@/context/data-context';
 import { PhiProgressBar } from './phi-progress-bar';
 import { PhiTimer } from './phi-timer';
 import { format } from 'date-fns';
-import { Calendar, Clock, Tag } from 'lucide-react';
+import { Calendar, Clock, Tag, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface PhiStatusCardProps {
   ensayo: EnsayoPHI;
@@ -47,10 +48,17 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
     const badgeColor = isSinRaya ? undefined : getColorForRaya(ensayo.raya);
     const textColor = isSinRaya || ensayo.raya.toLowerCase() === 'blanca' ? 'black' : 'white';
 
+    const handleEmailClick = () => {
+        const subject = `Liberación de Tubería: ${ensayo.producto}`;
+        const body = `Estimados,\n\nJunto con saludar, se solicita la liberación de la tubería correspondiente al ensayo de presión hidrostática:\n\nProducto: ${ensayo.producto}\nInicio de Ensayo: ${format(new Date(ensayo.fechaInicio), 'dd-MM-yyyy HH:mm')}\nDuración: ${ensayo.horas} horas\n\nEl ensayo ha finalizado satisfactoriamente.\n\nSaludos cordiales,\nLaboratorio de Calidad`;
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = mailtoLink;
+    };
+
     return (
         <Card className="flex flex-col justify-between shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
             <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex items-start justify-between">
                     <CardTitle className="text-base font-bold leading-tight max-w-[80%]">{ensayo.producto}</CardTitle>
                     <Badge style={{ backgroundColor: badgeColor, color: textColor }} className="border border-black/20">{ensayo.raya}</Badge>
                 </div>
@@ -69,7 +77,7 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
                     />
                 </div>
             </CardContent>
-            <CardFooter className="text-xs text-muted-foreground flex justify-between bg-muted/50 p-3">
+            <CardFooter className="text-xs text-muted-foreground flex justify-between items-center bg-muted/50 p-3">
                  <div className="flex items-center gap-1.5">
                     <Clock className="h-3 w-3"/>
                     <span>{ensayo.horas}h</span>
@@ -80,6 +88,10 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
                         Finaliza: <CalculoFechaFin fechaInicio={ensayo.fechaInicio} horas={ensayo.horas} />
                     </span>
                  </div>
+                 <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEmailClick} disabled={ensayo.estado === 'EN PROCESO'}>
+                    <Mail className="h-4 w-4" />
+                    <span className="sr-only">Notificar liberación</span>
+                </Button>
             </CardFooter>
         </Card>
     )

@@ -26,8 +26,8 @@ export default function ResistenciaPresionHidrostaticaPage() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-start pb-4 border-b-2 border-primary print:hidden">
-                <div className="w-48">
+            <div className="flex justify-between items-center pb-4 border-b-2 border-primary print:hidden">
+                <div className="w-36">
                     <LogoAlt />
                 </div>
                 <div className="text-center">
