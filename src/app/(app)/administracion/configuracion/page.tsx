@@ -14,16 +14,6 @@ export default function ConfiguracionPage() {
         <CardDescription>Personalice la apariencia y el idioma de la aplicación según sus preferencias.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
-        <div className="space-y-4">
-            <h3 className="text-lg font-medium font-headline">Apariencia</h3>
-            <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                    <Label htmlFor="theme">Tema</Label>
-                    <p className="text-sm text-muted-foreground">Seleccione un tema para la interfaz.</p>
-                </div>
-                <ThemeToggle />
-            </div>
-        </div>
          <div className="space-y-4">
             <h3 className="text-lg font-medium font-headline">Idioma</h3>
             <div className="flex items-center justify-between p-4 border rounded-lg">
