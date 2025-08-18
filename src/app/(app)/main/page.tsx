@@ -2,6 +2,7 @@
 "use client";
 
 import * as React from "react";
+import { useTheme } from "next-themes";
 import { Target, Percent, Hourglass, Beaker, AlertOctagon, SlidersHorizontal } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
@@ -20,10 +21,12 @@ import { AssayTurnaroundTimeChart } from "@/components/dashboard/assay-turnaroun
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
+import { cn } from "@/lib/utils";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
 export default function MainPage() {
+  const { theme } = useTheme();
   const { 
     ensayos, 
     recentActivity, 
@@ -92,7 +95,10 @@ export default function MainPage() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado !== "Cerrada").length;
 
   return (
-      <div className="relative flex-1 space-y-4 px-4 sm:px-6 lg:px-8 py-6 dashboard-futurista">
+      <div className={cn(
+        "relative flex-1 space-y-4 px-4 sm:px-6 lg:px-8 py-6",
+        theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light'
+      )}>
         <div className="background-overlay"></div>
         <div className="relative z-10 space-y-4">
             <WelcomeBanner user={user} />
