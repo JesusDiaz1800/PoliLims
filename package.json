@@ -13,10 +13,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.15",
-    "@fullcalendar/daygrid": "^6.1.15",
-    "@fullcalendar/interaction": "^6.1.15",
-    "@fullcalendar/react": "^6.1.15",
     "@genkit-ai/firebase": "^1.16.0",
     "@genkit-ai/googleai": "^1.16.0",
     "@genkit-ai/next": "^1.16.0",
