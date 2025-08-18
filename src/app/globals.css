@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-inter);
+  font-family: 'Inter', sans-serif;
 }
 
 @layer base {
@@ -93,11 +93,6 @@ body {
     --border: 217 33% 25%;
     --input: 217 33% 25%;
     --ring: 188 100% 50%; /* Bright Cyan for rings */
-    --chart-1: 221 83% 53%; /* Indigo */
-    --chart-2: 262 83% 58%; /* Violet */
-    --chart-3: 217 91% 60%; /* Blue */
-    --chart-4: 188 100% 50%; /* Cyan */
-    --chart-5: 300 100% 50%; /* Magenta */
   }
 
    .dashboard-light {
@@ -120,11 +115,6 @@ body {
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 188 80% 45%;
-    --chart-1: 221 83% 53%; 
-    --chart-2: 262 83% 58%; 
-    --chart-3: 217 91% 60%; 
-    --chart-4: 188 100% 50%; 
-    --chart-5: 300 100% 50%;
   }
 }
  
@@ -134,7 +124,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
   .dashboard-futurista, .dashboard-light {
@@ -156,11 +145,11 @@ body {
     border-image: none;
     border: 1px solid hsl(var(--primary) / 0.8);
     box-shadow: 0 0 15px hsl(var(--primary) / 0.5), 0 0 30px hsl(var(--primary) / 0.2);
-    transform: scale(1.02);
+    transform: translateY(-2px);
   }
 
   .dashboard-futurista .card-glass:active, .dashboard-light .card-glass:active {
-    transform: scale(0.98);
+    transform: translateY(0);
     box-shadow: 0 0 5px hsl(var(--primary) / 0.5), 0 0 10px hsl(var(--primary) / 0.2);
   }
 
@@ -184,17 +173,32 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
-  width: 2px; /* Reduced width to fix overlap */
+  width: 8px;
   background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: hsl(var(--primary) / 0.3);
-  border-radius: 1px; /* Adjusted radius */
+  border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--primary) / 0.5);
+}
+
+body::-webkit-scrollbar {
+    width: 12px;
+}
+body::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+}
+body::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--primary) / 0.4);
+    border-radius: 6px;
+    border: 3px solid hsl(var(--background));
+}
+body::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary) / 0.6);
 }
 
 
