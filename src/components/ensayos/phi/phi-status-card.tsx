@@ -50,23 +50,32 @@ export function PhiStatusCard({ ensayo }: PhiStatusCardProps) {
 
     const handleEmailClick = () => {
         const inicio = new Date(ensayo.fechaInicio);
+        const ahora = new Date();
+        const transcurridoHoras = (ahora.getTime() - inicio.getTime()) / (1000 * 60 * 60);
+
         const fechaFinEstimada = new Date(inicio.getTime() + ensayo.horas * 60 * 60 * 1000);
         
         const to = 'vlutz@polifusion.cl;cmunizaga@polifusion.cl;juribe@smartpipes.cl';
         const subject = `Solicitud de Liberación: Ensayo ${ensayo.producto}`;
+
+        const saludo = transcurridoHoras >= 50
+            ? 'Favor liberar tuberías.'
+            : 'Notificación de Ensayo en Proceso:';
+
         const body = `
-Favor liberar tuberías.
+${saludo}
 
 --------------------------------------------------
 Producto: ${ensayo.producto}
 Inicio Ensayo: ${format(inicio, 'dd-MM-yyyy HH:mm')}
 Fin Estimado: ${format(fechaFinEstimada, 'dd-MM-yyyy HH:mm')}
 Horas Totales: ${ensayo.horas}
+Horas Transcurridas: ${transcurridoHoras.toFixed(2)}
 Color de Raya: ${ensayo.raya}
 --------------------------------------------------
 
 Atte.,
-        `.trim().replace(/^\s+/gm, ''); // Remove leading spaces from each line
+        `.trim().replace(/^\s+/gm, '');
 
         const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
