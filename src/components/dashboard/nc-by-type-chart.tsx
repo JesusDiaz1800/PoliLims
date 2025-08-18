@@ -53,12 +53,12 @@ const NonConformitiesByTypeChartInternal = ({ data, isModal = false }: NonConfor
                       <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorNc2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--chart-5))" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-5))" stopOpacity={0.2}/>
                   </linearGradient>
                    <linearGradient id="colorNc3" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.2}/>
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.7}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                   </linearGradient>
               </defs>
               <Tooltip
