@@ -4,8 +4,6 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Inter, Space_Grotesk, Orbitron } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
-import { DynamicDataProvider } from '@/context/data-context';
-import { getInitialData } from '@/services/data-service';
 import RootPrefetch from '@/components/root-prefetch';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -23,7 +21,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialData = await getInitialData();
 
   return (
     <html lang="es" suppressHydrationWarning>
@@ -34,11 +31,9 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <DynamicDataProvider initialData={initialData}>
             {children}
             <Toaster />
             <RootPrefetch />
-          </DynamicDataProvider>
         </ThemeProvider>
       </body>
     </html>
