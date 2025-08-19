@@ -127,7 +127,7 @@ export default function MainPageContent() {
                         className="w-full"
                     >
                         <div className="flex items-center justify-between">
-                            <CardTitle>Filtros &amp; Actividad</CardTitle>
+                            <CardTitle>Filtros & Actividad</CardTitle>
                             <CollapsibleTrigger asChild>
                                 <Button variant="ghost" size="sm" className="w-9 p-0">
                                 <SlidersHorizontal className="h-4 w-4" />

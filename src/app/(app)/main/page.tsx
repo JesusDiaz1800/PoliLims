@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 export default function MainPage() {
   const { theme } = useTheme();
   return (
-    <div className={cn(theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')}>
+    <div className={cn(theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light', '-m-6')}>
       <div className="background-overlay" />
       <div className="relative z-10">
         <MainPageContent />

@@ -212,7 +212,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
 }
 
 const pageTitles: Record<string, string> = {
-    '/main': 'Dashboard',
+    '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
     '/equipos/programa': 'Programa de Calibración y Mantenimiento',
@@ -250,7 +250,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -338,7 +338,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
   const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
   const pageTitle = getPageTitle();
-  const isDashboard = pathname === '/main';
+  const isDashboard = pathname === '/dashboard';
 
   return (
     <div className="flex min-h-screen w-full">
@@ -382,7 +382,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
                 const isDisabled =
                     isInspectorView &&
-                    !["/main", "/ensayos/control-rutinario"].some((p) =>
+                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
                     item.href?.startsWith(p)
                     );
 
@@ -409,7 +409,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
                 const isActive =
                     pathname === item.href ||
-                    (item.href && item.href !== "/main" && pathname.startsWith(item.href));
+                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
 
                 return (
                     <SidebarMenuItem key={item.href || index}>
@@ -506,7 +506,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className="custom-scrollbar"
+                className="p-6 custom-scrollbar"
                 role="main"
                 tabIndex={-1}
             >
