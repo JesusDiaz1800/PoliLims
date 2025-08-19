@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -21,20 +21,7 @@ type StatsCardProps = {
 };
 
 const StatsCardInternal = ({ title, value, description, icon: Icon, href, trend, trendDirection }: StatsCardProps) => {
-    const router = useRouter();
-
-    const handlePrefetch = () => {
-        if (href) {
-            router.prefetch(href);
-        }
-    };
     
-    const handleClick = () => {
-        if (href) {
-            router.push(href);
-        }
-    };
-
     const isPositive = (trend === 'up' && trendDirection === 'positive') || (trend === 'down' && trendDirection === 'negative');
     const isNegative = (trend === 'up' && trendDirection === 'negative') || (trend === 'down' && trendDirection === 'positive');
     
@@ -44,15 +31,12 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href, trend,
       isNegative && "text-red-600 dark:text-red-500",
     );
 
-
-    return (
-        <Card 
+    const cardContent = (
+         <Card 
             className={cn(
-                "transition-colors card-glass", 
+                "transition-colors card-glass w-full h-full", 
                 href && "hover:bg-muted/50 cursor-pointer"
             )}
-            onMouseEnter={handlePrefetch}
-            onClick={handleClick}
         >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{title}</CardTitle>
@@ -64,6 +48,17 @@ const StatsCardInternal = ({ title, value, description, icon: Icon, href, trend,
             </CardContent>
         </Card>
     );
+
+
+    if (href) {
+        return (
+            <Link href={href} className="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">
+                {cardContent}
+            </Link>
+        )
+    }
+
+    return cardContent;
 };
 
 export const StatsCard = React.memo(StatsCardInternal);
