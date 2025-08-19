@@ -23,11 +23,17 @@ Primero, necesitas una copia local del código que has estado editando en Fireba
     firebase login
     ```
 
-3.  **Clona el repositorio desde Firebase App Hosting:** Necesitarás tu ID de Proyecto y el ID del Repositorio.
-    -   Puedes encontrar el **ID del Proyecto** en la configuración de tu proyecto de Firebase (el icono del engranaje).
-    -   El **ID del Repositorio** lo puedes obtener listando tus repositorios con el comando: `firebase apphosting:repositories:list --project TU_ID_DE_PROYECTO`
+3.  **Obtén tu ID de Proyecto y ID de Repositorio desde la Consola de Firebase:**
 
-    Una vez que tengas ambos, ejecuta el siguiente comando reemplazando los valores:
+    *   Ve a la [**Consola de Firebase**](https://console.firebase.google.com/).
+    *   Selecciona tu proyecto.
+    *   En el menú de la izquierda, bajo la sección **Build**, haz clic en **App Hosting**.
+    *   Selecciona tu backend.
+    *   El **ID del Proyecto** es visible en la configuración del proyecto (ícono de engranaje).
+    *   El **ID del Repositorio** lo verás en el panel de control de tu backend. Usualmente aparece en el comando `git clone` de ejemplo. Es una cadena de texto larga (ej: `polilims-app-backend-xxxx`).
+
+4.  **Clona el repositorio desde Firebase App Hosting:**
+    Una vez que tengas ambos IDs, ejecuta el siguiente comando en la terminal de tu computadora, reemplazando los valores:
     ```bash
     firebase apphosting:repositories:clone ID_DEL_REPOSITORIO --project=TU_ID_DE_PROYECTO
     ```
