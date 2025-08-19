@@ -76,7 +76,7 @@ export default function MainPageContent() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
   
   return (
-    <div className={cn("flex-1 space-y-4", theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')}>
+    <div className={cn("flex-1 space-y-4", theme === 'dark' ? 'dark' : '')}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" trend="up" trendDirection="positive" />
             <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} trend="up" trendDirection="positive"/>
