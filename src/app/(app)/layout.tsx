@@ -6,14 +6,11 @@ import { findUserByUsername } from '@/services/user-service';
 
 export default async function AppLayout({ 
     children,
-    searchParams
 }: { 
     children: React.ReactNode,
-    searchParams: { [key: string]: string | string[] | undefined }
 }) {
-    // In a real app, user would come from session. For the prototype, we get it from the URL.
-    const username = (searchParams?.user as string) || 'jdiaz'; 
-    const user = await findUserByUsername(username); 
+    // In a real app, user would come from session. For the prototype, we use a default user.
+    const user = await findUserByUsername('jdiaz'); 
 
     return (
         <Suspense fallback={<Loading />}>

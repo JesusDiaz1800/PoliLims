@@ -1,51 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import type { Metadata } from 'next';
-import { LogoAlt } from "@/components/logo-alt";
-import { handleLogin } from "./actions";
 
-export const metadata: Metadata = {
-  title: 'Iniciar Sesión | PoliLIMS',
-};
+import { redirect } from "next/navigation";
 
+// This page is no longer used. Redirect to the main app dashboard.
 export default function LoginPage() {
-
-  return (
-    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
-       <div className="absolute inset-0 -z-10 h-full w-full bg-card dark:bg-gray-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-       
-      <Card className="w-full max-w-md shadow-2xl animate-in fade-in-0 slide-in-from-bottom-2 duration-700">
-        <CardHeader className="text-center space-y-4 pt-8">
-            <div className="mx-auto h-14 w-36">
-              <LogoAlt />
-            </div>
-          <CardTitle className="text-3xl font-headline">Bienvenido a PoliLIMS</CardTitle>
-          <CardDescription>Ingrese sus credenciales para acceder al sistema de gestión del laboratorio.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action={handleLogin} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <Input name="email" id="email" type="email" placeholder="nombre.apellido@polifusion.cl" required defaultValue="jdiaz@polifusion.cl" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Contraseña</Label>
-                <Link href="#" className="text-sm text-primary hover:underline">
-                  ¿Olvidó su contraseña?
-                </Link>
-              </div>
-              <Input name="password" id="password" type="password" required defaultValue="password" />
-            </div>
-            <Button type="submit" className="w-full !mt-8 h-11 text-base font-semibold">
-                Ingresar al Sistema
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    redirect('/dashboard');
 }

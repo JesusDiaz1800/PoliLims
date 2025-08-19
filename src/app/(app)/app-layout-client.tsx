@@ -25,7 +25,6 @@ export default function AppLayoutClient({
     }, [user, setUser]);
 
     if (!user) {
-        // You can return a loader here or null if the app layout shouldn't be rendered without a user.
         return null;
     }
     

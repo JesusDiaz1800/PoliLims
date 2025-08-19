@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -143,7 +143,7 @@ const bibliotecaSubMenu = [
     { href: '/reports/biblioteca', label: 'Informes', icon: FileSearch },
 ];
 
-function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
+function NavCollapsible({ item, pathname, disabled = false, isSearchActive }: { item: any; pathname: string; disabled?: boolean; isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
   const defaultOpen = isSearchActive || pathname.startsWith(item.href);
   const isActive = pathname.startsWith(item.href);
@@ -182,7 +182,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
+                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} isSearchActive={isSearchActive}/>;
               }
               const isSubItemActive = pathname === subItem.href;
 
@@ -197,7 +197,7 @@ function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchA
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={`${subItem.href}?${userQuery}`} className="relative">
+                    <Link href={`${subItem.href}`} className="relative">
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                       <span className="text-sm">{subItem.label}</span>
                     </Link>
@@ -284,11 +284,9 @@ const menuItems = (toggleChat: () => void): any[] => [
 
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
-  const userQuery = searchParams.get('user') ? `user=${searchParams.get('user')}` : '';
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const getPageTitle = React.useCallback(() => {
@@ -401,7 +399,6 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         item={item}
                         pathname={pathname}
                         disabled={isDisabled}
-                        userQuery={userQuery}
                         isSearchActive={!!searchTerm}
                     />
                     );
@@ -423,7 +420,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                         className="px-3"
                     >
                         <Link
-                        href={`${item.href}?${userQuery}`}
+                        href={item.href}
                         onClick={(e) => handleMenuClick(e, item.onClick)}
                         >
                         <div className="flex items-center gap-3">
@@ -510,6 +507,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 role="main"
                 tabIndex={-1}
             >
+                {isDashboard && <WelcomeBanner user={user} />}
                 {children}
             </main>
         </div>

@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { ThroughputTrendChart } from "@/components/dashboard/throughput-trend-chart";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFilters } from "@/context/filter-context";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
 
@@ -39,29 +40,8 @@ export default function MainPageContent() {
 
   const [isFiltersOpen, setIsFiltersOpen] = React.useState(false);
 
-  const filteredEnsayos = React.useMemo(() => {
-    // Note: Filters are currently mocked. In a real app, you'd use state from DashboardFilters.
-    const analystParam = 'all';
-    const statusParam = 'all';
-    const typeParam = 'all';
+  const { filteredData: filteredEnsayos } = useFilters(ensayos, ['id', 'producto', 'analista', 'lote']);
 
-    return ensayos.filter(e => {
-        try {
-            const analystFilter = analystParam === 'all' || e.analista === analystParam;
-            const typeFilter = typeParam === 'all' || e.tipo === typeParam;
-            
-            const statusFilter = statusParam === 'all' ||
-                (statusParam === 'aprobado' && e.estado === 'Aprobado') ||
-                (statusParam === 'rechazado' && e.estado === 'Rechazado') ||
-                (statusParam === 'pendiente' && pendingStatuses.includes(e.estado));
-
-            return analystFilter && typeFilter && statusFilter;
-        } catch (error) {
-            console.error("Error filtering assays:", error);
-            return false;
-        }
-    });
-  }, [ensayos]);
 
   const { totalFilteredAssays, approvalPercentage, pendingAssays } = React.useMemo(() => {
     const total = filteredEnsayos.length;
@@ -96,11 +76,7 @@ export default function MainPageContent() {
   const openNcCount = (noConformidades || []).filter(nc => nc.estado === "Abierta").length;
   
   return (
-    <div className={cn("flex-1 space-y-4 p-6 md:p-10", theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')}>
-      <div className="background-overlay" />
-      <div className="relative z-10">
-        <WelcomeBanner user={user} />
-        
+    <div className={cn("flex-1 space-y-4", theme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <StatsCard title="Total Ensayos" value={totalFilteredAssays.toString()} description="+5.2% vs. mes anterior" icon={Target} href="/ensayos/seguimiento" trend="up" trendDirection="positive" />
             <StatsCard title="% Aprobación" value={`${approvalPercentage.toFixed(1)}%`} description="+1.2% vs. mes anterior" icon={Percent} trend="up" trendDirection="positive"/>
@@ -187,7 +163,6 @@ export default function MainPageContent() {
                 <CardContent className="h-[240px]"><NonConformitiesByTypeChart data={noConformidades || []} /></CardContent>
             </Card>
         </div>
-      </div>
     </div>
   );
 }

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { Hand } from "lucide-react";
@@ -20,7 +19,7 @@ const WelcomeBannerInternal = ({ user }: WelcomeBannerProps) => {
   }
 
   return (
-    <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+    <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300 mb-6">
         <div className="flex items-center gap-4">
             <SidebarTrigger aria-label="Toggle sidebar" />
             <div className="flex-1">
