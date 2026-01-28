@@ -1,15 +1,29 @@
 "use client";
 
 import * as React from 'react';
+import { useTheme } from 'next-themes';
 import MainPageContent from '@/components/dashboard/main-page-content';
-import { FilterProvider } from '@/context/filter-context';
+import { cn } from '@/lib/utils';
 
-export default function DashboardPage() {
-  // El contenido del dashboard ahora se renderiza en su propia ruta, 
-  // asegurando que siempre esté dentro del AppShell y el layout principal.
+export default function MainPage() {
+  const { theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Evitar hidratación usando un estado inicial consistente
+  const themeClass = mounted 
+    ? (resolvedTheme === 'dark' ? 'dashboard-futurista' : 'dashboard-light')
+    : 'dashboard-futurista'; // Estado inicial consistente
+
   return (
-    <FilterProvider>
+    <div className={cn(themeClass, "relative min-h-screen overflow-hidden")}>
+      <div className="background-overlay" />
+      <div className="relative z-10">
         <MainPageContent />
-    </FilterProvider>
+      </div>
+    </div>
   );
 }

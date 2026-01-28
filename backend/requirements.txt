@@ -1,0 +1,69 @@
+# Django y REST Framework
+Django==5.2.5
+djangorestframework==3.16.1
+django-cors-headers==4.7.0
+django-filter==25.1
+django-extensions==4.1.0
+
+# Base de datos
+psycopg2-binary==2.9.10
+
+# Configuración y utilidades
+python-decouple==3.8
+
+# Tareas asíncronas
+celery==5.5.3
+redis==6.4.0
+
+# Generación de reportes
+reportlab==4.1.0
+openpyxl==3.1.2
+xlsxwriter==3.2.0
+
+# Autenticación y seguridad
+djangorestframework-simplejwt==5.3.1
+django-oauth-toolkit==2.3.0
+
+# Validación y serialización
+marshmallow==3.21.0
+drf-yasg==1.21.7
+
+# Monitoreo y logging
+sentry-sdk==2.17.0
+structlog==24.1.0
+
+# Optimización y cache
+django-redis==5.4.0
+django-cacheops==8.1.0
+
+# Archivos y media
+Pillow==10.4.0
+django-storages==1.14.2
+
+# Testing
+pytest==8.0.0
+pytest-django==4.8.0
+factory-boy==3.3.0
+
+# Desarrollo
+django-debug-toolbar==4.3.0
+django-extensions==4.1.0
+
+# Producción
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Monitoreo del sistema
+psutil==6.1.0
+
+# Validación de datos
+cerberus==1.3.5
+
+# Compresión
+django-compressor==4.4
+
+# Internacionalización
+django-modeltranslation==0.19.0
+
+# API Documentation
+drf-spectacular==0.27.0

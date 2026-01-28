@@ -67,6 +67,7 @@ export default function UsuariosPage() {
         );
 
     return (
+        <div className="page-container">
         <Card>
             <CardHeader>
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -129,7 +130,7 @@ export default function UsuariosPage() {
                                 </TableCell>
                                 <TableCell>{user.role}</TableCell>
                                 <TableCell>
-                                    <Badge variant="outline" className="text-green-600 border-green-600/50 bg-green-500/10">Activo</Badge>
+                                    <Badge variant="outline" className="text-[#126FCC] border-[#126FCC]/50 bg-[#126FCC]/10">Activo</Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
                                     <DropdownMenu>
@@ -157,5 +158,6 @@ export default function UsuariosPage() {
                 </Table>
             </CardContent>
         </Card>
+        </div>
     );
 }

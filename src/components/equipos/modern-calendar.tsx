@@ -24,6 +24,7 @@ import { ScrollArea } from '../ui/scroll-area';
 interface CalendarioEvento {
   title: string;
   start: Date;
+  allDay: boolean;
   color: string;
   equipo: any;
 }

@@ -17,7 +17,7 @@ import { CalendarIcon, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { LucideIcon } from 'lucide-react';
 
-interface FormFieldConfig {
+export interface FormFieldConfig {
     name: string;
     label: string;
     type: 'text' | 'number' | 'email' | 'tel' | 'date' | 'select' | 'textarea';
@@ -104,7 +104,7 @@ export function GenericFormPage({ title, description, icon: Icon, formFields, fo
                                                 <Popover>
                                                     <PopoverTrigger asChild>
                                                         <Button
-                                                            variant={"outline"}
+                                                            variant="outline"
                                                             className={cn("w-full justify-start text-left font-normal", !formField.value && "text-muted-foreground")}
                                                         >
                                                             <CalendarIcon className="mr-2 h-4 w-4" />

@@ -27,6 +27,15 @@ export default function ControlAmbientalPageContent() {
 
     const usuarios = ["Jesus Diaz", "Maximiliano Miranda", "Antonia Figueroa", "Robinson Córdova", "Bryan Vásquez"];
 
+    // Wrapper for type compatibility
+    const handleAddCondicionAmbiental = async (condicion: Omit<CondicionAmbiental, "timestamp" | "id">) => {
+        await addCondicionAmbiental(condicion);
+    };
+
+    const handleAddRecentActivity = async (activity: { user: string; action: string; }) => {
+        await addRecentActivity(activity as any);
+    };
+
     return (
         <div className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -41,13 +50,13 @@ export default function ControlAmbientalPageContent() {
                         </div>
                     </CardHeader>
                     <CardContent className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-                       {zonas.map(zona => {
+                       {zonas.map((zona, index) => {
                            const ultimaLecturaZona = condicionesAmbientales
                                 .filter(c => c.zona === zona)
                                 .sort((a,b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())[0];
                            return (
                                 <AmbientalStatsCard 
-                                    key={zona}
+                                    key={`zona-${zona}-${index}`}
                                     zona={zona}
                                     ultimaLectura={ultimaLecturaZona}
                                     limites={limites[zona]}
@@ -65,8 +74,8 @@ export default function ControlAmbientalPageContent() {
                         <RegistroAmbientalForm
                             zonas={zonas}
                             usuarios={usuarios}
-                            onAddRecord={addCondicionAmbiental}
-                            onAddActivity={addRecentActivity}
+                            onAddRecord={handleAddCondicionAmbiental}
+                            onAddActivity={handleAddRecentActivity}
                         />
                     </CardContent>
                 </Card>

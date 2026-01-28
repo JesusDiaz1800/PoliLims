@@ -48,23 +48,23 @@ function TuberiasPpPageContent() {
     }, [ensayos]);
 
     return (
-        <div className="space-y-6">
+        <div className="page-container space-y-6">
             <EnsayosProductoTerminadoTable
                 ensayos={ppEnsayos}
                 tipoEnsayo="PP"
                 onOpenDialog={handleOpenDialog}
                 user={user}
             />
-            {selectedEnsayo && (
-                 <EnsayoProductoTerminadoDialog
-                    isOpen={isDialogOpen}
-                    onClose={handleCloseDialog}
-                    ensayo={selectedEnsayo}
-                    tipo="PP"
-                    user={user}
-                    defaultTab={activeTab}
-                 />
-            )}
+                    {selectedEnsayo && user && (
+                          <EnsayoProductoTerminadoDialog
+                              isOpen={isDialogOpen}
+                              onClose={handleCloseDialog}
+                              ensayo={selectedEnsayo}
+                              tipo="PP"
+                              user={user}
+                              defaultTab={activeTab}
+                          />
+                    )}
         </div>
     );
 }

@@ -328,7 +328,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
                       <AlertDialog>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost">
+                                <Button>
                                   <MoreHorizontal className="h-4 w-4" />
                                   <span className="sr-only">Acciones</span>
                                 </Button>
@@ -347,7 +347,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
                                 )}
                                 <DropdownMenuSeparator />
                                 <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem className="text-destructive" onSelect={(e) => e.preventDefault()}>
+                                    <DropdownMenuItem className="text-destructive" onSelect={(e: React.MouseEvent) => e.preventDefault()}>
                                         <Trash2 className="mr-2 h-4 w-4" />
                                         Eliminar
                                     </DropdownMenuItem>
@@ -391,7 +391,7 @@ const MateriaPrimaTableInternal = ({ ensayos, onAddNew, onEdit, user }: MateriaP
             ensayo={selectedEnsayo}
             user={user}
             updateEnsayo={updateEnsayo}
-            addRecentActivity={addRecentActivity}
+            addRecentActivity={async (activity) => { await addRecentActivity(activity); }}
         />
     )}
     </>

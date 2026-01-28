@@ -35,7 +35,7 @@ export async function getKnowledgeBaseFiles(): Promise<KnowledgeBaseFile[]> {
                 return null;
             })
         );
-        return fileDetails.filter((file): file is KnowledgeBaseFile => file !== null);
+        return fileDetails.filter((file) => file !== null) as KnowledgeBaseFile[];
     } catch (error) {
         console.error('Failed to read knowledge base directory:', error);
         // Return an empty array if the directory doesn't exist, which is not an error in some cases

@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useDynamicData, type NoConformidad } from "@/context/data-context";
 import { Textarea } from "../ui/textarea";
@@ -56,7 +57,7 @@ export function NoConformidadForm({
     equiposImplicados
 }: NoConformidadFormProps) {
   const { toast } = useToast();
-  const { addIncidencia, updateIncidencia, addRecentActivity } = useDynamicData();
+  const { addNoConformidad, updateNoConformidad, addRecentActivity } = useDynamicData();
   const isEditing = !!incidenciaToEdit;
 
   const defaultValues = React.useMemo(() => ({
@@ -91,7 +92,7 @@ export function NoConformidadForm({
 
     try {
       if (isEditing && incidenciaToEdit) {
-        await updateIncidencia(incidenciaToEdit.id, incidenciaData);
+        await updateNoConformidad(incidenciaToEdit.id, incidenciaData);
         await addRecentActivity({
           user: data.responsable,
           action: `actualizó la no conformidad ${incidenciaToEdit.id}`,
@@ -102,7 +103,7 @@ export function NoConformidadForm({
         });
       } else {
         const { id, ...newIncidenciaData } = incidenciaData;
-        await addIncidencia(newIncidenciaData);
+        await addNoConformidad(newIncidenciaData);
         await addRecentActivity({
           user: data.responsable,
           action: `registró una nueva no conformidad de tipo '${data.tipo}'`,

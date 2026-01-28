@@ -1,0 +1,243 @@
+{
+  "name": "PoliLims - Sistema de Gestión de Laboratorio",
+  "short_name": "PoliLims",
+  "description": "Sistema integral de gestión de laboratorio para el control de calidad y ensayos",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "science"],
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Acceso rápido al dashboard principal",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/icons/dashboard-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Nuevo Ensayo",
+      "short_name": "Ensayo",
+      "description": "Crear un nuevo ensayo",
+      "url": "/ensayos",
+      "icons": [
+        {
+          "src": "/icons/ensayo-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Equipos",
+      "short_name": "Equipos",
+      "description": "Gestionar equipos de laboratorio",
+      "url": "/equipos",
+      "icons": [
+        {
+          "src": "/icons/equipos-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "short_name": "Reportes",
+      "description": "Generar reportes",
+      "url": "/reports",
+      "icons": [
+        {
+          "src": "/icons/reports-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard principal de PoliLims"
+    },
+    {
+      "src": "/screenshots/dashboard-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard móvil de PoliLims"
+    },
+    {
+      "src": "/screenshots/ensayos-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Gestión de ensayos"
+    },
+    {
+      "src": "/screenshots/equipos-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Control de equipos"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+polilims",
+      "url": "/?protocol=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/upload",
+      "accept": {
+        "application/pdf": [".pdf"],
+        "image/*": [".png", ".jpg", ".jpeg", ".gif"],
+        "text/csv": [".csv"],
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+        "application/vnd.ms-excel": [".xls"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "application/pdf", "text/csv"]
+        }
+      ]
+    }
+  },
+  "handle_links": "preferred",
+  "scope_extensions": [
+    {
+      "origin": "https://api.polilims.com"
+    }
+  ],
+  "capture_links": "existing-client-navigate",
+  "permissions": [
+    "notifications",
+    "background-sync",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "/sw.js",
+    "type": "module"
+  },
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "description": "PoliLims es el sistema de gestión de laboratorio más avanzado del mundo, diseñado para optimizar el control de calidad y la gestión de ensayos en laboratorios de todo tipo.",
+  "author": "PoliLims Team",
+  "version": "1.0.0",
+  "homepage_url": "https://polilims.com",
+  "developer": {
+    "name": "PoliLims Development Team",
+    "url": "https://polilims.com/developers"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/polilims/polilims"
+  },
+  "bugs": {
+    "url": "https://github.com/polilims/polilims/issues"
+  },
+  "keywords": [
+    "LIMS",
+    "laboratorio",
+    "gestión",
+    "calidad",
+    "ensayos",
+    "análisis",
+    "control",
+    "productividad"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

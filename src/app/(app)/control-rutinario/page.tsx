@@ -65,7 +65,7 @@ export default function ControlRutinarioPage() {
     setIsDialogOpen(false);
   };
   
-  const productOptions = matrizProductos.map(p => ({
+  const productOptions = matrizProductos.map((p: { producto: string }) => ({
     value: p.producto,
     label: p.producto,
   }));

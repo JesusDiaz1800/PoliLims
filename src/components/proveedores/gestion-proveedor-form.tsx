@@ -47,7 +47,7 @@ export function GestionProveedorForm({ proveedorToEdit, onFormSubmit }: GestionP
       contacto_nombre: proveedorToEdit?.contacto_nombre || "",
       contacto_email: proveedorToEdit?.contacto_email || "",
       contacto_telefono: proveedorToEdit?.contacto_telefono || "",
-      estado: proveedorToEdit?.estado || 'Activo',
+      estado: (proveedorToEdit?.estado as 'Activo' | 'En evaluación' | 'Inactivo') || 'Activo',
       certificacionesISO: proveedorToEdit?.certificacionesISO || "",
       contratoUrl: proveedorToEdit?.contratoUrl || "",
       observaciones: proveedorToEdit?.observaciones || "",

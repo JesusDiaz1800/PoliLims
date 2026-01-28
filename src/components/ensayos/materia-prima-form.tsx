@@ -275,7 +275,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
   }
 
   return (
-    <Form form={form} onSubmit={handleSubmit(onSubmit)}>
+    <Form form={form} onSubmit={onSubmit}>
         {/* SECCIÓN GENERAL */}
         <Card>
           <CardHeader>
@@ -293,7 +293,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                   <PopoverTrigger asChild>
                     <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={"secondary"}
                       className={cn(
                         "w-full justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
@@ -423,7 +423,7 @@ export function MateriaPrimaForm({ analistas, ensayoToEdit, onFormSubmit, defaul
                         ))}
                         <Button
                           type="button"
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           onClick={() => append({ value: '' })}
                         >

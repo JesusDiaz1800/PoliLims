@@ -184,7 +184,7 @@ const Sidebar = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "hidden md:flex flex-col h-screen sticky top-0 transition-[width] duration-300 ease-in-out bg-[#1C3664]",
+          "hidden md:flex flex-col h-screen sticky top-0 transition-[width] duration-300 ease-in-out",
           state === 'collapsed' ? 'w-[--sidebar-width-icon]' : 'w-[--sidebar-width]',
           className
         )}

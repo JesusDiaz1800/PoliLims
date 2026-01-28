@@ -43,7 +43,9 @@ export default function NoConformidadesPageContent() {
         incidencias={noConformidades}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
-        onDelete={deleteIncidencia}
+        onDelete={async (id: string) => {
+          await deleteIncidencia(id);
+        }}
         initialStatusFilter={initialStatusFilter}
       />
       <NoConformidadDialog

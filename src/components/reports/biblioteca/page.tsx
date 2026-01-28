@@ -16,7 +16,9 @@ export default function BibliotecaInformesPage() {
   
   return (
     <div className="space-y-6">
-      <BibliotecaInformesTable informes={generatedReports} onDelete={deleteGeneratedReport} />
+      <BibliotecaInformesTable informes={generatedReports} onDelete={async (id: string) => {
+        await deleteGeneratedReport(id);
+      }} />
     </div>
   );
 }

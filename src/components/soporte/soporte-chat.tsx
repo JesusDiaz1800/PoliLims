@@ -1,8 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef, useState, useTransition } from 'react';
-import { getSoporteSuggestion } from '@/app/(app)/soporte/actions';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from '../ui/scroll-area';
 import { ChatMessage } from './chat-message';
@@ -11,53 +10,58 @@ import { WelcomeMessage } from './welcome-message';
 import { Button } from '../ui/button';
 import { SheetClose } from '../ui/sheet';
 import { useRouter, useSearchParams } from 'next/navigation';
-
+import { getLabAssistantResponse } from '@/services/ai-service';
 
 export interface ChatMessage {
     role: 'user' | 'assistant';
     content: string;
 }
 
-const initialState = { message: '', data: null, error: null, fieldErrors: null };
-
 export function SoporteChat() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [state, formAction] = useActionState(getSoporteSuggestion, initialState);
     const { toast } = useToast();
     const [history, setHistory] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState('');
-    const [isPending, startTransition] = useTransition();
+    const [isLoading, setIsLoading] = useState(false);
 
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
 
-    useEffect(() => {
-        if (state.message === "Failed to get suggestion from AI.") {
+    const handleSubmit = async (formData: FormData) => {
+        const prompt = formData.get('prompt') as string;
+        if (!prompt || isLoading) return;
+
+        setIsLoading(true);
+        const userMessage = { role: 'user' as const, content: prompt };
+        setHistory(prev => [...prev, userMessage]);
+        setInput('');
+
+        try {
+            const response = await getLabAssistantResponse(prompt);
+            
+            if (response.success && response.data) {
+                const assistantMessage = { role: 'assistant' as const, content: response.data };
+                setHistory(prev => [...prev, assistantMessage]);
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Error de IA",
+                    description: "No se pudo obtener una respuesta del asistente.",
+                });
+                // Remove the last user message if AI fails
+                setHistory(prev => prev.slice(0, -1));
+            }
+        } catch (error) {
             toast({
                 variant: "destructive",
                 title: "Error de IA",
-                description: state.error || "Ocurrió un error desconocido.",
+                description: "Ocurrió un error al procesar tu solicitud.",
             });
             // Remove the last user message if AI fails
-             setHistory(prev => prev.slice(0, -1));
-        } else if (state.data?.response) {
-            setHistory(prev => [...prev, { role: 'assistant', content: state.data.response }]);
-            if (state.data.navigation) {
-                const userQuery = searchParams.toString();
-                router.push(`${state.data.navigation}?${userQuery}`);
-            }
-        }
-    }, [state, toast, router, searchParams]);
-    
-    const handleFormAction = (formData: FormData) => {
-        const prompt = formData.get('prompt') as string;
-        if (prompt) {
-            startTransition(() => {
-                setHistory(prev => [...prev, { role: 'user', content: prompt }]);
-                formAction(formData);
-            });
-            setInput('');
+            setHistory(prev => prev.slice(0, -1));
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -89,16 +93,22 @@ export function SoporteChat() {
                         {history.map((msg, index) => (
                             <ChatMessage key={index} role={msg.role} content={msg.content} />
                         ))}
+                        {isLoading && (
+                            <ChatMessage 
+                                role="assistant" 
+                                content="Pensando..." 
+                            />
+                        )}
                     </div>
                 )}
             </ScrollArea>
             <ChatInputForm 
                 formRef={formRef}
-                formAction={handleFormAction} 
+                formAction={handleSubmit} 
                 history={history}
                 input={input}
                 onInputChange={setInput}
-                isPending={isPending}
+                isPending={isLoading}
             />
             <div className="p-4 border-t bg-background">
                 <SheetClose asChild>

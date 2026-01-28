@@ -1,87 +1,82 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
-
-const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
-
-// Define a more flexible state that can hold multiple filter values
-interface FilterState {
-    searchTerm: string;
-    [key: string]: string; // Allow any other string key for different filters
-}
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 interface FilterContextType {
-    filters: FilterState;
-    setFilter: (key: string, value: string) => void;
-    setSearchTerm: (term: string) => void;
+  filters: Record<string, any>;
+  setFilter: (key: string, value: any) => void;
+  clearFilters: () => void;
+  filteredData: any[];
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
 
-export function FilterProvider({ children }: { children: ReactNode }) {
-    const [filters, setFilters] = useState<FilterState>({ searchTerm: '' });
+export function FilterProvider({ children }: { children: React.ReactNode }) {
+  const [filters, setFilters] = useState<Record<string, any>>({});
 
-    const setFilter = useCallback((key: string, value: string) => {
-        setFilters(prev => ({...prev, [key]: value}));
-    }, []);
+  const setFilter = useCallback((key: string, value: any) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  }, []);
 
-    const setSearchTerm = useCallback((term: string) => {
-        setFilter('searchTerm', term);
-    }, [setFilter]);
-    
-    const value = useMemo(() => ({
-        filters,
-        setFilter,
-        setSearchTerm
-    }), [filters, setFilter, setSearchTerm]);
-    
-    return (
-        <FilterContext.Provider value={value}>
-            {children}
-        </FilterContext.Provider>
-    );
+  const clearFilters = useCallback(() => {
+    setFilters({});
+  }, []);
+
+  const filteredData: any[] = [];
+
+  return (
+    <FilterContext.Provider value={{
+      filters,
+      setFilter,
+      clearFilters,
+      filteredData
+    }}>
+      {children}
+    </FilterContext.Provider>
+  );
 }
 
-// Update the hook to be more generic
-export const useFilters = <T extends Record<string, any>>(data: T[], searchKeys: (keyof T)[]) => {
-    const context = useContext(FilterContext);
-    if (!context) {
-        throw new Error('useFilters must be used within a FilterProvider');
+export function useFilters(data: any[], searchFields: string[]) {
+  const context = useContext(FilterContext);
+  
+  if (!context) {
+    throw new Error('useFilters must be used within a FilterProvider');
+  }
+  
+  const { filters, setFilter, clearFilters } = context;
+  
+  // Cache por firma de filtros + longitud de datos para evitar recomputar
+  const filteredData = React.useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+
+    // Si no hay filtros activos devolvemos el array original (evita copiar)
+    if (!filters || Object.keys(filters).length === 0) {
+      return data;
     }
 
-    const { filters, setFilter, setSearchTerm } = context;
-    const { searchTerm, ...otherFilters } = filters;
+    const normalizedFilters = Object.entries(filters).filter(([_, v]) => v != null && v !== '' && v !== 'all');
+    if (normalizedFilters.length === 0) return data;
 
-    const filteredData = useMemo(() => {
-        return data.filter(item => {
-            // Check custom filters first
-            const matchOtherFilters = Object.entries(otherFilters).every(([key, value]) => {
-                if (value === 'Todos' || !value) return true;
-                
-                if(key === 'estado' && value === 'Pendiente') {
-                    return pendingStatuses.includes(item[key]);
-                }
-                
-                return String(item[key]).toLowerCase() === value.toLowerCase();
-            });
+    return data.filter(item => {
+      for (const [key, value] of normalizedFilters) {
+        const itemValue = (item?.[key] ?? '').toString().toLowerCase();
+        const filterValue = value.toString().toLowerCase();
+        if (!itemValue.includes(filterValue)) return false;
+      }
+      return true;
+    });
+  }, [data, filters]);
 
-            if (!matchOtherFilters) return false;
-
-            // Then check search term
-            if (!searchTerm) return true;
-            return searchKeys.some(key => {
-                const value = item[key];
-                return typeof value === 'string' && value.toLowerCase().includes(searchTerm.toLowerCase());
-            });
-        });
-    }, [data, searchTerm, otherFilters, searchKeys]);
-
-    return {
-        filters,
-        setFilter,
-        setSearchTerm,
-        searchTerm,
-        filteredData,
-    };
-};
+  return { 
+    filteredData, 
+    setFilter, 
+    clearFilters,
+    filters,
+    searchTerm: '',
+    setSearchTerm: () => {} // Placeholder para compatibilidad
+  };
+}

@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-08-21T19:17:46.224Z",
+  "backend_url": "http://localhost:8000/api",
+  "summary": {
+    "usuarios": 0,
+    "equipos": 0,
+    "proveedores": 0,
+    "noConformidades": 0,
+    "ensayos": 0
+  },
+  "details": {
+    "ensayos": [],
+    "equipos": [],
+    "proveedores": [],
+    "noConformidades": [],
+    "usuarios": []
+  }
+}

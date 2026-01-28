@@ -95,7 +95,15 @@ export function EquipoDetailsDialog({ isOpen, onClose, onEdit, equipo }: EquipoD
                       <div className="md:col-span-1">
                           <div className="relative w-full h-64 rounded-lg bg-muted flex items-center justify-center overflow-hidden border">
                               {equipo.fotoUrl ? (
-                              <Image src={equipo.fotoUrl} alt={equipo.nombre} layout="fill" objectFit="contain" />
+                              <Image 
+                                src={equipo.fotoUrl} 
+                                alt={equipo.nombre} 
+                                fill
+                                className="object-contain"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                priority={false}
+                                quality={85}
+                              />
                               ) : (
                               <span className="text-sm text-muted-foreground">Sin fotografía</span>
                               )}

@@ -28,7 +28,9 @@ export default function GestionProveedoresPageContent() {
         proveedores={proveedores}
         onAddNew={() => handleOpenDialog()}
         onEdit={handleOpenDialog}
-        onDelete={deleteProveedor}
+        onDelete={async (id: string) => {
+          await deleteProveedor(id);
+        }}
       />
       <GestionProveedorDialog
         isOpen={isDialogOpen}

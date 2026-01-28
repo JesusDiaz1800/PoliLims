@@ -124,7 +124,7 @@ export function ControlRutinarioForm({ form, inspectores, maquinistas, maquinas,
         observaciones_visuales: data.observaciones_visuales,
         color_tuberia: data.color_tuberia,
         color_linea: data.color_linea,
-        resultado,
+    resultado: resultado as "Conforme" | "No Conforme",
         enviado_lab: data.entregado_laboratorio,
     };
 

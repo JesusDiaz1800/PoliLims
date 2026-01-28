@@ -2,7 +2,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -10,6 +9,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import {
   Table,
   TableBody,
@@ -164,11 +164,15 @@ const EquiposTableInternal = ({ equipos = [], onAddNew, onEdit, onDelete }: Equi
                 <TableRow key={equipo.id}>
                   <TableCell>
                     <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center overflow-hidden">
-                      {equipo.fotoUrl ? (
-                        <Image src={equipo.fotoUrl} alt={equipo.nombre} width={64} height={64} className="object-cover w-full h-full" />
-                      ) : (
-                        <span className="text-xs text-muted-foreground">Sin foto</span>
-                      )}
+                      <OptimizedImage
+                        src={equipo.fotoUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZjRmNGY1Ii8+PHRleHQgeD0iMzIiIHk9IjMyIiBmb250LWZhbWlseT0ic3lzdGVtLXVpLC1hcHBsZS1zeXN0ZW0sQmxpbmtNYWNTeXN0ZW1Gb250LFNlZ29lIFVJLFJvYm90byxPeHlnZW4sVWJ1bnR1LENhbnRhcmVsbCxGaXJhIFNhbnMsRHJvaWQgU2FucyxIZWx2ZXRpY2EgTmV1ZSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzE3MTcxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5TaW4gZm90bzwvdGV4dD48L3N2Zz4='}
+                        alt={equipo.nombre}
+                        width={64}
+                        height={64}
+                        className="object-cover w-full h-full"
+                        quality={75}
+                        containerClassName="w-full h-full"
+                      />
                     </div>
                   </TableCell>
                   <TableCell className="font-mono">{equipo.id}</TableCell>

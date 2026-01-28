@@ -117,7 +117,7 @@ export const ProductHistoryReport = ({ reportData }: { reportData: ReportData })
                     </TableRow></TableHeader>
                     <TableBody>
                         {ensayos.map(e => (
-                            <TableRow key={e.id} className={cn(selectedParameter && e[selectedParameter!] !== null && e[selectedParameter!] !== undefined && 'bg-primary/5')}>
+                            <TableRow key={e.id} className={cn(selectedParameter && (e as any)[selectedParameter!] !== null && (e as any)[selectedParameter!] !== undefined && 'bg-primary/5')}>
                                 <TableCell>{e.fecha}</TableCell>
                                 <TableCell className="font-mono">{e.lote}</TableCell>
                                 <TableCell className="font-mono">{e.id}</TableCell>

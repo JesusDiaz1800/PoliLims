@@ -33,7 +33,7 @@ import { ReportContainer } from "@/components/reports/ReportContainer";
 import { format, parseISO } from "date-fns";
 import type { Ensayo } from "@/context/data-context";
 import { EnsayoProductoTerminadoDialog } from "@/components/ensayos/tuberias/ensayo-producto-terminado-dialog";
-import { useDynamicData } from "@/context/data-context";
+import { useDynamicData } from "@/context/data-context-optimized";
 import { useFilters } from "@/context/filter-context";
 
 const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"];
@@ -41,7 +41,7 @@ const pendingStatuses = ["En Progreso", "En Análisis", "Pendiente de Revisión"
 function getStatusVariant(status: string) {
     if (pendingStatuses.includes(status)) return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30";
     switch (status) {
-        case "Aprobado": return "bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30";
+        case "Aprobado": return "bg-[#126FCC]/20 text-[#126FCC] dark:text-[#126FCC] border-[#126FCC]/30";
         case "Rechazado": return "bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/30";
         default: return "bg-secondary";
     }
@@ -250,6 +250,7 @@ export default function SeguimientoPageContent() {
   }
   
   return (
+    <div className="page-container">
     <>
     <Card>
       <CardHeader>
@@ -377,5 +378,6 @@ export default function SeguimientoPageContent() {
         </Dialog>
     )}
     </>
+    </div>
   );
 }

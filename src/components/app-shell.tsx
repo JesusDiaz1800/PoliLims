@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -65,8 +65,9 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoAlt } from "@/components/logo-alt";
-import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
-import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import dynamic from 'next/dynamic';
+const NotificationDropdownLazy = dynamic(() => import("@/components/notifications/notification-dropdown").then(m => m.NotificationDropdown), { ssr: false, loading: () => <div className="w-6 h-6 rounded-md bg-white/10" /> });
+import { memo, useMemo } from "react";
 
 const ensayosSubMenu = [
     { 
@@ -143,7 +144,7 @@ const bibliotecaSubMenu = [
     { href: '/reports/biblioteca', label: 'Informes', icon: FileSearch },
 ];
 
-function NavCollapsible({ item, pathname, disabled = false, isSearchActive }: { item: any; pathname: string; disabled?: boolean; isSearchActive?: boolean }) {
+function NavCollapsible({ item, pathname, disabled = false, userQuery, isSearchActive }: { item: any; pathname: string; disabled?: boolean; userQuery: string, isSearchActive?: boolean }) {
   const subMenuItems = item.subMenu || item.subItems;
   const defaultOpen = isSearchActive || pathname.startsWith(item.href);
   const isActive = pathname.startsWith(item.href);
@@ -182,7 +183,7 @@ function NavCollapsible({ item, pathname, disabled = false, isSearchActive }: { 
                 return <SidebarSeparator key={`sub-sep-${index}`} className="my-1 bg-white/20 dark:bg-gray-700" />;
               }
               if (subItem.subItems || (subItem.subMenu && subItem.subMenu.length > 0)) {
-                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} isSearchActive={isSearchActive}/>;
+                return <NavCollapsible key={subItem.label || subItem.href} item={subItem} pathname={pathname} disabled={disabled} userQuery={userQuery} isSearchActive={isSearchActive}/>;
               }
               const isSubItemActive = pathname === subItem.href;
 
@@ -197,7 +198,7 @@ function NavCollapsible({ item, pathname, disabled = false, isSearchActive }: { 
                     disabled={disabled}
                     aria-disabled={disabled}
                   >
-                    <Link href={`${subItem.href}`} className="relative">
+                    <Link href={`${subItem.href}?${userQuery}`} prefetch={false} className="relative">
                       {subItem.icon && <subItem.icon className="mr-2 size-4" />}
                       <span className="text-sm">{subItem.label}</span>
                     </Link>
@@ -212,6 +213,7 @@ function NavCollapsible({ item, pathname, disabled = false, isSearchActive }: { 
 }
 
 const pageTitles: Record<string, string> = {
+    '/main': 'Dashboard',
     '/dashboard': 'Dashboard',
     '/equipos': 'Inventario de Equipos',
     '/equipos/control': 'Control de Equipos',
@@ -250,7 +252,7 @@ const pageTitles: Record<string, string> = {
 };
 
 const menuItems = (toggleChat: () => void): any[] => [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/main', label: 'Dashboard', icon: LayoutDashboard },
     {
         label: 'Ensayos',
         icon: TestTube,
@@ -282,22 +284,162 @@ const menuItems = (toggleChat: () => void): any[] => [
     },
 ];
 
+const MemoSidebarContent = memo(function MemoSidebarContent({
+  filteredMenuItems,
+  isInspectorView,
+  pathname,
+  userQuery,
+  searchTerm,
+  setSearchTerm,
+  handleMenuClick,
+}: { filteredMenuItems: any[]; isInspectorView: boolean; pathname: string; userQuery: string; searchTerm: string; setSearchTerm: (v: string) => void; handleMenuClick: (e: React.MouseEvent, onClick?: () => void) => void; }) {
+  return (
+    <SidebarContent>
+      <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
+        <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0 text-white brightness-150 drop-shadow-lg" />
+      </div>
+
+          <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
+                <Input
+                  type="search"
+                  placeholder="Buscar en el menú..."
+                  className="w-full rounded-lg bg-white/10 pl-8 h-9 border-0 text-white placeholder:text-white/50 focus:bg-white/20 focus:ring-0"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+
+          {isInspectorView && (
+            <Alert className="m-2 border-cyan-600/30 bg-cyan-600/10 text-cyan-300 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-cyan-400">
+              <Info className="h-4 w-4 text-cyan-500" />
+              <AlertTitle className="text-cyan-300 dark:text-cyan-400">Modo Inspector</AlertTitle>
+              <AlertDescription className="text-cyan-200 dark:text-cyan-300">
+                La vista está limitada a las funciones de inspector de calidad.
+              </AlertDescription>
+            </Alert>
+          )}
+
+            <SidebarMenu className="px-2 pb-2">
+                {filteredMenuItems.length > 0 ? filteredMenuItems.map((item: any, index: number) => {
+                const isDisabled =
+                    isInspectorView &&
+                    !["/main", "/ensayos/control-rutinario"].some((p) =>
+                    item.href?.startsWith(p)
+                    );
+
+                if (item.type === "separator") {
+                    return (
+                    <SidebarSeparator
+                        key={`sep-${index}`}
+                        className="my-2 bg-white/20 dark:bg-gray-700"
+                    />
+                    );
+                }
+                if (item.subMenu) {
+                    return (
+                    <NavCollapsible
+                        key={item.label}
+                        item={item}
+                        pathname={pathname}
+                        disabled={isDisabled}
+                        userQuery={userQuery}
+                        isSearchActive={!!searchTerm}
+                    />
+                    );
+                }
+
+                const isActive =
+                    pathname === item.href ||
+                    (item.href && item.href !== "/main" && pathname.startsWith(item.href));
+
+                return (
+                    <SidebarMenuItem key={item.href || index}>
+                    <SidebarMenuButton
+                        asChild
+                        variant="ghost"
+                        isActive={isActive}
+                        tooltip={{ content: item.label, side: "right", align: "center" }}
+                        disabled={isDisabled}
+                        aria-disabled={isDisabled}
+                        className="px-3"
+                    >
+                        <Link
+                        href={`${item.href}?${userQuery}`}
+                        prefetch={false}
+                        onClick={(e) => handleMenuClick(e, item.onClick)}
+                        >
+                        <div className="flex items-center gap-3">
+                            <item.icon className="size-5 shrink-0" aria-hidden="true" />
+                            <span className="truncate text-sm">{item.label}</span>
+                        </div>
+                        </Link>
+                    </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+                }) : (
+                <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
+                    <p>No se encontraron resultados para "{searchTerm}"</p>
+                </div>
+                )}
+            </SidebarMenu>
+        </SidebarContent>
+  );
+});
+
 export function AppShell({ children, user }: { children: React.ReactNode; user: User }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { isMobile } = useSidebar();
   const { setIsOpen, setIsWidgetVisible } = useChatWidget();
   const isInspectorView = user?.role === "Inspector de Calidad";
+  const userQuery = searchParams.get('user') ? `user=${searchParams.get('user')}` : '';
   const [searchTerm, setSearchTerm] = React.useState("");
+  const deferredSearch = (React as any).useDeferredValue ? (React as any).useDeferredValue(searchTerm) : searchTerm;
+  const [renderNotif, setRenderNotif] = React.useState(false);
+
+  React.useEffect(() => {
+    const id = window.setTimeout(() => setRenderNotif(true), 1200);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const getPageTitle = React.useCallback(() => {
-    const title = pageTitles[pathname];
-    if (title) return title;
+    const normalize = (p: string) => {
+      if (!p) return "/";
+      if (p.length > 1 && p.endsWith("/")) return p.slice(0, -1);
+      return p;
+    };
+    const path = normalize(pathname);
 
-    for (const item of menuItems(() => {})) {
-      if (item.href && pathname === item.href) return item.label;
-    }
+    if (pageTitles[path]) return pageTitles[path];
 
-    return "Dashboard";
+    const bestKey = Object.keys(pageTitles)
+      .map(normalize)
+      .filter((key) => path === key || path.startsWith(key + "/"))
+      .sort((a, b) => b.length - a.length)[0];
+    if (bestKey) return pageTitles[bestKey];
+
+    const findInMenu = (items: any[]): string | null => {
+      for (const item of items) {
+        if (item.type === "separator") continue;
+        const href = item.href ? normalize(item.href) : "";
+        if (href && (path === href || path.startsWith(href + "/"))) {
+          return item.label;
+        }
+        const children = item.subMenu || item.subItems;
+        if (children && children.length) {
+          const found = findInMenu(children);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    const label = findInMenu(menuItems(() => setIsOpen(true)));
+    if (label) return label;
+
+    return "PoliLims";
   }, [pathname]);
 
   const handleMenuClick = (e: React.MouseEvent, onClick?: () => void) => {
@@ -334,110 +476,29 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
     }, []);
   };
 
-  const filteredMenuItems = filterMenu(menuItems(() => setIsOpen(true)), searchTerm);
+  const memoMenu = useMemo(() => menuItems(() => setIsOpen(true)), [setIsOpen]);
+  const filteredMenuItems = filterMenu(useMemo(() => memoMenu, []), deferredSearch);
   const pageTitle = getPageTitle();
-  const isDashboard = pathname === '/dashboard';
+  const isDashboard = pathname === '/main' || pathname === '/dashboard' || pathname.startsWith('/dashboard/');
 
   return (
     <div className="flex min-h-screen w-full">
       <Sidebar
         className="
           bg-gradient-to-b from-[#1C3664] to-[#162A4F] text-white
-          dark:bg-card
           shadow-lg
           transition-colors duration-300
         "
       >
-        <SidebarContent>
-          <div className="pl-4 py-4 overflow-hidden transition-all duration-300">
-            <Logo className="w-40 group-data-[state=collapsed]/sidebar-wrapper:w-9 group-data-[state=collapsed]/sidebar-wrapper:px-0" />
-          </div>
-
-          <div className="px-2 pb-2 group-data-[state=collapsed]/sidebar-wrapper:hidden">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-white/50" />
-                <Input
-                  type="search"
-                  placeholder="Buscar en el menú..."
-                  className="w-full rounded-lg bg-white/10 pl-8 h-9 border-0 text-white placeholder:text-white/50 focus:bg-white/20 focus:ring-0"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-            </div>
-
-          {isInspectorView && (
-            <Alert className="m-2 border-cyan-600/30 bg-cyan-600/10 text-cyan-300 dark:border-cyan-400/50 dark:bg-cyan-900/30 dark:text-cyan-400">
-              <Info className="h-4 w-4 text-cyan-500" />
-              <AlertTitle className="text-cyan-300 dark:text-cyan-400">Modo Inspector</AlertTitle>
-              <AlertDescription className="text-cyan-200 dark:text-cyan-300">
-                La vista está limitada a las funciones de inspector de calidad.
-              </AlertDescription>
-            </Alert>
-          )}
-
-            <SidebarMenu className="px-2 pb-2">
-                {filteredMenuItems.length > 0 ? filteredMenuItems.map((item, index) => {
-                const isDisabled =
-                    isInspectorView &&
-                    !["/dashboard", "/ensayos/control-rutinario"].some((p) =>
-                    item.href?.startsWith(p)
-                    );
-
-                if (item.type === "separator") {
-                    return (
-                    <SidebarSeparator
-                        key={`sep-${index}`}
-                        className="my-2 bg-white/20 dark:bg-gray-700"
-                    />
-                    );
-                }
-                if (item.subMenu) {
-                    return (
-                    <NavCollapsible
-                        key={item.label}
-                        item={item}
-                        pathname={pathname}
-                        disabled={isDisabled}
-                        isSearchActive={!!searchTerm}
-                    />
-                    );
-                }
-
-                const isActive =
-                    pathname === item.href ||
-                    (item.href && item.href !== "/dashboard" && pathname.startsWith(item.href));
-
-                return (
-                    <SidebarMenuItem key={item.href || index}>
-                    <SidebarMenuButton
-                        asChild
-                        variant="ghost"
-                        isActive={isActive}
-                        tooltip={{ content: item.label, side: "right", align: "center" }}
-                        disabled={isDisabled}
-                        aria-disabled={isDisabled}
-                        className="px-3"
-                    >
-                        <Link
-                        href={item.href}
-                        onClick={(e) => handleMenuClick(e, item.onClick)}
-                        >
-                        <div className="flex items-center gap-3">
-                            <item.icon className="size-5 shrink-0" aria-hidden="true" />
-                            <span className="truncate text-sm">{item.label}</span>
-                        </div>
-                        </Link>
-                    </SidebarMenuButton>
-                    </SidebarMenuItem>
-                );
-                }) : (
-                <div className="text-center text-white/60 p-4 text-sm group-data-[state=expanded]/sidebar-wrapper:block hidden">
-                    <p>No se encontraron resultados para "{searchTerm}"</p>
-                </div>
-                )}
-            </SidebarMenu>
-        </SidebarContent>
+        <MemoSidebarContent
+          filteredMenuItems={filteredMenuItems}
+          isInspectorView={isInspectorView}
+          pathname={pathname}
+          userQuery={userQuery}
+          searchTerm={searchTerm}
+          setSearchTerm={(v: string) => setSearchTerm(v)}
+          handleMenuClick={handleMenuClick}
+        />
 
         <SidebarFooter className="px-2 py-2">
           <SidebarMenu className="p-0">
@@ -463,11 +524,11 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
 
           <div className="flex items-center gap-3 px-1 py-1">
               <Avatar
-                className="h-9 w-9 border-2 border-white/30 dark:border-border"
+                className="h-9 w-9 border-2 border-white/40 dark:border-blue-400/30 bg-gradient-to-br from-blue-500/20 to-indigo-600/20 dark:from-blue-500/30 dark:to-indigo-600/30"
                 aria-label={`Avatar de ${user?.fullName ?? "usuario"}`}
               >
                 <AvatarImage src={user?.avatarUrl} alt={user?.fullName ?? "User"} />
-                <AvatarFallback>{user?.initials ?? "U"}</AvatarFallback>
+                <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-500 dark:to-indigo-600 text-white font-semibold">{user?.initials ?? "U"}</AvatarFallback>
               </Avatar>
 
               <div className="flex flex-col text-sm overflow-hidden group-data-[state=collapsed]/sidebar-wrapper:hidden">
@@ -492,7 +553,7 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
                 </h1>
             </div>
             <div className="flex items-center gap-2 ml-auto">
-              <NotificationDropdown />
+              {renderNotif && <NotificationDropdownLazy />}
               <ThemeToggle />
               <div className="w-12 hidden sm:block">
                   <LogoAlt />
@@ -503,11 +564,10 @@ export function AppShell({ children, user }: { children: React.ReactNode; user: 
         
         <div className="flex-1 overflow-auto relative" style={{ WebkitOverflowScrolling: "touch" }}>
             <main
-                className="p-6 custom-scrollbar"
+                className="custom-scrollbar"
                 role="main"
                 tabIndex={-1}
             >
-                {isDashboard && <WelcomeBanner user={user} />}
                 {children}
             </main>
         </div>

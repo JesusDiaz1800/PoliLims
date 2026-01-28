@@ -61,7 +61,7 @@ const BibliotecaInformesTableInternal = ({ informes, onDelete }: BibliotecaInfor
     informes.filter(
       (informe) =>
         (filterType === "Todos" || informe.tipo === filterType) &&
-        (informe.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
+        (informe.titulo.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [informes, searchTerm, filterType]);
   
   const handleDelete = async (id: string) => {
@@ -108,7 +108,7 @@ const BibliotecaInformesTableInternal = ({ informes, onDelete }: BibliotecaInfor
                 </SelectTrigger>
                 <SelectContent>
                     {tiposDeInforme.map(tipo => (
-                        <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
+                        <SelectItem key={tipo} value={tipo || ''}>{tipo}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
@@ -129,9 +129,9 @@ const BibliotecaInformesTableInternal = ({ informes, onDelete }: BibliotecaInfor
                 <TableBody>
                     {filteredInformes.length > 0 ? filteredInformes.map((informe) => (
                     <TableRow key={informe.id}>
-                        <TableCell className="font-medium">{informe.nombre}</TableCell>
+                        <TableCell className="font-medium">{informe.titulo}</TableCell>
                         <TableCell><Badge variant="outline">{informe.tipo}</Badge></TableCell>
-                        <TableCell>{informe.fecha_creacion}</TableCell>
+                        <TableCell>{informe.fecha_generacion}</TableCell>
                         <TableCell className="text-right">
                             <AlertDialog>
                                 <DropdownMenu>
@@ -160,7 +160,7 @@ const BibliotecaInformesTableInternal = ({ informes, onDelete }: BibliotecaInfor
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>¿Está absolutamente seguro?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Esta acción no se puede deshacer. Esto eliminará permanentemente el registro del informe <span className="font-bold">{informe.nombre}</span>.
+                                            Esta acción no se puede deshacer. Esto eliminará permanentemente el registro del informe <span className="font-bold">{informe.titulo}</span>.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>

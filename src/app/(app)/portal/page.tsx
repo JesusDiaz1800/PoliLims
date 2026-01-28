@@ -12,7 +12,7 @@ const GenericFormPage = dynamic(() => import('@/components/generic-form-page').t
 });
 
 export default function ClientPortalPage() {
-    const formFields = [
+    const formFields: import('@/components/generic-form-page').FormFieldConfig[] = [
         { name: 'nombre_cliente', label: 'Nombre del Cliente', type: 'text', placeholder: 'Su nombre o el de su empresa' },
         { name: 'email_cliente', label: 'Correo Electrónico', type: 'email', placeholder: 'sudireccion@ejemplo.com' },
         { name: 'telefono_cliente', label: 'Teléfono de Contacto', type: 'tel', placeholder: '+56 9 1234 5678' },

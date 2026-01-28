@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { CalendarioEquipos } from '@/components/equipos/calendario-equipos';
+import { ModernCalendar } from '@/components/equipos/modern-calendar';
 import { parse, isPast } from 'date-fns';
 import { EquipoDetailsDialog } from '@/components/equipos/equipo-details-dialog';
 import { EquipoDialog } from '@/components/equipos/equipo-dialog';
@@ -54,9 +54,8 @@ export default function ProgramaPageContent() {
         }
     }, [equipos]);
 
-    const handleEventClick = (eventInfo: any) => {
-        const equipoSeleccionado = eventInfo.event.extendedProps.equipo;
-        setSelectedEquipo(equipoSeleccionado);
+    const handleEventClick = (event: CalendarioEvento) => {
+        setSelectedEquipo(event.equipo);
         setIsDetailsOpen(true);
     };
 
@@ -76,7 +75,7 @@ export default function ProgramaPageContent() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <CalendarioEquipos eventos={eventos} onEventClick={handleEventClick} />
+                    <ModernCalendar events={eventos} onEventClick={handleEventClick} />
                 </CardContent>
             </Card>
 

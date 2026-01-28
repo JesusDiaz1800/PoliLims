@@ -1,6 +1,9 @@
+"use client";
+
 import { cn } from '@/lib/utils';
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className, variant = 'default' }: { className?: string; variant?: 'default' | 'white' }) {
+  
   return (
     <div className={cn("relative w-full h-full", className)}>
        <svg
@@ -10,9 +13,21 @@ export function Logo({ className }: { className?: string }) {
         preserveAspectRatio="xMidYMid meet"
         className="w-full h-full"
       >
+        <defs>
+          <linearGradient id="mainLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#60A5FA" />
+            <stop offset="50%" stopColor="#06B6D4" />
+            <stop offset="100%" stopColor="#8B5CF6" />
+          </linearGradient>
+          <linearGradient id="whiteLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="50%" stopColor="#F8FAFC" />
+            <stop offset="100%" stopColor="#E2E8F0" />
+          </linearGradient>
+        </defs>
         <g
           transform="translate(0.000000,529.000000) scale(0.100000,-0.100000)"
-          fill="currentColor"
+          fill={variant === 'white' ? "url(#whiteLogoGradient)" : "url(#mainLogoGradient)"}
           stroke="none"
         >
           <path d="M545 5279 c-262 -40 -463 -228 -521 -487 -28 -125 -17 -209 80 -632 48 -206 110 -474 137 -595 64 -281 97 -353 207 -465 59 -59 97 -87 160 -118 45 -23 83 -45 83 -49 0 -4 -2 -25 -5 -45 -6 -34 -12 -40 -71 -70 -224 -111 -361 -353 -341 -605 10 -139 33 -192 183 -433 l40 -65 -13 -320 c-16 -388 -30 -1296 -20 -1348 l7 -37 292 0 292 0 3 198 c2 108 12 465 22 792 11 327 20 666 20 753 l0 158 -106 166 c-59 92 -107 174 -108 182 -1 18 86 52 218 85 49 12 93 28 97 36 5 8 49 215 99 459 55 272 96 451 105 461 8 9 124 66 256 126 l240 109 -263 3 c-145 2 -371 -2 -503 -7 -189 -9 -242 -8 -251 2 -17 16 -267 1114 -260 1134 6 14 36 15 284 9 1014 -25 1739 -137 2287 -353 312 -123 516 -252 700 -444 175 -182 268 -365 310 -609 23 -131 21 -328 -4 -446 -131 -621 -806 -1050 -2018 -1279 -101 -19 -194 -35 -206 -35 -54 0 -57 -9 -117 -341 -32 -173 -57 -315 -55 -317 6 -7 747 144 930 190 446 111 848 269 1145 450 505 307 814 715 920 1213 27 127 38 416 21 561 -66 561 -348 1007 -849 1342 -574 384 -1452 604 -2647 661 -319 15 -713 21 -780 10z" />

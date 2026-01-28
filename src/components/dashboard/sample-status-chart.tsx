@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -61,7 +60,7 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
       <ResponsiveContainer width="100%" height="100%">
           <PieChart>
                <defs>
-                <linearGradient id="colorStatusGreen" x1="0" y1="0" x2="0" y2="1">
+               <linearGradient id="colorStatusGreen" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.9}/>
                     <stop offset="95%" stopColor="#059669" stopOpacity={0.7}/>
                 </linearGradient>
@@ -110,10 +109,10 @@ const SampleStatusChartInternal = ({ data, isModal = false }: SampleStatusChartP
               />
           </PieChart>
       </ResponsiveContainer>
-      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none -translate-y-1">
-          <p className="text-2xl font-bold font-headline">{total}</p>
-          <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
-      </div>
+             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none -translate-y-6">
+           <p className="text-2xl font-bold font-headline">{total}</p>
+           <p className="text-xs text-muted-foreground -mt-1">Total Ensayos</p>
+       </div>
     </div>
   )
 }

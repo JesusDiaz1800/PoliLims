@@ -88,20 +88,20 @@ export const CoAReport = ({ data, fechaEmision }: CoAReportProps) => {
 
   if (data.tipo === 'Tubería HDPE') {
       results.push(
-        { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%', normative: '< 30%', verdict: data.meltIndexVariacion < 30 },
-        { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³', normative: '> 0.955', verdict: data.densidadCalculada > 0.955 },
-        { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado, 2), unit: '%', normative: '2.0 - 3.0', verdict: data.negroHumoCalculado >= 2.0 && data.negroHumoCalculado <= 3.0 },
+        { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion || 0, 2), unit: '%', normative: '< 30%', verdict: (data.meltIndexVariacion || 0) < 30 },
+        { parameter: 'Densidad', value: formatValue(data.densidadCalculada || 0, 3), unit: 'g/cm³', normative: '> 0.955', verdict: (data.densidadCalculada || 0) > 0.955 },
+        { parameter: '% Negro de Humo', value: formatValue(data.negroHumoCalculado || 0, 2), unit: '%', normative: '2.0 - 3.0', verdict: (data.negroHumoCalculado || 0) >= 2.0 && (data.negroHumoCalculado || 0) <= 3.0 },
         { parameter: 'Dispersión de Negro de Humo', value: data.dispersion_nh || '---', unit: 'Grado', normative: '< 3', verdict: data.dispersion_nh ? (parseInt(data.dispersion_nh.replace('Grado ', '').charAt(1)) < 3) : null },
-        { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion, 2), unit: 'MPa', normative: '> 22', verdict: data.resistencia_traccion > 22 },
-        { parameter: 'Elongación de Ruptura', value: formatValue(data.elongacion_rotura, 2), unit: '%', normative: '> 500', verdict: data.elongacion_rotura > 500 },
-        { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo, 2), unit: 'min', normative: '> 20', verdict: data.tio_tiempo > 20 }
+        { parameter: 'Resistencia a la Tracción', value: formatValue(data.resistencia_traccion || 0, 2), unit: 'MPa', normative: '> 22', verdict: (data.resistencia_traccion || 0) > 22 },
+        { parameter: 'Elongación de Ruptura', value: formatValue(data.elongacion_rotura || 0, 2), unit: '%', normative: '> 500', verdict: (data.elongacion_rotura || 0) > 500 },
+        { parameter: 'Tiempo de Inducción a la Oxidación (TIO)', value: formatValue(data.tio_tiempo || 0, 2), unit: 'min', normative: '> 20', verdict: (data.tio_tiempo || 0) > 20 }
       );
   } else if (data.tipo === 'Tubería PP') {
       results.push(
-          { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion, 2), unit: '%', normative: '< 30%', verdict: data.meltIndexVariacion < 30 },
+          { parameter: 'Melt Index (Variación)', value: formatValue(data.meltIndexVariacion || 0, 2), unit: '%', normative: '< 30%', verdict: (data.meltIndexVariacion || 0) < 30 },
           { parameter: 'Densidad', value: formatValue(data.densidadCalculada, 3), unit: 'g/cm³', normative: '---', verdict: null },
-          { parameter: 'Contenido de Fibra de Vidrio (% Total)', value: formatValue(data.fvTotalPorcentaje, 2), unit: '%', normative: '> 5%', verdict: data.fvTotalPorcentaje > 5 },
-          { parameter: 'Contenido de Fibra de Vidrio (% Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje, 2), unit: '%', normative: '> 15%', verdict: data.fvIntermediaPorcentaje > 15 },
+          { parameter: 'Contenido de Fibra de Vidrio (% Total)', value: formatValue(data.fvTotalPorcentaje || 0, 2), unit: '%', normative: '> 5%', verdict: (data.fvTotalPorcentaje || 0) > 5 },
+          { parameter: 'Contenido de Fibra de Vidrio (% Capa Intermedia)', value: formatValue(data.fvIntermediaPorcentaje || 0, 2), unit: '%', normative: '> 15%', verdict: (data.fvIntermediaPorcentaje || 0) > 15 },
       );
   }
 

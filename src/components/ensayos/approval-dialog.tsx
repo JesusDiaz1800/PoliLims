@@ -89,7 +89,7 @@ export function ApprovalDialog({ isOpen, onClose, ensayo, user, updateEnsayo, ad
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <Form {...form}>
+  <Form form={form} onSubmit={onSubmit}>
          <form onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
             <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export function ApprovalDialog({ isOpen, onClose, ensayo, user, updateEnsayo, ad
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
+            <Button type="button" variant="secondary" onClick={onClose}>Cancelar</Button>
             <Button type="submit">
                 <Save className="mr-2 h-4 w-4" />
                 Guardar Decisión

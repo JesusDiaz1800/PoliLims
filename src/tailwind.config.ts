@@ -96,9 +96,9 @@ export default {
           '100%': { transform: 'rotate(360deg)' },
         },
         orbit: {
-          '0%': { transform: 'rotate(0deg) translateX(40px) rotate(0deg)', opacity: 1 },
-          '50%': { transform: 'rotate(180deg) translateX(40px) rotate(-180deg)', opacity: 0.7 },
-          '100%': { transform: 'rotate(360deg) translateX(40px) rotate(-360deg)', opacity: 1 },
+          '0%': { transform: 'rotate(0deg) translateX(40px) rotate(0deg)', opacity: '1' },
+          '50%': { transform: 'rotate(180deg) translateX(40px) rotate(-180deg)', opacity: '0.7' },
+          '100%': { transform: 'rotate(360deg) translateX(40px) rotate(-360deg)', opacity: '1' },
         }
       },
       animation: {

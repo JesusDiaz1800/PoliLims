@@ -132,7 +132,11 @@ export async function generateReportAction(
 
   const selectedEnsayos = ensayos
     .filter(e => selectedIds.includes(e.id))
-    .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime());
+    .sort((a,b) => {
+      const fechaA = a.fecha || a.fecha_ingreso || '';
+      const fechaB = b.fecha || b.fecha_ingreso || '';
+      return parseISO(fechaB.split('-').reverse().join('-')).getTime() - parseISO(fechaA.split('-').reverse().join('-')).getTime();
+    });
 
   if(selectedEnsayos.length === 0) {
       return { reportData: null, error: "No se encontraron los ensayos seleccionados." };
@@ -191,7 +195,11 @@ export async function generateProductCertificateAction(
 
   const productEnsayos = ensayos
     .filter(e => e.producto === producto && e[parameter] !== null && e[parameter] !== undefined)
-    .sort((a,b) => parseISO(b.fecha.split('-').reverse().join('-')).getTime() - parseISO(a.fecha.split('-').reverse().join('-')).getTime());
+    .sort((a,b) => {
+      const fechaA = a.fecha || a.fecha_ingreso || '';
+      const fechaB = b.fecha || b.fecha_ingreso || '';
+      return parseISO(fechaB.split('-').reverse().join('-')).getTime() - parseISO(fechaA.split('-').reverse().join('-')).getTime();
+    });
 
   if(productEnsayos.length === 0) {
       return { reportData: null, error: `No se encontraron ensayos para el producto: ${producto} con el parámetro seleccionado.` };

@@ -186,7 +186,7 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
           <div className="space-y-4">
               <FormLabel>Ensayos Realizados</FormLabel>
               <p className="text-sm text-muted-foreground">Marque todos los ensayos en los que se utiliza este equipo.</p>
-              <FormField control={form.control} name="ensayos_asociados" render={() => (<FormItem className="grid grid-cols-2 md:grid-cols-3 gap-4"> {ensayosDisponibles.map((ensayo) => (<FormField key={ensayo.id} control={form.control} name="ensayos_asociados" render={({ field }) => { return (<FormItem key={ensayo.id} className="flex flex-row items-start space-x-3 space-y-0"><FormControl><Checkbox checked={field.value?.includes(ensayo.id)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), ensayo.id]) : field.onChange((field.value || []).filter((value) => value !== ensayo.id))}} /></FormControl><FormLabel className="font-normal">{ensayo.label}</FormLabel></FormItem>)}} />))}<FormMessage /></FormItem>)}/>
+              <FormField control={form.control} name="ensayos_asociados" render={() => (<FormItem className="grid grid-cols-2 md:grid-cols-3 gap-4"> {ensayosDisponibles.map((ensayo) => (<FormField key={`ensayo-${ensayo.id}`} control={form.control} name="ensayos_asociados" render={({ field }) => { return (<FormItem key={`item-${ensayo.id}`} className="flex flex-row items-start space-x-3 space-y-0"><FormControl><Checkbox checked={field.value?.includes(ensayo.id)} onCheckedChange={(checked) => { return checked ? field.onChange([...(field.value || []), ensayo.id]) : field.onChange((field.value || []).filter((value) => value !== ensayo.id))}} /></FormControl><FormLabel className="font-normal">{ensayo.label}</FormLabel></FormItem>)}} />))}<FormMessage /></FormItem>)}/>
           </div>
           <Separator/>
           <div className="space-y-4">
@@ -204,7 +204,36 @@ export function EquipoForm({ equipoToEdit, onFormSubmit }: EquipoFormProps) {
                   <FormControl><Input id="picture" type="file" className="hidden" accept="image/*" onChange={handleImageChange} /></FormControl>
                   <label htmlFor="picture" className="cursor-pointer">
                       <div className="relative flex items-center justify-center w-full h-48 border-2 border-dashed rounded-lg text-muted-foreground hover:border-primary hover:text-primary transition-colors">
-                          {imagePreview ? (<><Image src={imagePreview} alt="Vista previa del equipo" layout="fill" objectFit="contain" className="rounded-lg" /><Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2 z-10" onClick={(e) => { e.preventDefault(); setImagePreview(null); form.setValue("fotoUrl", "");}}><X className="h-4 w-4" /></Button></>) : (<div className="text-center"><ImageIcon className="mx-auto h-10 w-10 mb-2" /><span>Haga clic para seleccionar una imagen</span></div>)}
+                          {imagePreview ? (
+                            <>
+                              <Image 
+                                src={imagePreview} 
+                                alt="Vista previa del equipo" 
+                                fill
+                                className="rounded-lg object-contain"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                quality={85}
+                              />
+                              <Button 
+                                type="button" 
+                                variant="destructive" 
+                                size="icon" 
+                                className="absolute top-2 right-2 z-10" 
+                                onClick={(e) => { 
+                                  e.preventDefault(); 
+                                  setImagePreview(null); 
+                                  form.setValue("fotoUrl", "");
+                                }}
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </>
+                          ) : (
+                            <div className="text-center">
+                              <ImageIcon className="mx-auto h-10 w-10 mb-2" />
+                              <span>Haga clic para seleccionar una imagen</span>
+                            </div>
+                          )}
                       </div>
                   </label>
               </div>

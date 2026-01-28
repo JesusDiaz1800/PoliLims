@@ -25,14 +25,14 @@ interface EnsayosProductoTerminadoTableProps {
 function getStatusVariant(status: Ensayo['estado']) {
   switch (status) {
     case 'Aprobado':
-      return 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30';
+      return 'bg-[#126FCC]/20 text-[#126FCC] dark:text-[#126FCC] border-[#126FCC]/30';
     case 'En Progreso':
     case 'En Análisis':
       return 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 border-yellow-500/30';
     case 'Rechazado':
       return 'bg-red-500/20 text-red-700 dark:text-red-300 border-red-500/30';
     case 'Pendiente de Revisión':
-      return 'bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-500/30';
+      return 'bg-[#126FCC]/20 text-[#126FCC] dark:text-[#126FCC] border-[#126FCC]/30';
     default:
       return 'bg-secondary';
   }
